@@ -22,6 +22,14 @@ Requirements:
 
 -----
 
+Supported Games:
+- Let's Go Pikachu & Eevee
+- Sword & Shield
+- Brilliant Diamong & Shining Pearl
+- Legends Arceus
+
+-----
+
 How to use:
 - Input your Switch IP in the field
 - Click Connect
