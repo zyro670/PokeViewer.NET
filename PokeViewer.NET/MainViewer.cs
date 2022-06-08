@@ -1,10 +1,7 @@
 ﻿using PKHeX.Core;
 using SysBot.Base;
-using System.Diagnostics;
-using System.Drawing.Imaging;
 using System.Net;
 using System.Net.Sockets;
-using System.Runtime.InteropServices;
 using System.Text;
 
 namespace PokeViewer.NET
@@ -359,6 +356,24 @@ namespace PokeViewer.NET
                 {
                     data = await SwitchConnection.ReadBytesAsync(0x886BC348, size, CancellationToken.None).ConfigureAwait(false); // LegendaryPokemon
                     pk = new PK8(data);
+
+                    if (pk.Species == 0 || pk.Species > (int)Species.MAX_COUNT)
+                    {
+                        string[] campers =
+                        {
+                            "[[[[[[main+2636120]+280]+D8]+78]+10]+98]",
+                            "[[[[[main+2636170]+2F0]+58]+130]+138]+D0",
+                            "[[[[main+28ED668]+68]+1E8]+1D0]+128",
+                            "[[[[[main+296C030]+60]+40]+1B0]+58]"
+                        };
+                        for (int i = 0; i < campers.Length; i++)
+                        {
+                            var pointer = campers[i];
+                            var ofs = await ParsePointer(pointer, CancellationToken.None).ConfigureAwait(false);
+                            data = await SwitchConnection.ReadBytesAbsoluteAsync(ofs, size, CancellationToken.None).ConfigureAwait(false);
+                            pk = new PK8(data);
+                        }
+                    }
                 }
             }
             return pk;
@@ -592,22 +607,19 @@ namespace PokeViewer.NET
         private async void Window_Loaded()
         {
             var token = CancellationToken.None;
-            string game = string.Empty;
             int type = 0;
             string url = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/icon_version/64x64/icon_version_";
             string title = await SwitchConnection.GetTitleID(token).ConfigureAwait(false);
             switch (title)
             {
-                case LegendsArceusID: game = "Legends: Arceus"; url = url + "LA.png"; type = (int)GameSelected.LA;  break;
-                case ShiningPearlID: game = "Shining Pearl"; url = url + "SP.png"; type = (int)GameSelected.SP; break;
-                case BrilliantDiamondID: game = "Brilliant Diamond"; url = url + "BD.png"; type = (int)GameSelected.BD; break;
-                case SwordID: game = "Sword"; url = url + "SW.png"; type = (int)GameSelected.SW; break;
-                case ShieldID: game = "Shield"; url = url + "SH.png"; type = (int)GameSelected.SH; break;
-                case EeveeID: game = "Let's Go Eevee"; url = url + "LGE.png"; ; type = (int)GameSelected.LGE; break;
-                case PikachuID: game = "Let's Go Pikachu"; url = url + "LGP.png"; type = (int)GameSelected.LGP; break;
+                case LegendsArceusID:url = url + "LA.png"; type = (int)GameSelected.LA;  break;
+                case ShiningPearlID: url = url + "SP.png"; type = (int)GameSelected.SP; break;
+                case BrilliantDiamondID: url = url + "BD.png"; type = (int)GameSelected.BD; break;
+                case SwordID: url = url + "SW.png"; type = (int)GameSelected.SW; break;
+                case ShieldID: url = url + "SH.png"; type = (int)GameSelected.SH; break;
+                case EeveeID: url = url + "LGE.png"; ; type = (int)GameSelected.LGE; break;
+                case PikachuID: url = url + "LGP.png"; type = (int)GameSelected.LGP; break;
             }
-            //if (title is not SwordID or ShieldID or BrilliantDiamondID or ShiningPearlID or LegendsArceusID)
-            //  throw new Exception($"{title} is not a valid Pokemon title. Is the right game open?");
 
             OriginIcon.ImageLocation = url;            
             GameType = type;
@@ -668,21 +680,6 @@ namespace PokeViewer.NET
                 address -= heap;
             }
             return address;
-        }
-
-        private class User32
-        {
-            [StructLayout(LayoutKind.Sequential)]
-            public struct Rect
-            {
-                public int left;
-                public int top;
-                public int right;
-                public int bottom;
-            }
-
-            [DllImport("user32.dll")]
-            public static extern IntPtr GetWindowRect(IntPtr hWnd, ref Rect rect);
         }
 
         private void CaptureWindow_Click(object sender, EventArgs e)
