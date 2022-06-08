@@ -41,3 +41,12 @@ How to use:
 
 - Checking LiveStats then clicking View will continue to read the encounter until it is no longer available. This makes it a bit easier to keep track of the encounter's HP and PP count.
 - Refresh Rate will determine the interval between refreshing the LiveStats. Default is 2000ms.
+
+-----
+
+To-Do:
+
+- LGPE Overworld spawns ❌
+- SWSH Overworld spawns ❌
+- BDSP Underground spawns ❌
+- LA undecided ❌
