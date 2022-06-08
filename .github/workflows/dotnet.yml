@@ -36,6 +36,6 @@ jobs:
     - name: Archive production artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: SWSH-Overworld-RNG-GUI
+        name: PokeViewer.Net
         path: |
           ./PokeViewer.Net/bin/Release
