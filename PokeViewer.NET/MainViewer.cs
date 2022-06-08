@@ -286,6 +286,7 @@ namespace PokeViewer.NET
                 {
                     original = Image.FromStream(ms);
                 }
+                Specialty.Visible = true;
                 Specialty.Image = original;
             }
             if (hasMark)
@@ -297,6 +298,7 @@ namespace PokeViewer.NET
                 {
                     original = Image.FromStream(ms);
                 }
+                Specialty.Visible = true;
                 Specialty.Image = original;
             }
             if (isGmax)
@@ -308,6 +310,7 @@ namespace PokeViewer.NET
                 {
                     original = Image.FromStream(ms);
                 }
+                Specialty.Visible = true;
                 Specialty.Image = original;
             }
             if (RefreshStats.Checked)
