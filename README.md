@@ -12,6 +12,7 @@ Special credits and thanks to the minds behind the resources used for this proje
 - [Koi-3088](https://github.com/Koi-3088) for the implementations of PokeImg and FormOutput.
 - [sora10pls](https://github.com/sora10pls) for image and texture dumps.
 - [Manuvm088](https://github.com/Manu098vm) for LGPE tasks and offsets.
+- [hp3721](https://github.com/hp3721) for help with pointers and general knowledge.
 
 -----
 
