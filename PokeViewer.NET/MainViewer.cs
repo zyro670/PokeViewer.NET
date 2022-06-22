@@ -1,8 +1,11 @@
 ﻿using PKHeX.Core;
+using PKHeX.Drawing.Misc;
+using PKHeX.Drawing.PokeSprite;
+using PokeViewer.NET.WideViewForms;
 using SysBot.Base;
-using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using static PokeViewer.NET.RoutineExecutor;
 
 namespace PokeViewer.NET
 {
@@ -10,6 +13,7 @@ namespace PokeViewer.NET
     {
         private readonly static SwitchConnectionConfig Config = new() { Protocol = SwitchProtocol.WiFi, IP = Properties.Settings.Default.SwitchIP, Port = 6000 };
         public SwitchSocketAsync SwitchConnection = new(Config);
+        public static RoutineExecutor Executor = new();
         public MainViewer()
         {
             InitializeComponent();
@@ -26,32 +30,7 @@ namespace PokeViewer.NET
         private const string PikachuID = "010003F003A34000";
         private int GameType;
         private string RefreshTime = Properties.Settings.Default.RefreshRate;
-        private bool ReadOverworld = false;
-        private void ChangeButtonState(Button sender, bool State)
-        {
-            if (sender.InvokeRequired)
-            {
-                ChangeButtonStateCallback d = new(ChangeButtonState);
-                sender.Invoke(d, sender, State);
-            }
-            else
-            {
-                sender.Enabled = State;
-            }
-        }
-
-        private void TextboxSetText(TextBox sender, string Text)
-        {
-            if (sender.InvokeRequired)
-            {
-                TextboxSetTextCallback d = new(TextboxSetText);
-                sender.Invoke(d, sender, Text);
-            }
-            else
-            {
-                sender.Text = Text;
-            }
-        }
+        private static bool isConnected;
 
         private void PokeViewerForm_Load(object sender, EventArgs e)
         {
@@ -64,6 +43,8 @@ namespace PokeViewer.NET
             this.HidePIDEC.Visible = false;
             this.ScreenShot.Visible = false;
             this.HpLabel.Visible = false;
+            this.UniqueBox.Visible = false;
+            this.UniqueBox2.Visible = false;
             LoadOriginDefault(sender, e);
             LoadDateTime(sender, e);
         }
@@ -110,12 +91,11 @@ namespace PokeViewer.NET
         {
             try
             {
-                SwitchConnection.Connect();                
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-                ChangeButtonState(Program.Viewer.Connect, false);
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-                ChangeButtonState(Program.Viewer.Disconnect, true);
-                ChangeButtonState(Program.Viewer.View, true);
+                SwitchConnection.Connect();                 
+                isConnected = true;
+                Connect.Enabled = false;
+                Disconnect.Enabled = true;
+                View.Enabled = true;
                 this.ViewBox.Visible = true;
                 this.PokeSprite.Visible = true;
                 this.LiveStats.Visible = true;
@@ -126,6 +106,7 @@ namespace PokeViewer.NET
                 this.HidePIDEC.Visible = true;
                 this.HpLabel.Visible = true;
                 this.View.Visible = true;
+                this.WideView.Enabled = true;
                 Window_Loaded();
             }
             catch (SocketException err)
@@ -134,23 +115,20 @@ namespace PokeViewer.NET
                 {
                     MessageBox.Show(err.Message);
                 }
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-                ChangeButtonState(Program.Viewer.Connect, true);
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-                ChangeButtonState(Program.Viewer.Disconnect, false);
-                ChangeButtonState(Program.Viewer.View, false);
+                isConnected = false;
+                Connect.Enabled = true;
+                Disconnect.Enabled = false;
+                View.Enabled = false;
             }
         }
 
         private void Disconnect_Click(object sender, EventArgs e)
         {
             SwitchConnection.Disconnect();
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-            ChangeButtonState(Program.Viewer.Connect, true);
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-            ChangeButtonState(Program.Viewer.Disconnect, false);
-            ChangeButtonState(Program.Viewer.View, false);
-            this.ReadOverworld = false;
+            isConnected = false;
+            Connect.Enabled = true;
+            Disconnect.Enabled = false;
+            View.Enabled = false;
             this.ViewBox.Visible = false;
             this.PokeSprite.Visible = false;
             this.LiveStats.Visible = false;
@@ -164,6 +142,9 @@ namespace PokeViewer.NET
             this.Typing2.Visible = false;
             this.Specialty.Visible = false;
             this.HpLabel.Visible = false;
+            this.UniqueBox.Visible = false;
+            this.UniqueBox2.Visible = false;
+            this.WideView.Enabled = false;
             this.LiveStats.Clear();
             string url = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/OriginMarks/icon_generation_00%5Esb.png";
             OriginIcon.ImageLocation = url;
@@ -215,14 +196,21 @@ namespace PokeViewer.NET
 
         private async void FillPokeData(PKM pk, ulong offset, uint offset2, int size)
         {
+            Specialty.Visible = false;
             var sprite = string.Empty;
-            if (pk.Species == 0 || pk.Species > (int)Species.MAX_COUNT)
+            bool isValid = false;
+            switch (GameType)
             {
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-                TextboxSetText(Program.Viewer.ViewBox, "No Pokémon present.");
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-                ChangeButtonState(Program.Viewer.View, true);
-                sprite = "https://raw.githubusercontent.com/zyro670/HomeImages/master/128x128/poke_capture_0000_000_uk_n_00000000_f_n.png";
+                case (int)GameSelected.SW or (int)GameSelected.SH: isValid = ((PersonalInfoSWSH)PersonalTable.SWSH[pk.Species]).IsPresentInGame; break;
+                case (int)GameSelected.BD or (int)GameSelected.SP: isValid = ((PersonalInfoBDSP)PersonalTable.BDSP[pk.Species]).IsPresentInGame; break;
+                case (int)GameSelected.LA: isValid = ((PersonalInfoLA)PersonalTable.LA[pk.Species]).IsPresentInGame; break;
+                case (int)GameSelected.LGP or (int)GameSelected.LGE: isValid = pk.Species < (int)Species.Mewtwo && pk.Species != (int)Species.Meltan && pk.Species != (int)Species.Melmetal; break;
+            }
+            if (!isValid || pk.Species < 0 || pk.Species > (int)Species.MAX_COUNT)
+            {
+                ViewBox.Text = "No Pokémon present.";
+                View.Enabled = true;
+                sprite = "https://raw.githubusercontent.com/kwsch/PKHeX/master/PKHeX.Drawing.PokeSprite/Resources/img/Pokemon%20Sprite%20Overlays/starter.png";
                 PokeSprite.Load(sprite);
                 Typing1.Visible = false;
                 Typing2.Visible = false;
@@ -240,38 +228,28 @@ namespace PokeViewer.NET
             {
                 hasMark = HasMark((PK8)pk, out RibbonIndex mark);
                 msg = hasMark ? $"{Environment.NewLine}Mark: {mark.ToString().Replace("Mark", "")}" : "";
-
             }
             string isAlpha = alpha ? $"αlpha - " : "";
             string pid = HidePIDEC.Checked ? "" : $"{Environment.NewLine}PID: {pk.PID:X8}";
             string ec = HidePIDEC.Checked ? "" : $"{Environment.NewLine}EC: {pk.EncryptionConstant:X8}";
             var form = FormOutput(pk.Species, pk.Form, out _);
-            string output = $"{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{isAlpha}{(Species)pk.Species}{form}{pid}{ec}{Environment.NewLine}Gender: {(Gender)pk.Gender}{Environment.NewLine}Nature: {GameInfo.GetStrings(1).Natures[pk.Nature]}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}{msg}";
-            LiveStats.Text = $"{GameInfo.GetStrings(1).Move[pk.Move1]} - {pk.Move1_PP}PP{Environment.NewLine}{GameInfo.GetStrings(1).Move[pk.Move2]} - {pk.Move2_PP}PP{Environment.NewLine}{GameInfo.GetStrings(1).Move[pk.Move3]} - {pk.Move3_PP}PP{Environment.NewLine}{GameInfo.GetStrings(1).Move[pk.Move4]} - {pk.Move4_PP}PP";
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-            TextboxSetText(Program.Viewer.ViewBox, output);
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-            sprite = PokeImg(pk, false, false);
-            PokeSprite.Load(sprite);
-            string typing1 = pk.PersonalInfo.Type1 >= 10 ? $"{pk.PersonalInfo.Type1}" : $"0{pk.PersonalInfo.Type1}";
-            string typing2 = pk.PersonalInfo.Type2 >= 10 ? $"{pk.PersonalInfo.Type2}" : $"0{pk.PersonalInfo.Type2}";
-            var type1 = $"https://raw.githubusercontent.com/kwsch/PKHeX/master/PKHeX.Drawing.Misc/Resources/img/types/type_icon_{typing1}.png";
-            var imgtype1 = DownloadRemoteImageFile(type1);
-            Image imgt1;
-            using (var ms1 = new MemoryStream(imgtype1))
+            string gender = string.Empty;
+            switch (pk.Gender)
             {
-                imgt1 = Image.FromStream(ms1);
+                case 0: gender = " (M)"; break;
+                case 1: gender = " (F)"; break;
+                case 2: break;
             }
+            string output = $"{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{isAlpha}{(Species)pk.Species}{form}{gender}{pid}{ec}{Environment.NewLine}Nature: {(Nature)pk.Nature}{Environment.NewLine}Ability: {(Ability)pk.Ability}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}{msg}";
+            LiveStats.Text = $"{GameInfo.GetStrings(1).Move[pk.Move1]} - {pk.Move1_PP}PP{Environment.NewLine}{GameInfo.GetStrings(1).Move[pk.Move2]} - {pk.Move2_PP}PP{Environment.NewLine}{GameInfo.GetStrings(1).Move[pk.Move3]} - {pk.Move3_PP}PP{Environment.NewLine}{GameInfo.GetStrings(1).Move[pk.Move4]} - {pk.Move4_PP}PP";
+            ViewBox.Text = output;
+            sprite = PokeImg(pk, isGmax, false);
+            PokeSprite.Load(sprite);
+            var imgt1 = TypeSpriteUtil.GetTypeSprite(pk.PersonalInfo.Type1);
             Typing1.Image = imgt1;
             if (pk.PersonalInfo.Type1 != pk.PersonalInfo.Type2)
             {
-                var type2 = $"https://raw.githubusercontent.com/kwsch/PKHeX/master/PKHeX.Drawing.Misc/Resources/img/types/type_icon_{typing2}.png";
-                var imgtype2 = DownloadRemoteImageFile(type2);
-                Image imgt2;
-                using (var ms2 = new MemoryStream(imgtype2))
-                {
-                    imgt2 = Image.FromStream(ms2);
-                }
+                var imgt2 = TypeSpriteUtil.GetTypeSprite(pk.PersonalInfo.Type2);
                 Typing2.Image = imgt2;
             }
             if (alpha)
@@ -288,19 +266,23 @@ namespace PokeViewer.NET
             }
             if (hasMark)
             {
-                var url = $"https://raw.githubusercontent.com/kwsch/PKHeX/master/PKHeX.Drawing.Misc/Resources/img/ribbons/ribbonmark{msg.Replace($"{Environment.NewLine}Mark: ", "").ToLower()}.png";
-                var img = DownloadRemoteImageFile(url);
-                Image original;
-                using (var ms = new MemoryStream(img))
+                var info = RibbonInfo.GetRibbonInfo(pk);
+                foreach (var rib in info)
                 {
-                    original = Image.FromStream(ms);
+                    if (!rib.HasRibbon)
+                        continue;
+
+                    var mimg = RibbonSpriteUtil.GetRibbonSprite(rib.Name);
+                    if (mimg is not null)
+                    {
+                        Specialty.Visible = true;
+                        Specialty.Image = mimg;
+                    }
                 }
-                Specialty.Visible = true;
-                Specialty.Image = original;
             }
             if (isGmax)
             {
-                var url = $"https://raw.githubusercontent.com/kwsch/PKHeX/master/PKHeX.Drawing.PokeSprite/Resources/img/Pokemon%20Sprite%20Overlays/dyna.png";
+                var url = $"https://raw.githubusercontent.com/zyro670/PokeTextures/main/OriginMarks/icon_daimax.png";
                 var img = DownloadRemoteImageFile(url);
                 Image original;
                 using (var ms = new MemoryStream(img))
@@ -313,15 +295,14 @@ namespace PokeViewer.NET
             if (RefreshStats.Checked)
             {
                 var StartingHP = pk.Stat_HPCurrent;
-
-                int refr = 0;
-                int.TryParse(RefreshTime, out refr);
-                ReadOverworld = true;
-                while (!await IsOnOverworldTitle(CancellationToken.None).ConfigureAwait(false))
-                {                    
-                    if (ReadOverworld == false || pk.Stat_HPCurrent == 0)
-                        break;
-
+                int.TryParse(RefreshTime, out var refr);
+                while (pk.Stat_HPCurrent != 0)
+                {
+                    if (isConnected == false)
+                    {
+                        Application.Restart();
+                        Environment.Exit(0);
+                    }
                     switch (GameType)
                     {
                         case (int)GameSelected.SW or (int)GameSelected.SH: pk = await ReadInBattlePokemonSWSH(offset2, size).ConfigureAwait(false); break;
@@ -331,50 +312,56 @@ namespace PokeViewer.NET
                     }
                     LiveStats.Text = $"{GameInfo.GetStrings(1).Move[pk.Move1]} - {pk.Move1_PP}PP{Environment.NewLine}{GameInfo.GetStrings(1).Move[pk.Move2]} - {pk.Move2_PP}PP{Environment.NewLine}{GameInfo.GetStrings(1).Move[pk.Move3]} - {pk.Move3_PP}PP{Environment.NewLine}{GameInfo.GetStrings(1).Move[pk.Move4]} - {pk.Move4_PP}PP";
                     HpLabel.Text = $"HP - {(pk.Stat_HPCurrent / StartingHP) * 100}%";
-                    await Task.Delay(refr, CancellationToken.None).ConfigureAwait(false); // Wait time between reads to account for battle turns
+                    await Task.Delay(refr, CancellationToken.None).ConfigureAwait(false); // Wait time between reads
                 }
                 this.LiveStats.Clear();
                 this.HpLabel.Text = "          HP%";
-                TextboxSetText(Program.Viewer.ViewBox, "No Pokémon present.");
-                sprite = "https://raw.githubusercontent.com/zyro670/HomeImages/master/128x128/poke_capture_0000_000_uk_n_00000000_f_n.png";
+                ViewBox.Text = "No Pokémon present.";
+                sprite = "https://raw.githubusercontent.com/kwsch/PKHeX/master/PKHeX.Drawing.PokeSprite/Resources/img/Pokemon%20Sprite%20Overlays/starter.png";
                 PokeSprite.Load(sprite);
                 Typing1.Visible = false;
                 Typing2.Visible = false;
                 Specialty.Visible = false;
             }
+            View.Enabled = true;
         }
 
         public async Task<PK8> ReadInBattlePokemonSWSH(uint offset, int size)
         {
-            var data = await SwitchConnection.ReadBytesAsync(offset, size, CancellationToken.None).ConfigureAwait(false); // WildPokemon
-            var pk = new PK8(data);
+            byte[]? data = { 0 };
+            PK8 pk = new();
+            if (UniqueBox.Checked)
+            {
+                offset = 0x886A95B8;
+                data = await SwitchConnection.ReadBytesAsync(offset, size, CancellationToken.None).ConfigureAwait(false); // RaidPokemon
+                pk = new PK8(data);
+                return pk;
+            }
+            if (UniqueBox2.Checked)
+            {
+                string[] campers =
+                {
+                    "[[[[[[main+2636120]+280]+D8]+78]+10]+98]",
+                    "[[[[[main+2636170]+2F0]+58]+130]+138]+D0",
+                    "[[[[main+28ED668]+68]+1E8]+1D0]+128",
+                    "[[[[[main+296C030]+60]+40]+1B0]+58]"
+                };
+                for (int i = 0; i < campers.Length; i++)
+                {
+                    var pointer = campers[i];
+                    var ofs = await ParsePointer(pointer, CancellationToken.None).ConfigureAwait(false);
+                    data = await SwitchConnection.ReadBytesAbsoluteAsync(ofs, size, CancellationToken.None).ConfigureAwait(false);
+                    pk = new PK8(data);
+                    if (pk.Species != 0 && pk.Species < (int)Species.MAX_COUNT)
+                        return pk;
+                }
+            }
+            data = await SwitchConnection.ReadBytesAsync(offset, size, CancellationToken.None).ConfigureAwait(false); // WildPokemon
+            pk = new PK8(data);
             if (pk.Species == 0 || pk.Species > (int)Species.MAX_COUNT)
             {
-                data = await SwitchConnection.ReadBytesAsync(0x886A95B8, size, CancellationToken.None).ConfigureAwait(false); // RaidPokemon
+                data = await SwitchConnection.ReadBytesAsync(0x886BC348, size, CancellationToken.None).ConfigureAwait(false); // LegendaryPokemon
                 pk = new PK8(data);
-                if (pk.Species == 0 || pk.Species > (int)Species.MAX_COUNT)
-                {
-                    data = await SwitchConnection.ReadBytesAsync(0x886BC348, size, CancellationToken.None).ConfigureAwait(false); // LegendaryPokemon
-                    pk = new PK8(data);
-
-                    if (pk.Species == 0 || pk.Species > (int)Species.MAX_COUNT)
-                    {
-                        string[] campers =
-                        {
-                            "[[[[[[main+2636120]+280]+D8]+78]+10]+98]",
-                            "[[[[[main+2636170]+2F0]+58]+130]+138]+D0",
-                            "[[[[main+28ED668]+68]+1E8]+1D0]+128",
-                            "[[[[[main+296C030]+60]+40]+1B0]+58]"
-                        };
-                        for (int i = 0; i < campers.Length; i++)
-                        {
-                            var pointer = campers[i];
-                            var ofs = await ParsePointer(pointer, CancellationToken.None).ConfigureAwait(false);
-                            data = await SwitchConnection.ReadBytesAbsoluteAsync(ofs, size, CancellationToken.None).ConfigureAwait(false);
-                            pk = new PK8(data);
-                        }
-                    }
-                }
             }
             return pk;
         }
@@ -395,11 +382,11 @@ namespace PokeViewer.NET
 
         public async Task<PB7> ReadInBattlePokemonLGPE(uint offset, int size)
         {
-            var data = await SwitchConnection.ReadBytesAsync(offset, size, CancellationToken.None).ConfigureAwait(false);
+            var data = await SwitchConnection.ReadBytesMainAsync(offset, size, CancellationToken.None).ConfigureAwait(false);
             var pk = new PB7(data);
             if (pk.Species == 0 || pk.Species > (int)Species.MAX_COUNT)
             {
-                data = await SwitchConnection.ReadBytesMainAsync(0x163EDC0, size, CancellationToken.None).ConfigureAwait(false);
+                data = await SwitchConnection.ReadBytesAsync(0x9A118D68, size, CancellationToken.None).ConfigureAwait(false);
                 pk = new PB7(data);
             }
             return pk;
@@ -414,22 +401,25 @@ namespace PokeViewer.NET
         public async Task<bool> IsOnOverworldTitle(CancellationToken token)
         {
             var ptr = new long[] { 0 };
-            if (GameType == (int)GameSelected.LA)
-                ptr = new long[] { 0x42C30E8, 0x1A9 };
-            if (GameType == (int)GameSelected.BD)
-                ptr = new long[] { 0x4C59C98, 0xB8, 0x3C };
-            if (GameType == (int)GameSelected.SP)
-                ptr = new long[] { 0x4E70D70, 0xB8, 0x3C };
-            if (GameType is (int)GameSelected.SW or (int)GameSelected.SH)
+            switch (GameType)
             {
-                var data = await SwitchConnection.ReadBytesAsync((uint)(GameType == (int)GameVersion.SH ? 0x3F128626 : 0x3F128624), 1, token).ConfigureAwait(false);
-                return data[0] == (GameType == (int)GameSelected.SH ? 0x40 : 0x41);
-            }
-            if (GameType == (int)GameSelected.LGP || GameType == (int)GameSelected.LGE)
-            {
-                var data = await SwitchConnection.ReadBytesMainAsync(0x163F694, 1, token).ConfigureAwait(false);
-                return data[0] == 0;
-            }
+                case (int)GameSelected.LA:
+                ptr = new long[] { 0x42C30E8, 0x1A9 }; break;
+                case (int)GameSelected.BD:
+                ptr = new long[] { 0x4C59C98, 0xB8, 0x3C }; break;
+                case (int)GameSelected.SP:
+                ptr = new long[] { 0x4E70D70, 0xB8, 0x3C }; break;
+                case (int)GameSelected.SW or (int)GameSelected.SH:
+                {
+                    var data = await SwitchConnection.ReadBytesAsync((uint)(GameType == (int)GameVersion.SH ? 0x3F128626 : 0x3F128624), 1, token).ConfigureAwait(false);
+                    return data[0] == (GameType == (int)GameSelected.SH ? 0x40 : 0x41);
+                }
+                case (int)GameSelected.LGP or (int)GameSelected.LGE:
+                {
+                    var data = await SwitchConnection.ReadBytesMainAsync(0x163F694, 1, token).ConfigureAwait(false);
+                    return data[0] == 0;
+                }
+            }            
             var (valid, offset) = await ValidatePointerAll(ptr, token).ConfigureAwait(false);
             if (!valid)
                 return false;
@@ -456,25 +446,55 @@ namespace PokeViewer.NET
             return false;
         }
 
+        private void SanityCheck(PKM pk)
+        {
+            bool isValid = false;
+            switch (GameType)
+            {
+                case (int)GameSelected.SW or (int)GameSelected.SH: isValid = ((PersonalInfoSWSH)PersonalTable.SWSH[pk.Species]).IsPresentInGame; break;
+                case (int)GameSelected.BD or (int)GameSelected.SP: isValid = ((PersonalInfoBDSP)PersonalTable.BDSP[pk.Species]).IsPresentInGame; break;
+                case (int)GameSelected.LA: isValid = ((PersonalInfoLA)PersonalTable.LA[pk.Species]).IsPresentInGame; break;
+                case (int)GameSelected.LGP or (int)GameSelected.LGE: isValid = pk.Species < (int)Species.Mewtwo && pk.Species != (int)Species.Meltan && pk.Species != (int)Species.Melmetal; break;
+            }
+            if (!isValid || pk.Species < 0 || pk.Species > (int)Species.MAX_COUNT)
+            {
+                ViewBox.Text = "No Pokémon present.";
+                View.Enabled = true;
+                var sprite = "https://raw.githubusercontent.com/kwsch/PKHeX/master/PKHeX.Drawing.PokeSprite/Resources/img/Pokemon%20Sprite%20Overlays/starter.png";
+                PokeSprite.Load(sprite);
+                Typing1.Visible = false;
+                Typing2.Visible = false;
+                Specialty.Visible = false;
+                this.LiveStats.Clear();
+                return;
+            }
+        }
         private async void ReadEncounter_ClickAsync(object sender, EventArgs e)
         {
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-            ChangeButtonState(Program.Viewer.View, false);
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+            View.Enabled = false;
             if (SwitchConnection.Connected)
             {
-                TextboxSetText(Program.Viewer.ViewBox, "Reading encounter...");
-                await Task.Delay(0_500).ConfigureAwait(false); // Give state reads time to complete                
-
+                ViewBox.Text = "Reading encounter...";
                 ulong ofs = 0;
                 int size = 0;
                 switch (GameType)
                 {
                     case (int)GameSelected.SW or (int)GameSelected.SH:
                         {
+                            if (UniqueBox.Checked && UniqueBox2.Checked)
+                            {
+                                MessageBox.Show("You have both unique boxes checked! Please select only one!");
+                                System.Media.SystemSounds.Beep.Play();
+                                View.Enabled = true;
+                                UniqueBox.Checked = false;
+                                UniqueBox2.Checked = false;
+                                ViewBox.Text = "Click View!";
+                                return;
+                            }
                             uint ufs = 0x8FEA3648;
                             size = 0x158;
-                            var pk =await ReadInBattlePokemonSWSH(ufs, size).ConfigureAwait(false);
+                            var pk = await ReadInBattlePokemonSWSH(ufs, size).ConfigureAwait(false);
+                            SanityCheck(pk);
                             FillPokeData(pk, 0, ufs, size);
                             break;
                         }
@@ -483,6 +503,7 @@ namespace PokeViewer.NET
                             ofs = await ParsePointer("[[[[[main+42a6f00]+D0]+B8]+300]+70]+60]+98]+10]", CancellationToken.None).ConfigureAwait(false);
                             size = 0x168;
                             var pk = await ReadInBattlePokemonLA(ofs, size).ConfigureAwait(false);
+                            SanityCheck(pk);
                             FillPokeData(pk, ofs, 0, size);
                         }; break;
                     case (int)GameSelected.BD:
@@ -490,6 +511,7 @@ namespace PokeViewer.NET
                             ofs = await ParsePointer("[[[[main+4C59EF0]+20]+98]]+20", CancellationToken.None).ConfigureAwait(false);
                             size = 0x168;
                             var pk = await ReadInBattlePokemonBDSP(ofs, size).ConfigureAwait(false);
+                            SanityCheck(pk);
                             FillPokeData(pk, ofs, 0, size);
                         }; break;
                     case (int)GameSelected.SP:
@@ -497,112 +519,21 @@ namespace PokeViewer.NET
                             ofs = await ParsePointer("[[[[main+4E70FC8]+20]+98]]+20", CancellationToken.None).ConfigureAwait(false);
                             size = 0x168;
                             var pk = await ReadInBattlePokemonBDSP(ofs, size).ConfigureAwait(false);
+                            SanityCheck(pk);
                             FillPokeData(pk, ofs, 0, size);
                         }; break;
                     case (int)GameSelected.LGP or (int)GameSelected.LGE:
                         {
-                            uint ufs = 0x9A118D68;
+                            uint ufs = 0x163EDC0;
                             size = 0x158;
                             var pk = await ReadInBattlePokemonLGPE(ufs, size).ConfigureAwait(false);
-                            FillPokeData(pk, ofs, ufs, size); 
+                            SanityCheck(pk);
+                            FillPokeData(pk, 0, ufs, size); 
                             break;
                         }
-                }
-            }
-            ChangeButtonState(Program.Viewer.View, true);
-        }
-
-        private static byte[] DownloadRemoteImageFile(string uri)
-        {
-            byte[] content;
-#pragma warning disable SYSLIB0014 // Type or member is obsolete
-            var request = (HttpWebRequest)WebRequest.Create(uri);
-#pragma warning restore SYSLIB0014 // Type or member is obsolete
-
-            using (var response = request.GetResponse())
-            using (var reader = new BinaryReader(response.GetResponseStream()))
-            {
-                content = reader.ReadBytes(100000);
-            }
-
-            return content;
-        }
-
-        public static string FormOutput(int species, int form, out string[] formString)
-        {
-            var strings = GameInfo.GetStrings("en");
-            formString = FormConverter.GetFormList(species, strings.Types, strings.forms, GameInfo.GenderSymbolASCII, typeof(PK8) == typeof(PK8) ? 8 : 4);
-            if (formString.Length == 0)
-                return string.Empty;
-
-            formString[0] = "";
-            if (form >= formString.Length)
-                form = formString.Length - 1;
-            return formString[form].Contains("-") ? formString[form] : formString[form] == "" ? "" : $"-{formString[form]}";
-        }
-
-        public static string PokeImg(PKM pkm, bool canGmax, bool fullSize)
-        {
-            bool md = false;
-            bool fd = false;
-            string[] baseLink;
-            string newbase = string.Empty;
-            string dimensions = "128x128";
-            if (fullSize)
-                baseLink = "https://raw.githubusercontent.com/zyro670/HomeImages/master/512x512/poke_capture_0001_000_mf_n_00000000_f_n.png".Split('_');
-            else baseLink = "https://raw.githubusercontent.com/zyro670/HomeImages/master/128x128/poke_capture_0001_000_mf_n_00000000_f_n.png".Split('_');
-            if (fullSize)
-                dimensions = "512x512";
-            if (pkm.Species == (int)Species.Sneasel)
-            {
-                if (pkm.Form == 0)
-                {
-                    if (pkm.Gender == (int)Gender.Male)
-                        newbase = $"https://raw.githubusercontent.com/zyro670/HomeImages/master/" + dimensions + "/poke_capture_0215_000_md_n_00000000_f_n.png";
-                    if (pkm.Gender == (int)Gender.Male && pkm.IsShiny)
-                        newbase = $"https://raw.githubusercontent.com/zyro670/HomeImages/master/" + dimensions + "/poke_capture_0215_000_md_n_00000000_f_r.png";
-                    if (pkm.Gender == (int)Gender.Female)
-                        newbase = $"https://raw.githubusercontent.com/zyro670/HomeImages/master/" + dimensions + "/poke_capture_0215_000_fd_n_00000000_f_n.png";
-                    if (pkm.Gender == (int)Gender.Female && pkm.IsShiny)
-                        newbase = $"https://raw.githubusercontent.com/zyro670/HomeImages/master/" + dimensions + "/poke_capture_0215_000_fd_n_00000000_f_r.png";
-                }
-                if (pkm.Form == 1)
-                {
-                    if (pkm.Gender == (int)Gender.Male)
-                        newbase = $"https://raw.githubusercontent.com/zyro670/HomeImages/master/" + dimensions + "/poke_capture_0215_001_md_n_00000000_f_n.png";
-                    if (pkm.Gender == (int)Gender.Male && pkm.IsShiny)
-                        newbase = $"https://raw.githubusercontent.com/zyro670/HomeImages/master/" + dimensions + "/poke_capture_0215_001_md_n_00000000_f_r.png";
-                    if (pkm.Gender == (int)Gender.Female)
-                        newbase = $"https://raw.githubusercontent.com/zyro670/HomeImages/master/" + dimensions + "/poke_capture_0215_001_fd_n_00000000_f_n.png";
-                    if (pkm.Gender == (int)Gender.Female && pkm.IsShiny)
-                        newbase = $"https://raw.githubusercontent.com/zyro670/HomeImages/master/" + dimensions + "/poke_capture_0215_001_fd_n_00000000_f_r.png";
-                }
-                return newbase;
-            }
-
-            if (Enum.IsDefined(typeof(GenderDependent), pkm.Species) && !canGmax && pkm.Form == 0)
-            {
-                if (pkm.Gender == 0 && pkm.Species != (int)Species.Torchic)
-                    md = true;
-                else fd = true;
-            }
-
-            int form = pkm.Species switch
-            {
-                (int)Species.Sinistea or (int)Species.Polteageist or (int)Species.Rockruff or (int)Species.Mothim => 0,
-                (int)Species.Alcremie when pkm.IsShiny || canGmax => 0,
-                _ => pkm.Form,
-
-            };
-
-            baseLink[2] = pkm.Species < 10 ? $"000{pkm.Species}" : pkm.Species < 100 && pkm.Species > 9 ? $"00{pkm.Species}" : $"0{pkm.Species}";
-            baseLink[3] = pkm.Form < 10 ? $"00{form}" : $"0{form}";
-            baseLink[4] = pkm.PersonalInfo.OnlyFemale ? "fo" : pkm.PersonalInfo.OnlyMale ? "mo" : pkm.PersonalInfo.Genderless ? "uk" : fd ? "fd" : md ? "md" : "mf";
-            baseLink[5] = canGmax ? "g" : "n";
-            baseLink[6] = "0000000" + (pkm.Species == (int)Species.Alcremie && !canGmax ? pkm.Data[0xE4] : 0);
-            baseLink[8] = pkm.IsShiny ? "r.png" : "n.png";
-            return string.Join("_", baseLink);
-        }
+                }                
+            }            
+        }     
 
         private async void Window_Loaded()
         {
@@ -612,13 +543,25 @@ namespace PokeViewer.NET
             string title = await SwitchConnection.GetTitleID(token).ConfigureAwait(false);
             switch (title)
             {
-                case LegendsArceusID:url = url + "LA.png"; type = (int)GameSelected.LA;  break;
+                case LegendsArceusID:url = url + "LA.png"; type = (int)GameSelected.LA; WideView.Enabled = false; break;
                 case ShiningPearlID: url = url + "SP.png"; type = (int)GameSelected.SP; break;
                 case BrilliantDiamondID: url = url + "BD.png"; type = (int)GameSelected.BD; break;
-                case SwordID: url = url + "SW.png"; type = (int)GameSelected.SW; break;
+                case SwordID: url = url + "SW.png"; type = (int)GameSelected.SW; UniqueBox.Visible = true; UniqueBox2.Visible = true; UniqueBox.Text = "Raid"; UniqueBox2.Text = "Curry"; break;
                 case ShieldID: url = url + "SH.png"; type = (int)GameSelected.SH; break;
-                case EeveeID: url = url + "LGE.png"; ; type = (int)GameSelected.LGE; break;
-                case PikachuID: url = url + "LGP.png"; type = (int)GameSelected.LGP; break;
+                case EeveeID:
+                    {
+                        url = url + "LGE.png"; ; type = (int)GameSelected.LGE; 
+                        var cmd = SwitchCommand.Configure(SwitchConfigureParameter.controllerType, 1, true);
+                        await SwitchConnection.SendAsync(cmd, token).ConfigureAwait(false);
+                        WideView.Enabled = false; break;
+                    }
+                case PikachuID:
+                    {
+                        url = url + "LGP.png"; type = (int)GameSelected.LGP; 
+                        var cmd = SwitchCommand.Configure(SwitchConfigureParameter.controllerType, 1, true);
+                        await SwitchConnection.SendAsync(cmd, token).ConfigureAwait(false);
+                        WideView.Enabled = false; break;
+                    }
             }
 
             OriginIcon.ImageLocation = url;            
@@ -628,23 +571,54 @@ namespace PokeViewer.NET
             PokeSprite.ImageLocation = bg;
         }
 
-        enum GameSelected
-        {
-            LGP = 0,
-            LGE = 1,
-            SW = 2,
-            SH = 3,
-            BD = 4,
-            SP = 5,
-            LA = 6,
-            Scarlet = 7,
-            Violet = 8,
-        }
-
         public async Task<string> GetTitleID(CancellationToken token)
         {
             var bytes = await SwitchConnection.ReadRaw(SwitchCommand.GetTitleID(), 17, token).ConfigureAwait(false);
             return Encoding.ASCII.GetString(bytes).Trim();
+        }
+
+        private void CaptureWindow_Click(object sender, EventArgs e)
+        {
+            this.WindowCapture.Visible = false;
+            Bitmap FormScreenShot = new Bitmap(this.Width, this.Height);
+            Graphics G = Graphics.FromImage(FormScreenShot);
+            G.CopyFromScreen(this.Location, new Point(0, 0), this.Size);
+            Clipboard.SetImage(FormScreenShot);
+            this.WindowCapture.Visible = true;
+        }
+
+        private void RefreshStats_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckBox chextBox = (CheckBox)sender;
+            if (chextBox.Checked)            
+                Properties.Settings.Default.RefreshStats = true;            
+            else
+                Properties.Settings.Default.RefreshStats = false;
+
+            Properties.Settings.Default.Save();
+        }
+
+        private void WideView_Click(object sender, EventArgs e)
+        {
+            switch (GameType)
+            {
+                case (int)GameSelected.BD or (int)GameSelected.SP:
+                    {
+                        using WideViewerBDSP WideForm = new();
+                        WideForm.Show();
+                        break;
+                    }
+                case (int)GameSelected.SW or (int)GameSelected.SH:
+                    {
+                        WideView.Text = "Preparing...";
+                        WideView.Enabled = false;
+                        using MediatorSWSH WideForm = new();
+                        WideForm.Show();
+                        WideView.Text = "WideView";
+                        WideView.Enabled = true;
+                        break;
+                    }
+            }
         }
 
         public async Task<ulong> ParsePointer(string pointer, CancellationToken token, bool heaprealtive = false) //Code from LiveHex
@@ -680,27 +654,6 @@ namespace PokeViewer.NET
                 address -= heap;
             }
             return address;
-        }
-
-        private void CaptureWindow_Click(object sender, EventArgs e)
-        {
-            this.WindowCapture.Visible = false;
-            Bitmap FormScreenShot = new Bitmap(this.Width, this.Height);
-            Graphics G = Graphics.FromImage(FormScreenShot);
-            G.CopyFromScreen(this.Location, new Point(0, 0), this.Size);
-            Clipboard.SetImage(FormScreenShot);
-            this.WindowCapture.Visible = true;
-        }
-
-        private void RefreshStats_CheckedChanged(object sender, EventArgs e)
-        {
-            CheckBox chextBox = (CheckBox)sender;
-            if (chextBox.Checked)            
-                Properties.Settings.Default.RefreshStats = true;            
-            else
-                Properties.Settings.Default.RefreshStats = false;
-
-            Properties.Settings.Default.Save();
         }
     }
 }

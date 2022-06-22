@@ -11,6 +11,15 @@
 	  <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Compile Remove="WideViewForms\WideViewerLGPE.cs" />
+    <Compile Remove="WideViewForms\WideViewerLGPE.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="WideViewForms\WideViewerLGPE.resx" />
+  </ItemGroup>
+
 	<ItemGroup>
 		<PackageReference Include="PKHeX.Core" Version="22.6.1" />
 	</ItemGroup>
@@ -18,6 +27,15 @@
 	<ItemGroup>
 		<Reference Include="SysBot.Base">
 			<HintPath>deps\SysBot.Base.dll</HintPath>
+		</Reference>
+		<Reference Include="PKHeX.Drawing">
+			<HintPath>deps\PKHeX.Drawing.dll</HintPath>
+		</Reference>
+		<Reference Include="PKHeX.Drawing.Misc">
+			<HintPath>deps\PKHeX.Drawing.Misc.dll</HintPath>
+		</Reference>
+		<Reference Include="PKHeX.Drawing.PokeSprite">
+			<HintPath>deps\PKHeX.Drawing.PokeSprite.dll</HintPath>
 		</Reference>
 	</ItemGroup>
 	<ItemGroup>
