@@ -13,6 +13,7 @@ Special credits and thanks to the minds behind the resources used for this proje
 - [sora10pls](https://github.com/sora10pls) for image and texture dumps.
 - [Manuvm088](https://github.com/Manu098vm) for LGPE tasks and offsets.
 - [hp3721](https://github.com/hp3721) for help with pointers and general knowledge.
+- [Lincoln-LM](https://github.com/Lincoln-LM) for finding the last overworld spawn offset in SwSh.
 
 -----
 
