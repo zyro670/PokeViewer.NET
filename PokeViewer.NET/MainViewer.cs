@@ -484,7 +484,7 @@ namespace PokeViewer.NET
                             {
                                 MessageBox.Show("You have both unique boxes checked! Please select only one!");
                                 System.Media.SystemSounds.Beep.Play();
-                                View.Enabled = true;
+                                View.Enabled = true;                                
                                 UniqueBox.Checked = false;
                                 UniqueBox2.Checked = false;
                                 ViewBox.Text = "Click View!";
@@ -546,7 +546,7 @@ namespace PokeViewer.NET
                 case ShiningPearlID: url = url + "SP.png"; type = (int)GameSelected.SP; break;
                 case BrilliantDiamondID: url = url + "BD.png"; type = (int)GameSelected.BD; break;
                 case SwordID: url = url + "SW.png"; type = (int)GameSelected.SW; UniqueBox.Visible = true; UniqueBox2.Visible = true; UniqueBox.Text = "Raid"; UniqueBox2.Text = "Curry"; break;
-                case ShieldID: url = url + "SH.png"; type = (int)GameSelected.SH; break;
+                case ShieldID: url = url + "SH.png"; type = (int)GameSelected.SH; UniqueBox.Visible = true; UniqueBox2.Visible = true; UniqueBox.Text = "Raid"; UniqueBox2.Text = "Curry"; break;
                 case EeveeID:
                     {
                         url = url + "LGE.png"; ; type = (int)GameSelected.LGE; 
