@@ -44,6 +44,7 @@ How to use:
  - MiniViewSwSh: View last spawned overworld spawn (symbol and hidden only).
  - WideViewSwSh: View all current overworld spawns.
  - WideViewBDSP: View all underground spawns in the room you are currently standing in.
+ - WideViewLA: View up to 5 in battle encounters.
  
 ![](https://i.imgur.com/bDvQi7i.png)
 
