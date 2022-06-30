@@ -13,6 +13,7 @@ Special credits and thanks to the minds behind the resources used for this proje
 - [sora10pls](https://github.com/sora10pls) for image and texture dumps.
 - [Manuvm088](https://github.com/Manu098vm) for LGPE tasks and offsets.
 - [hp3721](https://github.com/hp3721) for help with pointers and general knowledge.
+- [Lincoln-LM](https://github.com/Lincoln-LM) for finding the last overworld spawn offset in SwSh.
 
 -----
 
@@ -38,16 +39,13 @@ How to use:
 - Check Hide PID/EC to keep them hidden from view
 - Check ScreenShot to grab an In-Game ScreenShot when you click View. This will open a pop up window of the ScreenShot as well as copy the image to clipboard.
 
+`WideView`
+
+ - MiniViewSwSh: View last spawned overworld spawn (symbol and hidden only).
+ - WideViewSwSh: View all current overworld spawns.
+ - WideViewBDSP: View all underground spawns in the room you are currently standing in.
+ 
 ![](https://i.imgur.com/bDvQi7i.png)
 
 - Checking LiveStats then clicking View will continue to read the encounter until it is no longer available. This makes it a bit easier to keep track of the encounter's HP and PP count.
 - Refresh Rate will determine the interval between refreshing the LiveStats. Default is 2000ms.
-
------
-
-To-Do:
-
-- LGPE Overworld spawns ❌
-- SWSH Overworld spawns ❌
-- BDSP Underground spawns ❌
-- LA undecided ❌
