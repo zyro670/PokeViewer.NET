@@ -29,7 +29,6 @@
         private void InitializeComponent()
         {
             this.Connect = new System.Windows.Forms.Button();
-            this.Disconnect = new System.Windows.Forms.Button();
             this.SwitchIP = new System.Windows.Forms.TextBox();
             this.View = new System.Windows.Forms.Button();
             this.ViewBox = new System.Windows.Forms.TextBox();
@@ -59,30 +58,19 @@
             // 
             // Connect
             // 
-            this.Connect.Location = new System.Drawing.Point(145, 8);
+            this.Connect.Location = new System.Drawing.Point(249, 8);
             this.Connect.Name = "Connect";
-            this.Connect.Size = new System.Drawing.Size(75, 23);
+            this.Connect.Size = new System.Drawing.Size(89, 23);
             this.Connect.TabIndex = 0;
             this.Connect.Text = "Connect";
             this.Connect.UseVisualStyleBackColor = true;
             this.Connect.Click += new System.EventHandler(this.Connect_Click);
             // 
-            // Disconnect
-            // 
-            this.Disconnect.Enabled = false;
-            this.Disconnect.Location = new System.Drawing.Point(224, 8);
-            this.Disconnect.Name = "Disconnect";
-            this.Disconnect.Size = new System.Drawing.Size(75, 23);
-            this.Disconnect.TabIndex = 1;
-            this.Disconnect.Text = "Disconnect";
-            this.Disconnect.UseVisualStyleBackColor = true;
-            this.Disconnect.Click += new System.EventHandler(this.Disconnect_Click);
-            // 
             // SwitchIP
             // 
-            this.SwitchIP.Location = new System.Drawing.Point(23, 8);
+            this.SwitchIP.Location = new System.Drawing.Point(12, 8);
             this.SwitchIP.Name = "SwitchIP";
-            this.SwitchIP.Size = new System.Drawing.Size(116, 23);
+            this.SwitchIP.Size = new System.Drawing.Size(125, 23);
             this.SwitchIP.TabIndex = 2;
             this.SwitchIP.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.SwitchIP.TextChanged += new System.EventHandler(this.CheckForIP);
@@ -104,11 +92,11 @@
             this.ViewBox.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.ViewBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.ViewBox.ForeColor = System.Drawing.SystemColors.InfoText;
-            this.ViewBox.Location = new System.Drawing.Point(23, 72);
+            this.ViewBox.Location = new System.Drawing.Point(12, 72);
             this.ViewBox.Multiline = true;
             this.ViewBox.Name = "ViewBox";
             this.ViewBox.ReadOnly = true;
-            this.ViewBox.Size = new System.Drawing.Size(150, 142);
+            this.ViewBox.Size = new System.Drawing.Size(161, 142);
             this.ViewBox.TabIndex = 4;
             this.ViewBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.ViewBox.Visible = false;
@@ -119,7 +107,7 @@
             this.PokeSprite.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.PokeSprite.Location = new System.Drawing.Point(199, 72);
             this.PokeSprite.Name = "PokeSprite";
-            this.PokeSprite.Size = new System.Drawing.Size(150, 142);
+            this.PokeSprite.Size = new System.Drawing.Size(161, 142);
             this.PokeSprite.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.PokeSprite.TabIndex = 7;
             this.PokeSprite.TabStop = false;
@@ -137,7 +125,7 @@
             // 
             this.OriginIcon.ImageLocation = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/OriginMarks/icon_gene" +
     "ration_00%5Esb.png";
-            this.OriginIcon.Location = new System.Drawing.Point(301, 3);
+            this.OriginIcon.Location = new System.Drawing.Point(154, 3);
             this.OriginIcon.Name = "OriginIcon";
             this.OriginIcon.Size = new System.Drawing.Size(64, 64);
             this.OriginIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
@@ -147,7 +135,7 @@
             // ScreenShot
             // 
             this.ScreenShot.AutoSize = true;
-            this.ScreenShot.Location = new System.Drawing.Point(23, 50);
+            this.ScreenShot.Location = new System.Drawing.Point(12, 51);
             this.ScreenShot.Name = "ScreenShot";
             this.ScreenShot.Size = new System.Drawing.Size(85, 19);
             this.ScreenShot.TabIndex = 11;
@@ -159,7 +147,7 @@
             // 
             this.Typing1.Location = new System.Drawing.Point(216, 234);
             this.Typing1.Name = "Typing1";
-            this.Typing1.Size = new System.Drawing.Size(132, 27);
+            this.Typing1.Size = new System.Drawing.Size(144, 27);
             this.Typing1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.Typing1.TabIndex = 12;
             this.Typing1.TabStop = false;
@@ -167,7 +155,7 @@
             // HidePIDEC
             // 
             this.HidePIDEC.AutoSize = true;
-            this.HidePIDEC.Location = new System.Drawing.Point(23, 33);
+            this.HidePIDEC.Location = new System.Drawing.Point(12, 33);
             this.HidePIDEC.Name = "HidePIDEC";
             this.HidePIDEC.Size = new System.Drawing.Size(91, 19);
             this.HidePIDEC.TabIndex = 13;
@@ -180,7 +168,7 @@
             // 
             this.Typing2.Location = new System.Drawing.Point(217, 267);
             this.Typing2.Name = "Typing2";
-            this.Typing2.Size = new System.Drawing.Size(132, 26);
+            this.Typing2.Size = new System.Drawing.Size(143, 26);
             this.Typing2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.Typing2.TabIndex = 14;
             this.Typing2.TabStop = false;
@@ -188,19 +176,19 @@
             // LiveStats
             // 
             this.LiveStats.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.LiveStats.Location = new System.Drawing.Point(23, 234);
+            this.LiveStats.Location = new System.Drawing.Point(12, 234);
             this.LiveStats.Multiline = true;
             this.LiveStats.Name = "LiveStats";
             this.LiveStats.ReadOnly = true;
             this.LiveStats.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.LiveStats.Size = new System.Drawing.Size(134, 67);
+            this.LiveStats.Size = new System.Drawing.Size(145, 67);
             this.LiveStats.TabIndex = 15;
             this.LiveStats.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // RefreshStats
             // 
             this.RefreshStats.AutoSize = true;
-            this.RefreshStats.Location = new System.Drawing.Point(23, 215);
+            this.RefreshStats.Location = new System.Drawing.Point(12, 215);
             this.RefreshStats.Name = "RefreshStats";
             this.RefreshStats.Size = new System.Drawing.Size(72, 19);
             this.RefreshStats.TabIndex = 16;
@@ -238,7 +226,7 @@
             // 
             // WindowCapture
             // 
-            this.WindowCapture.Location = new System.Drawing.Point(145, 32);
+            this.WindowCapture.Location = new System.Drawing.Point(219, 36);
             this.WindowCapture.Name = "WindowCapture";
             this.WindowCapture.Size = new System.Drawing.Size(75, 23);
             this.WindowCapture.TabIndex = 20;
@@ -277,12 +265,12 @@
             // 
             // WideView
             // 
-            this.WideView.Location = new System.Drawing.Point(224, 32);
+            this.WideView.Enabled = false;
+            this.WideView.Location = new System.Drawing.Point(294, 36);
             this.WideView.Name = "WideView";
             this.WideView.Size = new System.Drawing.Size(75, 23);
             this.WideView.TabIndex = 24;
             this.WideView.Text = "WideView";
-            this.WideView.Enabled = false;
             this.WideView.UseVisualStyleBackColor = true;
             this.WideView.Click += new System.EventHandler(this.WideView_Click);
             // 
@@ -310,7 +298,6 @@
             this.Controls.Add(this.ViewBox);
             this.Controls.Add(this.View);
             this.Controls.Add(this.SwitchIP);
-            this.Controls.Add(this.Disconnect);
             this.Controls.Add(this.Connect);
             this.Controls.Add(this.Typing2);
             this.Controls.Add(this.Typing1);
@@ -333,7 +320,6 @@
         #endregion
 
         private Button Connect;
-        private Button Disconnect;
         private TextBox SwitchIP;
         private Button View;
         private TextBox ViewBox;

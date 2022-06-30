@@ -89,65 +89,61 @@ namespace PokeViewer.NET
 
         private void Connect_Click(object sender, EventArgs e)
         {
-            try
+            if (isConnected == false)
             {
-                SwitchConnection.Connect();                 
-                isConnected = true;
-                Connect.Enabled = false;
-                Disconnect.Enabled = true;
-                View.Enabled = true;
-                this.ViewBox.Visible = true;
-                this.PokeSprite.Visible = true;
-                this.LiveStats.Visible = true;
-                this.RefreshStats.Visible = true;
-                this.Refresh.Visible = true;
-                this.RefreshBox.Visible = true;
-                this.ScreenShot.Visible = true;
-                this.HidePIDEC.Visible = true;
-                this.HpLabel.Visible = true;
-                this.View.Visible = true;
-                this.WideView.Enabled = true;
-                Window_Loaded();
-            }
-            catch (SocketException err)
-            {
-                if (err.Message.Contains("failed to respond"))
+                try
+                {
+                    SwitchConnection.Connect();
+                    isConnected = true;
+                    Connect.Text = "Disconnect";
+                    View.Enabled = true;
+                    this.SwitchIP.Enabled = false;
+                    this.ViewBox.Visible = true;
+                    this.PokeSprite.Visible = true;
+                    this.LiveStats.Visible = true;
+                    this.RefreshStats.Visible = true;
+                    this.Refresh.Visible = true;
+                    this.RefreshBox.Visible = true;
+                    this.ScreenShot.Visible = true;
+                    this.HidePIDEC.Visible = true;
+                    this.HpLabel.Visible = true;
+                    this.View.Visible = true;
+                    this.WideView.Enabled = true;
+                    Window_Loaded();
+                }
+                catch (SocketException err)
                 {
                     MessageBox.Show(err.Message);
+                    MessageBox.Show($"{Environment.NewLine}Ensure IP address is correct before connecting!");
                 }
-                isConnected = false;
-                Connect.Enabled = true;
-                Disconnect.Enabled = false;
-                View.Enabled = false;
             }
-        }
-
-        private void Disconnect_Click(object sender, EventArgs e)
-        {
-            SwitchConnection.Disconnect();
-            isConnected = false;
-            Connect.Enabled = true;
-            Disconnect.Enabled = false;
-            View.Enabled = false;
-            this.ViewBox.Visible = false;
-            this.PokeSprite.Visible = false;
-            this.LiveStats.Visible = false;
-            this.RefreshStats.Visible = false;
-            this.Refresh.Visible = false;
-            this.RefreshBox.Visible = false;
-            this.ScreenShot.Visible = false;
-            this.HidePIDEC.Visible = false;
-            this.View.Visible = false;
-            this.Typing1.Visible = false;
-            this.Typing2.Visible = false;
-            this.Specialty.Visible = false;
-            this.HpLabel.Visible = false;
-            this.UniqueBox.Visible = false;
-            this.UniqueBox2.Visible = false;
-            this.WideView.Enabled = false;
-            this.LiveStats.Clear();
-            string url = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/OriginMarks/icon_generation_00%5Esb.png";
-            OriginIcon.ImageLocation = url;
+            else if (isConnected == true)
+            {
+                SwitchConnection.Disconnect();
+                isConnected = false;
+                Connect.Text = "Connect";
+                this.SwitchIP.Enabled = true;
+                View.Enabled = false;
+                this.ViewBox.Visible = false;
+                this.PokeSprite.Visible = false;
+                this.LiveStats.Visible = false;
+                this.RefreshStats.Visible = false;
+                this.Refresh.Visible = false;
+                this.RefreshBox.Visible = false;
+                this.ScreenShot.Visible = false;
+                this.HidePIDEC.Visible = false;
+                this.View.Visible = false;
+                this.Typing1.Visible = false;
+                this.Typing2.Visible = false;
+                this.Specialty.Visible = false;
+                this.HpLabel.Visible = false;
+                this.UniqueBox.Visible = false;
+                this.UniqueBox2.Visible = false;
+                this.WideView.Enabled = false;
+                this.LiveStats.Clear();
+                string url = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/OriginMarks/icon_generation_00%5Esb.png";
+                OriginIcon.ImageLocation = url;
+            }
         }
 
         private void View_Click(object sender, EventArgs e)
@@ -289,7 +285,6 @@ namespace PokeViewer.NET
                 {
                     original = Image.FromStream(ms);
                 }
-                Specialty.Visible = true;
                 Specialty.Image = original;
             }
             if (RefreshStats.Checked)
@@ -543,7 +538,7 @@ namespace PokeViewer.NET
             string title = await SwitchConnection.GetTitleID(token).ConfigureAwait(false);
             switch (title)
             {
-                case LegendsArceusID:url = url + "LA.png"; type = (int)GameSelected.LA; WideView.Enabled = false; break;
+                case LegendsArceusID:url = url + "LA.png"; type = (int)GameSelected.LA; break;
                 case ShiningPearlID: url = url + "SP.png"; type = (int)GameSelected.SP; break;
                 case BrilliantDiamondID: url = url + "BD.png"; type = (int)GameSelected.BD; break;
                 case SwordID: url = url + "SW.png"; type = (int)GameSelected.SW; UniqueBox.Visible = true; UniqueBox2.Visible = true; UniqueBox.Text = "Raid"; UniqueBox2.Text = "Curry"; break;
@@ -602,6 +597,12 @@ namespace PokeViewer.NET
         {
             switch (GameType)
             {
+                case (int)GameSelected.LA:
+                    {
+                        using WideViewerLA WideForm = new();
+                        WideForm.ShowDialog();
+                        break;
+                    }
                 case (int)GameSelected.BD or (int)GameSelected.SP:
                     {
                         using WideViewerBDSP WideForm = new();
