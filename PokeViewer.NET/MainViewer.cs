@@ -285,6 +285,7 @@ namespace PokeViewer.NET
                 {
                     original = Image.FromStream(ms);
                 }
+                Specialty.Visible = true;
                 Specialty.Image = original;
             }
             if (RefreshStats.Checked)
@@ -315,8 +316,11 @@ namespace PokeViewer.NET
                 sprite = "https://raw.githubusercontent.com/kwsch/PKHeX/master/PKHeX.Drawing.PokeSprite/Resources/img/Pokemon%20Sprite%20Overlays/starter.png";
                 PokeSprite.Load(sprite);
                 Typing1.Visible = false;
+                Typing1.Image = null;
                 Typing2.Visible = false;
+                Typing2.Image = null;
                 Specialty.Visible = false;
+                Specialty.Image = null;
             }
             View.Enabled = true;
         }
