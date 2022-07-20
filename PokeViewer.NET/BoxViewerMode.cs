@@ -252,25 +252,21 @@ namespace PokeViewer.NET
             ReadInProgress = true;
             CurrentSlotStats = new();
             uint offset = 0x00;
-            ulong ofs = 0;
             var size = 0x168;
             switch (GameType)
             {
                 case (int)GameSelected.LA:
                     {
-                        ofs = await ParsePointer("[[main+42BA6B0]+1F0]+68", CancellationToken.None).ConfigureAwait(false);
                         size = 0x168;
                         break;
                     }
                 case (int)GameSelected.BD:
                     {
-                        ofs = await ParsePointer("main+4C64DC0]+B8]+10]+A0]+20]+20]+20", CancellationToken.None).ConfigureAwait(false);
                         size = 0x168;
                         break;
                     }
                 case (int)GameSelected.SP:
                     {
-                        ofs = await ParsePointer("[[[[main+4E70FC8]+20]+98]]+20", CancellationToken.None).ConfigureAwait(false);
                         size = 0x168;
                         break;
                     }
@@ -307,25 +303,21 @@ namespace PokeViewer.NET
             ReadInProgress = true;
             CurrentSlotStats = new();
             uint offset = 0x00;
-            ulong ofs = 0;
             var size = 0x168;
             switch (GameType)
             {
                 case (int)GameSelected.LA:
                     {
-                        ofs = await ParsePointer("[[main+42BA6B0]+1F0]+68", CancellationToken.None).ConfigureAwait(false);
                         size = 0x168;
                         break;
                     }
                 case (int)GameSelected.BD:
                     {
-                        ofs = await ParsePointer("main+4C64DC0]+B8]+10]+A0]+20]+20]+20", CancellationToken.None).ConfigureAwait(false);
                         size = 0x168;
                         break;
                     }
                 case (int)GameSelected.SP:
                     {
-                        ofs = await ParsePointer("[[[[main+4E70FC8]+20]+98]]+20", CancellationToken.None).ConfigureAwait(false);
                         size = 0x168;
                         break;
                     }
