@@ -1,10 +1,5 @@
 ﻿using PKHeX.Core;
-using PKHeX.Drawing.Misc;
-using PKHeX.Drawing.PokeSprite;
-using PokeViewer.NET.WideViewForms;
 using SysBot.Base;
-using System.Net.Sockets;
-using System.Text;
 using static PokeViewer.NET.RoutineExecutor;
 
 namespace PokeViewer.NET.WideViewForms

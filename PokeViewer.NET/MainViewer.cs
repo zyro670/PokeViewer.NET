@@ -1,6 +1,5 @@
 ﻿using PKHeX.Core;
 using PKHeX.Drawing.Misc;
-using PKHeX.Drawing.PokeSprite;
 using PokeViewer.NET.WideViewForms;
 using SysBot.Base;
 using System.Net.Sockets;
@@ -35,16 +34,16 @@ namespace PokeViewer.NET
         private void PokeViewerForm_Load(object sender, EventArgs e)
         {
             SwitchIP.Text = Properties.Settings.Default.SwitchIP;
-            this.View.Visible = false;
-            this.ViewBox.Visible = false;
-            this.PokeSprite.Visible = false;
-            this.LiveStats.Visible = false;
-            this.RefreshStats.Visible = false;
-            this.HidePIDEC.Visible = false;
-            this.ScreenShot.Visible = false;
-            this.HpLabel.Visible = false;
-            this.UniqueBox.Visible = false;
-            this.UniqueBox2.Visible = false;
+            View.Visible = false;
+            ViewBox.Visible = false;
+            PokeSprite.Visible = false;
+            LiveStats.Visible = false;
+            RefreshStats.Visible = false;
+            HidePIDEC.Visible = false;
+            ScreenShot.Visible = false;
+            HpLabel.Visible = false;
+            UniqueBox.Visible = false;
+            UniqueBox2.Visible = false;
             LoadOriginDefault(sender, e);
             LoadDateTime(sender, e);
         }
@@ -84,7 +83,7 @@ namespace PokeViewer.NET
 
         private void LoadDateTime(object sender, EventArgs e)
         {
-            this.TodaysDate.Text = "Met Date: " + DateTime.Today.ToString("MM/dd/yyyy");
+            TodaysDate.Text = "Met Date: " + DateTime.Today.ToString("MM/dd/yyyy");
         }
 
         private void Connect_Click(object sender, EventArgs e)
@@ -97,18 +96,21 @@ namespace PokeViewer.NET
                     isConnected = true;
                     Connect.Text = "Disconnect";
                     View.Enabled = true;
-                    this.SwitchIP.Enabled = false;
-                    this.ViewBox.Visible = true;
-                    this.PokeSprite.Visible = true;
-                    this.LiveStats.Visible = true;
-                    this.RefreshStats.Visible = true;
-                    this.Refresh.Visible = true;
-                    this.RefreshBox.Visible = true;
-                    this.ScreenShot.Visible = true;
-                    this.HidePIDEC.Visible = true;
-                    this.HpLabel.Visible = true;
-                    this.View.Visible = true;
-                    this.WideView.Enabled = true;
+                    SwitchIP.Enabled = false;
+                    ViewBox.Visible = true;
+                    PokeSprite.Visible = true;
+                    LiveStats.Visible = true;
+                    RefreshStats.Visible = true;
+                    Refresh.Visible = true;
+                    RefreshBox.Visible = true;
+                    ScreenShot.Visible = true;
+                    HidePIDEC.Visible = true;
+                    HpLabel.Visible = true;
+                    View.Visible = true;
+                    WideView.Visible = true;
+                    WideView.Enabled = true;
+                    BoxViewer.Visible = true;
+                    BoxViewer.Enabled = true;
                     Window_Loaded();
                 }
                 catch (SocketException err)
@@ -122,25 +124,27 @@ namespace PokeViewer.NET
                 SwitchConnection.Disconnect();
                 isConnected = false;
                 Connect.Text = "Connect";
-                this.SwitchIP.Enabled = true;
+                SwitchIP.Enabled = true;
                 View.Enabled = false;
-                this.ViewBox.Visible = false;
-                this.PokeSprite.Visible = false;
-                this.LiveStats.Visible = false;
-                this.RefreshStats.Visible = false;
-                this.Refresh.Visible = false;
-                this.RefreshBox.Visible = false;
-                this.ScreenShot.Visible = false;
-                this.HidePIDEC.Visible = false;
-                this.View.Visible = false;
-                this.Typing1.Visible = false;
-                this.Typing2.Visible = false;
-                this.Specialty.Visible = false;
-                this.HpLabel.Visible = false;
-                this.UniqueBox.Visible = false;
-                this.UniqueBox2.Visible = false;
-                this.WideView.Enabled = false;
-                this.LiveStats.Clear();
+                ViewBox.Visible = false;
+                PokeSprite.Visible = false;
+                LiveStats.Visible = false;
+                RefreshStats.Visible = false;
+                Refresh.Visible = false;
+                RefreshBox.Visible = false;
+                ScreenShot.Visible = false;
+                HidePIDEC.Visible = false;
+                View.Visible = false;
+                Typing1.Visible = false;
+                Typing2.Visible = false;
+                Specialty.Visible = false;
+                HpLabel.Visible = false;
+                UniqueBox.Visible = false;
+                UniqueBox2.Visible = false;
+                WideView.Visible = false;
+                WideView.Enabled = false;
+                BoxViewer.Visible = false;
+                LiveStats.Clear();
                 string url = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/OriginMarks/icon_generation_00%5Esb.png";
                 OriginIcon.ImageLocation = url;
             }
@@ -148,7 +152,7 @@ namespace PokeViewer.NET
 
         private void View_Click(object sender, EventArgs e)
         {
-            if (this.ScreenShot.Checked)
+            if (ScreenShot.Checked)
             {
                 var fn = "screenshot.jpg";
                 if (!SwitchConnection.Connected)
@@ -182,12 +186,12 @@ namespace PokeViewer.NET
                 stream.Dispose();
                 File.Delete(fn);
             }
-            if (this.ScreenShot.Checked == true)
-                this.RefreshStats.Checked = false;
+            if (ScreenShot.Checked == true)
+                RefreshStats.Checked = false;
 
             ReadEncounter_ClickAsync(sender, e);
 
-            this.ScreenShot.Checked = false;
+            ScreenShot.Checked = false;
         }
 
         private async void FillPokeData(PKM pk, ulong offset, uint offset2, int size)
@@ -211,7 +215,7 @@ namespace PokeViewer.NET
                 Typing1.Visible = false;
                 Typing2.Visible = false;
                 Specialty.Visible = false;
-                this.LiveStats.Clear();
+                LiveStats.Clear();
                 return;
             }
             Typing1.Visible = true;
@@ -310,8 +314,8 @@ namespace PokeViewer.NET
                     HpLabel.Text = $"HP - {(pk.Stat_HPCurrent / StartingHP) * 100}%";
                     await Task.Delay(refr, CancellationToken.None).ConfigureAwait(false); // Wait time between reads
                 }
-                this.LiveStats.Clear();
-                this.HpLabel.Text = "          HP%";
+                LiveStats.Clear();
+                HpLabel.Text = "          HP%";
                 ViewBox.Text = "No Pokémon present.";
                 sprite = "https://raw.githubusercontent.com/kwsch/PKHeX/master/PKHeX.Drawing.PokeSprite/Resources/img/Pokemon%20Sprite%20Overlays/starter.png";
                 PokeSprite.Load(sprite);
@@ -464,7 +468,7 @@ namespace PokeViewer.NET
                 Typing1.Visible = false;
                 Typing2.Visible = false;
                 Specialty.Visible = false;
-                this.LiveStats.Clear();
+                LiveStats.Clear();
                 return;
             }
         }
@@ -583,7 +587,7 @@ namespace PokeViewer.NET
             Graphics G = Graphics.FromImage(FormScreenShot);
             G.CopyFromScreen(this.Location, new Point(0, 0), this.Size);
             Clipboard.SetImage(FormScreenShot);
-            this.WindowCapture.Visible = true;
+            WindowCapture.Visible = true;
         }
 
         private void RefreshStats_CheckedChanged(object sender, EventArgs e)
@@ -610,15 +614,15 @@ namespace PokeViewer.NET
                 case (int)GameSelected.BD or (int)GameSelected.SP:
                     {
                         using WideViewerBDSP WideForm = new();
-                        WideForm.Show();
+                        WideForm.ShowDialog();
                         break;
                     }
                 case (int)GameSelected.SW or (int)GameSelected.SH:
                     {
                         WideView.Text = "Preparing...";
                         WideView.Enabled = false;
-                        using MediatorSWSH WideForm = new();
-                        WideForm.Show();
+                        using WideViewerSWSH WideForm = new();
+                        WideForm.ShowDialog();
                         WideView.Text = "WideView";
                         WideView.Enabled = true;
                         break;
@@ -659,6 +663,14 @@ namespace PokeViewer.NET
                 address -= heap;
             }
             return address;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            using BoxViewerMode BoxForm = new(GameType);
+            BoxForm.ShowDialog();
+            //MessageBox.Show("Restarting application to refresh. Please reconnect to resume.");
+            //Application.Restart();
         }
     }
 }

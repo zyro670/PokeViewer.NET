@@ -49,6 +49,7 @@
             this.UniqueBox = new System.Windows.Forms.CheckBox();
             this.UniqueBox2 = new System.Windows.Forms.CheckBox();
             this.WideView = new System.Windows.Forms.Button();
+            this.BoxViewer = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.PokeSprite)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Specialty)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.OriginIcon)).BeginInit();
@@ -58,9 +59,9 @@
             // 
             // Connect
             // 
-            this.Connect.Location = new System.Drawing.Point(249, 8);
+            this.Connect.Location = new System.Drawing.Point(294, 11);
             this.Connect.Name = "Connect";
-            this.Connect.Size = new System.Drawing.Size(89, 23);
+            this.Connect.Size = new System.Drawing.Size(75, 23);
             this.Connect.TabIndex = 0;
             this.Connect.Text = "Connect";
             this.Connect.UseVisualStyleBackColor = true;
@@ -226,7 +227,7 @@
             // 
             // WindowCapture
             // 
-            this.WindowCapture.Location = new System.Drawing.Point(219, 36);
+            this.WindowCapture.Location = new System.Drawing.Point(294, 35);
             this.WindowCapture.Name = "WindowCapture";
             this.WindowCapture.Size = new System.Drawing.Size(75, 23);
             this.WindowCapture.TabIndex = 20;
@@ -266,13 +267,25 @@
             // WideView
             // 
             this.WideView.Enabled = false;
-            this.WideView.Location = new System.Drawing.Point(294, 36);
+            this.WideView.Location = new System.Drawing.Point(219, 35);
             this.WideView.Name = "WideView";
             this.WideView.Size = new System.Drawing.Size(75, 23);
             this.WideView.TabIndex = 24;
             this.WideView.Text = "WideView";
             this.WideView.UseVisualStyleBackColor = true;
+            this.WideView.Visible = false;
             this.WideView.Click += new System.EventHandler(this.WideView_Click);
+            // 
+            // BoxViewer
+            // 
+            this.BoxViewer.Location = new System.Drawing.Point(219, 11);
+            this.BoxViewer.Name = "BoxViewer";
+            this.BoxViewer.Size = new System.Drawing.Size(75, 23);
+            this.BoxViewer.TabIndex = 25;
+            this.BoxViewer.Text = "BoxViewer";
+            this.BoxViewer.UseVisualStyleBackColor = true;
+            this.BoxViewer.Visible = false;
+            this.BoxViewer.Click += new System.EventHandler(this.button1_Click);
             // 
             // MainViewer
             // 
@@ -280,6 +293,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLight;
             this.ClientSize = new System.Drawing.Size(372, 330);
+            this.Controls.Add(this.BoxViewer);
             this.Controls.Add(this.WideView);
             this.Controls.Add(this.UniqueBox2);
             this.Controls.Add(this.UniqueBox);
@@ -340,5 +354,6 @@
         private CheckBox UniqueBox;
         private CheckBox UniqueBox2;
         private Button WideView;
+        private Button BoxViewer;
     }
 }

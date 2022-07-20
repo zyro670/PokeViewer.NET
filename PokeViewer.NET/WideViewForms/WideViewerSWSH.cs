@@ -92,7 +92,6 @@ namespace PokeViewer.NET.WideViewForms
             TextBox[] outputBox = { textBox1, textBox2, textBox3, textBox4, textBox5, textBox6, textBox7, textBox8, textBox9, textBox10, textBox11, textBox12 };
             PictureBox[] markBoxes = { pictureBox13, pictureBox14, pictureBox15, pictureBox16, pictureBox17, pictureBox18, pictureBox19, pictureBox20, pictureBox21, pictureBox22, pictureBox23, pictureBox24 };
 
-
             for (int s = 0; s < 12; s++)
             {
                 boxes[s].Image = null;
@@ -147,7 +146,7 @@ namespace PokeViewer.NET.WideViewForms
 
                 var shinytype = BitConverter.ToUInt16(await SwitchConnection.ReadBytesAsync(newoffset + 0x6, 2, token).ConfigureAwait(false), 0);
                 if (shinytype != 1)
-                CommonEdits.SetIsShiny(pk, false);
+                    CommonEdits.SetIsShiny(pk, false);
                 if (shinytype == 1)
                     CommonEdits.SetIsShiny(pk, true);
                 string isShiny = pk.IsShiny ? "Shiny: Yes" : "Shiny: No";
