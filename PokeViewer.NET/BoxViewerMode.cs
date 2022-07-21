@@ -1,5 +1,6 @@
 ﻿using PKHeX.Core;
 using PokeViewer.NET.Properties;
+using PokeViewer.NET.WideViewForms;
 using SysBot.Base;
 using static PokeViewer.NET.RoutineExecutor;
 
@@ -133,7 +134,7 @@ namespace PokeViewer.NET
                     CurrentSlotStats.Add($"Box {textBox1.Text} Slot {i} is empty.");
                     continue;
                 }
-                boxes[1].BackgroundImage = null;
+
                 string pid = $"{Environment.NewLine}PID: {pk.PID:X8}";
                 string ec = $"{Environment.NewLine}EC: {pk.EncryptionConstant:X8}";
                 var form = FormOutput(pk.Species, pk.Form, out _);
@@ -466,6 +467,22 @@ namespace PokeViewer.NET
                 case 40: slot = 0x160; break;
             }
             return (uint)slot;
+        }
+
+        private void PictureBox_DoubleClick(object sender, EventArgs e)
+        {
+            PictureBox? pbox = sender as PictureBox;
+            if (pbox.Image == null)
+            {
+                MessageBox.Show("No data present, click view and try again.");
+                return;
+            }
+            var currentslot = int.Parse(pbox.Name.Replace("pictureBox", "")) - 1;
+            if (pbox.Image != null)
+            {
+                using BoxViewerMini form = new(pbox, CurrentSlotStats[currentslot].ToString());
+                form.ShowDialog();
+            }            
         }
     }
 }
