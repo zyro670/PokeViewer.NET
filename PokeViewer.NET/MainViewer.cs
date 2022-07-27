@@ -203,7 +203,17 @@ namespace PokeViewer.NET
             {
                 case (int)GameSelected.SW or (int)GameSelected.SH: isValid = ((PersonalInfoSWSH)PersonalTable.SWSH[pk.Species]).IsPresentInGame; break;
                 case (int)GameSelected.BD or (int)GameSelected.SP: isValid = ((PersonalInfoBDSP)PersonalTable.BDSP[pk.Species]).IsPresentInGame; break;
-                case (int)GameSelected.LA: isValid = ((PersonalInfoLA)PersonalTable.LA[pk.Species]).IsPresentInGame; break;
+                case (int)GameSelected.LA:
+                    {
+                        isValid = ((PersonalInfoLA)PersonalTable.LA[pk.Species]).IsPresentInGame;
+                        if (!isValid)
+                        {
+                            if ((Species)pk.Species is Species.Decidueye or Species.Typhlosion or Species.Samurott or Species.Qwilfish or Species.Lilligant or Species.Sliggoo or Species.Goodra
+                            or Species.Growlithe or Species.Arcanine or Species.Voltorb or Species.Electrode or Species.Sneasel or Species.Avalugg or Species.Zorua or Species.Zoroark or Species.Braviary)
+                            isValid = true;
+                        }
+                        break;
+                    }
                 case (int)GameSelected.LGP or (int)GameSelected.LGE: isValid = pk.Species < (int)Species.Mewtwo && pk.Species != (int)Species.Meltan && pk.Species != (int)Species.Melmetal; break;
             }
             if (!isValid || pk.Species < 0 || pk.Species > (int)Species.MAX_COUNT)
@@ -478,8 +488,6 @@ namespace PokeViewer.NET
             if (SwitchConnection.Connected)
             {
                 ViewBox.Text = "Reading encounter...";
-                ulong ofs = 0;
-                int size = 0;
                 switch (GameType)
                 {
                     case (int)GameSelected.SW or (int)GameSelected.SH:
@@ -495,7 +503,7 @@ namespace PokeViewer.NET
                                 return;
                             }
                             uint ufs = 0x8FEA3648;
-                            size = 0x158;
+                            int size = 0x158;
                             var pk = await ReadInBattlePokemonSWSH(ufs, size).ConfigureAwait(false);
                             SanityCheck(pk);
                             FillPokeData(pk, 0, ufs, size);
@@ -503,24 +511,24 @@ namespace PokeViewer.NET
                         }
                     case (int)GameSelected.LA:
                         {
-                            ofs = await ParsePointer("[[[[[main+42a6f00]+D0]+B8]+300]+70]+60]+98]+10]", CancellationToken.None).ConfigureAwait(false);
-                            size = 0x168;
+                            var ofs = await ParsePointer("[[[[[main+42a6f00]+D0]+B8]+300]+70]+60]+98]+10]", CancellationToken.None).ConfigureAwait(false);
+                            var size = 0x168;
                             var pk = await ReadInBattlePokemonLA(ofs, size).ConfigureAwait(false);
                             SanityCheck(pk);
                             FillPokeData(pk, ofs, 0, size);
                         }; break;
                     case (int)GameSelected.BD:
                         {
-                            ofs = await ParsePointer("[[[[main+4C59EF0]+20]+98]]+20", CancellationToken.None).ConfigureAwait(false);
-                            size = 0x168;
+                            var ofs = await ParsePointer("[[[[main+4C59EF0]+20]+98]]+20", CancellationToken.None).ConfigureAwait(false);
+                            var size = 0x168;
                             var pk = await ReadInBattlePokemonBDSP(ofs, size).ConfigureAwait(false);
                             SanityCheck(pk);
                             FillPokeData(pk, ofs, 0, size);
                         }; break;
                     case (int)GameSelected.SP:
                         {
-                            ofs = await ParsePointer("[[[[main+4E70FC8]+20]+98]]+20", CancellationToken.None).ConfigureAwait(false);
-                            size = 0x168;
+                            var ofs = await ParsePointer("[[[[main+4E70FC8]+20]+98]]+20", CancellationToken.None).ConfigureAwait(false);
+                            int size = 0x168;
                             var pk = await ReadInBattlePokemonBDSP(ofs, size).ConfigureAwait(false);
                             SanityCheck(pk);
                             FillPokeData(pk, ofs, 0, size);
@@ -528,7 +536,7 @@ namespace PokeViewer.NET
                     case (int)GameSelected.LGP or (int)GameSelected.LGE:
                         {
                             uint ufs = 0x163EDC0;
-                            size = 0x158;
+                            int size = 0x158;
                             var pk = await ReadInBattlePokemonLGPE(ufs, size).ConfigureAwait(false);
                             SanityCheck(pk);
                             FillPokeData(pk, 0, ufs, size); 
