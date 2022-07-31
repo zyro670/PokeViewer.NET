@@ -111,6 +111,7 @@ namespace PokeViewer.NET
                     WideView.Enabled = true;
                     BoxViewer.Visible = true;
                     BoxViewer.Enabled = true;
+                    TrainerView.Visible = true;
                     Window_Loaded();
                 }
                 catch (SocketException err)
@@ -144,6 +145,7 @@ namespace PokeViewer.NET
                 WideView.Visible = false;
                 WideView.Enabled = false;
                 BoxViewer.Visible = false;
+                TrainerView.Visible = false;
                 LiveStats.Clear();
                 string url = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/OriginMarks/icon_generation_00%5Esb.png";
                 OriginIcon.ImageLocation = url;
@@ -554,23 +556,19 @@ namespace PokeViewer.NET
             string title = await SwitchConnection.GetTitleID(token).ConfigureAwait(false);
             switch (title)
             {
-                case LegendsArceusID:url = url + "LA.png"; type = (int)GameSelected.LA; break;
-                case ShiningPearlID: url = url + "SP.png"; type = (int)GameSelected.SP; break;
-                case BrilliantDiamondID: url = url + "BD.png"; type = (int)GameSelected.BD; break;
+                case LegendsArceusID:url = url + "LA.png"; type = (int)GameSelected.LA; TrainerView.Visible = false; break;
+                case ShiningPearlID: url = url + "SP.png"; type = (int)GameSelected.SP; TrainerView.Visible = false; break;
+                case BrilliantDiamondID: url = url + "BD.png"; type = (int)GameSelected.BD; TrainerView.Visible = false; break;
                 case SwordID: url = url + "SW.png"; type = (int)GameSelected.SW; UniqueBox.Visible = true; UniqueBox2.Visible = true; UniqueBox.Text = "Raid"; UniqueBox2.Text = "Curry"; break;
                 case ShieldID: url = url + "SH.png"; type = (int)GameSelected.SH; UniqueBox.Visible = true; UniqueBox2.Visible = true; UniqueBox.Text = "Raid"; UniqueBox2.Text = "Curry"; break;
                 case EeveeID:
                     {
-                        url = url + "LGE.png"; ; type = (int)GameSelected.LGE; 
-                        var cmd = SwitchCommand.Configure(SwitchConfigureParameter.controllerType, 1, true);
-                        await SwitchConnection.SendAsync(cmd, token).ConfigureAwait(false);
+                        url = url + "LGE.png"; type = (int)GameSelected.LGE; 
                         WideView.Enabled = false; break;
                     }
                 case PikachuID:
                     {
                         url = url + "LGP.png"; type = (int)GameSelected.LGP; 
-                        var cmd = SwitchCommand.Configure(SwitchConfigureParameter.controllerType, 1, true);
-                        await SwitchConnection.SendAsync(cmd, token).ConfigureAwait(false);
                         WideView.Enabled = false; break;
                     }
             }
@@ -590,12 +588,10 @@ namespace PokeViewer.NET
 
         private void CaptureWindow_Click(object sender, EventArgs e)
         {
-            this.WindowCapture.Visible = false;
-            Bitmap FormScreenShot = new Bitmap(this.Width, this.Height);
+            Bitmap FormScreenShot = new Bitmap(Width, Height);
             Graphics G = Graphics.FromImage(FormScreenShot);
-            G.CopyFromScreen(this.Location, new Point(0, 0), this.Size);
+            G.CopyFromScreen(Location, new Point(0, 0), Size);
             Clipboard.SetImage(FormScreenShot);
-            WindowCapture.Visible = true;
         }
 
         private void RefreshStats_CheckedChanged(object sender, EventArgs e)
@@ -673,12 +669,16 @@ namespace PokeViewer.NET
             return address;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void BoxView_Click(object sender, EventArgs e)
         {
             using BoxViewerMode BoxForm = new(GameType);
             BoxForm.ShowDialog();
-            //MessageBox.Show("Restarting application to refresh. Please reconnect to resume.");
-            //Application.Restart();
+        }
+
+        private void BattleView_Click(object sender, EventArgs e)
+        {
+            using TrainerViewer Form = new(GameType);
+            Form.ShowDialog();
         }
     }
 }

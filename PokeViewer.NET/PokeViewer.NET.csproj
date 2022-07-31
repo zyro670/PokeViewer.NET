@@ -12,12 +12,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="WideViewForms\WideViewerLGPE.cs" />
-    <Compile Remove="WideViewForms\WideViewerLGPE.Designer.cs" />
+    <Compile Remove="SubForms\WideViewerLGPE.cs" />
+    <Compile Remove="SubForms\WideViewerLGPE.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Remove="WideViewForms\WideViewerLGPE.resx" />
+    <EmbeddedResource Remove="SubForms\WideViewerLGPE.resx" />
   </ItemGroup>
 
 	<ItemGroup>

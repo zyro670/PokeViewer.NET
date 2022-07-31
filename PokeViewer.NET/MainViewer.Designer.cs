@@ -50,6 +50,7 @@
             this.UniqueBox2 = new System.Windows.Forms.CheckBox();
             this.WideView = new System.Windows.Forms.Button();
             this.BoxViewer = new System.Windows.Forms.Button();
+            this.TrainerView = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.PokeSprite)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Specialty)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.OriginIcon)).BeginInit();
@@ -209,7 +210,7 @@
             // Refresh
             // 
             this.Refresh.AutoSize = true;
-            this.Refresh.Location = new System.Drawing.Point(20, 306);
+            this.Refresh.Location = new System.Drawing.Point(17, 307);
             this.Refresh.Name = "Refresh";
             this.Refresh.Size = new System.Drawing.Size(75, 15);
             this.Refresh.TabIndex = 18;
@@ -219,7 +220,7 @@
             // TodaysDate
             // 
             this.TodaysDate.AutoSize = true;
-            this.TodaysDate.Location = new System.Drawing.Point(225, 305);
+            this.TodaysDate.Location = new System.Drawing.Point(226, 307);
             this.TodaysDate.Name = "TodaysDate";
             this.TodaysDate.Size = new System.Drawing.Size(57, 15);
             this.TodaysDate.TabIndex = 19;
@@ -271,7 +272,7 @@
             this.WideView.Name = "WideView";
             this.WideView.Size = new System.Drawing.Size(75, 23);
             this.WideView.TabIndex = 24;
-            this.WideView.Text = "WideView";
+            this.WideView.Text = "Wide View";
             this.WideView.UseVisualStyleBackColor = true;
             this.WideView.Visible = false;
             this.WideView.Click += new System.EventHandler(this.WideView_Click);
@@ -282,10 +283,21 @@
             this.BoxViewer.Name = "BoxViewer";
             this.BoxViewer.Size = new System.Drawing.Size(75, 23);
             this.BoxViewer.TabIndex = 25;
-            this.BoxViewer.Text = "BoxViewer";
+            this.BoxViewer.Text = "Box View";
             this.BoxViewer.UseVisualStyleBackColor = true;
             this.BoxViewer.Visible = false;
-            this.BoxViewer.Click += new System.EventHandler(this.button1_Click);
+            this.BoxViewer.Click += new System.EventHandler(this.BoxView_Click);
+            // 
+            // TrainerView
+            // 
+            this.TrainerView.Location = new System.Drawing.Point(147, 304);
+            this.TrainerView.Name = "TrainerView";
+            this.TrainerView.Size = new System.Drawing.Size(78, 23);
+            this.TrainerView.TabIndex = 26;
+            this.TrainerView.Text = "Trainer View";
+            this.TrainerView.UseVisualStyleBackColor = true;
+            this.TrainerView.Visible = false;
+            this.TrainerView.Click += new System.EventHandler(this.BattleView_Click);
             // 
             // MainViewer
             // 
@@ -293,6 +305,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLight;
             this.ClientSize = new System.Drawing.Size(372, 330);
+            this.Controls.Add(this.TrainerView);
             this.Controls.Add(this.BoxViewer);
             this.Controls.Add(this.WideView);
             this.Controls.Add(this.UniqueBox2);
@@ -355,5 +368,6 @@
         private CheckBox UniqueBox2;
         private Button WideView;
         private Button BoxViewer;
+        private Button TrainerView;
     }
 }

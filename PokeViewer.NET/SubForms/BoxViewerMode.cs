@@ -19,8 +19,22 @@ namespace PokeViewer.NET
             InitializeComponent();
             SwitchConnection.Connect();
             GameType = gametype;
+            this.Text = VersionString(GameType);
             label2.Text = $"{(GameSelected)GameType}";
             button1.Text = "View";
+        }
+
+        private string VersionString(int type)
+        {
+            string vers = string.Empty;
+            switch (type)
+            {
+                case (int)GameSelected.SW or (int)GameSelected.SH: vers = "PokeViewer.NET - Box Viewer (SWSH)"; break;
+                case (int)GameSelected.BD or (int)GameSelected.SP: vers = "PokeViewer.NET - Box Viewer (BDSP)"; break;
+                case (int)GameSelected.LA: vers = "PokeViewer.NET - Box Viewer (LA)"; break;
+                case (int)GameSelected.LGP or (int)GameSelected.LGE: vers = "PokeViewer.NET - Box Viewer (LGPE)"; break;
+            }
+            return vers;
         }
 
         private async void button1_ClickAsync(object sender, EventArgs e)
