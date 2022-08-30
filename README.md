@@ -37,6 +37,9 @@ How to use:
 - Click view to see your current in battle encounter
 - Check Hide PID/EC to keep them hidden from view
 - Check ScreenShot to grab an In-Game ScreenShot when you click View. This will open a pop up window of the ScreenShot as well as copy the image to clipboard.
+- Checking LiveStats then clicking View will continue to read the encounter until it is no longer available. This makes it a bit easier to keep track of the encounter's HP and PP count.
+- Refresh Rate will determine the interval between refreshing the LiveStats. Default is 2000ms.
+- Capture takes a screenshot of the GUI and copies to clipboard for easy access.
 
 `WideView`
 
@@ -46,10 +49,11 @@ How to use:
  
 ![](https://i.imgur.com/bDvQi7i.png)
 
-`BoxViewer`
+`BoxView`
 
 - Read Pokemon Boxes by game.
 - You may select a specific box or use the arrow buttons to go up and down from the current box.
 
-- Checking LiveStats then clicking View will continue to read the encounter until it is no longer available. This makes it a bit easier to keep track of the encounter's HP and PP count.
-- Refresh Rate will determine the interval between refreshing the LiveStats. Default is 2000ms.
+`TrainerView`
+
+- Read Party Pokemon of NPC Trainers when in battle with them
