@@ -94,7 +94,7 @@ namespace PokeViewer.NET
                 {
                     SwitchConnection.Connect();
                     isConnected = true;
-                    Connect.Text = "Disconnect";
+                    Connect.Text = "✔";
                     View.Enabled = true;
                     SwitchIP.Enabled = false;
                     ViewBox.Visible = true;
@@ -124,7 +124,7 @@ namespace PokeViewer.NET
             {
                 SwitchConnection.Disconnect();
                 isConnected = false;
-                Connect.Text = "Connect";
+                Connect.Text = "✖";
                 SwitchIP.Enabled = true;
                 View.Enabled = false;
                 ViewBox.Visible = false;

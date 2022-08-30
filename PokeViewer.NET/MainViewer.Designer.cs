@@ -60,11 +60,11 @@
             // 
             // Connect
             // 
-            this.Connect.Location = new System.Drawing.Point(294, 11);
+            this.Connect.Location = new System.Drawing.Point(127, 7);
             this.Connect.Name = "Connect";
-            this.Connect.Size = new System.Drawing.Size(75, 23);
+            this.Connect.Size = new System.Drawing.Size(25, 25);
             this.Connect.TabIndex = 0;
-            this.Connect.Text = "Connect";
+            this.Connect.Text = "✔";
             this.Connect.UseVisualStyleBackColor = true;
             this.Connect.Click += new System.EventHandler(this.Connect_Click);
             // 
@@ -72,7 +72,7 @@
             // 
             this.SwitchIP.Location = new System.Drawing.Point(12, 8);
             this.SwitchIP.Name = "SwitchIP";
-            this.SwitchIP.Size = new System.Drawing.Size(125, 23);
+            this.SwitchIP.Size = new System.Drawing.Size(114, 23);
             this.SwitchIP.TabIndex = 2;
             this.SwitchIP.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.SwitchIP.TextChanged += new System.EventHandler(this.CheckForIP);
@@ -205,6 +205,7 @@
             this.RefreshBox.Size = new System.Drawing.Size(45, 23);
             this.RefreshBox.TabIndex = 17;
             this.RefreshBox.Text = "2000";
+            this.RefreshBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.RefreshBox.Visible = false;
             // 
             // Refresh
@@ -228,7 +229,7 @@
             // 
             // WindowCapture
             // 
-            this.WindowCapture.Location = new System.Drawing.Point(294, 35);
+            this.WindowCapture.Location = new System.Drawing.Point(294, 11);
             this.WindowCapture.Name = "WindowCapture";
             this.WindowCapture.Size = new System.Drawing.Size(75, 23);
             this.WindowCapture.TabIndex = 20;
@@ -272,7 +273,7 @@
             this.WideView.Name = "WideView";
             this.WideView.Size = new System.Drawing.Size(75, 23);
             this.WideView.TabIndex = 24;
-            this.WideView.Text = "Wide View";
+            this.WideView.Text = "WideView";
             this.WideView.UseVisualStyleBackColor = true;
             this.WideView.Visible = false;
             this.WideView.Click += new System.EventHandler(this.WideView_Click);
@@ -283,18 +284,18 @@
             this.BoxViewer.Name = "BoxViewer";
             this.BoxViewer.Size = new System.Drawing.Size(75, 23);
             this.BoxViewer.TabIndex = 25;
-            this.BoxViewer.Text = "Box View";
+            this.BoxViewer.Text = "BoxView";
             this.BoxViewer.UseVisualStyleBackColor = true;
             this.BoxViewer.Visible = false;
             this.BoxViewer.Click += new System.EventHandler(this.BoxView_Click);
             // 
             // TrainerView
             // 
-            this.TrainerView.Location = new System.Drawing.Point(147, 304);
+            this.TrainerView.Location = new System.Drawing.Point(294, 35);
             this.TrainerView.Name = "TrainerView";
-            this.TrainerView.Size = new System.Drawing.Size(78, 23);
+            this.TrainerView.Size = new System.Drawing.Size(75, 23);
             this.TrainerView.TabIndex = 26;
-            this.TrainerView.Text = "Trainer View";
+            this.TrainerView.Text = "TrainerView";
             this.TrainerView.UseVisualStyleBackColor = true;
             this.TrainerView.Visible = false;
             this.TrainerView.Click += new System.EventHandler(this.BattleView_Click);
