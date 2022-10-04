@@ -38,9 +38,9 @@ namespace PokeViewer.NET.WideViewForms
             bool isValid = false;
             switch (GameType)
             {
-                case (int)GameSelected.SW or (int)GameSelected.SH: isValid = ((PersonalInfoSWSH)PersonalTable.SWSH[pk.Species]).IsPresentInGame; break;
-                case (int)GameSelected.BD or (int)GameSelected.SP: isValid = ((PersonalInfoBDSP)PersonalTable.BDSP[pk.Species]).IsPresentInGame; break;
-                case (int)GameSelected.LA: isValid = ((PersonalInfoLA)PersonalTable.LA[pk.Species]).IsPresentInGame; break;
+                case (int)GameSelected.SW or (int)GameSelected.SH: isValid = (PersonalTable.SWSH[pk.Species]).IsPresentInGame; break;
+                case (int)GameSelected.BD or (int)GameSelected.SP: isValid = (PersonalTable.BDSP[pk.Species]).IsPresentInGame; break;
+                case (int)GameSelected.LA: isValid = (PersonalTable.LA[pk.Species]).IsPresentInGame; break;
                 case (int)GameSelected.LGP or (int)GameSelected.LGE: isValid = pk.Species < (int)Species.Mewtwo && pk.Species != (int)Species.Meltan && pk.Species != (int)Species.Melmetal; break;
             }
             if (!isValid || pk.Species <= 0 || pk.Species > (int)Species.MAX_COUNT)

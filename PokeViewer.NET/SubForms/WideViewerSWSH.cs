@@ -42,7 +42,7 @@ namespace PokeViewer.NET.WideViewForms
                 uint fishing = 0x4505B640 + i * KCoordIncrement;
                 byte[] check = await SwitchConnection.ReadBytesAsync(fishing, 2, token).ConfigureAwait(false);
                 Species species = (Species)BitConverter.ToUInt16(check.Slice(0, 2), 0);
-                if (species == 0 || species > Species.MAX_COUNT || !((PersonalInfoSWSH)PersonalTable.SWSH[(int)species]).IsPresentInGame)
+                if (species == 0 || species > Species.MAX_COUNT || !(PersonalTable.SWSH[(int)species]).IsPresentInGame)
                     continue;
 
                 var data = await SwitchConnection.ReadBytesAsync(fishing + 0x39, 1, token).ConfigureAwait(false);
@@ -63,7 +63,7 @@ namespace PokeViewer.NET.WideViewForms
                     uint startingoffset = StartingOffset + i * KCoordIncrement;
                     byte[] check = await SwitchConnection.ReadBytesAsync(startingoffset, 2, token).ConfigureAwait(false);
                     Species species = (Species)BitConverter.ToUInt16(check.Slice(0, 2), 0);
-                    if (species == 0 || species > Species.MAX_COUNT || !((PersonalInfoSWSH)PersonalTable.SWSH[(int)species]).IsPresentInGame)
+                    if (species == 0 || species > Species.MAX_COUNT || !(PersonalTable.SWSH[(int)species]).IsPresentInGame)
                         continue;
 
                     var data = await SwitchConnection.ReadBytesAsync(startingoffset + 0x39, 1, token).ConfigureAwait(false);
@@ -126,14 +126,14 @@ namespace PokeViewer.NET.WideViewForms
 
                 species = (Species)BitConverter.ToUInt16(data.Slice(0, 2), 0);
 
-                if (species == 0 || species > Species.MAX_COUNT || !((PersonalInfoSWSH)PersonalTable.SWSH[(int)species]).IsPresentInGame)
+                if (species == 0 || species > Species.MAX_COUNT || !(PersonalTable.SWSH[(int)species]).IsPresentInGame)
                     continue;
                 var lastdata = await SwitchConnection.ReadBytesAsync(newoffset + 0x39, 1, token).ConfigureAwait(false);
                 if (lastdata[0] != 255)
                     continue;
                 PK8 pk = new();
-                pk.Species = (int)species;
-                pk.Form = BitConverter.ToUInt16(data.Slice(0x2, 2), 0);
+                pk.Species = (ushort)species;
+                pk.Form = (byte)BitConverter.ToUInt16(data.Slice(0x2, 2), 0);
                 pk.Gender = BitConverter.ToUInt16(data.Slice(0x10, 2), 0);
                 pk.SetNature(data[8]);
                 pk.SetAbility(data[12] - 1);

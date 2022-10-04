@@ -233,11 +233,13 @@ namespace PokeViewer.NET
             {
                 PictureBox? pbox = sender as PictureBox;
                 tt = new();
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 if (pbox.Image == null)
                 {
                     tt.SetToolTip(pbox, null);
                     return;
                 }
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
                 var currentslot = int.Parse(pbox.Name.Replace("pictureBox", "")) - 1;
                 tt.SetToolTip(pbox, CurrentSlotStats[currentslot]);
             }
@@ -486,11 +488,13 @@ namespace PokeViewer.NET
         private void PictureBox_DoubleClick(object sender, EventArgs e)
         {
             PictureBox? pbox = sender as PictureBox;
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
             if (pbox.Image == null)
             {
                 MessageBox.Show("No data present, click view and try again.");
                 return;
             }
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
             var currentslot = int.Parse(pbox.Name.Replace("pictureBox", "")) - 1;
             if (pbox.Image != null)
             {

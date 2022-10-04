@@ -26,10 +26,10 @@ namespace PokeViewer.NET
             return content;
         }
 
-        public static string FormOutput(int species, int form, out string[] formString)
+        public static string FormOutput(ushort species, int form, out string[] formString)
         {
             var strings = GameInfo.GetStrings("en");
-            formString = FormConverter.GetFormList(species, strings.Types, strings.forms, GameInfo.GenderSymbolASCII, typeof(PK8) == typeof(PK8) ? 8 : 4);
+            formString = FormConverter.GetFormList(species, strings.Types, strings.forms, GameInfo.GenderSymbolASCII, (EntityContext)(typeof(PK8) == typeof(PK8) ? 8 : 4));
             if (formString.Length == 0)
                 return string.Empty;
 

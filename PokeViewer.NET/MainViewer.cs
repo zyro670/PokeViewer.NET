@@ -112,6 +112,7 @@ namespace PokeViewer.NET
                     BoxViewer.Visible = true;
                     BoxViewer.Enabled = true;
                     TrainerView.Visible = true;
+                    DayCareView.Visible = true;
                     Window_Loaded();
                 }
                 catch (SocketException err)
@@ -146,6 +147,7 @@ namespace PokeViewer.NET
                 WideView.Enabled = false;
                 BoxViewer.Visible = false;
                 TrainerView.Visible = false;
+                DayCareView.Visible = false;
                 LiveStats.Clear();
                 string url = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/OriginMarks/icon_generation_00%5Esb.png";
                 OriginIcon.ImageLocation = url;
@@ -203,11 +205,11 @@ namespace PokeViewer.NET
             bool isValid = false;
             switch (GameType)
             {
-                case (int)GameSelected.SW or (int)GameSelected.SH: isValid = ((PersonalInfoSWSH)PersonalTable.SWSH[pk.Species]).IsPresentInGame; break;
-                case (int)GameSelected.BD or (int)GameSelected.SP: isValid = ((PersonalInfoBDSP)PersonalTable.BDSP[pk.Species]).IsPresentInGame; break;
+                case (int)GameSelected.SW or (int)GameSelected.SH: isValid = (PersonalTable.SWSH[pk.Species]).IsPresentInGame; break;
+                case (int)GameSelected.BD or (int)GameSelected.SP: isValid = (PersonalTable.BDSP[pk.Species]).IsPresentInGame; break;
                 case (int)GameSelected.LA:
                     {
-                        isValid = ((PersonalInfoLA)PersonalTable.LA[pk.Species]).IsPresentInGame;
+                        isValid = (PersonalTable.LA[pk.Species]).IsPresentInGame;
                         if (!isValid)
                         {
                             if ((Species)pk.Species is Species.Decidueye or Species.Typhlosion or Species.Samurott or Species.Qwilfish or Species.Lilligant or Species.Sliggoo or Species.Goodra
@@ -466,9 +468,9 @@ namespace PokeViewer.NET
             bool isValid = false;
             switch (GameType)
             {
-                case (int)GameSelected.SW or (int)GameSelected.SH: isValid = ((PersonalInfoSWSH)PersonalTable.SWSH[pk.Species]).IsPresentInGame; break;
-                case (int)GameSelected.BD or (int)GameSelected.SP: isValid = ((PersonalInfoBDSP)PersonalTable.BDSP[pk.Species]).IsPresentInGame; break;
-                case (int)GameSelected.LA: isValid = ((PersonalInfoLA)PersonalTable.LA[pk.Species]).IsPresentInGame; break;
+                case (int)GameSelected.SW or (int)GameSelected.SH: isValid = (PersonalTable.SWSH[pk.Species]).IsPresentInGame; break;
+                case (int)GameSelected.BD or (int)GameSelected.SP: isValid = (PersonalTable.BDSP[pk.Species]).IsPresentInGame; break;
+                case (int)GameSelected.LA: isValid = (PersonalTable.LA[pk.Species]).IsPresentInGame; break;
                 case (int)GameSelected.LGP or (int)GameSelected.LGE: isValid = pk.Species < (int)Species.Mewtwo && pk.Species != (int)Species.Meltan && pk.Species != (int)Species.Melmetal; break;
             }
             if (!isValid || pk.Species < 0 || pk.Species > (int)Species.MAX_COUNT)
@@ -556,20 +558,57 @@ namespace PokeViewer.NET
             string title = await SwitchConnection.GetTitleID(token).ConfigureAwait(false);
             switch (title)
             {
-                case LegendsArceusID:url = url + "LA.png"; type = (int)GameSelected.LA; TrainerView.Visible = false; break;
-                case ShiningPearlID: url = url + "SP.png"; type = (int)GameSelected.SP; TrainerView.Visible = false; break;
-                case BrilliantDiamondID: url = url + "BD.png"; type = (int)GameSelected.BD; TrainerView.Visible = false; break;
-                case SwordID: url = url + "SW.png"; type = (int)GameSelected.SW; UniqueBox.Visible = true; UniqueBox2.Visible = true; UniqueBox.Text = "Raid"; UniqueBox2.Text = "Curry"; break;
-                case ShieldID: url = url + "SH.png"; type = (int)GameSelected.SH; UniqueBox.Visible = true; UniqueBox2.Visible = true; UniqueBox.Text = "Raid"; UniqueBox2.Text = "Curry"; break;
+                case LegendsArceusID:
+                    {
+                        url = url + "LA.png";
+                        type = (int)GameSelected.LA; 
+                        TrainerView.Visible = false; 
+                        DayCareView.Visible = false; 
+                        break;
+                    }
+                case ShiningPearlID:
+                    {
+                        url = url + "SP.png"; 
+                        type = (int)GameSelected.SP; 
+                        TrainerView.Visible = false; 
+                        break;
+                    }
+                case BrilliantDiamondID:
+                    {
+                        url = url + "BD.png"; 
+                        type = (int)GameSelected.BD; 
+                        TrainerView.Visible = false;
+                        break;
+                    }
+                case SwordID:
+                    {
+                        url = url + "SW.png"; 
+                        type = (int)GameSelected.SW; 
+                        UniqueBox.Visible = true; UniqueBox2.Visible = true; 
+                        UniqueBox.Text = "Raid"; UniqueBox2.Text = "Curry"; 
+                        break;
+                    }
+                case ShieldID:
+                    {
+                        url = url + "SH.png"; 
+                        type = (int)GameSelected.SH; 
+                        UniqueBox.Visible = true; UniqueBox2.Visible = true; 
+                        UniqueBox.Text = "Raid"; UniqueBox2.Text = "Curry"; 
+                        break;
+                    }
                 case EeveeID:
                     {
                         url = url + "LGE.png"; type = (int)GameSelected.LGE; 
-                        WideView.Enabled = false; break;
+                        WideView.Enabled = false;
+                        DayCareView.Visible = false; 
+                        break;
                     }
                 case PikachuID:
                     {
                         url = url + "LGP.png"; type = (int)GameSelected.LGP; 
-                        WideView.Enabled = false; break;
+                        WideView.Enabled = false;
+                        DayCareView.Visible = false; 
+                        break;
                     }
             }
 

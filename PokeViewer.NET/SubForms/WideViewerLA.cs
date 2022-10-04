@@ -54,7 +54,7 @@ namespace PokeViewer.NET.WideViewForms
             TextBox[] outputBox = { textBox1, textBox2, textBox3, textBox4, textBox5 };
             PictureBox[] alphaboxes = { pictureBox6, pictureBox7, pictureBox8, pictureBox9, pictureBox10 };
             string? sprite = string.Empty;
-            bool isValid = ((PersonalInfoLA)PersonalTable.LA[pk.Species]).IsPresentInGame;
+            bool isValid = (PersonalTable.LA[pk.Species]).IsPresentInGame;
             if (!isValid || pk.Species < 0 || pk.Species > (int)Species.MAX_COUNT)
             {
                 outputBox[count].Text = "No Pokémon present.";
