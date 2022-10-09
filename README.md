@@ -2,6 +2,8 @@
 
 This project was designed to make viewing encountered Pokemon convenient through the use of an app that supports across all mainstream Nintendo Switch Pokemon games.
 
+Download the latest build [here](https://dev.azure.com/angelosalas670/zyro670/_build/results?buildId=183&view=artifacts&pathAsName=false&type=publishedArtifacts).
+
 ![](https://i.imgur.com/Ou6Ndtg.png)
 
 Special credits and thanks to the minds behind the resources used for this project:
