@@ -76,7 +76,7 @@ namespace PokeViewer.NET.WideViewForms
             }
             string output = $"{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{isAlpha}{(Species)pk.Species}{form}{gender}{pid}{ec}{Environment.NewLine}Nature: {(Nature)pk.Nature}{Environment.NewLine}Ability: {(Ability)pk.Ability}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}";
             outputBox[count].Text = output;
-            sprite = PokeImg(pk, false, false);
+            sprite = PokeImg(pk, false);
             boxes[count].Load(sprite);
             if (pk.IsAlpha)
             {

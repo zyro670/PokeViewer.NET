@@ -26,20 +26,21 @@ namespace PokeViewer.NET
             return content;
         }
 
-        public static string FormOutput(ushort species, int form, out string[] formString)
+        public static string FormOutput(ushort species, byte form, out string[] formString)
         {
             var strings = GameInfo.GetStrings("en");
-            formString = FormConverter.GetFormList(species, strings.Types, strings.forms, GameInfo.GenderSymbolASCII, (EntityContext)(typeof(PK8) == typeof(PK8) ? 8 : 4));
-            if (formString.Length == 0)
+            formString = FormConverter.GetFormList(species, strings.Types, strings.forms, GameInfo.GenderSymbolASCII, typeof(EntityContext) == typeof(PK8) ? EntityContext.Gen8 : EntityContext.Gen4);
+            if (formString.Length is 0)
                 return string.Empty;
 
             formString[0] = "";
             if (form >= formString.Length)
-                form = formString.Length - 1;
+                form = (byte)(formString.Length - 1);
+
             return formString[form].Contains("-") ? formString[form] : formString[form] == "" ? "" : $"-{formString[form]}";
         }
 
-        public static string PokeImg(PKM pkm, bool canGmax, bool fullSize)
+        public static string PokeImg(PKM pkm, bool canGmax)
         {
             bool md = false;
             bool fd = false;
@@ -47,44 +48,44 @@ namespace PokeViewer.NET
             string newbase = string.Empty;
             string dimensions = "128x128";
             baseLink = "https://raw.githubusercontent.com/zyro670/HomeImages/master/128x128/poke_capture_0001_000_mf_n_00000000_f_n.png".Split('_');
-            if (pkm.Species == (int)Species.Sneasel)
+            if (pkm.Species == (ushort)Species.Sneasel)
             {
-                if (pkm.Form == 0)
+                if (pkm.Form is 0)
                 {
-                    if (pkm.Gender == (int)Gender.Male)
+                    if (pkm.Gender is (int)Gender.Male)
                         newbase = $"https://raw.githubusercontent.com/zyro670/HomeImages/master/" + dimensions + "/poke_capture_0215_000_md_n_00000000_f_n.png";
-                    if (pkm.Gender == (int)Gender.Male && pkm.IsShiny)
+                    if (pkm.Gender is (int)Gender.Male && pkm.IsShiny)
                         newbase = $"https://raw.githubusercontent.com/zyro670/HomeImages/master/" + dimensions + "/poke_capture_0215_000_md_n_00000000_f_r.png";
-                    if (pkm.Gender == (int)Gender.Female)
+                    if (pkm.Gender is (int)Gender.Female)
                         newbase = $"https://raw.githubusercontent.com/zyro670/HomeImages/master/" + dimensions + "/poke_capture_0215_000_fd_n_00000000_f_n.png";
-                    if (pkm.Gender == (int)Gender.Female && pkm.IsShiny)
+                    if (pkm.Gender is (int)Gender.Female && pkm.IsShiny)
                         newbase = $"https://raw.githubusercontent.com/zyro670/HomeImages/master/" + dimensions + "/poke_capture_0215_000_fd_n_00000000_f_r.png";
                 }
-                if (pkm.Form == 1)
+                if (pkm.Form is 1)
                 {
-                    if (pkm.Gender == (int)Gender.Male)
+                    if (pkm.Gender is (int)Gender.Male)
                         newbase = $"https://raw.githubusercontent.com/zyro670/HomeImages/master/" + dimensions + "/poke_capture_0215_001_md_n_00000000_f_n.png";
-                    if (pkm.Gender == (int)Gender.Male && pkm.IsShiny)
+                    if (pkm.Gender is (int)Gender.Male && pkm.IsShiny)
                         newbase = $"https://raw.githubusercontent.com/zyro670/HomeImages/master/" + dimensions + "/poke_capture_0215_001_md_n_00000000_f_r.png";
-                    if (pkm.Gender == (int)Gender.Female)
+                    if (pkm.Gender is (int)Gender.Female)
                         newbase = $"https://raw.githubusercontent.com/zyro670/HomeImages/master/" + dimensions + "/poke_capture_0215_001_fd_n_00000000_f_n.png";
-                    if (pkm.Gender == (int)Gender.Female && pkm.IsShiny)
+                    if (pkm.Gender is (int)Gender.Female && pkm.IsShiny)
                         newbase = $"https://raw.githubusercontent.com/zyro670/HomeImages/master/" + dimensions + "/poke_capture_0215_001_fd_n_00000000_f_r.png";
                 }
                 return newbase;
             }
 
-            if (Enum.IsDefined(typeof(GenderDependent), pkm.Species) && !canGmax && pkm.Form == 0)
+            if (Enum.IsDefined(typeof(GenderDependent), pkm.Species) && !canGmax && pkm.Form is 0)
             {
-                if (pkm.Gender == 0 && pkm.Species != (int)Species.Torchic)
+                if (pkm.Gender is 0 && pkm.Species is not (ushort)Species.Torchic)
                     md = true;
                 else fd = true;
             }
 
             int form = pkm.Species switch
             {
-                (int)Species.Sinistea or (int)Species.Polteageist or (int)Species.Rockruff or (int)Species.Mothim => 0,
-                (int)Species.Alcremie when pkm.IsShiny || canGmax => 0,
+                (ushort)Species.Sinistea or (ushort)Species.Polteageist or (ushort)Species.Rockruff or (ushort)Species.Mothim => 0,
+                (ushort)Species.Alcremie when pkm.IsShiny || canGmax => 0,
                 _ => pkm.Form,
 
             };
@@ -93,7 +94,7 @@ namespace PokeViewer.NET
             baseLink[3] = pkm.Form < 10 ? $"00{form}" : $"0{form}";
             baseLink[4] = pkm.PersonalInfo.OnlyFemale ? "fo" : pkm.PersonalInfo.OnlyMale ? "mo" : pkm.PersonalInfo.Genderless ? "uk" : fd ? "fd" : md ? "md" : "mf";
             baseLink[5] = canGmax ? "g" : "n";
-            baseLink[6] = "0000000" + (pkm.Species == (int)Species.Alcremie && !canGmax ? pkm.Data[0xE4] : 0);
+            baseLink[6] = "0000000" + (pkm.Species is (ushort)Species.Alcremie && !canGmax ? pkm.Data[0xE4] : 0);
             baseLink[8] = pkm.IsShiny ? "r.png" : "n.png";
             return string.Join("_", baseLink);
         }

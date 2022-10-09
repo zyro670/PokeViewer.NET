@@ -62,7 +62,7 @@ namespace PokeViewer.NET.WideViewForms
             }
             string output = $"{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{(Species)pk.Species}{form}{gender}{Environment.NewLine}{(Nature)pk.Nature} Nature{Environment.NewLine}Ability: {(Ability)pk.Ability}{Environment.NewLine}Level: {pk.CurrentLevel}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}{Environment.NewLine}{GameInfo.GetStrings(1).Move[pk.Move1]} - {pk.Move1_PP}{Environment.NewLine}{GameInfo.GetStrings(1).Move[pk.Move2]} - {pk.Move2_PP}{Environment.NewLine}{GameInfo.GetStrings(1).Move[pk.Move3]} - {pk.Move3_PP}{Environment.NewLine}{GameInfo.GetStrings(1).Move[pk.Move4]} - {pk.Move4_PP}";
             outputBox[count].Text = output;
-            sprite = PokeImg(pk, isGmax, false);
+            sprite = PokeImg(pk, isGmax);
             boxes[count].Load(sprite);
 
             return;

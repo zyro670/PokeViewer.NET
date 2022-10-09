@@ -1,6 +1,6 @@
 ﻿namespace PokeViewer.NET
 {
-    public enum GenderDependent : int
+    public enum GenderDependent : ushort
     {
         Venusaur = 3,
         Butterfree = 12,
@@ -100,5 +100,5 @@
         Frillish = 592,
         Jellicent = 593,
         Pyroar = 668,
-    }    
+    }
 }

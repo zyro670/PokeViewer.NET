@@ -72,7 +72,7 @@ namespace PokeViewer.NET.WideViewForms
                     }
                     string output = $"{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{(Species)pk.Species}{form}{gender}{pid}{ec}{Environment.NewLine}Ability: {(Ability)pk.Ability}{Environment.NewLine}Nature: {(Nature)pk.Nature}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}";
                     textBox.Add(output);
-                    sprite = PokeImg(pk, pk.CanGigantamax, false);
+                    sprite = PokeImg(pk, pk.CanGigantamax);
                     spriteBox.Add(sprite);
                     d++;
                 }
@@ -96,7 +96,7 @@ namespace PokeViewer.NET.WideViewForms
                     }
                     string output = $"{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{(Species)pk.Species}{form}{gender}{pid}{ec}{Environment.NewLine}Ability: {(Ability)pk.Ability}{Environment.NewLine}Nature: {(Nature)pk.Nature}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}";
                     textBox.Add(output);
-                    sprite = PokeImg(pk, pk.CanGigantamax, false);
+                    sprite = PokeImg(pk, pk.CanGigantamax);
                     spriteBox.Add(sprite);
                     d++;
                 }
