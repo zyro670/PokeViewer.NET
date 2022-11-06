@@ -1,5 +1,6 @@
 ﻿using PKHeX.Core;
 using SysBot.Base;
+using SysBot.Pokemon;
 using System.Net;
 
 namespace PokeViewer.NET
