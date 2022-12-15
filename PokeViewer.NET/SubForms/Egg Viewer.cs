@@ -5,6 +5,7 @@ using static SysBot.Base.SwitchStick;
 using static PokeViewer.NET.RoutineExecutor;
 using PKHeX.Drawing.PokeSprite;
 using System.Text.RegularExpressions;
+using System.Drawing;
 
 namespace PokeViewer.NET.SubForms
 {
@@ -76,7 +77,11 @@ namespace PokeViewer.NET.SubForms
                         eggcount++;
 
                         if (checkBox8.Checked && pk.IsShiny)
-                            DumpPokemon(DumpFolder, "shinyeggs", pk);
+                        {
+                            var b1s1 = await GetPointerAddress("[[[main+43A77C8]+108]+9B0]", token).ConfigureAwait(false);
+                            var dumpmon = await ReadPokemonSV((uint)b1s1, 344, token).ConfigureAwait(false);
+                            DumpPokemon(DumpFolder, "shinyeggs", dumpmon);
+                        }
 
                         string pid = $"{Environment.NewLine}PID: {pk.PID:X8}";
                         string ec = $"{Environment.NewLine}EC: {pk.EncryptionConstant:X8}";
@@ -376,6 +381,7 @@ namespace PokeViewer.NET.SubForms
                 rgx = new Regex("[^a-zA-Z0-9 -]");
                 result = rgx.Replace(result, "");
             }
+            await Click(PLUS, 0_800, token).ConfigureAwait(false);
             await Click(A, 0_800, token).ConfigureAwait(false);
         }
     }
