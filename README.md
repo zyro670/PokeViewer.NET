@@ -2,14 +2,14 @@
 
 This project was designed to make viewing encountered Pokemon convenient through the use of an app that supports across all mainstream Nintendo Switch Pokemon games.
 
-Download the latest build [here](https://dev.azure.com/angelosalas670/zyro670/_build/results?buildId=188&view=artifacts&pathAsName=false&type=publishedArtifacts).
+Download the latest build [here](https://dev.azure.com/angelosalas670/zyro670/_build/results?buildId=197&view=artifacts&pathAsName=false&type=publishedArtifacts).
 
 ![](https://i.imgur.com/Ou6Ndtg.png)
 
 Special credits and thanks to the minds behind the resources used for this project:
 - [LegoFigure11](https://github.com/LegoFigure11) for the skeleton framework of which the app is based off of.
 - [Kurt](https://github.com/kwsch) for SysBot.Base connectivity, SysBot.NET and PKHeX through which various routines and Poketasks were modified for this project.
-- [architdate](https://github.com/architdate) for ParsePointer and various tasks for Box Viewing modified for this project.
+- [architdate](https://github.com/architdate) for GetPointerAddress and various tasks for Box Viewing modified for this project.
 - [Lusamine](https://github.com/Lusamine) for various Poketasks across game versions, image dumps, and data offsets.
 - [Koi-3088](https://github.com/Koi-3088) for the assistance with many of the implementations as well as PokeImg and FormOutput.
 - [sora10pls](https://github.com/sora10pls) for image and texture dumps.
