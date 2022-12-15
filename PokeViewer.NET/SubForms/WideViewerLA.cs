@@ -39,7 +39,7 @@ namespace PokeViewer.NET.WideViewForms
                         case 3: value = "1B0"; break;
                         case 4: value = "210"; break;
                     }
-                    ofs = await ParsePointer($"[[[[[main+42A6F00]+98]+{value}]+10]+58]", CancellationToken.None).ConfigureAwait(false);
+                    ofs = await GetPointerAddress($"[[[[[main+42A6F00]+98]+{value}]+10]+58]", CancellationToken.None).ConfigureAwait(false);
                     pk = await ReadInBattlePokemonLA(ofs, size).ConfigureAwait(false);
                     LASanityCheck(pk, i);
                 }
@@ -76,7 +76,7 @@ namespace PokeViewer.NET.WideViewForms
             }
             string output = $"{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{isAlpha}{(Species)pk.Species}{form}{gender}{pid}{ec}{Environment.NewLine}Nature: {(Nature)pk.Nature}{Environment.NewLine}Ability: {(Ability)pk.Ability}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}";
             outputBox[count].Text = output;
-            sprite = PokeImg(pk, false);
+            sprite = PokeImg(pk, false, 6);
             boxes[count].Load(sprite);
             if (pk.IsAlpha)
             {
@@ -101,18 +101,18 @@ namespace PokeViewer.NET.WideViewForms
             return pk;
         }
 
-        public async Task<ulong> ParsePointer(string pointer, CancellationToken token, bool heaprealtive = false) //Code from LiveHex
+        public async Task<ulong> GetPointerAddress(string pointer, CancellationToken token, bool heaprealtive = false) //Code from LiveHex
         {
             var ptr = pointer;
             if (string.IsNullOrWhiteSpace(ptr) || ptr.IndexOfAny(new char[] { '-', '/', '*' }) != -1)
                 return 0;
             while (ptr.Contains("]]"))
                 ptr = ptr.Replace("]]", "]+0]");
-            uint? finadd = null;
+            uint finadd = 0;
             if (!ptr.EndsWith("]"))
             {
                 finadd = Util.GetHexValue(ptr.Split('+').Last());
-                ptr = ptr.Substring(0, ptr.LastIndexOf('+'));
+                ptr = ptr[..ptr.LastIndexOf('+')];
             }
             var jumps = ptr.Replace("main", "").Replace("[", "").Replace("]", "").Split(new[] { "+" }, StringSplitOptions.RemoveEmptyEntries);
             if (jumps.Length == 0)
@@ -127,7 +127,7 @@ namespace PokeViewer.NET.WideViewForms
                     continue;
                 address = BitConverter.ToUInt64(await SwitchConnection.ReadBytesAbsoluteAsync(address + val, 0x8, token).ConfigureAwait(false), 0);
             }
-            if (finadd != null) address += (ulong)finadd;
+            address += finadd;
             if (heaprealtive)
             {
                 ulong heap = await SwitchConnection.GetHeapBaseAsync(token);

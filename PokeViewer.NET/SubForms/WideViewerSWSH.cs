@@ -2,6 +2,7 @@
 using PokeViewer.NET.Properties;
 using SysBot.Base;
 using static PokeViewer.NET.RoutineExecutor;
+using static SysBot.Base.SwitchButton;
 
 namespace PokeViewer.NET.WideViewForms
 {
@@ -29,9 +30,9 @@ namespace PokeViewer.NET.WideViewForms
 
         public async Task OverworldSaveGame(CancellationToken token)
         {
-            await Click(SwitchButton.X, 1_000, token).ConfigureAwait(false);
-            await Click(SwitchButton.R, 2_000, token).ConfigureAwait(false);
-            await Click(SwitchButton.A, 3_500, token).ConfigureAwait(false);
+            await Click(X, 1_000, token).ConfigureAwait(false);
+            await Click(R, 2_000, token).ConfigureAwait(false);
+            await Click(A, 3_500, token).ConfigureAwait(false);
         }
 
         private async Task<uint> GetOverworldOffsets(CancellationToken token)
@@ -160,7 +161,7 @@ namespace PokeViewer.NET.WideViewForms
 
                 textBox.Add(log);
                 bool canGmax = new ShowdownSet(ShowdownParsing.GetShowdownText(pk)).CanGigantamax;
-                var sprite = PokeImg(pk, canGmax);
+                var sprite = PokeImg(pk, canGmax, GameType);
                 spriteBox.Add(sprite);
                 if (!string.IsNullOrEmpty(msg))             
                     url = $"https://raw.githubusercontent.com/kwsch/PKHeX/master/PKHeX.Drawing.Misc/Resources/img/ribbons/ribbonmark{msg.Replace($"{Environment.NewLine}Mark: ", "").ToLower()}.png";

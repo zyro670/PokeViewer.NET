@@ -33,6 +33,7 @@ namespace PokeViewer.NET
                 case (int)GameSelected.BD or (int)GameSelected.SP: vers = "PokeViewer.NET - Box Viewer (BDSP)"; break;
                 case (int)GameSelected.LA: vers = "PokeViewer.NET - Box Viewer (LA)"; break;
                 case (int)GameSelected.LGP or (int)GameSelected.LGE: vers = "PokeViewer.NET - Box Viewer (LGPE)"; break;
+                case (int)GameSelected.Scarlet or (int)GameSelected.Violet: vers = "PokeViewer.NET - Box Viewer (SV)"; break;
             }
             return vers;
         }
@@ -48,6 +49,11 @@ namespace PokeViewer.NET
             var size = 0x168;
             switch (GameType)
             {
+                case (int)GameSelected.Scarlet or (int)GameSelected.Violet:
+                    {
+                        size = 0x158;
+                        break;
+                    }
                 case (int)GameSelected.LA:
                     {
                         size = 0x168;
@@ -91,17 +97,29 @@ namespace PokeViewer.NET
                 pictureBox21, pictureBox22, pictureBox23, pictureBox24, pictureBox25, pictureBox26, pictureBox27, pictureBox28, pictureBox29, pictureBox30 
             };
             var box = boxnumber - 1;
-            PKM pk = new PK8();
+            PKM pk = new PK9();
             button1.Text = "Reading...";
             button1.Enabled = false;
             for (int i = 0; i < 30; i++)
             {
                 switch (GameType)
                 {
+                    case (int)GameSelected.Scarlet or (int)GameSelected.Violet:
+                        {
+                            var slotsize = 344;
+                            var b1s1 = await GetPointerAddress("[[[main+43A77C8]+108]+9B0]", token).ConfigureAwait(false);
+                            var boxsize = 30 * slotsize;
+                            var boxStart = b1s1 + (ulong)(box * boxsize);
+                            var slotstart = boxStart + (ulong)(i * slotsize);
+                            
+                            pk = await ReadBoxPokemonSV(slotstart, size, token).ConfigureAwait(false);
+
+                            break;
+                        }
                     case (int)GameSelected.LA:
                         {
                             var slotsize = 360;
-                            var b1s1 = await ParsePointer("[[main+42BA6B0]+1F0]+68", token).ConfigureAwait(false);
+                            var b1s1 = await GetPointerAddress("[[main+42BA6B0]+1F0]+68", token).ConfigureAwait(false);
                             var boxsize = 30 * slotsize;
                             var boxStart = b1s1 + (ulong)(box * boxsize);
                             var slotstart = boxStart + (ulong)(i * slotsize);
@@ -131,7 +149,8 @@ namespace PokeViewer.NET
                             break;
                         }
                     case (int)GameSelected.SW or (int)GameSelected.SH:
-                        {                            
+                        {
+                            _ = new PK8();
                             pk = await ReadBoxPokemonSWSH((uint)(offset + (size * i + (size * 30 * box))), size, token).ConfigureAwait(false);
                             break;
                         }
@@ -185,7 +204,7 @@ namespace PokeViewer.NET
                     if (pk.Species == (int)Species.Eevee || pk.Species == (int)Species.Pikachu)
                         pk.Form = 0;
                 }
-                var sprite = PokeImg(pk, isGmax);
+                var sprite = PokeImg(pk, isGmax, GameType);
                 boxes[i].Load(sprite);
             }
             button1.Text = "View";
@@ -203,6 +222,13 @@ namespace PokeViewer.NET
         {        
             var data = await SwitchConnection.ReadBytesAsync(offset, size, token).ConfigureAwait(false);
             var pk = new PK8(data);
+            return pk;
+        }
+
+        private async Task<PK9> ReadBoxPokemonSV(ulong offset, int size, CancellationToken token)
+        {
+            var data = await SwitchConnection.ReadBytesAbsoluteAsync(offset, size, token).ConfigureAwait(false);
+            var pk = new PK9(data);
             return pk;
         }
 
@@ -272,6 +298,11 @@ namespace PokeViewer.NET
             var size = 0x168;
             switch (GameType)
             {
+                case (int)GameSelected.Scarlet or (int)GameSelected.Violet:
+                    {
+                        size = 0x158;
+                        break;
+                    }
                 case (int)GameSelected.LA:
                     {
                         size = 0x168;
@@ -323,6 +354,11 @@ namespace PokeViewer.NET
             var size = 0x168;
             switch (GameType)
             {
+                case (int)GameSelected.Scarlet or (int)GameSelected.Violet:
+                    {
+                        size = 0x158;
+                        break;
+                    }
                 case (int)GameSelected.LA:
                     {
                         size = 0x168;
@@ -362,18 +398,18 @@ namespace PokeViewer.NET
             ReadInProgress = false;
         }
 
-        private async Task<ulong> ParsePointer(string pointer, CancellationToken token, bool heaprealtive = false) //Code from LiveHex
+        public async Task<ulong> GetPointerAddress(string pointer, CancellationToken token, bool heaprealtive = false) //Code from LiveHex
         {
             var ptr = pointer;
             if (string.IsNullOrWhiteSpace(ptr) || ptr.IndexOfAny(new char[] { '-', '/', '*' }) != -1)
                 return 0;
             while (ptr.Contains("]]"))
                 ptr = ptr.Replace("]]", "]+0]");
-            uint? finadd = null;
+            uint finadd = 0;
             if (!ptr.EndsWith("]"))
             {
                 finadd = Util.GetHexValue(ptr.Split('+').Last());
-                ptr = ptr.Substring(0, ptr.LastIndexOf('+'));
+                ptr = ptr[..ptr.LastIndexOf('+')];
             }
             var jumps = ptr.Replace("main", "").Replace("[", "").Replace("]", "").Split(new[] { "+" }, StringSplitOptions.RemoveEmptyEntries);
             if (jumps.Length == 0)
@@ -388,7 +424,7 @@ namespace PokeViewer.NET
                     continue;
                 address = BitConverter.ToUInt64(await SwitchConnection.ReadBytesAbsoluteAsync(address + val, 0x8, token).ConfigureAwait(false), 0);
             }
-            if (finadd != null) address += (ulong)finadd;
+            address += finadd;
             if (heaprealtive)
             {
                 ulong heap = await SwitchConnection.GetHeapBaseAsync(token);
@@ -502,5 +538,6 @@ namespace PokeViewer.NET
                 form.ShowDialog();
             }            
         }
+
     }
 }

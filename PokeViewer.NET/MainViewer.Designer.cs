@@ -36,7 +36,6 @@
             this.PokeSprite = new System.Windows.Forms.PictureBox();
             this.Specialty = new System.Windows.Forms.PictureBox();
             this.OriginIcon = new System.Windows.Forms.PictureBox();
-            this.ScreenShot = new System.Windows.Forms.CheckBox();
             this.Typing1 = new System.Windows.Forms.PictureBox();
             this.HidePIDEC = new System.Windows.Forms.CheckBox();
             this.Typing2 = new System.Windows.Forms.PictureBox();
@@ -53,6 +52,8 @@
             this.BoxViewer = new System.Windows.Forms.Button();
             this.TrainerView = new System.Windows.Forms.Button();
             this.DayCareView = new System.Windows.Forms.Button();
+            this.OverworldView = new System.Windows.Forms.Button();
+            this.InGameScreenshot = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.PokeSprite)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Specialty)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.OriginIcon)).BeginInit();
@@ -62,19 +63,19 @@
             // 
             // Connect
             // 
-            this.Connect.Location = new System.Drawing.Point(127, 7);
+            this.Connect.Location = new System.Drawing.Point(19, 32);
             this.Connect.Name = "Connect";
-            this.Connect.Size = new System.Drawing.Size(25, 25);
+            this.Connect.Size = new System.Drawing.Size(75, 25);
             this.Connect.TabIndex = 0;
-            this.Connect.Text = "✔";
+            this.Connect.Text = "Connect";
             this.Connect.UseVisualStyleBackColor = true;
             this.Connect.Click += new System.EventHandler(this.Connect_Click);
             // 
             // SwitchIP
             // 
-            this.SwitchIP.Location = new System.Drawing.Point(12, 8);
+            this.SwitchIP.Location = new System.Drawing.Point(19, 6);
             this.SwitchIP.Name = "SwitchIP";
-            this.SwitchIP.Size = new System.Drawing.Size(114, 23);
+            this.SwitchIP.Size = new System.Drawing.Size(128, 23);
             this.SwitchIP.TabIndex = 2;
             this.SwitchIP.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.SwitchIP.TextChanged += new System.EventHandler(this.CheckForIP);
@@ -82,7 +83,7 @@
             // View
             // 
             this.View.Enabled = false;
-            this.View.Location = new System.Drawing.Point(163, 233);
+            this.View.Location = new System.Drawing.Point(178, 261);
             this.View.Name = "View";
             this.View.Size = new System.Drawing.Size(47, 23);
             this.View.TabIndex = 3;
@@ -96,7 +97,7 @@
             this.ViewBox.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.ViewBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.ViewBox.ForeColor = System.Drawing.SystemColors.InfoText;
-            this.ViewBox.Location = new System.Drawing.Point(12, 72);
+            this.ViewBox.Location = new System.Drawing.Point(19, 100);
             this.ViewBox.Multiline = true;
             this.ViewBox.Name = "ViewBox";
             this.ViewBox.ReadOnly = true;
@@ -109,7 +110,7 @@
             // 
             this.PokeSprite.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.PokeSprite.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.PokeSprite.Location = new System.Drawing.Point(199, 72);
+            this.PokeSprite.Location = new System.Drawing.Point(222, 100);
             this.PokeSprite.Name = "PokeSprite";
             this.PokeSprite.Size = new System.Drawing.Size(161, 142);
             this.PokeSprite.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
@@ -118,7 +119,7 @@
             // 
             // Specialty
             // 
-            this.Specialty.Location = new System.Drawing.Point(163, 260);
+            this.Specialty.Location = new System.Drawing.Point(178, 288);
             this.Specialty.Name = "Specialty";
             this.Specialty.Size = new System.Drawing.Size(47, 41);
             this.Specialty.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -129,27 +130,16 @@
             // 
             this.OriginIcon.ImageLocation = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/OriginMarks/icon_gene" +
     "ration_00%5Esb.png";
-            this.OriginIcon.Location = new System.Drawing.Point(154, 3);
+            this.OriginIcon.Location = new System.Drawing.Point(169, 31);
             this.OriginIcon.Name = "OriginIcon";
             this.OriginIcon.Size = new System.Drawing.Size(64, 64);
             this.OriginIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.OriginIcon.TabIndex = 10;
             this.OriginIcon.TabStop = false;
             // 
-            // ScreenShot
-            // 
-            this.ScreenShot.AutoSize = true;
-            this.ScreenShot.Location = new System.Drawing.Point(12, 51);
-            this.ScreenShot.Name = "ScreenShot";
-            this.ScreenShot.Size = new System.Drawing.Size(85, 19);
-            this.ScreenShot.TabIndex = 11;
-            this.ScreenShot.Text = "ScreenShot";
-            this.ScreenShot.UseVisualStyleBackColor = true;
-            this.ScreenShot.Visible = false;
-            // 
             // Typing1
             // 
-            this.Typing1.Location = new System.Drawing.Point(216, 234);
+            this.Typing1.Location = new System.Drawing.Point(239, 262);
             this.Typing1.Name = "Typing1";
             this.Typing1.Size = new System.Drawing.Size(144, 27);
             this.Typing1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -159,7 +149,7 @@
             // HidePIDEC
             // 
             this.HidePIDEC.AutoSize = true;
-            this.HidePIDEC.Location = new System.Drawing.Point(12, 33);
+            this.HidePIDEC.Location = new System.Drawing.Point(19, 65);
             this.HidePIDEC.Name = "HidePIDEC";
             this.HidePIDEC.Size = new System.Drawing.Size(91, 19);
             this.HidePIDEC.TabIndex = 13;
@@ -170,7 +160,7 @@
             // 
             // Typing2
             // 
-            this.Typing2.Location = new System.Drawing.Point(217, 267);
+            this.Typing2.Location = new System.Drawing.Point(240, 295);
             this.Typing2.Name = "Typing2";
             this.Typing2.Size = new System.Drawing.Size(143, 26);
             this.Typing2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -180,7 +170,7 @@
             // LiveStats
             // 
             this.LiveStats.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.LiveStats.Location = new System.Drawing.Point(12, 234);
+            this.LiveStats.Location = new System.Drawing.Point(19, 262);
             this.LiveStats.Multiline = true;
             this.LiveStats.Name = "LiveStats";
             this.LiveStats.ReadOnly = true;
@@ -192,7 +182,7 @@
             // RefreshStats
             // 
             this.RefreshStats.AutoSize = true;
-            this.RefreshStats.Location = new System.Drawing.Point(12, 215);
+            this.RefreshStats.Location = new System.Drawing.Point(19, 243);
             this.RefreshStats.Name = "RefreshStats";
             this.RefreshStats.Size = new System.Drawing.Size(72, 19);
             this.RefreshStats.TabIndex = 16;
@@ -202,7 +192,7 @@
             // 
             // RefreshBox
             // 
-            this.RefreshBox.Location = new System.Drawing.Point(95, 303);
+            this.RefreshBox.Location = new System.Drawing.Point(102, 331);
             this.RefreshBox.Name = "RefreshBox";
             this.RefreshBox.Size = new System.Drawing.Size(45, 23);
             this.RefreshBox.TabIndex = 17;
@@ -213,7 +203,7 @@
             // Refresh
             // 
             this.Refresh.AutoSize = true;
-            this.Refresh.Location = new System.Drawing.Point(17, 307);
+            this.Refresh.Location = new System.Drawing.Point(24, 335);
             this.Refresh.Name = "Refresh";
             this.Refresh.Size = new System.Drawing.Size(75, 15);
             this.Refresh.TabIndex = 18;
@@ -223,7 +213,7 @@
             // TodaysDate
             // 
             this.TodaysDate.AutoSize = true;
-            this.TodaysDate.Location = new System.Drawing.Point(226, 307);
+            this.TodaysDate.Location = new System.Drawing.Point(249, 335);
             this.TodaysDate.Name = "TodaysDate";
             this.TodaysDate.Size = new System.Drawing.Size(57, 15);
             this.TodaysDate.TabIndex = 19;
@@ -232,7 +222,7 @@
             // WindowCapture
             // 
             this.WindowCapture.Image = ((System.Drawing.Image)(resources.GetObject("WindowCapture.Image")));
-            this.WindowCapture.Location = new System.Drawing.Point(168, 303);
+            this.WindowCapture.Location = new System.Drawing.Point(110, 32);
             this.WindowCapture.Name = "WindowCapture";
             this.WindowCapture.Size = new System.Drawing.Size(37, 25);
             this.WindowCapture.TabIndex = 20;
@@ -242,7 +232,7 @@
             // HpLabel
             // 
             this.HpLabel.AutoSize = true;
-            this.HpLabel.Location = new System.Drawing.Point(99, 216);
+            this.HpLabel.Location = new System.Drawing.Point(106, 244);
             this.HpLabel.Name = "HpLabel";
             this.HpLabel.Size = new System.Drawing.Size(63, 15);
             this.HpLabel.TabIndex = 21;
@@ -251,7 +241,7 @@
             // UniqueBox
             // 
             this.UniqueBox.AutoSize = true;
-            this.UniqueBox.Location = new System.Drawing.Point(217, 215);
+            this.UniqueBox.Location = new System.Drawing.Point(240, 243);
             this.UniqueBox.Name = "UniqueBox";
             this.UniqueBox.Size = new System.Drawing.Size(84, 19);
             this.UniqueBox.TabIndex = 22;
@@ -261,7 +251,7 @@
             // UniqueBox2
             // 
             this.UniqueBox2.AutoSize = true;
-            this.UniqueBox2.Location = new System.Drawing.Point(291, 215);
+            this.UniqueBox2.Location = new System.Drawing.Point(314, 243);
             this.UniqueBox2.Name = "UniqueBox2";
             this.UniqueBox2.Size = new System.Drawing.Size(90, 19);
             this.UniqueBox2.TabIndex = 23;
@@ -271,7 +261,7 @@
             // WideView
             // 
             this.WideView.Enabled = false;
-            this.WideView.Location = new System.Drawing.Point(294, 11);
+            this.WideView.Location = new System.Drawing.Point(316, 64);
             this.WideView.Name = "WideView";
             this.WideView.Size = new System.Drawing.Size(75, 25);
             this.WideView.TabIndex = 24;
@@ -282,7 +272,7 @@
             // 
             // BoxViewer
             // 
-            this.BoxViewer.Location = new System.Drawing.Point(219, 11);
+            this.BoxViewer.Location = new System.Drawing.Point(235, 64);
             this.BoxViewer.Name = "BoxViewer";
             this.BoxViewer.Size = new System.Drawing.Size(75, 25);
             this.BoxViewer.TabIndex = 25;
@@ -293,7 +283,7 @@
             // 
             // TrainerView
             // 
-            this.TrainerView.Location = new System.Drawing.Point(219, 40);
+            this.TrainerView.Location = new System.Drawing.Point(233, 4);
             this.TrainerView.Name = "TrainerView";
             this.TrainerView.Size = new System.Drawing.Size(75, 25);
             this.TrainerView.TabIndex = 26;
@@ -304,20 +294,44 @@
             // 
             // DayCareView
             // 
-            this.DayCareView.Location = new System.Drawing.Point(294, 40);
+            this.DayCareView.Location = new System.Drawing.Point(314, 4);
             this.DayCareView.Name = "DayCareView";
             this.DayCareView.Size = new System.Drawing.Size(75, 25);
             this.DayCareView.TabIndex = 27;
-            this.DayCareView.Text = "DayCare";
+            this.DayCareView.Text = "Egg View";
             this.DayCareView.UseVisualStyleBackColor = true;
             this.DayCareView.Visible = false;
+            this.DayCareView.Click += new System.EventHandler(this.DayCareView_Click);
+            // 
+            // OverworldView
+            // 
+            this.OverworldView.Location = new System.Drawing.Point(263, 35);
+            this.OverworldView.Name = "OverworldView";
+            this.OverworldView.Size = new System.Drawing.Size(106, 23);
+            this.OverworldView.TabIndex = 29;
+            this.OverworldView.Text = "Overworld View";
+            this.OverworldView.UseVisualStyleBackColor = true;
+            this.OverworldView.Visible = false;
+            this.OverworldView.Click += new System.EventHandler(this.OverworldView_Click);
+            // 
+            // InGameScreenshot
+            // 
+            this.InGameScreenshot.Image = ((System.Drawing.Image)(resources.GetObject("InGameScreenshot.Image")));
+            this.InGameScreenshot.Location = new System.Drawing.Point(110, 59);
+            this.InGameScreenshot.Name = "InGameScreenshot";
+            this.InGameScreenshot.Size = new System.Drawing.Size(37, 25);
+            this.InGameScreenshot.TabIndex = 30;
+            this.InGameScreenshot.UseVisualStyleBackColor = true;
+            this.InGameScreenshot.Click += new System.EventHandler(this.InGameScreenshot_Click);
             // 
             // MainViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.ClientSize = new System.Drawing.Size(372, 330);
+            this.ClientSize = new System.Drawing.Size(405, 392);
+            this.Controls.Add(this.InGameScreenshot);
+            this.Controls.Add(this.OverworldView);
             this.Controls.Add(this.DayCareView);
             this.Controls.Add(this.TrainerView);
             this.Controls.Add(this.BoxViewer);
@@ -332,7 +346,6 @@
             this.Controls.Add(this.RefreshStats);
             this.Controls.Add(this.LiveStats);
             this.Controls.Add(this.HidePIDEC);
-            this.Controls.Add(this.ScreenShot);
             this.Controls.Add(this.OriginIcon);
             this.Controls.Add(this.Specialty);
             this.Controls.Add(this.PokeSprite);
@@ -367,7 +380,6 @@
         private PictureBox PokeSprite;
         private PictureBox Specialty;
         private PictureBox OriginIcon;
-        private CheckBox ScreenShot;
         private PictureBox Typing1;
         private CheckBox HidePIDEC;
         private PictureBox Typing2;
@@ -384,5 +396,7 @@
         private Button BoxViewer;
         private Button TrainerView;
         private Button DayCareView;
+        private Button OverworldView;
+        private Button InGameScreenshot;
     }
 }

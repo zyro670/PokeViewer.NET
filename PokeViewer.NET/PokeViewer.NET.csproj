@@ -19,10 +19,6 @@
   <ItemGroup>
     <EmbeddedResource Remove="SubForms\WideViewerLGPE.resx" />
   </ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="PKHeX.Core" Version="22.9.13" />
-	</ItemGroup>
 	
 	<ItemGroup>
 		<Reference Include="SysBot.Base">
@@ -36,6 +32,9 @@
 		</Reference>
 		<Reference Include="PKHeX.Drawing.PokeSprite">
 			<HintPath>deps\PKHeX.Drawing.PokeSprite.dll</HintPath>
+		</Reference>
+		<Reference Include="PKHeX.Core">
+			<HintPath>deps\PKHeX.Core.dll</HintPath>
 		</Reference>
 	</ItemGroup>
 	<ItemGroup>
