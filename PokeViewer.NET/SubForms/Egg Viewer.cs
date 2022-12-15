@@ -128,7 +128,8 @@ namespace PokeViewer.NET.SubForms
                             return;
                         }
 
-                        await Click(A, 1_200, token).ConfigureAwait(false);
+                        await Task.Delay(1_000, token).ConfigureAwait(false);
+                        await Click(A, 1_500, token).ConfigureAwait(false);
                         await Click(A, 1_000, token).ConfigureAwait(false);
 
                         await GetDialogueAction(token).ConfigureAwait(false);
