@@ -97,7 +97,7 @@ namespace PokeViewer.NET.SubForms
                             EnableOptions();
                             return;
                         }
-                        await Click(PLUS, 0_500, token).ConfigureAwait(false); // Misc click
+                        await Click(MINUS, 0_500, token).ConfigureAwait(false); // Misc click
                         await Click(A, 2_500, token).ConfigureAwait(false);
                         await Click(A, 1_000, token).ConfigureAwait(false);
 
@@ -199,18 +199,18 @@ namespace PokeViewer.NET.SubForms
             await SetStick(LEFT, 0, 30000, 0_700, token).ConfigureAwait(false); // Navigate to ingredients
             await SetStick(LEFT, 0, 0, 0, token).ConfigureAwait(false);
 
-            ofs = await GetPointerAddress("[[[[[main+43A7550]+20]+400]+48]+F0]+02", token).ConfigureAwait(false);
-            var text = await SwitchConnection.ReadBytesAbsoluteAsync(ofs, 1, token).ConfigureAwait(false);
-            string result = System.Text.Encoding.ASCII.GetString(text);
-
             for (int i = 0; i < 5; i++)
                 await Click(A, 0_500, token).ConfigureAwait(false);
+
+            ofs = await GetPointerAddress("[[[[[main+43A7550]+20]+400]+48]+F0]+02", token).ConfigureAwait(false);
+            var text = await SwitchConnection.ReadBytesAbsoluteAsync(ofs, 1, token).ConfigureAwait(false);
+            string result = Encoding.ASCII.GetString(text);
 
             while (result == "?")
             {
                 await Click(A, 3_000, token).ConfigureAwait(false);
                 text = await SwitchConnection.ReadBytesAbsoluteAsync(ofs, 1, token).ConfigureAwait(false);
-                result = System.Text.Encoding.ASCII.GetString(text);
+                result = Encoding.ASCII.GetString(text);
             }
 
             if (result != "?") //t
@@ -289,7 +289,6 @@ namespace PokeViewer.NET.SubForms
             string form = pk.Form > 0 ? $"-{pk.Form:00}" : string.Empty;
             string ballFormatted = string.Empty;
             string shinytype = string.Empty;
-            string marktype = string.Empty;
             if (pk.IsShiny)
             {
                 if (pk.Format >= 8 && (pk.ShinyXor == 0 || pk.FatefulEncounter || pk.Version == (int)GameVersion.GO))
@@ -311,7 +310,7 @@ namespace PokeViewer.NET.SubForms
 
             string OTInfo = string.IsNullOrEmpty(pk.OT_Name) ? "" : $" - {pk.OT_Name} - {TIDFormatted}{ballFormatted}";
 
-            string filename = $"{pk.Species:000}{form}{shinytype} - {speciesName} - {marktype}{IVList}{OTInfo} - {pk.EncryptionConstant:X8}";
+            string filename = $"{pk.Species:000}{form}{shinytype} - {speciesName} - {IVList}{OTInfo} - {pk.EncryptionConstant:X8}";
             string filetype = "";
             if (pk is PK9)
                 filetype = ".pk9";
@@ -351,6 +350,12 @@ namespace PokeViewer.NET.SubForms
                             await SetBoxPokemon(Blank, InjectBox, InjectSlot, token).ConfigureAwait(false);
                             break;
                         }
+                    case "Yo":
+                        {
+                            await Click(MINUS, 0_800, token).ConfigureAwait(false);
+                            await Click(A, 0_800, token).ConfigureAwait(false);
+                            break;
+                        }
                 };
                 if (checkBox8.Checked && pk.IsShiny)
                 {
@@ -371,7 +376,7 @@ namespace PokeViewer.NET.SubForms
                 rgx = new Regex("[^a-zA-Z0-9 -]");
                 result = rgx.Replace(result, "");
             }
-            await Click(PLUS, 0_800, token).ConfigureAwait(false);
+            await Click(MINUS, 0_800, token).ConfigureAwait(false);
             await Click(A, 0_800, token).ConfigureAwait(false);
         }
 

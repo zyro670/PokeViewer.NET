@@ -39,7 +39,6 @@ namespace PokeViewer.NET.SubForms
             var ads = await GetPointerAddress($"[{ptr}+{0x4320 + 8:X}]", token);
             var val = await SwitchConnection.ReadBytesAbsoluteAsync(ads, 0x2490, token);
 
-            var size = 344;
             for (int i = 0; i < 8; i++)
             {
                 var adata = val.Slice(0 + (i * 0x150), 344);                                
