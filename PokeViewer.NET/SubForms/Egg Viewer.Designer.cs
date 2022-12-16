@@ -263,9 +263,9 @@
             this.checkBox8.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox8.Location = new System.Drawing.Point(180, 11);
             this.checkBox8.Name = "checkBox8";
-            this.checkBox8.Size = new System.Drawing.Size(124, 19);
+            this.checkBox8.Size = new System.Drawing.Size(92, 19);
             this.checkBox8.TabIndex = 25;
-            this.checkBox8.Text = "Dump Shiny Eggs?";
+            this.checkBox8.Text = "Dump Eggs?";
             this.checkBox8.UseVisualStyleBackColor = true;
             // 
             // label7
