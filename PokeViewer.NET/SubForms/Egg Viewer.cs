@@ -5,7 +5,6 @@ using static SysBot.Base.SwitchStick;
 using static PokeViewer.NET.RoutineExecutor;
 using PKHeX.Drawing.PokeSprite;
 using System.Text.RegularExpressions;
-using System.Drawing;
 
 namespace PokeViewer.NET.SubForms
 {
@@ -46,16 +45,8 @@ namespace PokeViewer.NET.SubForms
             PK9 pkprev = new();
 
             if (button1.Enabled == true)
-            {
-                button1.Enabled = false;
-                textBox2.Enabled = false;
-                textBox3.Enabled = false;
-                textBox4.Enabled = false;
-                textBox5.Enabled = false;
-                checkBox5.Enabled = false;
-                checkBox6.Enabled = false;
-                checkBox7.Enabled = false;
-            }
+                DisableOptions();
+
             while (!token.IsCancellationRequested)
             {
                 var time = Convert.ToDouble(textBox5.Text);
@@ -79,7 +70,7 @@ namespace PokeViewer.NET.SubForms
                         if (checkBox8.Checked && pk.IsShiny)
                         {
                             var b1s1 = await GetPointerAddress("[[[main+43A77C8]+108]+9B0]", token).ConfigureAwait(false);
-                            var dumpmon = await ReadPokemonSV((uint)b1s1, 344, token).ConfigureAwait(false);
+                            var dumpmon = await ReadBoxPokemonSV(b1s1, 344, token).ConfigureAwait(false);
                             DumpPokemon(DumpFolder, "shinyeggs", dumpmon);
                         }
 
@@ -105,26 +96,12 @@ namespace PokeViewer.NET.SubForms
                             if ((Species)pk.Species == Species.Dunsparce && pk.EncryptionConstant % 100 == 0 && checkBox2.Checked)
                             {
                                 label3.Text = $"Shiny 3 segment!";
-                                button1.Enabled = true;
-                                textBox2.Enabled = true;
-                                textBox3.Enabled = true;
-                                textBox4.Enabled = true;
-                                textBox5.Enabled = true;
-                                checkBox5.Enabled = true;
-                                checkBox6.Enabled = true;
-                                checkBox7.Enabled = true;
+                                EnableOptions();
                                 return;
                             }
 
                             label3.Text = $"Match found!";
-                            button1.Enabled = true;
-                            textBox2.Enabled = true;
-                            textBox3.Enabled = true;
-                            textBox4.Enabled = true;
-                            textBox5.Enabled = true;
-                            checkBox5.Enabled = true;
-                            checkBox6.Enabled = true;
-                            checkBox7.Enabled = true;
+                            EnableOptions();
                             return;
                         }
 
@@ -244,7 +221,7 @@ namespace PokeViewer.NET.SubForms
                 result = System.Text.Encoding.ASCII.GetString(text);
             }
 
-            if (result == "t")
+            if (result != "?") //t
             {
                 await Task.Delay(2_500, token).ConfigureAwait(false);
                 await Click(B, 1_000, token).ConfigureAwait(false);
@@ -258,6 +235,13 @@ namespace PokeViewer.NET.SubForms
             var ofs = await GetPointerAddress("[[[main+43A77C8]+108]+9B0]", token).ConfigureAwait(false);
             pkm.ResetPartyStats();
             await SwitchConnection.WriteBytesAbsoluteAsync(pkm.EncryptedPartyData, ofs, token).ConfigureAwait(false);
+        }
+
+        private async Task<PK9> ReadBoxPokemonSV(ulong offset, int size, CancellationToken token)
+        {
+            var data = await SwitchConnection.ReadBytesAbsoluteAsync(offset, size, token).ConfigureAwait(false);
+            var pk = new PK9(data);
+            return pk;
         }
 
         public new async Task Click(SwitchButton b, int delay, CancellationToken token)
@@ -385,5 +369,30 @@ namespace PokeViewer.NET.SubForms
             await Click(PLUS, 0_800, token).ConfigureAwait(false);
             await Click(A, 0_800, token).ConfigureAwait(false);
         }
+
+        private void DisableOptions()
+        {
+            button1.Enabled = false;
+            textBox2.Enabled = false;
+            textBox3.Enabled = false;
+            textBox4.Enabled = false;
+            textBox5.Enabled = false;
+            checkBox5.Enabled = false;
+            checkBox6.Enabled = false;
+            checkBox7.Enabled = false;
+        }
+
+        private void EnableOptions()
+        {
+            button1.Enabled = true;
+            textBox2.Enabled = true;
+            textBox3.Enabled = true;
+            textBox4.Enabled = true;
+            textBox5.Enabled = true;
+            checkBox5.Enabled = true;
+            checkBox6.Enabled = true;
+            checkBox7.Enabled = true;
+        }
+
     }
 }
