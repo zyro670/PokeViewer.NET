@@ -6,6 +6,7 @@ using static PokeViewer.NET.RoutineExecutor;
 using PKHeX.Drawing.PokeSprite;
 using System.Text.RegularExpressions;
 using System.Text;
+using Timer = System.Windows.Forms.Timer;
 
 namespace PokeViewer.NET.SubForms
 {
@@ -13,6 +14,7 @@ namespace PokeViewer.NET.SubForms
     {
         private readonly static SwitchConnectionConfig Config = new() { Protocol = SwitchProtocol.WiFi, IP = Properties.Settings.Default.SwitchIP, Port = 6000 };
         public SwitchSocketAsync SwitchConnection = new(Config);
+        private FormWindowState _WindowState;
         public Egg_Viewer()
         {
             InitializeComponent();
@@ -50,10 +52,11 @@ namespace PokeViewer.NET.SubForms
 
             while (!token.IsCancellationRequested)
             {
-                var time = Convert.ToDouble(textBox5.Text);
+                var time = Convert.ToInt32(textBox5.Text);
                 DateTime currentTime = DateTime.Now;
-                DateTime x30MinsLater = currentTime.AddMinutes(time);
-                while (x30MinsLater > DateTime.Now)
+                DateTime TimeLater = currentTime.AddMinutes(time);
+
+                while (TimeLater > DateTime.Now)
                 {
                     pk = await ReadPokemonSV(EggData, 344, token).ConfigureAwait(false);
                     pkprev = pk;
@@ -84,17 +87,62 @@ namespace PokeViewer.NET.SubForms
                         var ballsprite = SpriteUtil.GetBallSprite(pk.Ball);
                         pictureBox2.Image = ballsprite;
 
+                        if ((Species)pk.Species == Species.Dunsparce && pk.EncryptionConstant % 100 == 0 && checkBox2.Checked && !checkBox1.Checked && !pk.IsShiny)
+                        {
+                            label3.Text = $"3 segment!";
+                            EnableOptions();
+                            WindowState = _WindowState;
+                            Activate();
+                            MessageBox.Show("3 Segment Dunsparce Found!");
+
+                            await Click(MINUS, 0_500, token).ConfigureAwait(false); // Misc click
+                            await Click(A, 2_500, token).ConfigureAwait(false);
+                            await Click(A, 1_000, token).ConfigureAwait(false);
+
+                            for (int i = 0; i < 3; i++)
+                                await Click(A, 0_800, token).ConfigureAwait(false);
+                            return;
+                        }
+
                         if (pk.IsShiny && (Species)pk.Species != Species.None && checkBox1.Checked)
                         {
                             if ((Species)pk.Species == Species.Dunsparce && pk.EncryptionConstant % 100 == 0 && checkBox2.Checked)
                             {
                                 label3.Text = $"Shiny 3 segment!";
                                 EnableOptions();
+                                WindowState = _WindowState;
+                                Activate();
+                                MessageBox.Show("Shiny 3 Segment Dunsparce Found!");
+
+                                await Click(MINUS, 0_500, token).ConfigureAwait(false); // Misc click
+                                await Click(A, 2_500, token).ConfigureAwait(false);
+                                await Click(A, 1_000, token).ConfigureAwait(false);
+
+                                for (int i = 0; i < 3; i++)
+                                    await Click(A, 0_800, token).ConfigureAwait(false);
+
+                                var b1s12 = await GetPointerAddress("[[[main+43A77C8]+108]+9B0]", token).ConfigureAwait(false);
+                                var dumpmon2 = await ReadBoxPokemonSV(b1s12, 344, token).ConfigureAwait(false);
+
                                 return;
                             }
 
+                            await Click(MINUS, 0_500, token).ConfigureAwait(false); // Misc click
+                            await Click(A, 2_500, token).ConfigureAwait(false);
+                            await Click(A, 1_000, token).ConfigureAwait(false);
+
+                            for (int i = 0; i < 3; i++)
+                                await Click(A, 0_800, token).ConfigureAwait(false);
+
+                            var b1s1 = await GetPointerAddress("[[[main+43A77C8]+108]+9B0]", token).ConfigureAwait(false);
+                            var dumpmon = await ReadBoxPokemonSV(b1s1, 344, token).ConfigureAwait(false);
+                            DumpPokemon(DumpFolder, "shiny", dumpmon);
+
                             label3.Text = $"Match found!";
                             EnableOptions();
+                            WindowState = _WindowState;
+                            Activate();
+                            MessageBox.Show("Match found!");
                             return;
                         }
                         await Click(MINUS, 0_500, token).ConfigureAwait(false); // Misc click
@@ -128,10 +176,7 @@ namespace PokeViewer.NET.SubForms
         }
 
         private async Task MakeSandwich(CancellationToken token)
-        {
-            sandwichcount++;
-            label7.Text = $"Sandwiches Made: {sandwichcount}";
-
+        {           
             await Click(MINUS, 0_500, token).ConfigureAwait(false);
             await SetStick(LEFT, 0, 30000, 0, token).ConfigureAwait(false); // Face up to table
             await SetStick(LEFT, 0, 0, 0, token).ConfigureAwait(false);
@@ -199,12 +244,15 @@ namespace PokeViewer.NET.SubForms
             await SetStick(LEFT, 0, 30000, 0_700, token).ConfigureAwait(false); // Navigate to ingredients
             await SetStick(LEFT, 0, 0, 0, token).ConfigureAwait(false);
 
+            sandwichcount++;
+            label7.Text = $"Sandwiches Made: {sandwichcount}";
             for (int i = 0; i < 5; i++)
-                await Click(A, 0_500, token).ConfigureAwait(false);
+           // while (!await CanPlayerMove(token).ConfigureAwait(false))
+                await Click(A, 0_800, token).ConfigureAwait(false);
 
-            ofs = await GetPointerAddress("[[[[[main+43A7550]+20]+400]+48]+F0]+02", token).ConfigureAwait(false);
-            var text = await SwitchConnection.ReadBytesAbsoluteAsync(ofs, 1, token).ConfigureAwait(false);
-            string result = Encoding.ASCII.GetString(text);
+             ofs = await GetPointerAddress("[[[[[main+43A7550]+20]+400]+48]+F0]+02", token).ConfigureAwait(false);
+             var text = await SwitchConnection.ReadBytesAbsoluteAsync(ofs, 1, token).ConfigureAwait(false);
+             string result = Encoding.ASCII.GetString(text);
 
             while (result == "?")
             {
@@ -217,7 +265,7 @@ namespace PokeViewer.NET.SubForms
             {
                 await Task.Delay(2_500, token).ConfigureAwait(false);
                 await Click(B, 1_000, token).ConfigureAwait(false);
-                await SetStick(LEFT, 0, -15000, 0, token).ConfigureAwait(false); // Face away from table
+                await SetStick(LEFT, 0, -5000, 0, token).ConfigureAwait(false); // Face away from table
                 await SetStick(LEFT, 0, 0, 0, token).ConfigureAwait(false);
             }
         }
@@ -332,8 +380,36 @@ namespace PokeViewer.NET.SubForms
             Regex rgx = new Regex("[^a-zA-Z0-9 -]");
             result = rgx.Replace(result, "");
 
-            while (result != "Do") // No egg
-            {                
+            var b1s1 = await GetPointerAddress("[[[main+43A77C8]+108]+9B0]", token).ConfigureAwait(false);
+            var dumpmon = await ReadBoxPokemonSV(b1s1, 344, token).ConfigureAwait(false);
+
+            while (result != "Do")//!await CanPlayerMove(token).ConfigureAwait(false))//result != "Do") // No egg
+            {
+                /*while (dumpmon == null)
+                {
+                    await Click(A, 1_000, token).ConfigureAwait(false);
+                    dumpmon = await ReadBoxPokemonSV(b1s1, 344, token).ConfigureAwait(false);
+                }
+                if (dumpmon != null)
+                {
+                    if (checkBox8.Checked && dumpmon.IsShiny)
+                    {
+                        //var b1s1 = await GetPointerAddress("[[[main+43A77C8]+108]+9B0]", token).ConfigureAwait(false);
+                        //var dumpmon = await ReadBoxPokemonSV(b1s1, 344, token).ConfigureAwait(false);
+                        DumpPokemon(DumpFolder, "shiny", dumpmon);
+                        await Task.Delay(1_000, token).ConfigureAwait(false);
+                        await SetBoxPokemon(Blank, InjectBox, InjectSlot, token).ConfigureAwait(false);
+                    }
+                    else if (checkBox8.Checked && !dumpmon.IsShiny)
+                    {
+                        //var b1s1 = await GetPointerAddress("[[[main+43A77C8]+108]+9B0]", token).ConfigureAwait(false);
+                        //var dumpmon = await ReadBoxPokemonSV(b1s1, 344, token).ConfigureAwait(false);
+                        DumpPokemon(DumpFolder, "eggs", dumpmon);
+                        await Task.Delay(1_000, token).ConfigureAwait(false);
+                        await SetBoxPokemon(Blank, InjectBox, InjectSlot, token).ConfigureAwait(false);
+                    }
+                }
+                dumpmon = await ReadBoxPokemonSV(b1s1, 344, token).ConfigureAwait(false);*/
                 switch (result)
                 {
                     case "Th": // 1 egg
@@ -347,6 +423,17 @@ namespace PokeViewer.NET.SubForms
                             for (int i = 0; i < 4; i++)
                                 await Click(A, 0_800, token).ConfigureAwait(false);
 
+                            if (checkBox8.Checked && pk.IsShiny)
+                            {
+                                dumpmon = await ReadBoxPokemonSV(b1s1, 344, token).ConfigureAwait(false);
+                                DumpPokemon(DumpFolder, "shiny", dumpmon);
+                            }
+                            else if (checkBox8.Checked && !pk.IsShiny)
+                            {
+                                dumpmon = await ReadBoxPokemonSV(b1s1, 344, token).ConfigureAwait(false);
+                                DumpPokemon(DumpFolder, "eggs", dumpmon);
+                            }
+
                             await SetBoxPokemon(Blank, InjectBox, InjectSlot, token).ConfigureAwait(false);
                             break;
                         }
@@ -359,15 +446,16 @@ namespace PokeViewer.NET.SubForms
                 };
                 if (checkBox8.Checked && pk.IsShiny)
                 {
-                    var b1s1 = await GetPointerAddress("[[[main+43A77C8]+108]+9B0]", token).ConfigureAwait(false);
-                    var dumpmon = await ReadBoxPokemonSV(b1s1, 344, token).ConfigureAwait(false);
-                    DumpPokemon(DumpFolder, "shinyeggs", dumpmon);
+                    dumpmon = await ReadBoxPokemonSV(b1s1, 344, token).ConfigureAwait(false);
+                    if (dumpmon != null)                    
+                        DumpPokemon(DumpFolder, "shiny", dumpmon);
+                    
                 }
                 else if (checkBox8.Checked && !pk.IsShiny)
                 {
-                    var b1s1 = await GetPointerAddress("[[[main+43A77C8]+108]+9B0]", token).ConfigureAwait(false);
-                    var dumpmon = await ReadBoxPokemonSV(b1s1, 344, token).ConfigureAwait(false);
-                    DumpPokemon(DumpFolder, "eggs", dumpmon);
+                    dumpmon = await ReadBoxPokemonSV(b1s1, 344, token).ConfigureAwait(false);
+                    if (dumpmon != null)
+                        DumpPokemon(DumpFolder, "eggs", dumpmon);
                 }
 
                 await Task.Delay(1_000, token).ConfigureAwait(false);
@@ -403,5 +491,6 @@ namespace PokeViewer.NET.SubForms
             checkBox6.Enabled = true;
             checkBox7.Enabled = true;
         }
+
     }
 }
