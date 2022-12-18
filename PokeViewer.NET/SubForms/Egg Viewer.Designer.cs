@@ -48,9 +48,9 @@
             this.checkBox5 = new System.Windows.Forms.CheckBox();
             this.checkBox6 = new System.Windows.Forms.CheckBox();
             this.checkBox7 = new System.Windows.Forms.CheckBox();
-            this.textBox5 = new System.Windows.Forms.TextBox();
             this.checkBox8 = new System.Windows.Forms.CheckBox();
             this.label7 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
@@ -161,7 +161,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(180, 142);
+            this.label4.Location = new System.Drawing.Point(180, 140);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(40, 15);
             this.label4.TabIndex = 15;
@@ -170,7 +170,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(180, 167);
+            this.label5.Location = new System.Drawing.Point(180, 165);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(40, 15);
             this.label5.TabIndex = 16;
@@ -190,15 +190,15 @@
             this.checkBox4.AutoSize = true;
             this.checkBox4.Location = new System.Drawing.Point(180, 109);
             this.checkBox4.Name = "checkBox4";
-            this.checkBox4.Size = new System.Drawing.Size(120, 19);
+            this.checkBox4.Size = new System.Drawing.Size(81, 19);
             this.checkBox4.TabIndex = 18;
-            this.checkBox4.Text = "Eat Again? When?";
+            this.checkBox4.Text = "Eat Again?";
             this.checkBox4.UseVisualStyleBackColor = true;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(180, 194);
+            this.label2.Location = new System.Drawing.Point(180, 192);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(40, 15);
             this.label2.TabIndex = 19;
@@ -216,7 +216,7 @@
             // checkBox5
             // 
             this.checkBox5.AutoSize = true;
-            this.checkBox5.Location = new System.Drawing.Point(277, 141);
+            this.checkBox5.Location = new System.Drawing.Point(277, 139);
             this.checkBox5.Name = "checkBox5";
             this.checkBox5.Size = new System.Drawing.Size(49, 19);
             this.checkBox5.TabIndex = 21;
@@ -228,7 +228,7 @@
             this.checkBox6.AutoSize = true;
             this.checkBox6.Checked = true;
             this.checkBox6.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox6.Location = new System.Drawing.Point(277, 167);
+            this.checkBox6.Location = new System.Drawing.Point(277, 165);
             this.checkBox6.Name = "checkBox6";
             this.checkBox6.Size = new System.Drawing.Size(49, 19);
             this.checkBox6.TabIndex = 22;
@@ -240,21 +240,12 @@
             this.checkBox7.AutoSize = true;
             this.checkBox7.Checked = true;
             this.checkBox7.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox7.Location = new System.Drawing.Point(277, 194);
+            this.checkBox7.Location = new System.Drawing.Point(277, 192);
             this.checkBox7.Name = "checkBox7";
             this.checkBox7.Size = new System.Drawing.Size(49, 19);
             this.checkBox7.TabIndex = 23;
             this.checkBox7.Text = "DUP";
             this.checkBox7.UseVisualStyleBackColor = true;
-            // 
-            // textBox5
-            // 
-            this.textBox5.Location = new System.Drawing.Point(302, 107);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(24, 23);
-            this.textBox5.TabIndex = 24;
-            this.textBox5.Text = "30";
-            this.textBox5.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // checkBox8
             // 
@@ -277,14 +268,23 @@
             this.label7.TabIndex = 28;
             this.label7.Text = "Sandwiches Made: 0";
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(180, 256);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(84, 15);
+            this.label6.TabIndex = 29;
+            this.label6.Text = "Shinies Found:";
+            // 
             // Egg_Viewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(338, 262);
+            this.ClientSize = new System.Drawing.Size(338, 280);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.checkBox8);
-            this.Controls.Add(this.textBox5);
             this.Controls.Add(this.checkBox7);
             this.Controls.Add(this.checkBox6);
             this.Controls.Add(this.checkBox5);
@@ -336,8 +336,8 @@
         private CheckBox checkBox5;
         private CheckBox checkBox6;
         private CheckBox checkBox7;
-        private TextBox textBox5;
         private CheckBox checkBox8;
         private Label label7;
+        private Label label6;
     }
 }

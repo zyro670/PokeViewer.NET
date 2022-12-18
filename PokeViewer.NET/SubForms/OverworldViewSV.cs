@@ -67,7 +67,9 @@ namespace PokeViewer.NET.SubForms
                     button1.Text = "Done";
                     //return;
                 }
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 string pid = $"{Environment.NewLine}PID: {pk.PID:X8}";
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
                 string ec = $"{Environment.NewLine}EC: {pk.EncryptionConstant:X8}";
                 var form = FormOutput(pk.Species, pk.Form, out _);
                 string gender = string.Empty;
