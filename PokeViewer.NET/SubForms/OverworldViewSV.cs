@@ -25,9 +25,9 @@ namespace PokeViewer.NET.SubForms
 
         private async Task ScanOverworld(CancellationToken token)
         {
-            PictureBox[] boxes = { pictureBox1, pictureBox3, pictureBox5, pictureBox7, pictureBox9, pictureBox11, pictureBox13 };
-            TextBox[] outputBox = { textBox1, textBox2, textBox3, textBox4, textBox5, textBox6, textBox7 };
-            PictureBox[] markboxes = { pictureBox2, pictureBox4, pictureBox6, pictureBox8, pictureBox10, pictureBox12, pictureBox14 };
+            PictureBox[] boxes = { pictureBox1, pictureBox3, pictureBox5, pictureBox7, pictureBox9, pictureBox11, pictureBox13, pictureBox15 };
+            TextBox[] outputBox = { textBox1, textBox2, textBox3, textBox4, textBox5, textBox6, textBox7, textBox8 };
+            PictureBox[] markboxes = { pictureBox2, pictureBox4, pictureBox6, pictureBox8, pictureBox10, pictureBox12, pictureBox14, pictureBox16 };
             string? url = string.Empty;
             string? sprite = string.Empty;
             string value = string.Empty;
@@ -36,27 +36,29 @@ namespace PokeViewer.NET.SubForms
             //var ofs = new long[] { 0x43A7890, 0x38, 0x30, 0x08, 0x150 };
             //var block = await SwitchConnection.PointerAll(ofs, token).ConfigureAwait(false);
             //var info = await SwitchConnection.ReadBytesAbsoluteAsync(block, 0x2490, token).ConfigureAwait(false);
-            var ads = await GetPointerAddress($"[{ptr}+{0x4320 + 8:X}]", token);
-            var val = await SwitchConnection.ReadBytesAbsoluteAsync(ads, 0x2490, token);
+           // var ads = await GetPointerAddress($"[{ptr}+{0x4320 + 8:X}]", token);
+          //  var val = await SwitchConnection.ReadBytesAbsoluteAsync(ads, 0x2490, token);
 
             for (int i = 0; i < 8; i++)
             {
-                var adata = val.Slice(0 + (i * 0x150), 344);                                
-                /*switch (i)
+               // var adata = val.Slice(0 + (i * 0x150), 344);                                
+                switch (i)
                 {
-                    case 0: value = "[[[[[[main+43A7890]+08]+B0]+80]+08]+1E0]"; break;
-                    case 1: value = "[[[[[[main+43A7890]+08]+B0]+80]+08]+150]"; break;
-                    case 2: value = "[[[[[[main+43A7890]+08]+B0]+80]+08]+C0]"; break;
-                    case 3: value = "[[[[[[main+43A7890]+08]+B0]+80]+08]+30]"; break;
-                    case 4: value = "[[[[[[main+43A7890]+08]+B0]+80]+118]+30]"; break;
-                    case 5: value = "[[[[[[main+43A7890]+08]+38]+80]+118]+150]"; break;
-                    case 6: value = "[[[[[[main+43A7890]+08]+38]+80]+118]+C0]"; break;
-                    case 7: value = "[[[[[[main+43A7890]+08]+38]+80]+118]+30]"; break;
-                }*/
-                //var ofs = await GetPointerAddress(value, token).ConfigureAwait(false);
-                //var data = await SwitchConnection.ReadBytesAbsoluteAsync(adata, size, token).ConfigureAwait(false);
+                    case 0: value = "[[[[[[[main+43A7890]+08]+08]+30]+08]+A0]+C0]"; break;
+                    case 1: value = "[[[[[[[main+43A7890]+08]+08]+30]+08]+A0]+30]"; break;
+                    case 2: value = "[[[[[[[main+43A7890]+08]+08]+30]+08]+10]+30]"; break;
+                    case 3: value = "[[[[[[[main+43A7890]+08]+30]+30]+08]+10]+30]"; break;
+                    case 4: value = "[[[[[[[main+43A7890]+08]+10]+30]+08]+10]+30]"; break;
+                    case 5: value = "[[[[[[[main+43A7890]+08]+50]+30]+118]+A0]+30]"; break;
+                    case 6: value = "[[[[[[[main+43A7890]+08]+30]]+30]+08]+30]"; break;
+                    case 7: value = "[[[[[[[main+43A7890]+08]+50]+30]+08]+10]+30]"; break;
+                    case 8: value = "[[[[[[[main+43A7890]+08]+28]]+30]+08]+30]"; break;
+                    case 9: break;
+                }
+                var ofs = await GetPointerAddress(value, token).ConfigureAwait(false);
+                var data = await SwitchConnection.ReadBytesAbsoluteAsync(ofs, 344, token).ConfigureAwait(false);
 
-                var pk = new PK9(adata);
+                var pk = new PK9(data);
                 //var pk = await ReadOverworldPokemonSV(ofs, size).ConfigureAwait(false);
                 //bool isValid = PersonalTable.SV[pk.Species].IsPresentInGame;
                 if (pk == null || pk.Species < 0 || pk.Species > (int)Species.MAX_COUNT)

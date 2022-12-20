@@ -582,7 +582,7 @@ namespace PokeViewer.NET
                         UniqueBox.Text = "Raid Lobby";
                         UniqueBox.Enabled = false;
                         OverworldView.Visible = true;
-                        OverworldView.Enabled = false;
+                        OverworldView.Enabled = true;
                         DayCareView.Visible = true;
                         break;
                     }
@@ -599,7 +599,7 @@ namespace PokeViewer.NET
                         UniqueBox.Text = "Raid Lobby";
                         UniqueBox.Enabled = false;
                         OverworldView.Visible = true;
-                        OverworldView.Enabled = false;
+                        OverworldView.Enabled = true;
                         DayCareView.Visible = true;
                         break;
                     }
