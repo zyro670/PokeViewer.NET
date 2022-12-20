@@ -420,8 +420,8 @@ namespace PokeViewer.NET.SubForms
             }
             label3.Text = "Waiting..";
             await Click(B, 1_000, token).ConfigureAwait(false);
-            await Click(B, 0_500, token).ConfigureAwait(false);
-            await Click(B, 0_500, token).ConfigureAwait(false);
+            await Click(B, 0_800, token).ConfigureAwait(false);
+            await Click(B, 0_800, token).ConfigureAwait(false);
         }
 
         private void DisableOptions()
