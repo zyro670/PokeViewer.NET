@@ -118,11 +118,8 @@ namespace PokeViewer.NET.SubForms
                             if (checkBox8.Checked)
                             {
                                 dumpmon = await ReadBoxPokemonSV(b1s1, 344, token).ConfigureAwait(false);
-                                if (dumpmon != null && (Species)dumpmon.Species != Species.None && !pk.IsShiny)
+                                if (dumpmon != null && (Species)dumpmon.Species != Species.None)
                                     DumpPokemon(DumpFolder, "eggs", dumpmon);
-
-                                if (dumpmon != null && (Species)dumpmon.Species != Species.None && pk.IsShiny)
-                                    DumpPokemon(DumpFolder, "shiny", dumpmon);
                             }
 
                             label3.Text = $"Match found!";
@@ -166,11 +163,11 @@ namespace PokeViewer.NET.SubForms
         private async Task MakeSandwich(CancellationToken token)
         {           
             await Click(MINUS, 0_500, token).ConfigureAwait(false);
-            await SetStick(LEFT, 0, 30000, 0, token).ConfigureAwait(false); // Face up to table
+            await SetStick(LEFT, -5000, 0, 0, token).ConfigureAwait(false); // Face left to table
             await SetStick(LEFT, 0, 0, 0, token).ConfigureAwait(false);
 
             await Click(A, 1_500, token).ConfigureAwait(false);
-            await Click(A, 3_500, token).ConfigureAwait(false);
+            await Click(A, 4_000, token).ConfigureAwait(false);
             await Click(X, 1_500, token).ConfigureAwait(false);
 
             var ofs = await GetPointerAddress("[[[[[main+43A7550]+20]+400]+48]+F0]+02", token).ConfigureAwait(false);
@@ -234,10 +231,12 @@ namespace PokeViewer.NET.SubForms
 
             sandwichcount++;
             label7.Text = $"Sandwiches Made: {sandwichcount}";
-            for (int i = 0; i < 5; i++)
-                await Click(A, 0_800, token).ConfigureAwait(false);
+            for (int i = 0; i < 7; i++)
+                await Click(A, 1_000, token).ConfigureAwait(false);
 
-             ofs = await GetPointerAddress("[[[[[main+43A7550]+20]+400]+48]+F0]+02", token).ConfigureAwait(false);
+            await Task.Delay(1_500, token).ConfigureAwait(false);
+
+            ofs = await GetPointerAddress("[[[[[main+43A7550]+20]+400]+48]+F0]+02", token).ConfigureAwait(false);
              var text = await SwitchConnection.ReadBytesAbsoluteAsync(ofs, 1, token).ConfigureAwait(false);
              string result = Encoding.ASCII.GetString(text);
 
@@ -252,7 +251,7 @@ namespace PokeViewer.NET.SubForms
             {
                 await Task.Delay(2_500, token).ConfigureAwait(false);
                 await Click(B, 1_000, token).ConfigureAwait(false);
-                await SetStick(LEFT, 0, -5000, 0, token).ConfigureAwait(false); // Face away from table
+                await SetStick(LEFT, 0, 5000, 0, token).ConfigureAwait(false); // Face up to basket
                 await SetStick(LEFT, 0, 0, 0, token).ConfigureAwait(false);
             }
         }
@@ -389,30 +388,18 @@ namespace PokeViewer.NET.SubForms
                             for (int i = 0; i < 4; i++)
                                 await Click(A, 0_800, token).ConfigureAwait(false);
 
-                            await Task.Delay(1_000, token).ConfigureAwait(false);
+                            await Task.Delay(2_000, token).ConfigureAwait(false);
 
                             if (checkBox8.Checked)
                             {
                                 dumpmon = await ReadBoxPokemonSV(b1s1, 344, token).ConfigureAwait(false);
-                                if (dumpmon != null && (Species)dumpmon.Species != Species.None && !pk.IsShiny)
+                                if (dumpmon != null && (Species)dumpmon.Species != Species.None)
                                     DumpPokemon(DumpFolder, "eggs", dumpmon);
-
-                                if (dumpmon != null && (Species)dumpmon.Species != Species.None && pk.IsShiny)
-                                    DumpPokemon(DumpFolder, "shiny", dumpmon);
                             }
 
+                            await Task.Delay(1_000, token).ConfigureAwait(false);
+
                             await SetBoxPokemon(Blank, InjectBox, InjectSlot, token).ConfigureAwait(false);
-                            break;
-                        }
-                    case "Yo":
-                        {
-                            await Click(MINUS, 0_800, token).ConfigureAwait(false);
-                            await Click(A, 0_800, token).ConfigureAwait(false);
-                            break;
-                        }
-                    case "Do":
-                        {
-                            label3.Text = "No egg!";
                             break;
                         }
                 };
@@ -422,11 +409,8 @@ namespace PokeViewer.NET.SubForms
                 if (checkBox8.Checked)
                 {
                     dumpmon = await ReadBoxPokemonSV(b1s1, 344, token).ConfigureAwait(false);
-                    if (dumpmon != null && (Species)dumpmon.Species != Species.None && !pk.IsShiny)
+                    if (dumpmon != null && (Species)dumpmon.Species != Species.None)
                         DumpPokemon(DumpFolder, "eggs", dumpmon);
-
-                    if (dumpmon != null && (Species)dumpmon.Species != Species.None && pk.IsShiny)
-                        DumpPokemon(DumpFolder, "shiny", dumpmon);
                 }
 
                 text = await SwitchConnection.ReadBytesAbsoluteAsync(ofs, 4, token).ConfigureAwait(false);
@@ -435,8 +419,9 @@ namespace PokeViewer.NET.SubForms
                 result = rgx.Replace(result, "");
             }
             label3.Text = "Waiting..";
-            await Click(A, 1_000, token).ConfigureAwait(false);
-            await Click(B, 0_500, token).ConfigureAwait(false);
+            await Click(B, 1_000, token).ConfigureAwait(false);
+            await Click(B, 0_800, token).ConfigureAwait(false);
+            await Click(B, 0_800, token).ConfigureAwait(false);
         }
 
         private void DisableOptions()
