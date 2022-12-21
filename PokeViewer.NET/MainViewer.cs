@@ -826,5 +826,6 @@ namespace PokeViewer.NET
             using Egg_Viewer WideForm = new();
             WideForm.ShowDialog();
         }
+
     }
 }

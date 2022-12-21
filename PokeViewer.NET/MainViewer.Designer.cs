@@ -283,7 +283,7 @@
             // 
             // TrainerView
             // 
-            this.TrainerView.Location = new System.Drawing.Point(233, 4);
+            this.TrainerView.Location = new System.Drawing.Point(235, 4);
             this.TrainerView.Name = "TrainerView";
             this.TrainerView.Size = new System.Drawing.Size(75, 25);
             this.TrainerView.TabIndex = 26;
@@ -294,7 +294,7 @@
             // 
             // DayCareView
             // 
-            this.DayCareView.Location = new System.Drawing.Point(314, 4);
+            this.DayCareView.Location = new System.Drawing.Point(316, 4);
             this.DayCareView.Name = "DayCareView";
             this.DayCareView.Size = new System.Drawing.Size(75, 25);
             this.DayCareView.TabIndex = 27;
@@ -305,9 +305,9 @@
             // 
             // OverworldView
             // 
-            this.OverworldView.Location = new System.Drawing.Point(263, 35);
+            this.OverworldView.Location = new System.Drawing.Point(316, 35);
             this.OverworldView.Name = "OverworldView";
-            this.OverworldView.Size = new System.Drawing.Size(106, 23);
+            this.OverworldView.Size = new System.Drawing.Size(75, 23);
             this.OverworldView.TabIndex = 29;
             this.OverworldView.Text = "Overworld View";
             this.OverworldView.UseVisualStyleBackColor = true;

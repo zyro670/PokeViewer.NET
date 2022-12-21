@@ -163,7 +163,7 @@ namespace PokeViewer.NET.SubForms
         private async Task MakeSandwich(CancellationToken token)
         {           
             await Click(MINUS, 0_500, token).ConfigureAwait(false);
-            await SetStick(LEFT, -5000, 0, 0, token).ConfigureAwait(false); // Face left to table
+            await SetStick(LEFT, -4000, 0, 0, token).ConfigureAwait(false); // Face left to table
             await SetStick(LEFT, 0, 0, 0, token).ConfigureAwait(false);
 
             await Click(A, 1_500, token).ConfigureAwait(false);
@@ -251,7 +251,7 @@ namespace PokeViewer.NET.SubForms
             {
                 await Task.Delay(2_500, token).ConfigureAwait(false);
                 await Click(B, 1_000, token).ConfigureAwait(false);
-                await SetStick(LEFT, 0, 5000, 0, token).ConfigureAwait(false); // Face up to basket
+                await SetStick(LEFT, 0, 4000, 0, token).ConfigureAwait(false); // Face up to basket
                 await SetStick(LEFT, 0, 0, 0, token).ConfigureAwait(false);
             }
         }
