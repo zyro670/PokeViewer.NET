@@ -4,8 +4,6 @@ using static SysBot.Base.SwitchButton;
 using static SysBot.Base.SwitchStick;
 using static PokeViewer.NET.RoutineExecutor;
 using PKHeX.Drawing.PokeSprite;
-using System.Text.RegularExpressions;
-using System.Text;
 
 namespace PokeViewer.NET.SubForms
 {
@@ -26,6 +24,10 @@ namespace PokeViewer.NET.SubForms
         private const int InjectSlot = 0;
         private static readonly PK9 Blank = new();
         private uint EggData = 0x04386040;
+        private uint PicnicMenu = 0x04416020;
+        private byte[] BlankVal = { 0x01 };
+        private const string TextBox = "[[[[[main+43A7550]+20]+400]+48]+F0]";
+        private const string B1S1 = "[[[main+43A77C8]+108]+9B0]";
 
         public string DumpFolder { get; set; } = AppDomain.CurrentDomain.BaseDirectory;
 
@@ -33,19 +35,25 @@ namespace PokeViewer.NET.SubForms
         {
             var token = CancellationToken.None;
             eggcount = 0;
+
+            await SwitchConnection.WriteBytesMainAsync(BlankVal, PicnicMenu, token).ConfigureAwait(false);
+            var textval = await GetDialogueAction(token).ConfigureAwait(false);
+            await Click(A, 1_500, token).ConfigureAwait(false);
             if (checkBox3.Checked)
             {                
                 await MakeSandwich(token).ConfigureAwait(false);
-                await PerformEggRoutine(token).ConfigureAwait(false);
+                await PerformEggRoutine(textval, token).ConfigureAwait(false);
             }
             else
-                await PerformEggRoutine(token).ConfigureAwait(false);
+                await PerformEggRoutine(textval, token).ConfigureAwait(false);
         }
 
-        private async Task PerformEggRoutine(CancellationToken token)
+        private async Task PerformEggRoutine(byte[]? textval, CancellationToken token)
         {
             PK9 pk = new();
             PK9 pkprev = new();
+            var b1s1 = await GetPointerAddress(B1S1, token).ConfigureAwait(false);
+            var ofs = await GetPointerAddress(TextBox, token).ConfigureAwait(false);
 
             if (button1.Enabled == true)
                 DisableOptions();
@@ -53,7 +61,7 @@ namespace PokeViewer.NET.SubForms
             while (!token.IsCancellationRequested)
             {
                 DateTime currentTime = DateTime.Now;
-                DateTime TimeLater = currentTime.AddMinutes(29);
+                DateTime TimeLater = currentTime.AddMinutes(30);
 
                 while (TimeLater > DateTime.Now)
                 {
@@ -82,8 +90,14 @@ namespace PokeViewer.NET.SubForms
                         textBox1.Text = output;
                         var sprite = PokeImg(pk, false, 7);
                         pictureBox1.Load(sprite);
+
                         var ballsprite = SpriteUtil.GetBallSprite(pk.Ball);
                         pictureBox2.Image = ballsprite;
+
+                        await Click(A, 2_000, token).ConfigureAwait(false);
+                        var currenttext = await SwitchConnection.ReadBytesAbsoluteAsync(ofs, 16, token).ConfigureAwait(false);
+
+                        label3.Text = "Collecting..";
 
                         if (pk.IsShiny)
                         {
@@ -105,21 +119,18 @@ namespace PokeViewer.NET.SubForms
                                 MessageBox.Show("Shiny 3 Segment Dunsparce Found!");
                             }
 
-                            await Click(MINUS, 0_500, token).ConfigureAwait(false); // Misc click
-                            await Click(A, 2_500, token).ConfigureAwait(false);
-                            await Click(A, 1_000, token).ConfigureAwait(false);
-
-                            for (int i = 0; i < 3; i++)
-                                await Click(A, 0_800, token).ConfigureAwait(false);
-
-                            await Task.Delay(1_000, token).ConfigureAwait(false);
-                            var b1s1 = await GetPointerAddress("[[[main+43A77C8]+108]+9B0]", token).ConfigureAwait(false);
-                            var dumpmon = await ReadBoxPokemonSV(b1s1, 344, token).ConfigureAwait(false);
-                            if (checkBox8.Checked)
+                            while (!currenttext.SequenceEqual(textval))
                             {
-                                dumpmon = await ReadBoxPokemonSV(b1s1, 344, token).ConfigureAwait(false);
-                                if (dumpmon != null && (Species)dumpmon.Species != Species.None)
+                                await Click(A, 2_000, token).ConfigureAwait(false);
+                                var dumpmon = await ReadBoxPokemonSV(b1s1, 344, token).ConfigureAwait(false);
+                                if (dumpmon != null && (Species)dumpmon.Species != Species.None && checkBox8.Checked)
+                                {
                                     DumpPokemon(DumpFolder, "eggs", dumpmon);
+
+                                    await Task.Delay(0_500, token).ConfigureAwait(false);
+                                    await SetBoxPokemon(Blank, InjectBox, InjectSlot, token).ConfigureAwait(false);
+                                }
+                                currenttext = await SwitchConnection.ReadBytesAbsoluteAsync(ofs, 16, token).ConfigureAwait(false);
                             }
 
                             label3.Text = $"Match found!";
@@ -128,22 +139,31 @@ namespace PokeViewer.NET.SubForms
                             Activate();
                             MessageBox.Show("Match found!");
                             return;
+                        }                                               
+
+                        while (!currenttext.SequenceEqual(textval))
+                        {
+                            await Click(A, 2_000, token).ConfigureAwait(false);
+                            var dumpmon = await ReadBoxPokemonSV(b1s1, 344, token).ConfigureAwait(false);
+                            if (dumpmon != null && (Species)dumpmon.Species != Species.None)
+                            {
+                                DumpPokemon(DumpFolder, "eggs", dumpmon);
+
+                                await Task.Delay(0_500, token).ConfigureAwait(false);
+                                await SetBoxPokemon(Blank, InjectBox, InjectSlot, token).ConfigureAwait(false);
+                            }
+                            currenttext = await SwitchConnection.ReadBytesAbsoluteAsync(ofs, 16, token).ConfigureAwait(false);
                         }
-                        await Click(MINUS, 0_500, token).ConfigureAwait(false); // Misc click
-                        await Click(A, 2_500, token).ConfigureAwait(false);
-                        await Click(A, 1_000, token).ConfigureAwait(false);
-
-                        await GetDialogueAction(pk, token).ConfigureAwait(false);
-
-                        await SetBoxPokemon(Blank, InjectBox, InjectSlot, token).ConfigureAwait(false);
 
                         pkprev = pk;
 
+                        label3.Text = "Waiting..";
+                        await Click(A, 1_000, token).ConfigureAwait(false);
                     }
                 }
 
                 await MakeSandwich(token).ConfigureAwait(false);
-                await PerformEggRoutine(token).ConfigureAwait(false);
+                continue;
             }
         }
         private async Task<PK9> ReadPokemonSV(uint offset, int size, CancellationToken token)
@@ -161,18 +181,13 @@ namespace PokeViewer.NET.SubForms
         }
 
         private async Task MakeSandwich(CancellationToken token)
-        {           
+        {
             await Click(MINUS, 0_500, token).ConfigureAwait(false);
-            await SetStick(LEFT, 0, 4000, 0, token).ConfigureAwait(false); // Face up to table
+            await SetStick(LEFT, 0, 30000, 0_700, token).ConfigureAwait(false); // Face up to table
             await SetStick(LEFT, 0, 0, 0, token).ConfigureAwait(false);
-
             await Click(A, 1_500, token).ConfigureAwait(false);
             await Click(A, 4_000, token).ConfigureAwait(false);
             await Click(X, 1_500, token).ConfigureAwait(false);
-
-            var ofs = await GetPointerAddress("[[[[[main+43A7550]+20]+400]+48]+F0]+02", token).ConfigureAwait(false);
-            var data = new byte[] { 0x99 };
-            await SwitchConnection.WriteBytesAbsoluteAsync(data, ofs, token).ConfigureAwait(false);
 
             if (!string.IsNullOrEmpty(textBox2.Text))
             {
@@ -231,27 +246,24 @@ namespace PokeViewer.NET.SubForms
 
             sandwichcount++;
             label7.Text = $"Sandwiches Made: {sandwichcount}";
-            for (int i = 0; i < 7; i++)
-                await Click(A, 1_000, token).ConfigureAwait(false);
+            for (int i = 0; i < 5; i++)
+                await Click(A, 0_800, token).ConfigureAwait(false);
 
-            await Task.Delay(1_500, token).ConfigureAwait(false);
+            bool inPicnic = await IsInPicnic(token).ConfigureAwait(false);
 
-            ofs = await GetPointerAddress("[[[[[main+43A7550]+20]+400]+48]+F0]+02", token).ConfigureAwait(false);
-             var text = await SwitchConnection.ReadBytesAbsoluteAsync(ofs, 1, token).ConfigureAwait(false);
-             string result = Encoding.ASCII.GetString(text);
-
-            while (result == "?")
+            while (!inPicnic)
             {
                 await Click(A, 3_000, token).ConfigureAwait(false);
-                text = await SwitchConnection.ReadBytesAbsoluteAsync(ofs, 1, token).ConfigureAwait(false);
-                result = Encoding.ASCII.GetString(text);
+                inPicnic = await IsInPicnic(token).ConfigureAwait(false);
             }
 
-            if (result != "?") //t
+            if (inPicnic)
             {
                 await Task.Delay(2_500, token).ConfigureAwait(false);
-                await Click(B, 1_000, token).ConfigureAwait(false);
-                await SetStick(LEFT, 0, -4000, 0, token).ConfigureAwait(false); // Face up to basket
+                await SetStick(LEFT, 0, -10000, 0_500, token).ConfigureAwait(false); // Face down to basket
+                await SetStick(LEFT, 0, 0, 0, token).ConfigureAwait(false);
+                await Task.Delay(1_000, token).ConfigureAwait(false);
+                await SetStick(LEFT, 0, 5000, 0_200, token).ConfigureAwait(false); // Face up to basket
                 await SetStick(LEFT, 0, 0, 0, token).ConfigureAwait(false);
             }
         }
@@ -358,70 +370,22 @@ namespace PokeViewer.NET.SubForms
             LogUtil.LogInfo($"Saved file: {fn}", "Dump");
         }
 
-        private async Task GetDialogueAction(PK9 pk, CancellationToken token)
+        private async Task<byte[]?> GetDialogueAction(CancellationToken token)
         {
-            var b1s1 = await GetPointerAddress("[[[main+43A77C8]+108]+9B0]", token).ConfigureAwait(false);
-            var dumpmon = await ReadBoxPokemonSV(b1s1, 344, token).ConfigureAwait(false);
+            // Click A twice to get us to the dialogue where no egg is present
+            for (int i = 0; i < 2; i++)
+                await Click(A, 1_000, token).ConfigureAwait(false);
 
-            var ofs = await GetPointerAddress("[[[[[main+43A7550]+20]+400]+48]+F0]", token).ConfigureAwait(false);
-            var text = await SwitchConnection.ReadBytesAbsoluteAsync(ofs, 4, token).ConfigureAwait(false);
-            string result = Encoding.ASCII.GetString(text);
-            Regex rgx = new Regex("[^a-zA-Z0-9 -]");
-            result = rgx.Replace(result, "");
+            var ofs = await GetPointerAddress(TextBox, token).ConfigureAwait(false);
+            var text = await SwitchConnection.ReadBytesAbsoluteAsync(ofs, 16, token).ConfigureAwait(false);
 
-            while (result != "Do") // No egg
-            {
-                switch (result)
-                {
-                    case "Th": // 1 egg
-                        {
-                            label3.Text = "There's an egg!";
+            return text;
+        }
 
-                            for (int i = 0; i < 3; i++)
-                                await Click(A, 0_800, token).ConfigureAwait(false);
-                            break;
-                        }
-                    case "": // More than 1 egg
-                        {
-                            label3.Text = "Oh? More eggs?";
-
-                            for (int i = 0; i < 4; i++)
-                                await Click(A, 0_800, token).ConfigureAwait(false);
-
-                            await Task.Delay(2_000, token).ConfigureAwait(false);
-
-                            if (checkBox8.Checked)
-                            {
-                                dumpmon = await ReadBoxPokemonSV(b1s1, 344, token).ConfigureAwait(false);
-                                if (dumpmon != null && (Species)dumpmon.Species != Species.None)
-                                    DumpPokemon(DumpFolder, "eggs", dumpmon);
-                            }
-
-                            await Task.Delay(1_000, token).ConfigureAwait(false);
-
-                            await SetBoxPokemon(Blank, InjectBox, InjectSlot, token).ConfigureAwait(false);
-                            break;
-                        }
-                };
-
-                await Task.Delay(1_500, token).ConfigureAwait(false);
-
-                if (checkBox8.Checked)
-                {
-                    dumpmon = await ReadBoxPokemonSV(b1s1, 344, token).ConfigureAwait(false);
-                    if (dumpmon != null && (Species)dumpmon.Species != Species.None)
-                        DumpPokemon(DumpFolder, "eggs", dumpmon);
-                }
-
-                text = await SwitchConnection.ReadBytesAbsoluteAsync(ofs, 4, token).ConfigureAwait(false);
-                result = Encoding.ASCII.GetString(text);
-                rgx = new Regex("[^a-zA-Z0-9 -]");
-                result = rgx.Replace(result, "");
-            }
-            label3.Text = "Waiting..";
-            await Click(B, 1_000, token).ConfigureAwait(false);
-            await Click(B, 0_800, token).ConfigureAwait(false);
-            await Click(B, 0_800, token).ConfigureAwait(false);
+        private async Task<bool> IsInPicnic(CancellationToken token)
+        {
+            var Data = await SwitchConnection.ReadBytesMainAsync(PicnicMenu, 1, token).ConfigureAwait(false);
+            return Data[0] == 0x01; // 1 when in picnic, 2 in sandwich menu, 3 when eating, 2 when done eating
         }
 
         private void DisableOptions()
