@@ -28,7 +28,7 @@ namespace PokeViewer.NET.SubForms
 
         private async Task EnterRaidCode(CancellationToken token)
         {
-            var strokes = textBox1.Text.ToArray();
+            var strokes = textBox1.Text.ToUpper().ToArray();
             var number = $"NumPad";
             string[] badVals = { "@", "I", "O", "=", "&", ";", "Z", "*", "#", "!", "?" };
             List<HidKeyboardKey> keystopress = new List<HidKeyboardKey>();
