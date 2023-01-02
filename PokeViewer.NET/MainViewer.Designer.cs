@@ -54,6 +54,7 @@
             this.DayCareView = new System.Windows.Forms.Button();
             this.OverworldView = new System.Windows.Forms.Button();
             this.InGameScreenshot = new System.Windows.Forms.Button();
+            this.Raids = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.PokeSprite)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Specialty)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.OriginIcon)).BeginInit();
@@ -324,12 +325,24 @@
             this.InGameScreenshot.UseVisualStyleBackColor = true;
             this.InGameScreenshot.Click += new System.EventHandler(this.InGameScreenshot_Click);
             // 
+            // Raids
+            // 
+            this.Raids.Location = new System.Drawing.Point(235, 35);
+            this.Raids.Name = "Raids";
+            this.Raids.Size = new System.Drawing.Size(75, 23);
+            this.Raids.TabIndex = 31;
+            this.Raids.Text = "Raids";
+            this.Raids.UseVisualStyleBackColor = true;
+            this.Raids.Visible = false;
+            this.Raids.Click += new System.EventHandler(this.Raids_Click);
+            // 
             // MainViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLight;
             this.ClientSize = new System.Drawing.Size(405, 392);
+            this.Controls.Add(this.Raids);
             this.Controls.Add(this.InGameScreenshot);
             this.Controls.Add(this.OverworldView);
             this.Controls.Add(this.DayCareView);
@@ -398,5 +411,6 @@
         private Button DayCareView;
         private Button OverworldView;
         private Button InGameScreenshot;
+        private Button Raids;
     }
 }
