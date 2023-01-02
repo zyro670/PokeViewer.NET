@@ -64,7 +64,13 @@ namespace PokeViewer.NET.SubForms
         private async void textBox1_DoubleClicked(object sender, EventArgs e)
         {
             textBox1.Text = Clipboard.GetText();
-            await EnterRaidCode(CancellationToken.None).ConfigureAwait(false);
+            if (textBox1.Text.Length < 4 || textBox1.Text.Length == 5)
+            {
+                MessageBox.Show($"{textBox1.Text} is not a valid code entry. Please try again.");
+            }
+
+            if (!string.IsNullOrEmpty(textBox1.Text))
+                await EnterRaidCode(CancellationToken.None).ConfigureAwait(false);
         }
     }
 }
