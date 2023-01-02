@@ -115,6 +115,7 @@ namespace PokeViewer.NET
                     TrainerView.Visible = true;
                     DayCareView.Visible = true;
                     OverworldView.Visible = true;
+                    Raids.Visible = true;
                     Window_Loaded();
                 }
                 catch (SocketException err)
@@ -150,6 +151,7 @@ namespace PokeViewer.NET
                 BoxViewer.Visible = false;
                 TrainerView.Visible = false;
                 DayCareView.Visible = false;
+                Raids.Visible = false;
                 LiveStats.Clear();
                 string url = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/OriginMarks/icon_generation_00%5Esb.png";
                 OriginIcon.ImageLocation = url;
@@ -610,6 +612,7 @@ namespace PokeViewer.NET
                         TrainerView.Visible = false; 
                         DayCareView.Visible = false;
                         OverworldView.Visible = false;
+                        Raids.Visible = false;
                         break;
                     }
                 case ShiningPearlID:
@@ -619,6 +622,7 @@ namespace PokeViewer.NET
                         TrainerView.Visible = false;
                         OverworldView.Visible = false;
                         DayCareView.Visible = false;
+                        Raids.Visible = false;
                         break;
                     }
                 case BrilliantDiamondID:
@@ -628,6 +632,7 @@ namespace PokeViewer.NET
                         TrainerView.Visible = false;
                         OverworldView.Visible = false;
                         DayCareView.Visible = false;
+                        Raids.Visible = false;
                         break;
                     }
                 case SwordID:
@@ -638,6 +643,7 @@ namespace PokeViewer.NET
                         UniqueBox.Text = "Raid"; UniqueBox2.Text = "Curry";
                         OverworldView.Visible = false;
                         DayCareView.Visible = false;
+                        Raids.Visible = false;
                         break;
                     }
                 case ShieldID:
@@ -647,6 +653,7 @@ namespace PokeViewer.NET
                         UniqueBox.Visible = true; UniqueBox2.Visible = true; 
                         UniqueBox.Text = "Raid"; UniqueBox2.Text = "Curry";
                         OverworldView.Visible = false;
+                        Raids.Visible = false;
                         break;
                     }
                 case EeveeID:
@@ -655,6 +662,7 @@ namespace PokeViewer.NET
                         WideView.Enabled = false;
                         DayCareView.Visible = false;
                         OverworldView.Visible = false;
+                        Raids.Visible = false;
                         break;
                     }
                 case PikachuID:
@@ -663,6 +671,7 @@ namespace PokeViewer.NET
                         WideView.Enabled = false;
                         DayCareView.Visible = false;
                         OverworldView.Visible = false;
+                        Raids.Visible = false;
                         break;
                     }
             }
@@ -827,5 +836,10 @@ namespace PokeViewer.NET
             WideForm.ShowDialog();
         }
 
+        private void Raids_Click(object sender, EventArgs e)
+        {
+            using RaidCodeEntry WideForm = new();
+            WideForm.ShowDialog();
+        }
     }
 }
