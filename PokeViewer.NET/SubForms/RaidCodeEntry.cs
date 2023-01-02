@@ -60,5 +60,11 @@ namespace PokeViewer.NET.SubForms
         {
             textBox1.Text = string.Empty;
         }
+
+        private async void textBox1_DoubleClicked(object sender, EventArgs e)
+        {
+            textBox1.Text = Clipboard.GetText();
+            await EnterRaidCode(CancellationToken.None).ConfigureAwait(false);
+        }
     }
 }

@@ -41,6 +41,7 @@
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(156, 75);
             this.textBox1.TabIndex = 0;
+            this.textBox1.DoubleClick += new System.EventHandler(this.textBox1_DoubleClicked);
             // 
             // button1
             // 
