@@ -52,96 +52,78 @@ namespace PokeViewer.NET
 
             if ((Species)pkm.Species == Species.Koraidon)
             {
-                //newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/master/Sprite%20Assets/pm1102_11_00_00_big.png";
-                newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder%20Sprites/scaled_up_sprites/998.png";
+                newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder_Sprites/scaled_up_sprites/998.png";
                 return newbase;
             }
             if ((Species)pkm.Species == Species.Miraidon)
             {
-                //newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/master/Sprite%20Assets/pm1103_11_00_00_big.png";
-                newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder%20Sprites/scaled_up_sprites/999.png";
+                newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder_Sprites/scaled_up_sprites/999.png";
                 return newbase;
             }
             if ((Species)pkm.Species == Species.Palafin)
             {
-                //newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/master/Sprite%20Assets/pm1038_12_00_00_big.png";
-                newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder%20Sprites/scaled_up_sprites/934-1.png";
+                if (pkm.IsShiny)
+                    newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder_Sprites/scaled_up_sprites/Shiny/934-1.png";
+                else
+                newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder_Sprites/scaled_up_sprites/934-1.png";
                 return newbase;
             }
             if (VersionType == (int)GameSelected.Scarlet && (Species)pkm.Species is Species.Tauros || VersionType == (int)GameSelected.Violet && (Species)pkm.Species is Species.Tauros)
             {
                 if (pkm.Form > 0)
-                    //newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/master/Sprite%20Assets/pm0128_1" + (int)pkm.Form + "_51_00_big.png";
-                    newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder%20Sprites/scaled_up_sprites/128-1.png";
+                    newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder_Sprites/scaled_up_sprites/128-" + (ushort)pkm.Form + ".png";
+                else
+                    newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder_Sprites/scaled_up_sprites/128.png";
                 return newbase;
             }
             if (VersionType == (int)GameSelected.Scarlet && (Species)pkm.Species is Species.Tatsugiri || VersionType == (int)GameSelected.Violet && (Species)pkm.Species is Species.Tatsugiri)
             {
                 if (pkm.Form > 0)
-                    //newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/master/Sprite%20Assets/pm1056_1" + ((int)pkm.Form + 1) + "_00_00_big.png";
-                    newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder%20Sprites/scaled_up_sprites/952-" + (ushort)pkm.Form + ".png";
+                    newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder_Sprites/scaled_up_sprites/952-" + (ushort)pkm.Form + ".png";
                 else
-                    //newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/master/Sprite%20Assets/pm1056_11_00_00_big.png";
-                    newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder%20Sprites/scaled_up_sprites/952.png";
+                    newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder_Sprites/scaled_up_sprites/952.png";
                 return newbase;
             }
             if (VersionType == (int)GameSelected.Scarlet && (Species)pkm.Species is Species.Squawkabilly || VersionType == (int)GameSelected.Violet && (Species)pkm.Species is Species.Squawkabilly)
             {
                 if (pkm.Form > 0)
-                    //newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/master/Sprite%20Assets/pm1056_1" + ((int)pkm.Form + 1) + "_00_00_big.png";
-                    newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder%20Sprites/scaled_up_sprites/960-" + (ushort)pkm.Form + ".png";
+                    newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder_Sprites/scaled_up_sprites/960-" + (ushort)pkm.Form + ".png";
                 else
-                    //newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/master/Sprite%20Assets/pm1056_11_00_00_big.png";
-                    newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder%20Sprites/scaled_up_sprites/960.png";
+                    newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder_Sprites/scaled_up_sprites/960.png";
                 return newbase;
             }
             if (VersionType == (int)GameSelected.Scarlet && (Species)pkm.Species is Species.Maushold || VersionType == (int)GameSelected.Violet && (Species)pkm.Species is Species.Maushold)
             {
                 if (pkm.Form > 0)
-                    //newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/master/Sprite%20Assets/pm1056_1" + ((int)pkm.Form + 1) + "_00_00_big.png";
-                    newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder%20Sprites/scaled_up_sprites/946-" + (ushort)pkm.Form + ".png";
+                    newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder_Sprites/scaled_up_sprites/946-" + (ushort)pkm.Form + ".png";
                 else
-                    //newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/master/Sprite%20Assets/pm1056_11_00_00_big.png";
-                    newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder%20Sprites/scaled_up_sprites/946.png";
+                    newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder_Sprites/scaled_up_sprites/946.png";
                 return newbase;
             }
             if (VersionType == (int)GameSelected.Scarlet && (Species)pkm.Species is Species.Wooper || VersionType == (int)GameSelected.Violet && (Species)pkm.Species is Species.Wooper)
             {
                 if (pkm.Form > 0)
-                    //newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/master/Sprite%20Assets/pm0194_00_51_00_big.png";
-                    newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder%20Sprites/scaled_up_sprites/194-1.png";
+                    newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder_Sprites/scaled_up_sprites/194-1.png";
                 return newbase;
             }
             if ((Species)pkm.Species == Species.Gimmighoul)
             {
-                //newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/master/Sprite%20Assets/pm1080_11_00_00_big.png";
-                newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder%20Sprites/scaled_up_sprites/976.png";
+                newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder_Sprites/scaled_up_sprites/976.png";
                 return newbase;
             }
             if ((Species)pkm.Species == Species.SlitherWing)
             {
-                newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/master/Sprite%20Assets/pm1088_00_00_00_big.png";
+                if (pkm.IsShiny)
+                    newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder_Sprites/scaled_up_sprites/Shiny/984.png";
+                else
+                    newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder_Sprites/scaled_up_sprites/984.png";
                 return newbase;
             }
             if ((Species)pkm.Species > Species.Enamorus)
             {
-                /*var val = pkm.Species + 104;
-                if (val > 1000)
-                newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/master/Sprite%20Assets/pm" + val + "_00_00_00_big.png";
-                else if (val < 1000)
-                    newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/master/Sprite%20Assets/pm0" + val + "_00_00_00_big.png";
-                */
-                newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder%20Sprites/scaled_up_sprites/" + (int)pkm.Species + ".png";
+                    newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder_Sprites/scaled_up_sprites/" + (int)pkm.Species + ".png";
                 return newbase;
             }
-            //if (pkm.Species < 1000 && pkm.Species > 100)
-            //  newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/master/Sprite%20Assets/pm0" + (int)pkm.Species + "_00_00_00_big.png";
-            //if (pkm.Species < 100 && pkm.Species > 10)
-            //  newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/master/Sprite%20Assets/pm00" + (int)pkm.Species + "_00_00_00_big.png";
-            //if (pkm.Species < 10)
-            //  newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/master/Sprite%20Assets/pm000" + (int)pkm.Species + "_00_00_00_big.png";
-
-            //  return newbase;
 
             if (pkm.Species == (ushort)Species.Sneasel)
             {

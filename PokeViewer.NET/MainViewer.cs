@@ -156,6 +156,9 @@ namespace PokeViewer.NET
                 string url = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/OriginMarks/icon_generation_00%5Esb.png";
                 OriginIcon.ImageLocation = url;
                 OverworldView.Visible = false;
+                SwitchConnection.Reset();
+                this.Close();
+                Application.Restart();
             }
             
         }

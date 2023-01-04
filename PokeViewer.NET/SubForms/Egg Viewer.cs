@@ -121,7 +121,7 @@ namespace PokeViewer.NET.SubForms
 
                             while (!currenttext.SequenceEqual(textval))
                             {
-                                await Click(A, 2_000, token).ConfigureAwait(false);
+                                await Click(A, 1_500, token).ConfigureAwait(false);
                                 var dumpmon = await ReadBoxPokemonSV(b1s1, 344, token).ConfigureAwait(false);
                                 if (dumpmon != null && (Species)dumpmon.Species != Species.None && checkBox8.Checked)
                                 {
