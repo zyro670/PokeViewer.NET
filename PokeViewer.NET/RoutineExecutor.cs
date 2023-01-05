@@ -60,14 +60,6 @@ namespace PokeViewer.NET
                 newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder_Sprites/scaled_up_sprites/999.png";
                 return newbase;
             }
-            if ((Species)pkm.Species == Species.Palafin)
-            {
-                if (pkm.IsShiny)
-                    newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder_Sprites/scaled_up_sprites/Shiny/934-1.png";
-                else
-                newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder_Sprites/scaled_up_sprites/934-1.png";
-                return newbase;
-            }
             if (VersionType == (int)GameSelected.Scarlet && (Species)pkm.Species is Species.Tauros || VersionType == (int)GameSelected.Violet && (Species)pkm.Species is Species.Tauros)
             {
                 if (pkm.Form > 0)
@@ -104,6 +96,8 @@ namespace PokeViewer.NET
             {
                 if (pkm.Form > 0)
                     newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder_Sprites/scaled_up_sprites/194-1.png";
+                if (pkm.IsShiny && pkm.Form > 0)
+                    newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder_Sprites/scaled_up_sprites/Shiny/194-1.png";
                 return newbase;
             }
             if ((Species)pkm.Species == Species.Gimmighoul)
@@ -121,6 +115,14 @@ namespace PokeViewer.NET
             }
             if ((Species)pkm.Species > Species.Enamorus)
             {
+                // Leave out for now as shiny sprites are den only mons
+                string formz = string.Empty;
+                string genderz = string.Empty;
+                if (pkm.Form > 0)
+                    formz = $"-{pkm.Form}";
+                if (pkm.IsShiny && pkm.Met_Location == 24)
+                    newbase = $"https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder_Sprites/scaled_up_sprites/Shiny/" + $"{(int)pkm.Species}{formz}" + ".png";
+                else
                     newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder_Sprites/scaled_up_sprites/" + (int)pkm.Species + ".png";
                 return newbase;
             }

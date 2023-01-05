@@ -72,5 +72,20 @@ namespace PokeViewer.NET.SubForms
             if (!string.IsNullOrEmpty(textBox1.Text))
                 await EnterRaidCode(CancellationToken.None).ConfigureAwait(false);
         }
+
+        private async void button3_Click(object sender, EventArgs e)
+        {
+            button3.Enabled = false;
+            Clipboard.Clear();
+            while (!Clipboard.ContainsText())
+            {
+                await Task.Delay(0_100);
+            }
+            textBox1.Text = Clipboard.GetText();
+            if (!string.IsNullOrEmpty(textBox1.Text))
+                await EnterRaidCode(CancellationToken.None).ConfigureAwait(false);
+
+            button3.Enabled = true;
+        }
     }
 }
