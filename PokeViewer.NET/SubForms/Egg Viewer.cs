@@ -130,7 +130,6 @@ namespace PokeViewer.NET.SubForms
                         pkprev = pk;
 
                         label3.Text = "Waiting..";
-                        await Click(A, 1_000, token).ConfigureAwait(false);
                     }
                 }
 
@@ -367,6 +366,8 @@ namespace PokeViewer.NET.SubForms
                             dumpmon = await ReadBoxPokemonSV(b1s1, 344, token).ConfigureAwait(false);
                             if (dumpmon != null && (Species)dumpmon.Species != Species.None)
                                 DumpPokemon(DumpFolder, "eggs", dumpmon);
+
+                            await SetBoxPokemon(Blank, InjectBox, InjectSlot, token).ConfigureAwait(false);
                             break;
                         }
                     case "": // More than 1 egg
