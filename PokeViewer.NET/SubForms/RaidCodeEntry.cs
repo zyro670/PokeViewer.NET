@@ -46,6 +46,7 @@ namespace PokeViewer.NET.SubForms
                 }
             }
             await SwitchConnection.TypeMultiKeys(keystopress, token).ConfigureAwait(false);
+            await Task.Delay(0_050);
             await Click(PLUS, 1_000, token).ConfigureAwait(false);
 
         }
