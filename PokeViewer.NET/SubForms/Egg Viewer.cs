@@ -41,7 +41,7 @@ namespace PokeViewer.NET.SubForms
             await SwitchConnection.WriteBytesMainAsync(BlankVal, PicnicMenu, token).ConfigureAwait(false);
 
             if (checkBox3.Checked)
-            {                
+            {
                 await MakeSandwich(token).ConfigureAwait(false);
                 await PerformEggRoutine(token).ConfigureAwait(false);
             }
@@ -379,6 +379,7 @@ namespace PokeViewer.NET.SubForms
 
                             await Task.Delay(1_500, token).ConfigureAwait(false);
 
+                            dumpmon = await ReadBoxPokemonSV(b1s1, 344, token).ConfigureAwait(false);
                             if (dumpmon != null && (Species)dumpmon.Species != Species.None)
                                 DumpPokemon(DumpFolder, "eggs", dumpmon);
 
@@ -399,7 +400,8 @@ namespace PokeViewer.NET.SubForms
                 result = rgx.Replace(result, "");
             }
             label3.Text = "Waiting..";
-            await Click(PLUS, 1_000, token).ConfigureAwait(false);
+            for (int i = 0; i < 2; i++)
+                await Click(PLUS, 0_500, token).ConfigureAwait(false);
             await Click(B, 1_000, token).ConfigureAwait(false);
         }
 

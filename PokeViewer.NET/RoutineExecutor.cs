@@ -120,7 +120,8 @@ namespace PokeViewer.NET
                 string genderz = string.Empty;
                 if (pkm.Form > 0)
                     formz = $"-{pkm.Form}";
-                if (pkm.IsShiny && pkm.Met_Location == 24)
+                ushort[] currShinies = { 906, 915, 916, 917, 918, 919, 920, 921, 922, 923, 924, 925, 926, 927, 928, 929, 930, 931, 932, 933, 934, 935, 936, 938, 939, 940, 941, 942, 943, 944, 945, 945, 947, 948, 949, 951, 952, 953, 954, 955, 956, 957, 957, 959, 960, 961, 962, 963, 964, 965, 966, 967, 968, 969, 970, 971, 972, 973, 974, 975, 984, 1000, 1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010 };
+                if (pkm.IsShiny && currShinies.Contains(pkm.Species))
                     newbase = $"https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder_Sprites/scaled_up_sprites/Shiny/" + $"{(int)pkm.Species}{formz}" + ".png";
                 else
                     newbase = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder_Sprites/scaled_up_sprites/" + (int)pkm.Species + ".png";
