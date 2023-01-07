@@ -30,6 +30,7 @@ namespace PokeViewer.NET.SubForms
         private byte[] BlankVal = { 0x01 };
         private const string TextBox = "[[[[[main+43A7550]+20]+400]+48]+F0]";
         private const string B1S1 = "[[[main+43A77C8]+108]+9B0]";
+        private byte[]? TextVal = new byte[0];
 
         public string DumpFolder { get; set; } = AppDomain.CurrentDomain.BaseDirectory;
 
@@ -39,6 +40,11 @@ namespace PokeViewer.NET.SubForms
             eggcount = 0;
 
             await SwitchConnection.WriteBytesMainAsync(BlankVal, PicnicMenu, token).ConfigureAwait(false);
+
+            for (int i = 0; i < 2; i++)
+                await Click(A, 1_000, token).ConfigureAwait(false);
+
+            await GrabValues(token).ConfigureAwait(false);
 
             if (checkBox3.Checked)
             {
@@ -61,9 +67,6 @@ namespace PokeViewer.NET.SubForms
 
                 while (TimeLater > DateTime.Now)
                 {
-                    if (TimeLater <= DateTime.Now)
-                        break;
-
                     var pk = await ReadPokemonSV(EggData, 344, token).ConfigureAwait(false);
                     var pkprev = pk;
                     while (pkprev.EncryptionConstant == pk.EncryptionConstant || pk == null || (Species)pk.Species == Species.None)
@@ -100,8 +103,6 @@ namespace PokeViewer.NET.SubForms
 
                         await Click(A, 2_500, token).ConfigureAwait(false);
                         await Click(A, 1_200, token).ConfigureAwait(false);
-
-                        label3.Text = "Collecting..";
 
                         if (pk.IsShiny)
                         {
@@ -349,63 +350,35 @@ namespace PokeViewer.NET.SubForms
             LogUtil.LogInfo($"Saved file: {fn}", "Dump");
         }
 
+        private async Task GrabValues(CancellationToken token)
+        {
+            var ofs = await GetPointerAddress(TextBox, token).ConfigureAwait(false);
+            TextVal = await SwitchConnection.ReadBytesAbsoluteAsync(ofs, 4, token).ConfigureAwait(false);
+            await Click(A, 0_500, token).ConfigureAwait(false);
+        }
+
         private async Task RetrieveEgg(CancellationToken token)
         {
             var b1s1 = await GetPointerAddress(B1S1, token).ConfigureAwait(false);
-            var dumpmon = await ReadBoxPokemonSV(b1s1, 344, token).ConfigureAwait(false);
-
             var ofs = await GetPointerAddress(TextBox, token).ConfigureAwait(false);
             var text = await SwitchConnection.ReadBytesAbsoluteAsync(ofs, 4, token).ConfigureAwait(false);
-            string result = Encoding.ASCII.GetString(text);
-            Regex rgx = new Regex("[^a-zA-Z0-9 -]");
-            result = rgx.Replace(result, "");
 
-            while (result != "Do") // No egg
+            label3.Text = "There's an egg!";
+            if (TextVal != null)
             {
-                switch (result)
+                while (!text.SequenceEqual(TextVal)) // No egg
                 {
-                    case "Th": // 1 egg
-                        {
-                            label3.Text ="There's an egg!";
+                    await Click(A, 1_500, token).ConfigureAwait(false);
 
-                            for (int i = 0; i < 3; i++)
-                                await Click(A, 1_000, token).ConfigureAwait(false);
+                    var dumpmon = await ReadBoxPokemonSV(b1s1, 344, token).ConfigureAwait(false);
+                    if (dumpmon != null && (Species)dumpmon.Species != Species.None)
+                    {
+                        DumpPokemon(DumpFolder, "eggs", dumpmon);
 
-                            dumpmon = await ReadBoxPokemonSV(b1s1, 344, token).ConfigureAwait(false);
-                            if (dumpmon != null && (Species)dumpmon.Species != Species.None)
-                                DumpPokemon(DumpFolder, "eggs", dumpmon);
-
-                            await SetBoxPokemon(Blank, InjectBox, InjectSlot, token).ConfigureAwait(false);
-                            break;
-                        }
-                    case "": // More than 1 egg
-                        {
-                            label3.Text ="Oh? More eggs?";
-
-                            for (int i = 0; i < 4; i++)
-                                await Click(A, 1_000, token).ConfigureAwait(false);
-
-                            await Task.Delay(1_500, token).ConfigureAwait(false);
-
-                            dumpmon = await ReadBoxPokemonSV(b1s1, 344, token).ConfigureAwait(false);
-                            if (dumpmon != null && (Species)dumpmon.Species != Species.None)
-                                DumpPokemon(DumpFolder, "eggs", dumpmon);
-
-                            await Task.Delay(0_500, token).ConfigureAwait(false);
-
-                            await SetBoxPokemon(Blank, InjectBox, InjectSlot, token).ConfigureAwait(false);
-                            break;
-                        }
-                    case "Yo":
-                        await Click(A, 0_800, token).ConfigureAwait(false); break;
-                };
-
-                await Task.Delay(1_500, token).ConfigureAwait(false);
-
-                text = await SwitchConnection.ReadBytesAbsoluteAsync(ofs, 4, token).ConfigureAwait(false);
-                result = Encoding.ASCII.GetString(text);
-                rgx = new Regex("[^a-zA-Z0-9 -]");
-                result = rgx.Replace(result, "");
+                        await SetBoxPokemon(Blank, InjectBox, InjectSlot, token).ConfigureAwait(false);
+                    }
+                    text = await SwitchConnection.ReadBytesAbsoluteAsync(ofs, 4, token).ConfigureAwait(false);
+                }
             }
             label3.Text = "Waiting..";
             for (int i = 0; i < 2; i++)
