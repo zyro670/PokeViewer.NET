@@ -142,7 +142,7 @@ namespace PokeViewer.NET.SubForms
                 }
 
                 await MakeSandwich(token).ConfigureAwait(false);
-                continue;
+                await PerformEggRoutine(token).ConfigureAwait(false);
             }
         }
         private async Task<PK9> ReadPokemonSV(uint offset, int size, CancellationToken token)
