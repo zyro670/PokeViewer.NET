@@ -61,12 +61,20 @@ namespace PokeViewer.NET.SubForms
 
                 while (TimeLater > DateTime.Now)
                 {
+                    if (TimeLater <= DateTime.Now)
+                        break;
+
                     var pk = await ReadPokemonSV(EggData, 344, token).ConfigureAwait(false);
                     var pkprev = pk;
                     while (pkprev.EncryptionConstant == pk.EncryptionConstant || pk == null || (Species)pk.Species == Species.None)
                     {
-                        await Task.Delay(2_500, token).ConfigureAwait(false);
+                        var a = 0;
+                        await Task.Delay(1_500, token).ConfigureAwait(false);
                         pk = await ReadPokemonSV(EggData, 344, token).ConfigureAwait(false);
+                        a++;
+
+                        if (a == 60)
+                            await Click(A, 0_500, token).ConfigureAwait(false);
                     }
 
                     while (pk != null && (Species)pk.Species != Species.None && pkprev.EncryptionConstant != pk.EncryptionConstant)
