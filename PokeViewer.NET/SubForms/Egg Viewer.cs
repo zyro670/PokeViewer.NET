@@ -60,6 +60,8 @@ namespace PokeViewer.NET.SubForms
             if (button1.Enabled == true)
                 DisableOptions();
 
+            PK9 pk = new();
+            PK9 pkprev = new();
             while (!token.IsCancellationRequested)
             {
                 DateTime currentTime = DateTime.Now;
@@ -67,17 +69,11 @@ namespace PokeViewer.NET.SubForms
 
                 while (TimeLater > DateTime.Now)
                 {
-                    var pk = await ReadPokemonSV(EggData, 344, token).ConfigureAwait(false);
-                    var pkprev = pk;
+                    pk = await ReadPokemonSV(EggData, 344, token).ConfigureAwait(false);
                     while (pkprev.EncryptionConstant == pk.EncryptionConstant || pk == null || (Species)pk.Species == Species.None)
                     {
-                        var a = 0;
                         await Task.Delay(1_500, token).ConfigureAwait(false);
                         pk = await ReadPokemonSV(EggData, 344, token).ConfigureAwait(false);
-                        a++;
-
-                        if (a == 60)
-                            await Click(A, 0_500, token).ConfigureAwait(false);
                     }
 
                     while (pk != null && (Species)pk.Species != Species.None && pkprev.EncryptionConstant != pk.EncryptionConstant)
@@ -101,6 +97,7 @@ namespace PokeViewer.NET.SubForms
                         var ballsprite = SpriteUtil.GetBallSprite(pk.Ball);
                         pictureBox2.Image = ballsprite;
 
+                        await Task.Delay(0_500, token).ConfigureAwait(false);
                         await Click(A, 2_500, token).ConfigureAwait(false);
                         await Click(A, 1_200, token).ConfigureAwait(false);
 
@@ -136,10 +133,9 @@ namespace PokeViewer.NET.SubForms
 
                         await RetrieveEgg(token).ConfigureAwait(false);
 
-                        pkprev = pk;
-
-                        label3.Text = "Waiting..";
+                        pkprev = pk;                        
                     }
+                    label3.Text = "Waiting..";
                 }
 
                 await MakeSandwich(token).ConfigureAwait(false);
@@ -374,13 +370,13 @@ namespace PokeViewer.NET.SubForms
                     if (dumpmon != null && (Species)dumpmon.Species != Species.None)
                     {
                         DumpPokemon(DumpFolder, "eggs", dumpmon);
-
+                        await Task.Delay(1_000, token).ConfigureAwait(false);
                         await SetBoxPokemon(Blank, InjectBox, InjectSlot, token).ConfigureAwait(false);
                     }
                     text = await SwitchConnection.ReadBytesAbsoluteAsync(ofs, 4, token).ConfigureAwait(false);
                 }
             }
-            label3.Text = "Waiting..";
+            await Task.Delay(1_500, token).ConfigureAwait(false);
             for (int i = 0; i < 2; i++)
                 await Click(PLUS, 0_500, token).ConfigureAwait(false);
             await Click(B, 1_000, token).ConfigureAwait(false);
