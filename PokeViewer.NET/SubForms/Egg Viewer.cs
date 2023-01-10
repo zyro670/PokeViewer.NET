@@ -135,6 +135,9 @@ namespace PokeViewer.NET.SubForms
 
                         pkprev = pk;                        
                     }
+                    for (int i = 0; i < 2; i++)
+                        await Click(PLUS, 0_500, token).ConfigureAwait(false);
+                    await Click(B, 1_000, token).ConfigureAwait(false);
                     label3.Text = "Waiting..";
                 }
 
@@ -376,10 +379,6 @@ namespace PokeViewer.NET.SubForms
                     text = await SwitchConnection.ReadBytesAbsoluteAsync(ofs, 4, token).ConfigureAwait(false);
                 }
             }
-            await Task.Delay(1_500, token).ConfigureAwait(false);
-            for (int i = 0; i < 2; i++)
-                await Click(PLUS, 0_500, token).ConfigureAwait(false);
-            await Click(B, 1_000, token).ConfigureAwait(false);
         }
 
         private async Task<bool> IsInPicnic(CancellationToken token)
