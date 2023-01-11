@@ -30,7 +30,7 @@ namespace PokeViewer.NET.SubForms
         private byte[] BlankVal = { 0x01 };
         private const string TextBox = "[[[[[main+43A7550]+20]+400]+48]+F0]";
         private const string B1S1 = "[[[main+43A77C8]+108]+9B0]";
-        private byte[]? TextVal = new byte[0];
+        private byte[]? TextVal = Array.Empty<byte>();
 
         public string DumpFolder { get; set; } = AppDomain.CurrentDomain.BaseDirectory;
 
@@ -101,6 +101,8 @@ namespace PokeViewer.NET.SubForms
                         await Click(A, 2_500, token).ConfigureAwait(false);
                         await Click(A, 1_200, token).ConfigureAwait(false);
 
+                        await RetrieveEgg(token).ConfigureAwait(false);
+
                         if (pk.IsShiny)
                         {
                             shinycount++;
@@ -130,8 +132,6 @@ namespace PokeViewer.NET.SubForms
                             MessageBox.Show("Match found!");
                             return;
                         }
-
-                        await RetrieveEgg(token).ConfigureAwait(false);
 
                         pkprev = pk;                        
                     }

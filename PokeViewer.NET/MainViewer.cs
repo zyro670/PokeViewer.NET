@@ -3,7 +3,6 @@ using PKHeX.Drawing.Misc;
 using PokeViewer.NET.SubForms;
 using PokeViewer.NET.WideViewForms;
 using SysBot.Base;
-using System.Diagnostics;
 using System.Net.Sockets;
 using System.Text;
 using static PokeViewer.NET.RoutineExecutor;

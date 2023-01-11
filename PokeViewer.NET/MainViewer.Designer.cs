@@ -150,7 +150,7 @@
             // HidePIDEC
             // 
             this.HidePIDEC.AutoSize = true;
-            this.HidePIDEC.Location = new System.Drawing.Point(19, 65);
+            this.HidePIDEC.Location = new System.Drawing.Point(19, 68);
             this.HidePIDEC.Name = "HidePIDEC";
             this.HidePIDEC.Size = new System.Drawing.Size(91, 19);
             this.HidePIDEC.TabIndex = 13;
@@ -223,7 +223,7 @@
             // WindowCapture
             // 
             this.WindowCapture.Image = ((System.Drawing.Image)(resources.GetObject("WindowCapture.Image")));
-            this.WindowCapture.Location = new System.Drawing.Point(110, 32);
+            this.WindowCapture.Location = new System.Drawing.Point(109, 33);
             this.WindowCapture.Name = "WindowCapture";
             this.WindowCapture.Size = new System.Drawing.Size(37, 25);
             this.WindowCapture.TabIndex = 20;
@@ -318,7 +318,7 @@
             // InGameScreenshot
             // 
             this.InGameScreenshot.Image = ((System.Drawing.Image)(resources.GetObject("InGameScreenshot.Image")));
-            this.InGameScreenshot.Location = new System.Drawing.Point(110, 59);
+            this.InGameScreenshot.Location = new System.Drawing.Point(109, 64);
             this.InGameScreenshot.Name = "InGameScreenshot";
             this.InGameScreenshot.Size = new System.Drawing.Size(37, 25);
             this.InGameScreenshot.TabIndex = 30;
