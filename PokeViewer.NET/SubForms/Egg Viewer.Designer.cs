@@ -50,8 +50,14 @@
             this.ShinyFoundLabel = new System.Windows.Forms.Label();
             this.BasketCount = new System.Windows.Forms.Label();
             this.NextSanwichLabel = new System.Windows.Forms.Label();
+            this.HoldIngredients = new System.Windows.Forms.CheckBox();
+            this.NumberOfFillings = new System.Windows.Forms.NumericUpDown();
+            this.label1 = new System.Windows.Forms.Label();
+            this.HoldTimeToFillings = new System.Windows.Forms.Label();
+            this.FillingHoldTime = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.PokeSpriteBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BallBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.NumberOfFillings)).BeginInit();
             this.SuspendLayout();
             // 
             // PokeSpriteBox
@@ -104,7 +110,7 @@
             // StopOnShiny
             // 
             this.StopOnShiny.AutoSize = true;
-            this.StopOnShiny.Location = new System.Drawing.Point(180, 20);
+            this.StopOnShiny.Location = new System.Drawing.Point(183, 15);
             this.StopOnShiny.Name = "StopOnShiny";
             this.StopOnShiny.Size = new System.Drawing.Size(106, 19);
             this.StopOnShiny.TabIndex = 11;
@@ -114,7 +120,7 @@
             // CheckBoxOf3
             // 
             this.CheckBoxOf3.AutoSize = true;
-            this.CheckBoxOf3.Location = new System.Drawing.Point(180, 45);
+            this.CheckBoxOf3.Location = new System.Drawing.Point(183, 37);
             this.CheckBoxOf3.Name = "CheckBoxOf3";
             this.CheckBoxOf3.Size = new System.Drawing.Size(150, 19);
             this.CheckBoxOf3.TabIndex = 12;
@@ -124,7 +130,7 @@
             // EatOnStart
             // 
             this.EatOnStart.AutoSize = true;
-            this.EatOnStart.Location = new System.Drawing.Point(180, 69);
+            this.EatOnStart.Location = new System.Drawing.Point(183, 59);
             this.EatOnStart.Name = "EatOnStart";
             this.EatOnStart.Size = new System.Drawing.Size(93, 19);
             this.EatOnStart.TabIndex = 13;
@@ -133,7 +139,7 @@
             // 
             // Item1Value
             // 
-            this.Item1Value.Location = new System.Drawing.Point(230, 122);
+            this.Item1Value.Location = new System.Drawing.Point(230, 126);
             this.Item1Value.Name = "Item1Value";
             this.Item1Value.Size = new System.Drawing.Size(32, 23);
             this.Item1Value.TabIndex = 14;
@@ -143,7 +149,7 @@
             // Item1Label
             // 
             this.Item1Label.AutoSize = true;
-            this.Item1Label.Location = new System.Drawing.Point(180, 125);
+            this.Item1Label.Location = new System.Drawing.Point(180, 131);
             this.Item1Label.Name = "Item1Label";
             this.Item1Label.Size = new System.Drawing.Size(40, 15);
             this.Item1Label.TabIndex = 15;
@@ -152,7 +158,7 @@
             // Item2Label
             // 
             this.Item2Label.AutoSize = true;
-            this.Item2Label.Location = new System.Drawing.Point(180, 150);
+            this.Item2Label.Location = new System.Drawing.Point(180, 156);
             this.Item2Label.Name = "Item2Label";
             this.Item2Label.Size = new System.Drawing.Size(40, 15);
             this.Item2Label.TabIndex = 16;
@@ -160,7 +166,7 @@
             // 
             // Item2Value
             // 
-            this.Item2Value.Location = new System.Drawing.Point(230, 148);
+            this.Item2Value.Location = new System.Drawing.Point(230, 154);
             this.Item2Value.Name = "Item2Value";
             this.Item2Value.Size = new System.Drawing.Size(32, 23);
             this.Item2Value.TabIndex = 17;
@@ -170,7 +176,7 @@
             // EatAgain
             // 
             this.EatAgain.AutoSize = true;
-            this.EatAgain.Location = new System.Drawing.Point(180, 94);
+            this.EatAgain.Location = new System.Drawing.Point(183, 81);
             this.EatAgain.Name = "EatAgain";
             this.EatAgain.Size = new System.Drawing.Size(81, 19);
             this.EatAgain.TabIndex = 18;
@@ -180,7 +186,7 @@
             // Item3Label
             // 
             this.Item3Label.AutoSize = true;
-            this.Item3Label.Location = new System.Drawing.Point(180, 177);
+            this.Item3Label.Location = new System.Drawing.Point(180, 183);
             this.Item3Label.Name = "Item3Label";
             this.Item3Label.Size = new System.Drawing.Size(40, 15);
             this.Item3Label.TabIndex = 19;
@@ -188,7 +194,7 @@
             // 
             // Item3Value
             // 
-            this.Item3Value.Location = new System.Drawing.Point(230, 176);
+            this.Item3Value.Location = new System.Drawing.Point(230, 182);
             this.Item3Value.Name = "Item3Value";
             this.Item3Value.Size = new System.Drawing.Size(32, 23);
             this.Item3Value.TabIndex = 20;
@@ -198,7 +204,7 @@
             // checkBox5
             // 
             this.checkBox5.AutoSize = true;
-            this.checkBox5.Location = new System.Drawing.Point(277, 124);
+            this.checkBox5.Location = new System.Drawing.Point(277, 130);
             this.checkBox5.Name = "checkBox5";
             this.checkBox5.Size = new System.Drawing.Size(49, 19);
             this.checkBox5.TabIndex = 21;
@@ -210,7 +216,7 @@
             this.checkBox6.AutoSize = true;
             this.checkBox6.Checked = true;
             this.checkBox6.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox6.Location = new System.Drawing.Point(277, 150);
+            this.checkBox6.Location = new System.Drawing.Point(277, 156);
             this.checkBox6.Name = "checkBox6";
             this.checkBox6.Size = new System.Drawing.Size(49, 19);
             this.checkBox6.TabIndex = 22;
@@ -222,7 +228,7 @@
             this.checkBox7.AutoSize = true;
             this.checkBox7.Checked = true;
             this.checkBox7.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox7.Location = new System.Drawing.Point(277, 177);
+            this.checkBox7.Location = new System.Drawing.Point(277, 183);
             this.checkBox7.Name = "checkBox7";
             this.checkBox7.Size = new System.Drawing.Size(49, 19);
             this.checkBox7.TabIndex = 23;
@@ -232,7 +238,7 @@
             // SandwichCount
             // 
             this.SandwichCount.AutoSize = true;
-            this.SandwichCount.Location = new System.Drawing.Point(180, 222);
+            this.SandwichCount.Location = new System.Drawing.Point(13, 257);
             this.SandwichCount.Name = "SandwichCount";
             this.SandwichCount.Size = new System.Drawing.Size(108, 15);
             this.SandwichCount.TabIndex = 28;
@@ -241,7 +247,7 @@
             // ShinyFoundLabel
             // 
             this.ShinyFoundLabel.AutoSize = true;
-            this.ShinyFoundLabel.Location = new System.Drawing.Point(180, 257);
+            this.ShinyFoundLabel.Location = new System.Drawing.Point(177, 276);
             this.ShinyFoundLabel.Name = "ShinyFoundLabel";
             this.ShinyFoundLabel.Size = new System.Drawing.Size(87, 15);
             this.ShinyFoundLabel.TabIndex = 29;
@@ -250,7 +256,7 @@
             // BasketCount
             // 
             this.BasketCount.AutoSize = true;
-            this.BasketCount.Location = new System.Drawing.Point(180, 206);
+            this.BasketCount.Location = new System.Drawing.Point(177, 257);
             this.BasketCount.Name = "BasketCount";
             this.BasketCount.Size = new System.Drawing.Size(83, 15);
             this.BasketCount.TabIndex = 30;
@@ -259,17 +265,75 @@
             // NextSanwichLabel
             // 
             this.NextSanwichLabel.AutoSize = true;
-            this.NextSanwichLabel.Location = new System.Drawing.Point(180, 239);
+            this.NextSanwichLabel.Location = new System.Drawing.Point(13, 276);
             this.NextSanwichLabel.Name = "NextSanwichLabel";
             this.NextSanwichLabel.Size = new System.Drawing.Size(89, 15);
             this.NextSanwichLabel.TabIndex = 31;
             this.NextSanwichLabel.Text = "Next Sandwich:";
             // 
+            // HoldIngredients
+            // 
+            this.HoldIngredients.AutoSize = true;
+            this.HoldIngredients.Location = new System.Drawing.Point(183, 103);
+            this.HoldIngredients.Name = "HoldIngredients";
+            this.HoldIngredients.Size = new System.Drawing.Size(97, 19);
+            this.HoldIngredients.TabIndex = 32;
+            this.HoldIngredients.Text = "Hold Fillings?";
+            this.HoldIngredients.UseVisualStyleBackColor = true;
+            // 
+            // NumberOfFillings
+            // 
+            this.NumberOfFillings.Location = new System.Drawing.Point(270, 207);
+            this.NumberOfFillings.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.NumberOfFillings.Name = "NumberOfFillings";
+            this.NumberOfFillings.Size = new System.Drawing.Size(49, 23);
+            this.NumberOfFillings.TabIndex = 33;
+            this.NumberOfFillings.Value = new decimal(new int[] {
+            3,
+            0,
+            0,
+            0});
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(179, 212);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(85, 15);
+            this.label1.TabIndex = 34;
+            this.label1.Text = "Fillings Count?";
+            // 
+            // HoldTimeToFillings
+            // 
+            this.HoldTimeToFillings.AutoSize = true;
+            this.HoldTimeToFillings.Location = new System.Drawing.Point(178, 236);
+            this.HoldTimeToFillings.Name = "HoldTimeToFillings";
+            this.HoldTimeToFillings.Size = new System.Drawing.Size(108, 15);
+            this.HoldTimeToFillings.TabIndex = 35;
+            this.HoldTimeToFillings.Text = "Fillings HOLD Time";
+            // 
+            // FillingHoldTime
+            // 
+            this.FillingHoldTime.Location = new System.Drawing.Point(286, 234);
+            this.FillingHoldTime.Name = "FillingHoldTime";
+            this.FillingHoldTime.Size = new System.Drawing.Size(33, 23);
+            this.FillingHoldTime.TabIndex = 36;
+            this.FillingHoldTime.Text = "690";
+            // 
             // Egg_Viewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(338, 281);
+            this.ClientSize = new System.Drawing.Size(338, 300);
+            this.Controls.Add(this.FillingHoldTime);
+            this.Controls.Add(this.HoldTimeToFillings);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.NumberOfFillings);
+            this.Controls.Add(this.HoldIngredients);
             this.Controls.Add(this.NextSanwichLabel);
             this.Controls.Add(this.BasketCount);
             this.Controls.Add(this.ShinyFoundLabel);
@@ -297,6 +361,7 @@
             this.Text = "Egg Viewer";
             ((System.ComponentModel.ISupportInitialize)(this.PokeSpriteBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.BallBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.NumberOfFillings)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -326,5 +391,10 @@
         private Label ShinyFoundLabel;
         private Label BasketCount;
         private Label NextSanwichLabel;
+        private CheckBox HoldIngredients;
+        private NumericUpDown NumberOfFillings;
+        private Label label1;
+        private Label HoldTimeToFillings;
+        private TextBox FillingHoldTime;
     }
 }

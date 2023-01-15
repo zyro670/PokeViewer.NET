@@ -30,6 +30,8 @@ namespace PokeViewer.NET.SubForms
 
         private async void button1_Click(object sender, EventArgs e)
         {
+            if (FetchButton.Enabled == true)
+                DisableOptions();
             var token = CancellationToken.None;
             eggcount = 0;
 
@@ -45,10 +47,7 @@ namespace PokeViewer.NET.SubForms
         }
 
         private async Task WaitForEggs(CancellationToken token)
-        {
-            if (FetchButton.Enabled == true)
-                DisableOptions();
-
+        {           
             PK9 pkprev = new();
             while (!token.IsCancellationRequested)
             {
@@ -253,8 +252,27 @@ namespace PokeViewer.NET.SubForms
             await Click(A, 8_000, token).ConfigureAwait(false);
             //Wait for bread
 
-            await SetStick(LEFT, 0, 30000, 0_700, token).ConfigureAwait(false); // Navigate to ingredients
+            var fillingtime = Convert.ToInt32(FillingHoldTime.Text);
+            await SetStick(LEFT, 0, 30000, 0_000 + fillingtime, token).ConfigureAwait(false); // Navigate to ingredients
             await SetStick(LEFT, 0, 0, 0, token).ConfigureAwait(false);
+            await Task.Delay(0_500, token).ConfigureAwait(false);
+
+            if (HoldIngredients.Checked)
+            {
+                for (int i = 0; i < NumberOfFillings.Value; i++) // Amount of ingredients to drop
+                {
+                    await Hold(A, 0_800, token).ConfigureAwait(false);
+
+                    await SetStick(LEFT, 0, -30000, 0_000 + fillingtime, token).ConfigureAwait(false); // Navigate to ingredients
+                    await SetStick(LEFT, 0, 0, 0, token).ConfigureAwait(false);
+                    await Task.Delay(0_500, token).ConfigureAwait(false);
+                    await Release(A, 0_800, token).ConfigureAwait(false);
+
+                    await SetStick(LEFT, 0, 30000, 0_000 + fillingtime, token).ConfigureAwait(false); // Navigate to ingredients
+                    await SetStick(LEFT, 0, 0, 0, token).ConfigureAwait(false);
+                    await Task.Delay(0_500, token).ConfigureAwait(false);
+                }
+            }
 
             sandwichcount++;
             SandwichCount.Text = $"Sandwiches Made: {sandwichcount}";
@@ -286,6 +304,18 @@ namespace PokeViewer.NET.SubForms
             await Task.Delay(delay, token).ConfigureAwait(false);
         }
 
+        public async Task Hold(SwitchButton b, int delay, CancellationToken token)
+        {
+            await SwitchConnection.SendAsync(SwitchCommand.Hold(b, true), token).ConfigureAwait(false);
+            await Task.Delay(delay, token).ConfigureAwait(false);
+        }
+
+        public async Task Release(SwitchButton b, int delay, CancellationToken token)
+        {
+            await SwitchConnection.SendAsync(SwitchCommand.Release(b, true), token).ConfigureAwait(false);
+            await Task.Delay(delay, token).ConfigureAwait(false);
+        }
+
         private void button2_Click(object sender, EventArgs e)
         {
             SwitchConnection.Reset();
@@ -314,6 +344,8 @@ namespace PokeViewer.NET.SubForms
             checkBox5.Enabled = false;
             checkBox6.Enabled = false;
             checkBox7.Enabled = false;
+            FillingHoldTime.Enabled = false;
+            NumberOfFillings.Enabled = false;
         }
 
         private void EnableOptions()
@@ -325,6 +357,8 @@ namespace PokeViewer.NET.SubForms
             checkBox5.Enabled = true;
             checkBox6.Enabled = true;
             checkBox7.Enabled = true;
+            FillingHoldTime.Enabled = true;
+            NumberOfFillings.Enabled = true;
         }
     }
 }
