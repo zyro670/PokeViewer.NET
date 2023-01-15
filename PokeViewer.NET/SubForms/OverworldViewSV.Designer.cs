@@ -319,6 +319,7 @@
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.button1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "OverworldViewSV";
             this.Text = "OverworldViewSV";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();

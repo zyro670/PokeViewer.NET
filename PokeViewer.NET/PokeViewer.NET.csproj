@@ -44,6 +44,7 @@
 		<PackageReference Include="Discord.Net" Version="3.9.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
 		<PackageReference Include="NLog" Version="4.7.15" />
+		<PackageReference Include="Tesseract.Net.SDK" Version="4.5.411" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Compile Update="Properties\Resources.Designer.cs">

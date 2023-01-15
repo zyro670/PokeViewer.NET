@@ -479,6 +479,7 @@
             this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.button1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "WideViewerSWSH";
             this.Text = "PokeViewer.NET - WideViewSWSH - Overworld Spawns";
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();

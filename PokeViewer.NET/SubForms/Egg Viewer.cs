@@ -4,8 +4,6 @@ using static SysBot.Base.SwitchButton;
 using static SysBot.Base.SwitchStick;
 using static PokeViewer.NET.RoutineExecutor;
 using PKHeX.Drawing.PokeSprite;
-using System.Text.RegularExpressions;
-using System.Text;
 
 namespace PokeViewer.NET.SubForms
 {
@@ -22,15 +20,11 @@ namespace PokeViewer.NET.SubForms
         private int eggcount = 0;
         private int sandwichcount = 0;
         private int shinycount = 0;
-        private const int InjectBox = 0;
-        private const int InjectSlot = 0;
-        private static readonly PK9 Blank = new();
         private uint EggData = 0x04386040;
         private uint PicnicMenu = 0x04416020;
         private byte[] BlankVal = { 0x01 };
-        private const string TextBox = "[[[[[main+43A7550]+20]+400]+48]+F0]";
-        private const string B1S1 = "[[[main+43A77C8]+108]+9B0]";
-        private byte[]? TextVal = Array.Empty<byte>();
+        public IReadOnlyList<long> OverworldPointer { get; } = new long[] { 0x43A7848, 0x348, 0x10, 0xD8, 0x28 };
+        private ulong OverworldOffset;
 
         public string DumpFolder { get; set; } = AppDomain.CurrentDomain.BaseDirectory;
 
@@ -41,44 +35,54 @@ namespace PokeViewer.NET.SubForms
 
             await SwitchConnection.WriteBytesMainAsync(BlankVal, PicnicMenu, token).ConfigureAwait(false);
 
-            for (int i = 0; i < 2; i++)
-                await Click(A, 1_000, token).ConfigureAwait(false);
-
-            await GrabValues(token).ConfigureAwait(false);
-
-            if (checkBox3.Checked)
+            if (EatOnStart.Checked)
             {
                 await MakeSandwich(token).ConfigureAwait(false);
-                await PerformEggRoutine(token).ConfigureAwait(false);
+                await WaitForEggs(token).ConfigureAwait(false);
             }
             else
-                await PerformEggRoutine(token).ConfigureAwait(false);
+                await WaitForEggs(token).ConfigureAwait(false);
         }
 
-        private async Task PerformEggRoutine(CancellationToken token)
+        private async Task WaitForEggs(CancellationToken token)
         {
-            if (button1.Enabled == true)
+            if (FetchButton.Enabled == true)
                 DisableOptions();
 
-            PK9 pk = new();
             PK9 pkprev = new();
             while (!token.IsCancellationRequested)
             {
-                DateTime currentTime = DateTime.Now;
-                DateTime TimeLater = currentTime.AddMinutes(30);
-
-                while (TimeLater > DateTime.Now)
+                var wait = TimeSpan.FromMinutes(30);
+                var endTime = DateTime.Now + wait;
+                var ctr = 0;
+                var waiting = 0;                
+                while (DateTime.Now < endTime)
                 {
-                    pk = await ReadPokemonSV(EggData, 344, token).ConfigureAwait(false);
+                    NextSanwichLabel.Text = $"Next Sandwich: {endTime:hh\\:mm\\:ss}";
+                    var pk = await ReadPokemonSV(EggData, 344, token).ConfigureAwait(false);
                     while (pkprev.EncryptionConstant == pk.EncryptionConstant || pk == null || (Species)pk.Species == Species.None)
                     {
+                        waiting++;
                         await Task.Delay(1_500, token).ConfigureAwait(false);
                         pk = await ReadPokemonSV(EggData, 344, token).ConfigureAwait(false);
+                        if (waiting == 80)
+                        {
+                            await ReopenPicnic(token).ConfigureAwait(false);
+                            await MakeSandwich(token).ConfigureAwait(false);
+                            await ReopenPicnic(token).ConfigureAwait(false);
+                            wait = TimeSpan.FromMinutes(30);
+                            endTime = DateTime.Now + wait;
+                            waiting = 0;
+                            ctr = 0;
+                        }
                     }
 
                     while (pk != null && (Species)pk.Species != Species.None && pkprev.EncryptionConstant != pk.EncryptionConstant)
                     {
+                        waiting = 0;
+                        ctr++;
                         eggcount++;
+                        BasketCount.Text = $"Basket Count: {ctr}";
                         string pid = $"{Environment.NewLine}PID: {pk.PID:X8}";
                         string ec = $"{Environment.NewLine}EC: {pk.EncryptionConstant:X8}";
                         var form = FormOutput(pk.Species, pk.Form, out _);
@@ -90,42 +94,33 @@ namespace PokeViewer.NET.SubForms
                             case 2: break;
                         }
                         string output = $"{$"Egg #{eggcount}"}{Environment.NewLine}{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{(Species)pk.Species}{form}{gender}{pid}{ec}{Environment.NewLine}Nature: {(Nature)pk.Nature}{Environment.NewLine}Ability: {(Ability)pk.Ability}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}";
-                        textBox1.Text = output;
+                        PokeStats.Text = output;
                         var sprite = PokeImg(pk, false, 7);
-                        pictureBox1.Load(sprite);
+                        PokeSpriteBox.Load(sprite);
 
                         var ballsprite = SpriteUtil.GetBallSprite(pk.Ball);
-                        pictureBox2.Image = ballsprite;
+                        BallBox.Image = ballsprite;
 
                         await Task.Delay(0_500, token).ConfigureAwait(false);
-                        await Click(A, 2_500, token).ConfigureAwait(false);
-                        await Click(A, 1_200, token).ConfigureAwait(false);
-
-                        await RetrieveEgg(token).ConfigureAwait(false);
-
                         if (pk.IsShiny)
                         {
                             shinycount++;
-                            label6.Text = $"Shinies Found: {shinycount}";
+                            ShinyFoundLabel.Text = $"Shinies Found: {shinycount}";
                         }
 
-                        if (pk.IsShiny && (Species)pk.Species != Species.None && checkBox1.Checked)
+                        if (pk.IsShiny && (Species)pk.Species != Species.None && StopOnShiny.Checked)
                         {                            
-                            if ((Species)pk.Species == Species.Dunsparce && pk.EncryptionConstant % 100 != 0 && checkBox2.Checked)
+                            if ((Species)pk.Species is Species.Dunsparce or Species.Tandemaus && pk.EncryptionConstant % 100 != 0 && CheckBoxOf3.Checked)
                                 break;
 
-                            if ((Species)pk.Species == Species.Dunsparce && pk.EncryptionConstant % 100 == 0 && checkBox2.Checked)
+                            if ((Species)pk.Species is Species.Dunsparce or Species.Tandemaus && pk.EncryptionConstant % 100 == 0 && CheckBoxOf3.Checked)
                             {
-                                label3.Text = $"Shiny 3 segment!";
                                 EnableOptions();
                                 WindowState = _WindowState;
                                 Activate();
-                                MessageBox.Show("Shiny 3 Segment Dunsparce Found!");
+                                MessageBox.Show("Rare Shiny Found!");
                             }
 
-                            await RetrieveEgg(token).ConfigureAwait(false);
-
-                            label3.Text = $"Match found!";
                             EnableOptions();
                             WindowState = _WindowState;
                             Activate();
@@ -135,14 +130,16 @@ namespace PokeViewer.NET.SubForms
 
                         pkprev = pk;                        
                     }
-                    for (int i = 0; i < 2; i++)
-                        await Click(PLUS, 0_500, token).ConfigureAwait(false);
-                    await Click(B, 1_000, token).ConfigureAwait(false);
-                    label3.Text = "Waiting..";
+                    if (ctr == 10)
+                    {
+                        BasketCount.Text = $"Resetting..";
+                        await ReopenPicnic(token).ConfigureAwait(false);
+                        ctr = 0;
+                        waiting = 0;
+                        BasketCount.Text = $"Basket Count: {ctr}";
+                    }
                 }
-
                 await MakeSandwich(token).ConfigureAwait(false);
-                await PerformEggRoutine(token).ConfigureAwait(false);
             }
         }
         private async Task<PK9> ReadPokemonSV(uint offset, int size, CancellationToken token)
@@ -159,6 +156,42 @@ namespace PokeViewer.NET.SubForms
             await Task.Delay(delay, token).ConfigureAwait(false);
         }
 
+        private async Task ReopenPicnic(CancellationToken token)
+        {
+            await Task.Delay(0_500, token).ConfigureAwait(false);
+            await Click(Y, 1_500, token).ConfigureAwait(false);
+            var overworldWaitCycles = 0;
+            var hasReset = false;
+            OverworldOffset = await SwitchConnection.PointerAll(OverworldPointer, token).ConfigureAwait(false);
+            while (!await IsOnOverworld(OverworldOffset, token).ConfigureAwait(false))
+            {
+                await Click(A, 1_000, token).ConfigureAwait(false);
+                overworldWaitCycles++;
+
+                if (overworldWaitCycles == 10)
+                {
+                    for (int i = 0; i < 5; i++)
+                        await Click(B, 0_500, token).ConfigureAwait(false);
+
+                    await Click(Y, 1_500, token).ConfigureAwait(false);
+                    await Click(A, 1_000, token).ConfigureAwait(false);
+
+                    for (int i = 0; i < 4; i++)
+                        await Click(B, 0_500, token).ConfigureAwait(false); 
+                }
+            }
+            for (int i = 0; i < 10; i++)
+                await Click(A, 0_500, token).ConfigureAwait(false); 
+            await Click(X, 1_500, token).ConfigureAwait(false);
+            if (hasReset) 
+            {
+                await Click(DRIGHT, 0_250, token).ConfigureAwait(false);
+                await Click(DDOWN, 0_250, token).ConfigureAwait(false);
+                await Click(DDOWN, 0_250, token).ConfigureAwait(false);
+            }
+            await Click(A, 7_000, token).ConfigureAwait(false); 
+        }
+
         private async Task MakeSandwich(CancellationToken token)
         {
             await Click(MINUS, 0_500, token).ConfigureAwait(false);
@@ -168,10 +201,10 @@ namespace PokeViewer.NET.SubForms
             await Click(A, 4_000, token).ConfigureAwait(false);
             await Click(X, 1_500, token).ConfigureAwait(false);
 
-            if (!string.IsNullOrEmpty(textBox2.Text))
+            if (!string.IsNullOrEmpty(Item1Value.Text))
             {
                 // Lettuce
-                var m1 = Convert.ToInt32(textBox2.Text);
+                var m1 = Convert.ToInt32(Item1Value.Text);
 
                 for (int i = 0; i < m1; i++)
                 {
@@ -185,10 +218,10 @@ namespace PokeViewer.NET.SubForms
             await Click(A, 0_800, token).ConfigureAwait(false);
             await Click(PLUS, 0_800, token).ConfigureAwait(false);
 
-            if (!string.IsNullOrEmpty(textBox3.Text))
+            if (!string.IsNullOrEmpty(Item2Value.Text))
             {
                 // Mystica Salt
-                var m2 = Convert.ToInt32(textBox3.Text);
+                var m2 = Convert.ToInt32(Item2Value.Text);
 
                 for (int i = 0; i < m2; i++)
                 {
@@ -200,10 +233,10 @@ namespace PokeViewer.NET.SubForms
             }
 
             await Click(A, 0_800, token).ConfigureAwait(false);
-            if (!string.IsNullOrEmpty(textBox4.Text))
+            if (!string.IsNullOrEmpty(Item3Value.Text))
             {
                 // Mystica Sweet
-                var m3 = Convert.ToInt32(textBox4.Text);
+                var m3 = Convert.ToInt32(Item3Value.Text);
 
                 for (int i = 0; i < m3; i++)
                 {
@@ -224,7 +257,7 @@ namespace PokeViewer.NET.SubForms
             await SetStick(LEFT, 0, 0, 0, token).ConfigureAwait(false);
 
             sandwichcount++;
-            label7.Text = $"Sandwiches Made: {sandwichcount}";
+            SandwichCount.Text = $"Sandwiches Made: {sandwichcount}";
             for (int i = 0; i < 5; i++)
                 await Click(A, 0_800, token).ConfigureAwait(false);
 
@@ -247,20 +280,6 @@ namespace PokeViewer.NET.SubForms
             }
         }
 
-        public async Task SetBoxPokemon(PK9 pkm, int box, int slot, CancellationToken token)
-        {
-            var ofs = await GetPointerAddress("[[[main+43A77C8]+108]+9B0]", token).ConfigureAwait(false);
-            pkm.ResetPartyStats();
-            await SwitchConnection.WriteBytesAbsoluteAsync(pkm.EncryptedPartyData, ofs, token).ConfigureAwait(false);
-        }
-
-        private async Task<PK9> ReadBoxPokemonSV(ulong offset, int size, CancellationToken token)
-        {
-            var data = await SwitchConnection.ReadBytesAbsoluteAsync(offset, size, token).ConfigureAwait(false);
-            var pk = new PK9(data);
-            return pk;
-        }
-
         public new async Task Click(SwitchButton b, int delay, CancellationToken token)
         {
             await SwitchConnection.SendAsync(SwitchCommand.Click(b, true), token).ConfigureAwait(false);
@@ -270,116 +289,9 @@ namespace PokeViewer.NET.SubForms
         private void button2_Click(object sender, EventArgs e)
         {
             SwitchConnection.Reset();
-            this.Close();            
+            this.Close();  
             Application.Restart();
         }        
-
-        public async Task<ulong> GetPointerAddress(string pointer, CancellationToken token, bool heaprealtive = false) //Code from LiveHex
-        {
-            var ptr = pointer;
-            if (string.IsNullOrWhiteSpace(ptr) || ptr.IndexOfAny(new char[] { '-', '/', '*' }) != -1)
-                return 0;
-            while (ptr.Contains("]]"))
-                ptr = ptr.Replace("]]", "]+0]");
-            uint finadd = 0;
-            if (!ptr.EndsWith("]"))
-            {
-                finadd = Util.GetHexValue(ptr.Split('+').Last());
-                ptr = ptr[..ptr.LastIndexOf('+')];
-            }
-            var jumps = ptr.Replace("main", "").Replace("[", "").Replace("]", "").Split(new[] { "+" }, StringSplitOptions.RemoveEmptyEntries);
-            if (jumps.Length == 0)
-                return 0;
-
-            var initaddress = Util.GetHexValue(jumps[0].Trim());
-            ulong address = BitConverter.ToUInt64(await SwitchConnection.ReadBytesMainAsync(initaddress, 0x8, token).ConfigureAwait(false), 0);
-            foreach (var j in jumps)
-            {
-                var val = Util.GetHexValue(j.Trim());
-                if (val == initaddress)
-                    continue;
-                address = BitConverter.ToUInt64(await SwitchConnection.ReadBytesAbsoluteAsync(address + val, 0x8, token).ConfigureAwait(false), 0);
-            }
-            address += finadd;
-            if (heaprealtive)
-            {
-                ulong heap = await SwitchConnection.GetHeapBaseAsync(token);
-                address -= heap;
-            }
-            return address;
-        }
-
-        public static void DumpPokemon(string folder, string subfolder, PKM pk)
-        {
-            string form = pk.Form > 0 ? $"-{pk.Form:00}" : string.Empty;
-            string ballFormatted = string.Empty;
-            string shinytype = string.Empty;
-            if (pk.IsShiny)
-            {
-                if (pk.Format >= 8 && (pk.ShinyXor == 0 || pk.FatefulEncounter || pk.Version == (int)GameVersion.GO))
-                    shinytype = " ■";
-                else
-                    shinytype = " ★";
-            }
-
-            string IVList = pk.IV_HP + "." + pk.IV_ATK + "." + pk.IV_DEF + "." + pk.IV_SPA + "." + pk.IV_SPD + "." + pk.IV_SPE;
-
-            string TIDFormatted = pk.Generation >= 7 ? $"{pk.TrainerID7:000000}" : $"{pk.TID:00000}";
-
-            if (pk.Ball != (int)Ball.None)
-                ballFormatted = " - " + GameInfo.Strings.balllist[pk.Ball].Split(' ')[0];
-
-            string speciesName = SpeciesName.GetSpeciesNameGeneration(pk.Species, (int)LanguageID.English, pk.Format);
-            if (pk is IGigantamax gmax && gmax.CanGigantamax)
-                speciesName += "-Gmax";
-
-            string OTInfo = string.IsNullOrEmpty(pk.OT_Name) ? "" : $" - {pk.OT_Name} - {TIDFormatted}{ballFormatted}";
-
-            string filename = $"{pk.Species:000}{form}{shinytype} - {speciesName} - {IVList}{OTInfo} - {pk.EncryptionConstant:X8}";
-            string filetype = "";
-            if (pk is PK9)
-                filetype = ".pk9";
-
-            if (!Directory.Exists(folder))
-                return;
-            var dir = Path.Combine(folder, subfolder);
-            Directory.CreateDirectory(dir);
-            var fn = Path.Combine(dir, filename + filetype);
-            File.WriteAllBytes(fn, pk.DecryptedPartyData);
-            LogUtil.LogInfo($"Saved file: {fn}", "Dump");
-        }
-
-        private async Task GrabValues(CancellationToken token)
-        {
-            var ofs = await GetPointerAddress(TextBox, token).ConfigureAwait(false);
-            TextVal = await SwitchConnection.ReadBytesAbsoluteAsync(ofs, 4, token).ConfigureAwait(false);
-            await Click(A, 0_500, token).ConfigureAwait(false);
-        }
-
-        private async Task RetrieveEgg(CancellationToken token)
-        {
-            var b1s1 = await GetPointerAddress(B1S1, token).ConfigureAwait(false);
-            var ofs = await GetPointerAddress(TextBox, token).ConfigureAwait(false);
-            var text = await SwitchConnection.ReadBytesAbsoluteAsync(ofs, 4, token).ConfigureAwait(false);
-
-            label3.Text = "There's an egg!";
-            if (TextVal != null)
-            {
-                while (!text.SequenceEqual(TextVal)) // No egg
-                {
-                    await Click(A, 1_500, token).ConfigureAwait(false);
-
-                    var dumpmon = await ReadBoxPokemonSV(b1s1, 344, token).ConfigureAwait(false);
-                    if (dumpmon != null && (Species)dumpmon.Species != Species.None)
-                    {
-                        DumpPokemon(DumpFolder, "eggs", dumpmon);
-                        await Task.Delay(1_000, token).ConfigureAwait(false);
-                        await SetBoxPokemon(Blank, InjectBox, InjectSlot, token).ConfigureAwait(false);
-                    }
-                    text = await SwitchConnection.ReadBytesAbsoluteAsync(ofs, 4, token).ConfigureAwait(false);
-                }
-            }
-        }
 
         private async Task<bool> IsInPicnic(CancellationToken token)
         {
@@ -387,12 +299,18 @@ namespace PokeViewer.NET.SubForms
             return Data[0] == 0x01; // 1 when in picnic, 2 in sandwich menu, 3 when eating, 2 when done eating
         }
 
+        public async Task<bool> IsOnOverworld(ulong offset, CancellationToken token)
+        {
+            var data = await SwitchConnection.ReadBytesAbsoluteAsync(offset, 1, token).ConfigureAwait(false);
+            return data[0] == 0x11;
+        }
+
         private void DisableOptions()
         {
-            button1.Enabled = false;
-            textBox2.Enabled = false;
-            textBox3.Enabled = false;
-            textBox4.Enabled = false;
+            FetchButton.Enabled = false;
+            Item1Value.Enabled = false;
+            Item2Value.Enabled = false;
+            Item3Value.Enabled = false;
             checkBox5.Enabled = false;
             checkBox6.Enabled = false;
             checkBox7.Enabled = false;
@@ -400,10 +318,10 @@ namespace PokeViewer.NET.SubForms
 
         private void EnableOptions()
         {
-            button1.Enabled = true;
-            textBox2.Enabled = true;
-            textBox3.Enabled = true;
-            textBox4.Enabled = true;
+            FetchButton.Enabled = true;
+            Item1Value.Enabled = true;
+            Item2Value.Enabled = true;
+            Item3Value.Enabled = true;
             checkBox5.Enabled = true;
             checkBox6.Enabled = true;
             checkBox7.Enabled = true;

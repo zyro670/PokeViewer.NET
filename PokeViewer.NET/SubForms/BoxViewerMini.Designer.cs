@@ -59,6 +59,7 @@
             this.ClientSize = new System.Drawing.Size(275, 278);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.pictureBox1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "BoxViewerMini";
             this.Text = "BoxViewerMini";

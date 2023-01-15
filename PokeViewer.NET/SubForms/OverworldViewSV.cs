@@ -31,7 +31,7 @@ namespace PokeViewer.NET.SubForms
             string? url = string.Empty;
             string? sprite = string.Empty;
             string value = string.Empty;
-            string ptr = "[[[main+4385F30]+80]+8]";
+            //string ptr = "[[[main+4385F30]+80]+8]";
             button1.Text = "Scanning...";
             //var ofs = new long[] { 0x43A7890, 0x38, 0x30, 0x08, 0x150 };
             //var block = await SwitchConnection.PointerAll(ofs, token).ConfigureAwait(false);
