@@ -126,21 +126,21 @@ namespace PokeViewer.NET.SubForms
             if (checkBox1.Checked)
                 BitmapInvertColors(bmp);
             bmp = (Bitmap)resizeImage(bmp, new Size(499, 199));
-            bmp = MakeGrayscale3(bmp);
+            //bmp = MakeGrayscale3(bmp);
             bmp = sharpen(bmp);
             bmp.Save(outputFileName, ImageFormat.Jpeg);
 
 
             // WIP for splitting image into 6 parts for better recognition
-            for (int r = 0; r < 6; r++)
+            /*for (int r = 0; r < 6; r++)
             {
                 Rectangle rect = new(79 * r, 0, bmp.Width / 6, bmp.Height);
                 var testimg = cropImage(bmp, rect);
-                testimg.Save($"test{r}.jpg", ImageFormat.Jpeg);
+                testimg.Save($"screensplit{r}.jpg", ImageFormat.Jpeg);
                 string testText = api.GetTextFromImage((Bitmap)testimg);
                 labels[r].Text = testText;
-                File.Delete($"test{r}.jpg");
-            }
+                //File.Delete($"screensplit{r}.jpg");
+            }*/
 
             string plainText = api.GetTextFromImage(bmp);
 
@@ -156,7 +156,7 @@ namespace PokeViewer.NET.SubForms
             textBox1.Text = plainText;
             api.Dispose();
             bmp.Dispose();
-            File.Delete(outputFileName);
+            //File.Delete(outputFileName);
 
             if (!string.IsNullOrEmpty(textBox1.Text))
                 await EnterRaidCode(CancellationToken.None).ConfigureAwait(false);

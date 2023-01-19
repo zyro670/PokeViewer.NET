@@ -129,7 +129,7 @@
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(69, 79);
+            this.checkBox1.Location = new System.Drawing.Point(69, 77);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(88, 19);
             this.checkBox1.TabIndex = 5;
@@ -179,7 +179,7 @@
             // panel4
             // 
             this.panel4.BackColor = System.Drawing.Color.LightGray;
-            this.panel4.Location = new System.Drawing.Point(134, 88);
+            this.panel4.Location = new System.Drawing.Point(138, 88);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(101, 28);
             this.panel4.TabIndex = 9;
@@ -187,16 +187,16 @@
             // panel5
             // 
             this.panel5.BackColor = System.Drawing.Color.LightGray;
-            this.panel5.Location = new System.Drawing.Point(-4, 87);
+            this.panel5.Location = new System.Drawing.Point(-8, 87);
             this.panel5.Name = "panel5";
             this.panel5.Size = new System.Drawing.Size(91, 29);
             this.panel5.TabIndex = 10;
             // 
             // ScreenToTextPanel
             // 
-            this.ScreenToTextPanel.Location = new System.Drawing.Point(87, 90);
+            this.ScreenToTextPanel.Location = new System.Drawing.Point(83, 90);
             this.ScreenToTextPanel.Name = "ScreenToTextPanel";
-            this.ScreenToTextPanel.Size = new System.Drawing.Size(47, 18);
+            this.ScreenToTextPanel.Size = new System.Drawing.Size(56, 18);
             this.ScreenToTextPanel.TabIndex = 11;
             // 
             // panel1
