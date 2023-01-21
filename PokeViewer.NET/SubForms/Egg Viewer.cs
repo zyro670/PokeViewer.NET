@@ -114,12 +114,15 @@ namespace PokeViewer.NET.SubForms
 
                             if ((Species)pk.Species is Species.Dunsparce or Species.Tandemaus && pk.EncryptionConstant % 100 == 0 && CheckBoxOf3.Checked)
                             {
+                                await Click(HOME, 0_500, token).ConfigureAwait(false);
                                 EnableOptions();
                                 WindowState = _WindowState;
                                 Activate();
-                                MessageBox.Show("Rare Shiny Found!");
+                                MessageBox.Show("Rare Shiny Found!");                                
+                                return;
                             }
 
+                            await Click(HOME, 0_500, token).ConfigureAwait(false);
                             EnableOptions();
                             WindowState = _WindowState;
                             Activate();
