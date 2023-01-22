@@ -53,7 +53,7 @@
             this.TrainerView = new System.Windows.Forms.Button();
             this.DayCareView = new System.Windows.Forms.Button();
             this.OverworldView = new System.Windows.Forms.Button();
-            this.InGameScreenshot = new System.Windows.Forms.Button();
+            this.InGameScreenshot = new System.Windows.Forms.Button();            
             this.Raids = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.PokeSprite)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Specialty)).BeginInit();

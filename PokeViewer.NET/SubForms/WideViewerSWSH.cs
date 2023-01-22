@@ -161,7 +161,7 @@ namespace PokeViewer.NET.WideViewForms
 
                 textBox.Add(log);
                 bool canGmax = new ShowdownSet(ShowdownParsing.GetShowdownText(pk)).CanGigantamax;
-                var sprite = PokeImg(pk, canGmax, GameType);
+                var sprite = PokeImg(pk, canGmax);
                 spriteBox.Add(sprite);
                 if (!string.IsNullOrEmpty(msg))             
                     url = $"https://raw.githubusercontent.com/kwsch/PKHeX/master/PKHeX.Drawing.Misc/Resources/img/ribbons/ribbonmark{msg.Replace($"{Environment.NewLine}Mark: ", "").ToLower()}.png";

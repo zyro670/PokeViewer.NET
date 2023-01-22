@@ -1,4 +1,6 @@
-﻿namespace PokeViewer.NET.SubForms
+﻿using PokeViewer.NET.Properties;
+
+namespace PokeViewer.NET.SubForms
 {
     partial class Egg_Viewer
     {
@@ -55,6 +57,12 @@
             this.label1 = new System.Windows.Forms.Label();
             this.HoldTimeToFillings = new System.Windows.Forms.Label();
             this.FillingHoldTime = new System.Windows.Forms.TextBox();
+            this.WebHookText = new System.Windows.Forms.TextBox();
+            this.SaveHookURL = new System.Windows.Forms.Button();
+            this.UserDiscordIDText = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.ScreenshotEggView = new System.Windows.Forms.Button();            
             ((System.ComponentModel.ISupportInitialize)(this.PokeSpriteBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BallBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NumberOfFillings)).BeginInit();
@@ -324,11 +332,72 @@
             this.FillingHoldTime.TabIndex = 36;
             this.FillingHoldTime.Text = "690";
             // 
+            // WebHookText
+            // 
+            this.WebHookText.Location = new System.Drawing.Point(127, 297);
+            this.WebHookText.Name = "WebHookText";
+            this.WebHookText.Size = new System.Drawing.Size(111, 23);
+            this.WebHookText.TabIndex = 37;
+            this.WebHookText.UseSystemPasswordChar = true;
+            this.WebHookText.Text = Settings.Default.WebHook;
+            // 
+            // SaveHookURL
+            // 
+            this.SaveHookURL.Location = new System.Drawing.Point(12, 324);
+            this.SaveHookURL.Name = "SaveHookURL";
+            this.SaveHookURL.Size = new System.Drawing.Size(105, 23);
+            this.SaveHookURL.TabIndex = 39;
+            this.SaveHookURL.Text = "Save Fields";
+            this.SaveHookURL.UseVisualStyleBackColor = true;
+            this.SaveHookURL.Click += new System.EventHandler(this.SaveHookURL_Click);
+            // 
+            // UserDiscordIDText
+            // 
+            this.UserDiscordIDText.Location = new System.Drawing.Point(127, 324);
+            this.UserDiscordIDText.Name = "UserDiscordIDText";
+            this.UserDiscordIDText.Size = new System.Drawing.Size(111, 23);
+            this.UserDiscordIDText.TabIndex = 40;
+            this.UserDiscordIDText.Text = Settings.Default.UserDiscordID;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(244, 300);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(84, 15);
+            this.label2.TabIndex = 41;
+            this.label2.Text = "WebHook URL";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(244, 326);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(86, 15);
+            this.label3.TabIndex = 42;
+            this.label3.Text = "User ID To Ping";
+            // 
+            // ScreenshotEggView
+            // 
+            this.ScreenshotEggView.Location = new System.Drawing.Point(12, 297);
+            this.ScreenshotEggView.Name = "ScreenshotEggView";
+            this.ScreenshotEggView.Size = new System.Drawing.Size(105, 23);
+            this.ScreenshotEggView.TabIndex = 43;
+            this.ScreenshotEggView.Text = "Screenshot";
+            this.ScreenshotEggView.UseVisualStyleBackColor = true;
+            this.ScreenshotEggView.Click += new System.EventHandler(this.button1_Click_1);
+            // 
             // Egg_Viewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(338, 300);
+            this.ClientSize = new System.Drawing.Size(338, 358);
+            this.Controls.Add(this.ScreenshotEggView);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.UserDiscordIDText);
+            this.Controls.Add(this.SaveHookURL);
+            this.Controls.Add(this.WebHookText);
             this.Controls.Add(this.FillingHoldTime);
             this.Controls.Add(this.HoldTimeToFillings);
             this.Controls.Add(this.label1);
@@ -396,5 +465,11 @@
         private Label label1;
         private Label HoldTimeToFillings;
         private TextBox FillingHoldTime;
+        private TextBox WebHookText;
+        private Button SaveHookURL;
+        private TextBox UserDiscordIDText;
+        private Label label2;
+        private Label label3;
+        private Button ScreenshotEggView;
     }
 }

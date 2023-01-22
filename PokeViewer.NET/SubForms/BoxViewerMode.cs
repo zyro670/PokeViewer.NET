@@ -204,7 +204,7 @@ namespace PokeViewer.NET
                     if (pk.Species == (int)Species.Eevee || pk.Species == (int)Species.Pikachu)
                         pk.Form = 0;
                 }
-                var sprite = PokeImg(pk, isGmax, GameType);
+                var sprite = PokeImg(pk, isGmax);
                 boxes[i].Load(sprite);
             }
             button1.Text = "View";

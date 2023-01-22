@@ -14,6 +14,7 @@ namespace PokeViewer.NET
         private readonly static SwitchConnectionConfig Config = new() { Protocol = SwitchProtocol.WiFi, IP = Properties.Settings.Default.SwitchIP, Port = 6000 };
         public SwitchSocketAsync SwitchConnection = new(Config);
         public static RoutineExecutor Executor = new();
+
         public MainViewer()
         {
             InitializeComponent();
@@ -230,13 +231,13 @@ namespace PokeViewer.NET
             string output = $"{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{isAlpha}{(Species)pk.Species}{form}{gender}{pid}{ec}{Environment.NewLine}Nature: {(Nature)pk.Nature}{Environment.NewLine}Ability: {(Ability)pk.Ability}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}{msg}";
             LiveStats.Text = $"{(Move)pk.Move1} - {pk.Move1_PP}PP{Environment.NewLine}{(Move)pk.Move2} - {pk.Move2_PP}PP{Environment.NewLine}{(Move)pk.Move3} - {pk.Move3_PP}PP{Environment.NewLine}{(Move)pk.Move4} - {pk.Move4_PP}PP";
             ViewBox.Text = output;
-            sprite = PokeImg(pk, isGmax, GameType);
+            sprite = PokeImg(pk, isGmax);
             PokeSprite.Load(sprite);
-            var imgt1 = TypeSpriteUtil.GetTypeSpriteWide((byte)pk.PersonalInfo.Type1);
+            var imgt1 = TypeSpriteUtil.GetTypeSpriteWide(pk.PersonalInfo.Type1);
             Typing1.Image = imgt1;
             if (pk.PersonalInfo.Type1 != pk.PersonalInfo.Type2)
             {
-                var imgt2 = TypeSpriteUtil.GetTypeSpriteWide((byte)pk.PersonalInfo.Type2);
+                var imgt2 = TypeSpriteUtil.GetTypeSpriteWide(pk.PersonalInfo.Type2);
                 Typing2.Image = imgt2;
             }
             if (alpha)
@@ -693,7 +694,7 @@ namespace PokeViewer.NET
 
         private void CaptureWindow_Click(object sender, EventArgs e)
         {
-            Bitmap FormScreenShot = new Bitmap(Width, Height);
+            Bitmap FormScreenShot = new(Width, Height);
             Graphics G = Graphics.FromImage(FormScreenShot);
             G.CopyFromScreen(Location, new Point(0, 0), Size);
             Clipboard.SetImage(FormScreenShot);

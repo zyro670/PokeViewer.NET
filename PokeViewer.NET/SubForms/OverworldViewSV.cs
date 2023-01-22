@@ -85,7 +85,7 @@ namespace PokeViewer.NET.SubForms
                 string msg = hasMark ? $"{Environment.NewLine}Mark: {mark.ToString().Replace("Mark", "")}" : "";
                 string output = $"{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{(Species)pk.Species}{form}{gender}{pid}{ec}{Environment.NewLine}Nature: {(Nature)pk.Nature}{Environment.NewLine}Ability: {(Ability)pk.Ability}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}{msg}";
                 outputBox[i].Text = output;
-                sprite = PokeImg(pk, false, 8);
+                sprite = PokeImg(pk, false);
                 boxes[i].Load(sprite);
 
                 if (!string.IsNullOrEmpty(msg))

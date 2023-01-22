@@ -4,6 +4,9 @@ using static SysBot.Base.SwitchButton;
 using static SysBot.Base.SwitchStick;
 using static PokeViewer.NET.RoutineExecutor;
 using PKHeX.Drawing.PokeSprite;
+using Newtonsoft.Json;
+using System.Text;
+using PokeViewer.NET.Properties;
 
 namespace PokeViewer.NET.SubForms
 {
@@ -20,9 +23,9 @@ namespace PokeViewer.NET.SubForms
         private int eggcount = 0;
         private int sandwichcount = 0;
         private int shinycount = 0;
-        private uint EggData = 0x04386040;
-        private uint PicnicMenu = 0x04416020;
-        private byte[] BlankVal = { 0x01 };
+        private readonly uint EggData = 0x04386040;
+        private readonly uint PicnicMenu = 0x04416020;
+        private readonly byte[] BlankVal = { 0x01 };
         public IReadOnlyList<long> OverworldPointer { get; } = new long[] { 0x43A7848, 0x348, 0x10, 0xD8, 0x28 };
         private ulong OverworldOffset;
 
@@ -30,11 +33,16 @@ namespace PokeViewer.NET.SubForms
 
         private async void button1_Click(object sender, EventArgs e)
         {
+            if (!string.IsNullOrEmpty(Settings.Default.WebHook))
+                WebHookText.Text = Settings.Default.WebHook;
+
             if (FetchButton.Enabled == true)
                 DisableOptions();
             var token = CancellationToken.None;
             eggcount = 0;
 
+            // Blank out previous egg data
+            await SwitchConnection.WriteBytesMainAsync(new byte[344], EggData, token).ConfigureAwait(false);
             await SwitchConnection.WriteBytesMainAsync(BlankVal, PicnicMenu, token).ConfigureAwait(false);
 
             if (EatOnStart.Checked)
@@ -64,7 +72,7 @@ namespace PokeViewer.NET.SubForms
                         waiting++;
                         await Task.Delay(1_500, token).ConfigureAwait(false);
                         pk = await ReadPokemonSV(EggData, 344, token).ConfigureAwait(false);
-                        if (waiting == 80)
+                        if (waiting == 120)
                         {
                             await ReopenPicnic(token).ConfigureAwait(false);
                             await MakeSandwich(token).ConfigureAwait(false);
@@ -94,9 +102,8 @@ namespace PokeViewer.NET.SubForms
                         }
                         string output = $"{$"Egg #{eggcount}"}{Environment.NewLine}{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{(Species)pk.Species}{form}{gender}{pid}{ec}{Environment.NewLine}Nature: {(Nature)pk.Nature}{Environment.NewLine}Ability: {(Ability)pk.Ability}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}";
                         PokeStats.Text = output;
-                        var sprite = PokeImg(pk, false, 7);
+                        var sprite = PokeImg(pk, false);
                         PokeSpriteBox.Load(sprite);
-
                         var ballsprite = SpriteUtil.GetBallSprite(pk.Ball);
                         BallBox.Image = ballsprite;
 
@@ -115,6 +122,7 @@ namespace PokeViewer.NET.SubForms
                             if ((Species)pk.Species is Species.Dunsparce or Species.Tandemaus && pk.EncryptionConstant % 100 == 0 && CheckBoxOf3.Checked)
                             {
                                 await Click(HOME, 0_500, token).ConfigureAwait(false);
+                                SendNotifications(output, sprite);
                                 EnableOptions();
                                 WindowState = _WindowState;
                                 Activate();
@@ -123,6 +131,7 @@ namespace PokeViewer.NET.SubForms
                             }
 
                             await Click(HOME, 0_500, token).ConfigureAwait(false);
+                            SendNotifications(output, sprite);
                             EnableOptions();
                             WindowState = _WindowState;
                             Activate();
@@ -362,6 +371,87 @@ namespace PokeViewer.NET.SubForms
             checkBox7.Enabled = true;
             FillingHoldTime.Enabled = true;
             NumberOfFillings.Enabled = true;
+        }
+
+        private static HttpClient? _client;
+        public static HttpClient Client
+        {
+            get
+            {
+                if (_client == null)
+                    _client = new HttpClient();
+                return _client;
+            }
+        }
+
+        public static string[]? DiscordWebhooks;
+
+        public async void SendNotifications(string results, string thumbnail)
+        {
+            if (string.IsNullOrEmpty(results))
+                return;
+            DiscordWebhooks = WebHookText.Text.Split(',');
+            if (DiscordWebhooks == null)
+                return;
+            var webhook = GenerateWebhook(results, thumbnail);
+            var content = new StringContent(JsonConvert.SerializeObject(webhook), Encoding.UTF8, "application/json");
+            foreach (var url in DiscordWebhooks)
+                await Client.PostAsync(url, content).ConfigureAwait(false);
+        }
+
+        public static object GenerateWebhook(string results, string thumbnail)
+        {
+            var WebHook = new
+            {
+                username = $"EggViewer.NET",
+                content = $"<@{Settings.Default.UserDiscordID}>",
+                embeds = new List<object>
+                {
+                    new
+                    {
+                        title = $"Match Found!",                        
+                        thumbnail = new
+                        {
+                            url = thumbnail
+                        },
+                        fields = new List<object>
+                        {
+                            new { name = "Description               ", value = results, inline = true, },
+                        },
+                    }
+                }
+            };
+            return WebHook;
+        }
+
+        private void SaveHookURL_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrEmpty(WebHookText.Text) || string.IsNullOrEmpty(UserDiscordIDText.Text))
+            {
+                MessageBox.Show("Please fill the fields before attempting to save.");
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(WebHookText.Text))
+            {
+                Settings.Default.WebHook = WebHookText.Text;
+                Settings.Default.Save();
+            }
+            if (!string.IsNullOrEmpty(UserDiscordIDText.Text))
+            {
+                Settings.Default.UserDiscordID = UserDiscordIDText.Text;
+                Settings.Default.Save();
+            }
+
+            MessageBox.Show("Done. Reloading form to show changes.");
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            Bitmap FormScreenShot = new(Width, Height);
+            Graphics G = Graphics.FromImage(FormScreenShot);
+            G.CopyFromScreen(Location, new Point(0, 0), Size);
+            Clipboard.SetImage(FormScreenShot);
         }
     }
 }

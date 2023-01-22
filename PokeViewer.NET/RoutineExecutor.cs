@@ -41,7 +41,7 @@ namespace PokeViewer.NET
             return formString[form].Contains("-") ? formString[form] : formString[form] == "" ? "" : $"-{formString[form]}";
         }
 
-        public static string PokeImg(PKM pkm, bool canGmax, int VersionType)
+        public static string PokeImg(PKM pkm, bool canGmax)
         {
             bool md = false;
             bool fd = false;
