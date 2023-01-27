@@ -566,12 +566,12 @@ namespace PokeViewer.NET
             }            
         }     
 
-        private async void Window_Loaded()
+        private void Window_Loaded()
         {
             var token = CancellationToken.None;
             int type = 0;
             string url = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/icon_version/64x64/icon_version_";
-            string title = await SwitchConnection.GetTitleID(token).ConfigureAwait(false);
+            string title = SwitchConnection.GetTitleID(token).Result;
             switch (title)
             {
                 case ScarletID:
