@@ -178,7 +178,7 @@ namespace PokeViewer.NET.SubForms
             this.Item2Value.Name = "Item2Value";
             this.Item2Value.Size = new System.Drawing.Size(32, 23);
             this.Item2Value.TabIndex = 17;
-            this.Item2Value.Text = "4";
+            this.Item2Value.Text = "5";
             this.Item2Value.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // EatAgain
@@ -206,7 +206,7 @@ namespace PokeViewer.NET.SubForms
             this.Item3Value.Name = "Item3Value";
             this.Item3Value.Size = new System.Drawing.Size(32, 23);
             this.Item3Value.TabIndex = 20;
-            this.Item3Value.Text = "1";
+            this.Item3Value.Text = "0";
             this.Item3Value.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // checkBox5
