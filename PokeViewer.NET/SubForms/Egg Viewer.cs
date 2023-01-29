@@ -379,8 +379,11 @@ namespace PokeViewer.NET.SubForms
             await Task.Delay(delay, token).ConfigureAwait(false);
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private async void button2_Click(object sender, EventArgs e)
         {
+            _logger.Info($"Resetting Left Stick to resting position just in case");
+            await SetStick(LEFT, 0, 0, 0, CancellationToken.None).ConfigureAwait(false);
+            _logger.Info($"Left Stick reset");
             SwitchConnection.Reset();
             this.Close();
             Application.Restart();
