@@ -119,7 +119,7 @@ namespace PokeViewer.NET.SubForms
             this.HardStopButton.TabIndex = 5;
             this.HardStopButton.Text = "HardStop";
             this.HardStopButton.UseVisualStyleBackColor = true;
-            this.HardStopButton.Click += new System.EventHandler(this.button2_Click);
+            this.HardStopButton.Click += new System.EventHandler(this.HardStop_Click);
             // 
             // StopOnShiny
             // 
