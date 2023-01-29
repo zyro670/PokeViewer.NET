@@ -1,4 +1,5 @@
-﻿using PokeViewer.NET.SubForms;
+﻿using NLog;
+using PokeViewer.NET.SubForms;
 using SysBot.Base;
 using System.Net.Sockets;
 
@@ -9,10 +10,13 @@ namespace PokeViewer.NET
         private readonly static SwitchConnectionConfig Config = new() { Protocol = SwitchProtocol.WiFi, IP = Properties.Settings.Default.SwitchIP, Port = 6000 };
         public SwitchSocketAsync SwitchConnection = new(Config);
         public static RoutineExecutor Executor = new();
+        private readonly ILogger _logger;
 
         public MainViewer()
         {
             InitializeComponent();
+            _logger = LogManager.GetCurrentClassLogger();
+            _logger.Debug("Initializing MainViewer");
         }
 
         delegate void ChangeButtonStateCallback(Button sender, bool State);
@@ -31,6 +35,7 @@ namespace PokeViewer.NET
 
         private void PokeViewerForm_Load(object sender, EventArgs e)
         {
+            _logger.Debug("Loading MainViewer Form");
             SwitchIP.Text = Properties.Settings.Default.SwitchIP;
             LoadOriginDefault(sender, e);
         }
@@ -54,8 +59,10 @@ namespace PokeViewer.NET
 
         private void Connect_Click(object sender, EventArgs e)
         {
+            _logger.Debug("Connect clicked");
             if (!SwitchConnection.Connected)
             {
+                _logger.Debug("Wasn't Connected to Switch. Connecting...");
                 try
                 {
                     SwitchConnection.Connect();
@@ -67,6 +74,7 @@ namespace PokeViewer.NET
                 }
                 catch (SocketException err)
                 {
+                    _logger.Warn(err, "Failed to connect to switch");
                     MessageBox.Show(err.Message);
                     MessageBox.Show($"{Environment.NewLine}Ensure IP address is correct before connecting!");
                 }
@@ -118,6 +126,7 @@ namespace PokeViewer.NET
 
         private void CaptureWindow_Click(object sender, EventArgs e)
         {
+            _logger.Debug("Screenshotting PokeViewer");
             Bitmap FormScreenShot = new(Width, Height);
             Graphics G = Graphics.FromImage(FormScreenShot);
             G.CopyFromScreen(Location, new Point(0, 0), Size);
@@ -126,6 +135,7 @@ namespace PokeViewer.NET
 
         private void InGameScreenshot_Click(object sender, EventArgs e)
         {
+            _logger.Debug("Screenshotting Switch");
             var fn = "screenshot.jpg";
             if (!SwitchConnection.Connected)
             {
@@ -161,6 +171,7 @@ namespace PokeViewer.NET
 
         private void DayCareView_Click(object sender, EventArgs e)
         {
+            _logger.Debug("Clicked EggViewer");
             using Egg_Viewer WideForm = new();
             WideForm.ShowDialog();
         }
