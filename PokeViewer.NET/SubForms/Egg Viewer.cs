@@ -7,6 +7,7 @@ using PKHeX.Drawing.PokeSprite;
 using Newtonsoft.Json;
 using System.Text;
 using PokeViewer.NET.Properties;
+using PokeViewer.NET;
 
 namespace PokeViewer.NET.SubForms
 {
@@ -48,24 +49,22 @@ namespace PokeViewer.NET.SubForms
             if (EatOnStart.Checked)
             {
                 await MakeSandwich(token).ConfigureAwait(false);
-                await WaitForEggs(token).ConfigureAwait(false);
             }
-            else
-                await WaitForEggs(token).ConfigureAwait(false);
+            await WaitForEggs(token).ConfigureAwait(false);
         }
 
         private async Task WaitForEggs(CancellationToken token)
-        {           
+        {
             PK9 pkprev = new();
             while (!token.IsCancellationRequested)
             {
                 var wait = TimeSpan.FromMinutes(30);
                 var endTime = DateTime.Now + wait;
                 var ctr = 0;
-                var waiting = 0;                
+                var waiting = 0;
                 while (DateTime.Now < endTime)
                 {
-                    NextSanwichLabel.Text = $"Next Sandwich: {endTime:hh\\:mm\\:ss}";
+                    this.PerformSafely(() => NextSanwichLabel.Text = $"Next Sandwich: {endTime:hh\\:mm\\:ss}");
                     var pk = await ReadPokemonSV(EggData, 344, token).ConfigureAwait(false);
                     while (pkprev.EncryptionConstant == pk.EncryptionConstant || pk == null || (Species)pk.Species == Species.None)
                     {
@@ -89,7 +88,7 @@ namespace PokeViewer.NET.SubForms
                         waiting = 0;
                         ctr++;
                         eggcount++;
-                        BasketCount.Text = $"Basket Count: {ctr}";
+                        this.PerformSafely(() => BasketCount.Text = $"Basket Count: {ctr}");
                         string pid = $"{Environment.NewLine}PID: {pk.PID:X8}";
                         string ec = $"{Environment.NewLine}EC: {pk.EncryptionConstant:X8}";
                         var form = FormOutput(pk.Species, pk.Form, out _);
@@ -101,7 +100,7 @@ namespace PokeViewer.NET.SubForms
                             case 2: break;
                         }
                         string output = $"{$"Egg #{eggcount}"}{Environment.NewLine}{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{(Species)pk.Species}{form}{gender}{pid}{ec}{Environment.NewLine}Nature: {(Nature)pk.Nature}{Environment.NewLine}Ability: {(Ability)pk.Ability}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}";
-                        PokeStats.Text = output;
+                        this.PerformSafely(() => PokeStats.Text = output);
                         var sprite = PokeImg(pk, false);
                         PokeSpriteBox.Load(sprite);
                         var ballsprite = SpriteUtil.GetBallSprite(pk.Ball);
@@ -115,7 +114,7 @@ namespace PokeViewer.NET.SubForms
                         }
 
                         if (pk.IsShiny && (Species)pk.Species != Species.None && StopOnShiny.Checked)
-                        {                            
+                        {
                             if ((Species)pk.Species is Species.Dunsparce or Species.Tandemaus && pk.EncryptionConstant % 100 != 0 && CheckBoxOf3.Checked)
                                 break;
 
@@ -126,7 +125,7 @@ namespace PokeViewer.NET.SubForms
                                 EnableOptions();
                                 WindowState = _WindowState;
                                 Activate();
-                                MessageBox.Show("Rare Shiny Found!");                                
+                                MessageBox.Show("Rare Shiny Found!");
                                 return;
                             }
 
@@ -139,15 +138,15 @@ namespace PokeViewer.NET.SubForms
                             return;
                         }
 
-                        pkprev = pk;                        
+                        pkprev = pk;
                     }
                     if (ctr == 10)
                     {
-                        BasketCount.Text = $"Resetting..";
+                        this.PerformSafely(() => BasketCount.Text = $"Resetting..");
                         await ReopenPicnic(token).ConfigureAwait(false);
                         ctr = 0;
                         waiting = 0;
-                        BasketCount.Text = $"Basket Count: {ctr}";
+                        this.PerformSafely(() => BasketCount.Text = $"Basket Count: {ctr}");
                     }
                 }
                 await MakeSandwich(token).ConfigureAwait(false);
@@ -188,19 +187,19 @@ namespace PokeViewer.NET.SubForms
                     await Click(A, 1_000, token).ConfigureAwait(false);
 
                     for (int i = 0; i < 4; i++)
-                        await Click(B, 0_500, token).ConfigureAwait(false); 
+                        await Click(B, 0_500, token).ConfigureAwait(false);
                 }
             }
             for (int i = 0; i < 10; i++)
-                await Click(A, 0_500, token).ConfigureAwait(false); 
+                await Click(A, 0_500, token).ConfigureAwait(false);
             await Click(X, 1_500, token).ConfigureAwait(false);
-            if (hasReset) 
+            if (hasReset)
             {
                 await Click(DRIGHT, 0_250, token).ConfigureAwait(false);
                 await Click(DDOWN, 0_250, token).ConfigureAwait(false);
                 await Click(DDOWN, 0_250, token).ConfigureAwait(false);
             }
-            await Click(A, 7_000, token).ConfigureAwait(false); 
+            await Click(A, 7_000, token).ConfigureAwait(false);
         }
 
         private async Task MakeSandwich(CancellationToken token)
@@ -222,7 +221,7 @@ namespace PokeViewer.NET.SubForms
                     if (checkBox5.Checked)
                         await Click(DUP, 0_800, token).ConfigureAwait(false);
                     else
-                    await Click(DDOWN, 0_800, token).ConfigureAwait(false);
+                        await Click(DDOWN, 0_800, token).ConfigureAwait(false);
                 }
             }
 
@@ -256,7 +255,7 @@ namespace PokeViewer.NET.SubForms
                     else
                         await Click(DDOWN, 0_800, token).ConfigureAwait(false);
                 }
-            } 
+            }
 
             await Click(A, 0_800, token).ConfigureAwait(false);
             await Click(PLUS, 0_800, token).ConfigureAwait(false);
@@ -287,7 +286,7 @@ namespace PokeViewer.NET.SubForms
             }
 
             sandwichcount++;
-            SandwichCount.Text = $"Sandwiches Made: {sandwichcount}";
+            this.PerformSafely(() => SandwichCount.Text = $"Sandwiches Made: {sandwichcount}");
             for (int i = 0; i < 5; i++)
                 await Click(A, 0_800, token).ConfigureAwait(false);
 
@@ -331,9 +330,9 @@ namespace PokeViewer.NET.SubForms
         private void button2_Click(object sender, EventArgs e)
         {
             SwitchConnection.Reset();
-            this.Close();  
+            this.Close();
             Application.Restart();
-        }        
+        }
 
         private async Task<bool> IsInPicnic(CancellationToken token)
         {
@@ -409,7 +408,7 @@ namespace PokeViewer.NET.SubForms
                 {
                     new
                     {
-                        title = $"Match Found!",                        
+                        title = $"Match Found!",
                         thumbnail = new
                         {
                             url = thumbnail
