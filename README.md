@@ -6,7 +6,7 @@ Planned features:
 * IV filter
 * HA filter
 * auto export `.pk9` on shiny for backup (planned: 0.0.3a)
-* ping every reset
+* ping every reset (planned: 0.0.3a)
 
 -----
 
