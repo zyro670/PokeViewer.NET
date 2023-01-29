@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using System.Text;
 using PokeViewer.NET.Properties;
 using PokeViewer.NET;
+using NLog;
 
 namespace PokeViewer.NET.SubForms
 {
@@ -16,10 +17,12 @@ namespace PokeViewer.NET.SubForms
         private readonly static SwitchConnectionConfig Config = new() { Protocol = SwitchProtocol.WiFi, IP = Properties.Settings.Default.SwitchIP, Port = 6000 };
         public SwitchSocketAsync SwitchConnection = new(Config);
         private readonly FormWindowState _WindowState;
+        private readonly Logger _logger;
         public Egg_Viewer()
         {
             InitializeComponent();
             SwitchConnection.Connect();
+            _logger = LogManager.GetCurrentClassLogger();
         }
         private int eggcount = 0;
         private int sandwichcount = 0;
@@ -34,6 +37,7 @@ namespace PokeViewer.NET.SubForms
 
         private async void button1_Click(object sender, EventArgs e)
         {
+            _logger.Debug($"Fetch clicked. Current status: StopOnShiny: {StopOnShiny.Checked}, 3 Segment: {CheckBoxOf3.Checked}, Eat on start: {EatOnStart.Checked}, Eat again: {EatAgain}");
             if (!string.IsNullOrEmpty(Settings.Default.WebHook))
                 WebHookText.Text = Settings.Default.WebHook;
 
@@ -46,11 +50,26 @@ namespace PokeViewer.NET.SubForms
             await SwitchConnection.WriteBytesMainAsync(new byte[344], EggData, token).ConfigureAwait(false);
             await SwitchConnection.WriteBytesMainAsync(BlankVal, PicnicMenu, token).ConfigureAwait(false);
 
-            if (EatOnStart.Checked)
+            try
             {
-                await MakeSandwich(token).ConfigureAwait(false);
+                if (EatOnStart.Checked)
+                {
+                    await MakeSandwich(token).ConfigureAwait(false);
+                }
+                await WaitForEggs(token).ConfigureAwait(false);
             }
-            await WaitForEggs(token).ConfigureAwait(false);
+            catch (Exception ex)
+            {
+                _logger.Error(ex, $"Exception on Egg Fetch loop");
+                _logger.Info($"Resetting Left Stick to resting position just in case");
+                await SetStick(LEFT, 0, 0, 0, token).ConfigureAwait(false);
+                _logger.Info($"Left Stick reset");
+                var errorBox = MessageBox.Show("An error occurred. Please send contents of logs folder to maintainer.");
+                if (errorBox == DialogResult.OK)
+                {
+                    Application.Exit();
+                }
+            }
         }
 
         private async Task WaitForEggs(CancellationToken token)
@@ -204,15 +223,23 @@ namespace PokeViewer.NET.SubForms
 
         private async Task MakeSandwich(CancellationToken token)
         {
+            _logger.Debug($"Making sandwich...");
+            _logger.Debug($"Removing UI");
             await Click(MINUS, 0_500, token).ConfigureAwait(false);
+            _logger.Debug($"Walking up to table");
             await SetStick(LEFT, 0, 30000, 0_700, token).ConfigureAwait(false); // Face up to table
+            _logger.Debug($"Stop walking");
             await SetStick(LEFT, 0, 0, 0, token).ConfigureAwait(false);
+            _logger.Debug($"Open table menu");
             await Click(A, 1_500, token).ConfigureAwait(false);
+            _logger.Debug($"Select make sandwich");
             await Click(A, 4_000, token).ConfigureAwait(false);
+            _logger.Debug($"Go Free Mode");
             await Click(X, 1_500, token).ConfigureAwait(false);
 
             if (!string.IsNullOrEmpty(Item1Value.Text))
             {
+                _logger.Debug($"Selecting first ingredient. Move up: {checkBox5.Checked}, Move count: {Item1Value.Text}");
                 // Lettuce
                 var m1 = Convert.ToInt32(Item1Value.Text);
 
@@ -225,11 +252,14 @@ namespace PokeViewer.NET.SubForms
                 }
             }
 
+            _logger.Debug($"Picking first ingredient, pressing A");
             await Click(A, 0_800, token).ConfigureAwait(false);
+            _logger.Debug($"Going to next ingredient page");
             await Click(PLUS, 0_800, token).ConfigureAwait(false);
 
             if (!string.IsNullOrEmpty(Item2Value.Text))
             {
+                _logger.Debug($"Selecting first ingredient. Move up: {checkBox6.Checked}, Move count: {Item2Value.Text}");
                 // Mystica Salt
                 var m2 = Convert.ToInt32(Item2Value.Text);
 
@@ -242,9 +272,11 @@ namespace PokeViewer.NET.SubForms
                 }
             }
 
+            _logger.Debug($"Picking second ingredient, pressing A");
             await Click(A, 0_800, token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(Item3Value.Text))
             {
+                _logger.Debug($"Selecting first ingredient. Move up: {checkBox7.Checked}, Move count: {Item3Label.Text}");
                 // Mystica Sweet
                 var m3 = Convert.ToInt32(Item3Value.Text);
 
@@ -257,14 +289,20 @@ namespace PokeViewer.NET.SubForms
                 }
             }
 
+            _logger.Debug($"Picking third ingredient, pressing A");
             await Click(A, 0_800, token).ConfigureAwait(false);
+
+            _logger.Debug($"Going to Pick select page");
             await Click(PLUS, 0_800, token).ConfigureAwait(false);
             // Set pick
+            _logger.Debug($"First pick goes. Pressing A");
             await Click(A, 8_000, token).ConfigureAwait(false);
             //Wait for bread
 
             var fillingtime = Convert.ToInt32(FillingHoldTime.Text);
+            _logger.Debug($"Going to ingredient tray");
             await SetStick(LEFT, 0, 30000, 0_000 + fillingtime, token).ConfigureAwait(false); // Navigate to ingredients
+            _logger.Debug($"Stopping at ingredient tray");
             await SetStick(LEFT, 0, 0, 0, token).ConfigureAwait(false);
             await Task.Delay(0_500, token).ConfigureAwait(false);
 
@@ -286,6 +324,7 @@ namespace PokeViewer.NET.SubForms
             }
 
             sandwichcount++;
+            _logger.Debug($"Spamming A to finish sammich");
             this.PerformSafely(() => SandwichCount.Text = $"Sandwiches Made: {sandwichcount}");
             for (int i = 0; i < 5; i++)
                 await Click(A, 0_800, token).ConfigureAwait(false);
@@ -294,12 +333,14 @@ namespace PokeViewer.NET.SubForms
 
             while (!inPicnic)
             {
+                _logger.Debug($"Spamming A until in Picnic menu");
                 await Click(A, 3_000, token).ConfigureAwait(false);
                 inPicnic = await IsInPicnic(token).ConfigureAwait(false);
             }
 
             if (inPicnic)
             {
+                _logger.Debug($"Walking down from table");
                 await Task.Delay(2_500, token).ConfigureAwait(false);
                 await SetStick(LEFT, 0, -10000, 0_500, token).ConfigureAwait(false); // Face down to basket
                 await SetStick(LEFT, 0, 0, 0, token).ConfigureAwait(false);
