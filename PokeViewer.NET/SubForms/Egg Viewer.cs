@@ -102,6 +102,8 @@ namespace PokeViewer.NET.SubForms
                         }
                     }
 
+                    string output = string.Empty;
+                    string sprite = string.Empty;
                     while (pk != null && (Species)pk.Species != Species.None && pkprev.EncryptionConstant != pk.EncryptionConstant)
                     {
                         waiting = 0;
@@ -118,9 +120,9 @@ namespace PokeViewer.NET.SubForms
                             case 1: gender = " (F)"; break;
                             case 2: break;
                         }
-                        string output = $"{$"Egg #{eggcount}"}{Environment.NewLine}{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{(Species)pk.Species}{form}{gender}{pid}{ec}{Environment.NewLine}Nature: {(Nature)pk.Nature}{Environment.NewLine}Ability: {(Ability)pk.Ability}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}";
+                        output = $"{$"Egg #{eggcount}"}{Environment.NewLine}{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{(Species)pk.Species}{form}{gender}{pid}{ec}{Environment.NewLine}Nature: {(Nature)pk.Nature}{Environment.NewLine}Ability: {(Ability)pk.Ability}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}";
                         this.PerformSafely(() => PokeStats.Text = output);
-                        var sprite = PokeImg(pk, false);
+                        sprite = PokeImg(pk, false);
                         PokeSpriteBox.Load(sprite);
                         var ballsprite = SpriteUtil.GetBallSprite(pk.Ball);
                         BallBox.Image = ballsprite;
@@ -170,6 +172,7 @@ namespace PokeViewer.NET.SubForms
                     if (ctr == 10)
                     {
                         this.PerformSafely(() => BasketCount.Text = $"Resetting..");
+                        SendStatusPing(output, sprite);
                         await ReopenPicnic(token).ConfigureAwait(false);
                         ctr = 0;
                         waiting = 0;
@@ -434,6 +437,19 @@ namespace PokeViewer.NET.SubForms
 
         public static string[]? DiscordWebhooks;
 
+        public async void SendStatusPing(string results, string thumbnail)
+        {
+            if (string.IsNullOrEmpty(results))
+                return;
+            DiscordWebhooks = WebHookText.Text.Split(',');
+            if (DiscordWebhooks == null)
+                return;
+            var webhook = GeneratePingWebhook(results, thumbnail);
+            var content = new StringContent(JsonConvert.SerializeObject(webhook), Encoding.UTF8, "application/json");
+            foreach (var url in DiscordWebhooks)
+                await Client.PostAsync(url, content).ConfigureAwait(false);
+        }
+
         public async void SendNotifications(string results, string thumbnail)
         {
             if (string.IsNullOrEmpty(results))
@@ -441,13 +457,13 @@ namespace PokeViewer.NET.SubForms
             DiscordWebhooks = WebHookText.Text.Split(',');
             if (DiscordWebhooks == null)
                 return;
-            var webhook = GenerateWebhook(results, thumbnail);
+            var webhook = GenerateFoundWebhook(results, thumbnail);
             var content = new StringContent(JsonConvert.SerializeObject(webhook), Encoding.UTF8, "application/json");
             foreach (var url in DiscordWebhooks)
                 await Client.PostAsync(url, content).ConfigureAwait(false);
         }
 
-        public static object GenerateWebhook(string results, string thumbnail)
+        public static object GenerateFoundWebhook(string results, string thumbnail)
         {
             var WebHook = new
             {
@@ -470,6 +486,32 @@ namespace PokeViewer.NET.SubForms
                 }
             };
             return WebHook;
+        }
+
+        public static object GeneratePingWebhook(string results, string thumbnail)
+        {
+            var webhook = new
+            {
+                username = $"EggVIewer.NET",
+                content = "Pinging to notify that I am still actively monitoring eggs. Resetting picnic...",
+                embeds = new List<object>
+                {
+                    new
+                    {
+                        title = $"Latest egg",
+                        thumbnail = new
+                        {
+                            url = thumbnail
+                        },
+                        fields = new List<object>
+                        {
+                            new { name = "Description               ", value = results, inline = true, },
+                        },
+                    }
+                }
+            };
+
+            return webhook;
         }
 
         private void SaveHookURL_Click(object sender, EventArgs e)
