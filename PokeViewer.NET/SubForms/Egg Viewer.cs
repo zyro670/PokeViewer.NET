@@ -132,6 +132,14 @@ namespace PokeViewer.NET.SubForms
                             ShinyFoundLabel.Text = $"Shinies Found: {shinycount}";
                         }
 
+                        if (pk.IsShiny && (Species)pk.Species != Species.None && AutoExportCheckBox.Checked)
+                        {
+                            if (!Directory.Exists("./exported"))
+                                Directory.CreateDirectory("./exported");
+                            var filename = Path.Combine("./exported/", Util.CleanFileName(pk.FileName));
+                            File.WriteAllBytes(filename, pk.DecryptedPartyData);
+                        }
+
                         if (pk.IsShiny && (Species)pk.Species != Species.None && StopOnShiny.Checked)
                         {
                             if ((Species)pk.Species is Species.Dunsparce or Species.Tandemaus && pk.EncryptionConstant % 100 != 0 && CheckBoxOf3.Checked)
@@ -492,6 +500,11 @@ namespace PokeViewer.NET.SubForms
             Graphics G = Graphics.FromImage(FormScreenShot);
             G.CopyFromScreen(Location, new Point(0, 0), Size);
             Clipboard.SetImage(FormScreenShot);
+        }
+
+        private void AutoExport_Checkbox(object sender, EventArgs e)
+        {
+
         }
     }
 }
