@@ -104,6 +104,8 @@ namespace PokeViewer.NET.SubForms
 
                     string output = string.Empty;
                     string sprite = string.Empty;
+                    string rareFormText = string.Empty;
+                    var rareForm = false;
                     while (pk != null && (Species)pk.Species != Species.None && pkprev.EncryptionConstant != pk.EncryptionConstant)
                     {
                         waiting = 0;
@@ -120,7 +122,15 @@ namespace PokeViewer.NET.SubForms
                             case 1: gender = " (F)"; break;
                             case 2: break;
                         }
-                        output = $"{$"Egg #{eggcount}"}{Environment.NewLine}{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{(Species)pk.Species}{form}{gender}{pid}{ec}{Environment.NewLine}Nature: {(Nature)pk.Nature}{Environment.NewLine}Ability: {(Ability)pk.Ability}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}";
+                        rareForm = pk.EncryptionConstant % 100 != 0;
+                        if ((Species)pk.Species is Species.Dunsparce)
+                            rareFormText = rareForm ? "-3seg" : "-2seg";
+                        else if ((Species)pk.Species is Species.Tandemaus)
+                            rareFormText = rareForm ? "-3fam" : "-4fam";
+                        else
+                            rareFormText = string.Empty;
+
+                        output = $"{$"Egg #{eggcount}"}{Environment.NewLine}{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{(Species)pk.Species}{rareForm}{form}{gender}{pid}{ec}{Environment.NewLine}Nature: {(Nature)pk.Nature}{Environment.NewLine}Ability: {(Ability)pk.Ability}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}";
                         this.PerformSafely(() => PokeStats.Text = output);
                         sprite = PokeImg(pk, false);
                         PokeSpriteBox.Load(sprite);
@@ -134,6 +144,8 @@ namespace PokeViewer.NET.SubForms
                             ShinyFoundLabel.Text = $"Shinies Found: {shinycount}";
                         }
 
+                        // Export shiny egg .pk9
+                        // commented out because met conditions are not present until you "loot" the basket
                         //if (pk.IsShiny && (Species)pk.Species != Species.None && AutoExportCheckBox.Checked)
                         //{
                         //    if (!Directory.Exists("./exported"))
