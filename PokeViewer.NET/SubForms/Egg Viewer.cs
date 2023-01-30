@@ -46,8 +46,7 @@ namespace PokeViewer.NET.SubForms
             var token = CancellationToken.None;
             eggcount = 0;
 
-            // Blank out previous egg data
-            await SwitchConnection.WriteBytesMainAsync(new byte[344], EggData, token).ConfigureAwait(false);
+            // Normalize picnic memory data
             await SwitchConnection.WriteBytesMainAsync(BlankVal, PicnicMenu, token).ConfigureAwait(false);
 
             try
@@ -65,11 +64,15 @@ namespace PokeViewer.NET.SubForms
                 await SetStick(LEFT, 0, 0, 0, token).ConfigureAwait(false);
                 _logger.Info($"Left Stick reset");
                 var errorBox = MessageBox.Show("An error occurred. Please send contents of logs folder to maintainer.");
+                await SwitchConnection.SendAsync(SwitchCommand.DetachController(true), CancellationToken.None).ConfigureAwait(false);
+                SwitchConnection.Disconnect();
                 if (errorBox == DialogResult.OK)
                 {
                     Application.Exit();
                 }
             }
+            await SwitchConnection.SendAsync(SwitchCommand.DetachController(true), CancellationToken.None).ConfigureAwait(false);
+            SwitchConnection.Disconnect();
         }
 
         private async Task WaitForEggs(CancellationToken token)
@@ -106,6 +109,7 @@ namespace PokeViewer.NET.SubForms
                     string sprite = string.Empty;
                     while (pk != null && (Species)pk.Species != Species.None && pkprev.EncryptionConstant != pk.EncryptionConstant)
                     {
+                        string rareFormText = string.Empty;
                         waiting = 0;
                         ctr++;
                         eggcount++;
@@ -120,7 +124,13 @@ namespace PokeViewer.NET.SubForms
                             case 1: gender = " (F)"; break;
                             case 2: break;
                         }
-                        output = $"{$"Egg #{eggcount}"}{Environment.NewLine}{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{(Species)pk.Species}{form}{gender}{pid}{ec}{Environment.NewLine}Nature: {(Nature)pk.Nature}{Environment.NewLine}Ability: {(Ability)pk.Ability}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}";
+                        var rareForm = pk.EncryptionConstant % 100 == 0;
+                        if ((Species)pk.Species is Species.Dunsparce)
+                            rareFormText = rareForm ? "-3seg" : "-2seg";
+                        else if ((Species)pk.Species is Species.Tandemaus)
+                            rareFormText = rareForm ? "-3fam" : "-4fam";
+
+                        output = $"{$"Egg #{eggcount}"}{Environment.NewLine}{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{(Species)pk.Species}{rareFormText}{form}{gender}{pid}{ec}{Environment.NewLine}Nature: {(Nature)pk.Nature}{Environment.NewLine}Ability: {(Ability)pk.Ability}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}";
                         this.PerformSafely(() => PokeStats.Text = output);
                         sprite = PokeImg(pk, false);
                         PokeSpriteBox.Load(sprite);
@@ -134,6 +144,8 @@ namespace PokeViewer.NET.SubForms
                             ShinyFoundLabel.Text = $"Shinies Found: {shinycount}";
                         }
 
+                        // Export shiny egg .pk9
+                        // commented out because met conditions are not present until you "loot" the basket
                         //if (pk.IsShiny && (Species)pk.Species != Species.None && AutoExportCheckBox.Checked)
                         //{
                         //    if (!Directory.Exists("./exported"))
@@ -384,9 +396,9 @@ namespace PokeViewer.NET.SubForms
             _logger.Info($"Resetting Left Stick to resting position just in case");
             await SetStick(LEFT, 0, 0, 0, CancellationToken.None).ConfigureAwait(false);
             _logger.Info($"Left Stick reset");
-            SwitchConnection.Reset();
+            await SwitchConnection.SendAsync(SwitchCommand.DetachController(true), CancellationToken.None).ConfigureAwait(false);
+            SwitchConnection.Disconnect();
             this.Close();
-            Application.Restart();
         }
 
         private async Task<bool> IsInPicnic(CancellationToken token)
