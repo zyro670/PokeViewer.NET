@@ -63,7 +63,6 @@ namespace PokeViewer.NET.SubForms
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.ScreenshotEggView = new System.Windows.Forms.Button();
-            this.AutoExportCheckBox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.PokeSpriteBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BallBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NumberOfFillings)).BeginInit();
@@ -419,24 +418,11 @@ namespace PokeViewer.NET.SubForms
             this.ScreenshotEggView.UseVisualStyleBackColor = true;
             this.ScreenshotEggView.Click += new System.EventHandler(this.button1_Click_1);
             // 
-            // AutoExport
-            // 
-            this.AutoExportCheckBox.AutoSize = true;
-            this.AutoExportCheckBox.Location = new System.Drawing.Point(261, 204);
-            this.AutoExportCheckBox.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.AutoExportCheckBox.Name = "AutoExportCheckbox";
-            this.AutoExportCheckBox.Size = new System.Drawing.Size(144, 29);
-            this.AutoExportCheckBox.TabIndex = 44;
-            this.AutoExportCheckBox.Text = "Export Shiny?";
-            this.AutoExportCheckBox.UseVisualStyleBackColor = true;
-            this.AutoExportCheckBox.CheckedChanged += new System.EventHandler(this.AutoExport_Checkbox);
-            // 
             // Egg_Viewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(483, 652);
-            this.Controls.Add(this.AutoExportCheckBox);
             this.Controls.Add(this.ScreenshotEggView);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -517,6 +503,5 @@ namespace PokeViewer.NET.SubForms
         private Label label2;
         private Label label3;
         private Button ScreenshotEggView;
-        private CheckBox AutoExportCheckBox;
     }
 }

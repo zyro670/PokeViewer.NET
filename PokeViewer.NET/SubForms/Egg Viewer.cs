@@ -134,13 +134,13 @@ namespace PokeViewer.NET.SubForms
                             ShinyFoundLabel.Text = $"Shinies Found: {shinycount}";
                         }
 
-                        if (pk.IsShiny && (Species)pk.Species != Species.None && AutoExportCheckBox.Checked)
-                        {
-                            if (!Directory.Exists("./exported"))
-                                Directory.CreateDirectory("./exported");
-                            var filename = Path.Combine("./exported/", Util.CleanFileName(pk.FileName));
-                            File.WriteAllBytes(filename, pk.DecryptedPartyData);
-                        }
+                        //if (pk.IsShiny && (Species)pk.Species != Species.None && AutoExportCheckBox.Checked)
+                        //{
+                        //    if (!Directory.Exists("./exported"))
+                        //        Directory.CreateDirectory("./exported");
+                        //    var filename = Path.Combine("./exported/", Util.CleanFileName(pk.FileName));
+                        //    File.WriteAllBytes(filename, pk.DecryptedPartyData);
+                        //}
 
                         if (pk.IsShiny && (Species)pk.Species != Species.None && StopOnShiny.Checked)
                         {
