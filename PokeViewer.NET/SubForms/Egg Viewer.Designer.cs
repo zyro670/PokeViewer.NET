@@ -60,8 +60,8 @@ namespace PokeViewer.NET.SubForms
             this.WebHookText = new System.Windows.Forms.TextBox();
             this.SaveValues = new System.Windows.Forms.Button();
             this.UserDiscordIDText = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
+            this.WebHookURL = new System.Windows.Forms.Label();
+            this.DiscordUserID = new System.Windows.Forms.Label();
             this.ScreenshotEggView = new System.Windows.Forms.Button();
             this.PingOnReset = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.PokeSpriteBox)).BeginInit();
@@ -131,6 +131,7 @@ namespace PokeViewer.NET.SubForms
             this.StopOnShiny.TabIndex = 11;
             this.StopOnShiny.Text = "Stop On Shiny?";
             this.StopOnShiny.UseVisualStyleBackColor = true;
+            this.StopOnShiny.Checked = Settings.Default.StopOnShiny;
             // 
             // CheckBoxOf3
             // 
@@ -142,6 +143,7 @@ namespace PokeViewer.NET.SubForms
             this.CheckBoxOf3.TabIndex = 12;
             this.CheckBoxOf3.Text = "3 Segment/Family of 3?";
             this.CheckBoxOf3.UseVisualStyleBackColor = true;
+            this.CheckBoxOf3.Checked = Settings.Default.CheckBoxOf3;
             // 
             // EatOnStart
             // 
@@ -153,6 +155,7 @@ namespace PokeViewer.NET.SubForms
             this.EatOnStart.TabIndex = 13;
             this.EatOnStart.Text = "Eat On Start?";
             this.EatOnStart.UseVisualStyleBackColor = true;
+            this.EatOnStart.Checked = Settings.Default.EatOnStart;
             // 
             // Item1Value
             // 
@@ -163,6 +166,7 @@ namespace PokeViewer.NET.SubForms
             this.Item1Value.TabIndex = 14;
             this.Item1Value.Text = "0";
             this.Item1Value.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Item1Value.Text = Settings.Default.Item1;
             // 
             // Item1Label
             // 
@@ -193,6 +197,7 @@ namespace PokeViewer.NET.SubForms
             this.Item2Value.TabIndex = 17;
             this.Item2Value.Text = "5";
             this.Item2Value.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Item2Value.Text = Settings.Default.Item2;
             // 
             // EatAgain
             // 
@@ -204,6 +209,7 @@ namespace PokeViewer.NET.SubForms
             this.EatAgain.TabIndex = 18;
             this.EatAgain.Text = "Eat Again?";
             this.EatAgain.UseVisualStyleBackColor = true;
+            this.EatAgain.Checked = Settings.Default.EatAgain;
             // 
             // Item3Label
             // 
@@ -224,6 +230,7 @@ namespace PokeViewer.NET.SubForms
             this.Item3Value.TabIndex = 20;
             this.Item3Value.Text = "0";
             this.Item3Value.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.Item3Value.Text = Settings.Default.Item3;
             // 
             // DUPItem1
             // 
@@ -235,6 +242,7 @@ namespace PokeViewer.NET.SubForms
             this.DUPItem1.TabIndex = 21;
             this.DUPItem1.Text = "DUP";
             this.DUPItem1.UseVisualStyleBackColor = true;
+            this.DUPItem1.Checked = Settings.Default.Item1DUP;
             // 
             // DUPItem2
             // 
@@ -248,6 +256,7 @@ namespace PokeViewer.NET.SubForms
             this.DUPItem2.TabIndex = 22;
             this.DUPItem2.Text = "DUP";
             this.DUPItem2.UseVisualStyleBackColor = true;
+            this.DUPItem2.Checked = Settings.Default.Item2DUP;
             // 
             // DUPItem3
             // 
@@ -261,6 +270,7 @@ namespace PokeViewer.NET.SubForms
             this.DUPItem3.TabIndex = 23;
             this.DUPItem3.Text = "DUP";
             this.DUPItem3.UseVisualStyleBackColor = true;
+            this.DUPItem3.Checked = Settings.Default.Item3DUP;
             // 
             // SandwichCount
             // 
@@ -312,6 +322,7 @@ namespace PokeViewer.NET.SubForms
             this.HoldIngredients.TabIndex = 32;
             this.HoldIngredients.Text = "Hold Fillings?";
             this.HoldIngredients.UseVisualStyleBackColor = true;
+            this.HoldIngredients.Checked = Settings.Default.HoldFillings;
             // 
             // NumberOfFillings
             // 
@@ -389,23 +400,23 @@ namespace PokeViewer.NET.SubForms
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(349, 550);
-            this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(128, 25);
-            this.label2.TabIndex = 41;
-            this.label2.Text = "WebHook URL";
+            this.WebHookURL.AutoSize = true;
+            this.WebHookURL.Location = new System.Drawing.Point(349, 550);
+            this.WebHookURL.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.WebHookURL.Name = "label2";
+            this.WebHookURL.Size = new System.Drawing.Size(128, 25);
+            this.WebHookURL.TabIndex = 41;
+            this.WebHookURL.Text = Settings.Default.WebHook;
             // 
             // label3
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(349, 593);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(133, 25);
-            this.label3.TabIndex = 42;
-            this.label3.Text = "User ID To Ping";
+            this.DiscordUserID.AutoSize = true;
+            this.DiscordUserID.Location = new System.Drawing.Point(349, 593);
+            this.DiscordUserID.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.DiscordUserID.Name = "label3";
+            this.DiscordUserID.Size = new System.Drawing.Size(133, 25);
+            this.DiscordUserID.TabIndex = 42;
+            this.DiscordUserID.Text = Settings.Default.UserDiscordID;
             // 
             // ScreenshotEggView
             // 
@@ -437,8 +448,8 @@ namespace PokeViewer.NET.SubForms
             this.ClientSize = new System.Drawing.Size(483, 652);
             this.Controls.Add(this.PingOnReset);
             this.Controls.Add(this.ScreenshotEggView);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label2);
+            this.Controls.Add(this.DiscordUserID);
+            this.Controls.Add(this.WebHookURL);
             this.Controls.Add(this.UserDiscordIDText);
             this.Controls.Add(this.SaveValues);
             this.Controls.Add(this.WebHookText);
@@ -513,8 +524,8 @@ namespace PokeViewer.NET.SubForms
         private TextBox WebHookText;
         private Button SaveValues;
         private TextBox UserDiscordIDText;
-        private Label label2;
-        private Label label3;
+        private Label WebHookURL;
+        private Label DiscordUserID;
         private Button ScreenshotEggView;
         private CheckBox PingOnReset;
     }
