@@ -1,4 +1,6 @@
-﻿namespace PokeViewer.NET
+﻿using PokeViewer.NET.Properties;
+
+namespace PokeViewer.NET
 {
     partial class MainViewer
     {
@@ -57,6 +59,7 @@
             this.SwitchIP.Size = new System.Drawing.Size(181, 31);
             this.SwitchIP.TabIndex = 2;
             this.SwitchIP.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.SwitchIP.Text = Settings.Default.SwitchIP;
             this.SwitchIP.TextChanged += new System.EventHandler(this.CheckForIP);
             // 
             // OriginIcon
