@@ -45,9 +45,9 @@ namespace PokeViewer.NET.SubForms
             this.EatAgain = new System.Windows.Forms.CheckBox();
             this.Item3Label = new System.Windows.Forms.Label();
             this.Item3Value = new System.Windows.Forms.TextBox();
-            this.checkBox5 = new System.Windows.Forms.CheckBox();
-            this.checkBox6 = new System.Windows.Forms.CheckBox();
-            this.checkBox7 = new System.Windows.Forms.CheckBox();
+            this.DUPItem1 = new System.Windows.Forms.CheckBox();
+            this.DUPItem2 = new System.Windows.Forms.CheckBox();
+            this.DUPItem3 = new System.Windows.Forms.CheckBox();
             this.SandwichCount = new System.Windows.Forms.Label();
             this.ShinyFoundLabel = new System.Windows.Forms.Label();
             this.BasketCount = new System.Windows.Forms.Label();
@@ -58,11 +58,12 @@ namespace PokeViewer.NET.SubForms
             this.HoldTimeToFillings = new System.Windows.Forms.Label();
             this.FillingHoldTime = new System.Windows.Forms.TextBox();
             this.WebHookText = new System.Windows.Forms.TextBox();
-            this.SaveHookURL = new System.Windows.Forms.Button();
+            this.SaveValues = new System.Windows.Forms.Button();
             this.UserDiscordIDText = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.ScreenshotEggView = new System.Windows.Forms.Button();
+            this.PingOnReset = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.PokeSpriteBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BallBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NumberOfFillings)).BeginInit();
@@ -224,42 +225,42 @@ namespace PokeViewer.NET.SubForms
             this.Item3Value.Text = "0";
             this.Item3Value.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // checkBox5
+            // DUPItem1
             // 
-            this.checkBox5.AutoSize = true;
-            this.checkBox5.Location = new System.Drawing.Point(396, 267);
-            this.checkBox5.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.checkBox5.Name = "checkBox5";
-            this.checkBox5.Size = new System.Drawing.Size(73, 29);
-            this.checkBox5.TabIndex = 21;
-            this.checkBox5.Text = "DUP";
-            this.checkBox5.UseVisualStyleBackColor = true;
+            this.DUPItem1.AutoSize = true;
+            this.DUPItem1.Location = new System.Drawing.Point(396, 267);
+            this.DUPItem1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.DUPItem1.Name = "DUPItem1";
+            this.DUPItem1.Size = new System.Drawing.Size(73, 29);
+            this.DUPItem1.TabIndex = 21;
+            this.DUPItem1.Text = "DUP";
+            this.DUPItem1.UseVisualStyleBackColor = true;
             // 
-            // checkBox6
+            // DUPItem2
             // 
-            this.checkBox6.AutoSize = true;
-            this.checkBox6.Checked = true;
-            this.checkBox6.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox6.Location = new System.Drawing.Point(396, 310);
-            this.checkBox6.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.checkBox6.Name = "checkBox6";
-            this.checkBox6.Size = new System.Drawing.Size(73, 29);
-            this.checkBox6.TabIndex = 22;
-            this.checkBox6.Text = "DUP";
-            this.checkBox6.UseVisualStyleBackColor = true;
+            this.DUPItem2.AutoSize = true;
+            this.DUPItem2.Checked = true;
+            this.DUPItem2.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.DUPItem2.Location = new System.Drawing.Point(396, 310);
+            this.DUPItem2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.DUPItem2.Name = "DUPItem2";
+            this.DUPItem2.Size = new System.Drawing.Size(73, 29);
+            this.DUPItem2.TabIndex = 22;
+            this.DUPItem2.Text = "DUP";
+            this.DUPItem2.UseVisualStyleBackColor = true;
             // 
-            // checkBox7
+            // DUPItem3
             // 
-            this.checkBox7.AutoSize = true;
-            this.checkBox7.Checked = true;
-            this.checkBox7.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox7.Location = new System.Drawing.Point(396, 355);
-            this.checkBox7.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.checkBox7.Name = "checkBox7";
-            this.checkBox7.Size = new System.Drawing.Size(73, 29);
-            this.checkBox7.TabIndex = 23;
-            this.checkBox7.Text = "DUP";
-            this.checkBox7.UseVisualStyleBackColor = true;
+            this.DUPItem3.AutoSize = true;
+            this.DUPItem3.Checked = true;
+            this.DUPItem3.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.DUPItem3.Location = new System.Drawing.Point(396, 355);
+            this.DUPItem3.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.DUPItem3.Name = "DUPItem3";
+            this.DUPItem3.Size = new System.Drawing.Size(73, 29);
+            this.DUPItem3.TabIndex = 23;
+            this.DUPItem3.Text = "DUP";
+            this.DUPItem3.UseVisualStyleBackColor = true;
             // 
             // SandwichCount
             // 
@@ -357,7 +358,6 @@ namespace PokeViewer.NET.SubForms
             this.FillingHoldTime.Name = "FillingHoldTime";
             this.FillingHoldTime.Size = new System.Drawing.Size(45, 31);
             this.FillingHoldTime.TabIndex = 36;
-            this.FillingHoldTime.Text = "690";
             // 
             // WebHookText
             // 
@@ -368,16 +368,16 @@ namespace PokeViewer.NET.SubForms
             this.WebHookText.TabIndex = 37;
             this.WebHookText.UseSystemPasswordChar = true;
             // 
-            // SaveHookURL
+            // SaveValues
             // 
-            this.SaveHookURL.Location = new System.Drawing.Point(17, 540);
-            this.SaveHookURL.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.SaveHookURL.Name = "SaveHookURL";
-            this.SaveHookURL.Size = new System.Drawing.Size(150, 38);
-            this.SaveHookURL.TabIndex = 39;
-            this.SaveHookURL.Text = "Save Fields";
-            this.SaveHookURL.UseVisualStyleBackColor = true;
-            this.SaveHookURL.Click += new System.EventHandler(this.SaveHookURL_Click);
+            this.SaveValues.Location = new System.Drawing.Point(17, 540);
+            this.SaveValues.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.SaveValues.Name = "SaveValues";
+            this.SaveValues.Size = new System.Drawing.Size(150, 38);
+            this.SaveValues.TabIndex = 39;
+            this.SaveValues.Text = "Save Fields";
+            this.SaveValues.UseVisualStyleBackColor = true;
+            this.SaveValues.Click += new System.EventHandler(this.SaveValues_Click);
             // 
             // UserDiscordIDText
             // 
@@ -418,16 +418,29 @@ namespace PokeViewer.NET.SubForms
             this.ScreenshotEggView.UseVisualStyleBackColor = true;
             this.ScreenshotEggView.Click += new System.EventHandler(this.button1_Click_1);
             // 
+            // Liveness Check
+            // 
+            this.PingOnReset.AutoSize = true;
+            this.PingOnReset.Location = new System.Drawing.Point(260, 207);
+            this.PingOnReset.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.PingOnReset.Name = "PingOnReset";
+            this.PingOnReset.Size = new System.Drawing.Size(144, 29);
+            this.PingOnReset.TabIndex = 44;
+            this.PingOnReset.Text = "Ping on Reset";
+            this.PingOnReset.UseVisualStyleBackColor = true;
+            this.PingOnReset.Checked = Settings.Default.LivenessPing;
+            // 
             // Egg_Viewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(483, 652);
+            this.Controls.Add(this.PingOnReset);
             this.Controls.Add(this.ScreenshotEggView);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.UserDiscordIDText);
-            this.Controls.Add(this.SaveHookURL);
+            this.Controls.Add(this.SaveValues);
             this.Controls.Add(this.WebHookText);
             this.Controls.Add(this.FillingHoldTime);
             this.Controls.Add(this.HoldTimeToFillings);
@@ -438,9 +451,9 @@ namespace PokeViewer.NET.SubForms
             this.Controls.Add(this.BasketCount);
             this.Controls.Add(this.ShinyFoundLabel);
             this.Controls.Add(this.SandwichCount);
-            this.Controls.Add(this.checkBox7);
-            this.Controls.Add(this.checkBox6);
-            this.Controls.Add(this.checkBox5);
+            this.Controls.Add(this.DUPItem3);
+            this.Controls.Add(this.DUPItem2);
+            this.Controls.Add(this.DUPItem1);
             this.Controls.Add(this.Item3Value);
             this.Controls.Add(this.Item3Label);
             this.Controls.Add(this.EatAgain);
@@ -485,9 +498,9 @@ namespace PokeViewer.NET.SubForms
         private CheckBox EatAgain;
         private Label Item3Label;
         private TextBox Item3Value;
-        private CheckBox checkBox5;
-        private CheckBox checkBox6;
-        private CheckBox checkBox7;
+        private CheckBox DUPItem1;
+        private CheckBox DUPItem2;
+        private CheckBox DUPItem3;
         private Label SandwichCount;
         private Label ShinyFoundLabel;
         private Label BasketCount;
@@ -498,10 +511,11 @@ namespace PokeViewer.NET.SubForms
         private Label HoldTimeToFillings;
         private TextBox FillingHoldTime;
         private TextBox WebHookText;
-        private Button SaveHookURL;
+        private Button SaveValues;
         private TextBox UserDiscordIDText;
         private Label label2;
         private Label label3;
         private Button ScreenshotEggView;
+        private CheckBox PingOnReset;
     }
 }
