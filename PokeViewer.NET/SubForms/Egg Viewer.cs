@@ -67,7 +67,7 @@ namespace PokeViewer.NET.SubForms
                 {
                     NextSanwichLabel.Text = $"Next Sandwich: {endTime:hh\\:mm\\:ss}";
                     var pk = await ReadPokemonSV(EggData, 344, token).ConfigureAwait(false);
-                    while (pkprev.EncryptionConstant == pk.EncryptionConstant || pk == null || (Species)pk.Species == Species.None)
+                    while (pk == null ||pkprev.EncryptionConstant == pk.EncryptionConstant || (Species)pk.Species == Species.None)
                     {
                         waiting++;
                         await Task.Delay(1_500, token).ConfigureAwait(false);
