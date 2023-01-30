@@ -378,6 +378,7 @@ namespace PokeViewer.NET.SubForms
             this.WebHookText.Size = new System.Drawing.Size(157, 31);
             this.WebHookText.TabIndex = 37;
             this.WebHookText.UseSystemPasswordChar = true;
+            this.WebHookText.Text = Settings.Default.WebHook;
             // 
             // SaveValues
             // 
@@ -397,6 +398,7 @@ namespace PokeViewer.NET.SubForms
             this.UserDiscordIDText.Name = "UserDiscordIDText";
             this.UserDiscordIDText.Size = new System.Drawing.Size(157, 31);
             this.UserDiscordIDText.TabIndex = 40;
+            this.UserDiscordIDText.Text = Settings.Default.UserDiscordID;
             // 
             // label2
             // 
@@ -406,7 +408,7 @@ namespace PokeViewer.NET.SubForms
             this.WebHookURL.Name = "label2";
             this.WebHookURL.Size = new System.Drawing.Size(128, 25);
             this.WebHookURL.TabIndex = 41;
-            this.WebHookURL.Text = Settings.Default.WebHook;
+            this.WebHookURL.Text = "Discord Webhook";
             // 
             // label3
             // 
@@ -416,7 +418,7 @@ namespace PokeViewer.NET.SubForms
             this.DiscordUserID.Name = "label3";
             this.DiscordUserID.Size = new System.Drawing.Size(133, 25);
             this.DiscordUserID.TabIndex = 42;
-            this.DiscordUserID.Text = Settings.Default.UserDiscordID;
+            this.DiscordUserID.Text = "Discord User ID";
             // 
             // ScreenshotEggView
             // 
