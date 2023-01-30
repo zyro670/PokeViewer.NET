@@ -47,8 +47,8 @@ namespace PokeViewer.NET.SubForms
             eggcount = 0;
 
             // Blank out previous egg data
-            await SwitchConnection.WriteBytesMainAsync(new byte[344], EggData, token).ConfigureAwait(false);
-            await SwitchConnection.WriteBytesMainAsync(BlankVal, PicnicMenu, token).ConfigureAwait(false);
+            //await SwitchConnection.WriteBytesMainAsync(new byte[344], EggData, token).ConfigureAwait(false);
+            //await SwitchConnection.WriteBytesMainAsync(BlankVal, PicnicMenu, token).ConfigureAwait(false);
 
             try
             {
@@ -65,11 +65,15 @@ namespace PokeViewer.NET.SubForms
                 await SetStick(LEFT, 0, 0, 0, token).ConfigureAwait(false);
                 _logger.Info($"Left Stick reset");
                 var errorBox = MessageBox.Show("An error occurred. Please send contents of logs folder to maintainer.");
+                await SwitchConnection.SendAsync(SwitchCommand.DetachController(true), CancellationToken.None).ConfigureAwait(false);
+                SwitchConnection.Disconnect();
                 if (errorBox == DialogResult.OK)
                 {
                     Application.Exit();
                 }
             }
+            await SwitchConnection.SendAsync(SwitchCommand.DetachController(true), CancellationToken.None).ConfigureAwait(false);
+            SwitchConnection.Disconnect();
         }
 
         private async Task WaitForEggs(CancellationToken token)
@@ -393,9 +397,9 @@ namespace PokeViewer.NET.SubForms
             _logger.Info($"Resetting Left Stick to resting position just in case");
             await SetStick(LEFT, 0, 0, 0, CancellationToken.None).ConfigureAwait(false);
             _logger.Info($"Left Stick reset");
-            SwitchConnection.Reset();
+            await SwitchConnection.SendAsync(SwitchCommand.DetachController(true), CancellationToken.None).ConfigureAwait(false);
+            SwitchConnection.Disconnect();
             this.Close();
-            Application.Restart();
         }
 
         private async Task<bool> IsInPicnic(CancellationToken token)
