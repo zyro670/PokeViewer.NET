@@ -46,9 +46,8 @@ namespace PokeViewer.NET.SubForms
             var token = CancellationToken.None;
             eggcount = 0;
 
-            // Blank out previous egg data
-            //await SwitchConnection.WriteBytesMainAsync(new byte[344], EggData, token).ConfigureAwait(false);
-            //await SwitchConnection.WriteBytesMainAsync(BlankVal, PicnicMenu, token).ConfigureAwait(false);
+            // Normalize picnic memory data
+            await SwitchConnection.WriteBytesMainAsync(BlankVal, PicnicMenu, token).ConfigureAwait(false);
 
             try
             {
