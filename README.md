@@ -3,10 +3,11 @@ This is a trimmed down version of zyro670/PokeViewer.NET to feature **only** egg
 <img width="319" alt="image" src="https://user-images.githubusercontent.com/15164001/215330433-b6b1c0bc-9ad2-4a75-bbde-7396f1f12db8.png">
 
 Planned features:
-* IV filter
-* HA filter
+* IV filter (post v1 release)
+* HA filter (post v1 release)
+* Gender filter (post v1 release)
 * auto export `.pk9` on shiny for backup (on hold, exported eggs from basket are illegal - no met conditions)
-* ping every reset (planned: 0.0.3a)
+* Hystory and Statistics! (post v1 release)
 
 -----
 
