@@ -144,16 +144,6 @@ namespace PokeViewer.NET.SubForms
                             ShinyFoundLabel.Text = $"Shinies Found: {shinycount}";
                         }
 
-                        // Export shiny egg .pk9
-                        // commented out because met conditions are not present until you "loot" the basket
-                        //if (pk.IsShiny && (Species)pk.Species != Species.None && AutoExportCheckBox.Checked)
-                        //{
-                        //    if (!Directory.Exists("./exported"))
-                        //        Directory.CreateDirectory("./exported");
-                        //    var filename = Path.Combine("./exported/", Util.CleanFileName(pk.FileName));
-                        //    File.WriteAllBytes(filename, pk.DecryptedPartyData);
-                        //}
-
                         if (pk.IsShiny && (Species)pk.Species != Species.None && StopOnShiny.Checked)
                         {
                             if ((Species)pk.Species is Species.Dunsparce or Species.Tandemaus && pk.EncryptionConstant % 100 != 0 && CheckBoxOf3.Checked)
@@ -184,7 +174,8 @@ namespace PokeViewer.NET.SubForms
                     if (ctr == 10)
                     {
                         this.PerformSafely(() => BasketCount.Text = $"Resetting..");
-                        SendStatusPing(output, sprite);
+                        if(PingOnReset.Checked)
+                            SendStatusPing(output, sprite);
                         await ReopenPicnic(token).ConfigureAwait(false);
                         ctr = 0;
                         waiting = 0;
@@ -262,13 +253,13 @@ namespace PokeViewer.NET.SubForms
 
             if (!string.IsNullOrEmpty(Item1Value.Text))
             {
-                _logger.Debug($"Selecting first ingredient. Move up: {checkBox5.Checked}, Move count: {Item1Value.Text}");
+                _logger.Debug($"Selecting first ingredient. Move up: {DUPItem1.Checked}, Move count: {Item1Value.Text}");
                 // Lettuce
                 var m1 = Convert.ToInt32(Item1Value.Text);
 
                 for (int i = 0; i < m1; i++)
                 {
-                    if (checkBox5.Checked)
+                    if (DUPItem1.Checked)
                         await Click(DUP, 0_800, token).ConfigureAwait(false);
                     else
                         await Click(DDOWN, 0_800, token).ConfigureAwait(false);
@@ -282,13 +273,13 @@ namespace PokeViewer.NET.SubForms
 
             if (!string.IsNullOrEmpty(Item2Value.Text))
             {
-                _logger.Debug($"Selecting first ingredient. Move up: {checkBox6.Checked}, Move count: {Item2Value.Text}");
+                _logger.Debug($"Selecting first ingredient. Move up: {DUPItem2.Checked}, Move count: {Item2Value.Text}");
                 // Mystica Salt
                 var m2 = Convert.ToInt32(Item2Value.Text);
 
                 for (int i = 0; i < m2; i++)
                 {
-                    if (checkBox6.Checked)
+                    if (DUPItem2.Checked)
                         await Click(DUP, 0_800, token).ConfigureAwait(false);
                     else
                         await Click(DDOWN, 0_800, token).ConfigureAwait(false);
@@ -299,13 +290,13 @@ namespace PokeViewer.NET.SubForms
             await Click(A, 0_800, token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(Item3Value.Text))
             {
-                _logger.Debug($"Selecting first ingredient. Move up: {checkBox7.Checked}, Move count: {Item3Label.Text}");
+                _logger.Debug($"Selecting first ingredient. Move up: {DUPItem3.Checked}, Move count: {Item3Label.Text}");
                 // Mystica Sweet
                 var m3 = Convert.ToInt32(Item3Value.Text);
 
                 for (int i = 0; i < m3; i++)
                 {
-                    if (checkBox7.Checked)
+                    if (DUPItem3.Checked)
                         await Click(DUP, 0_800, token).ConfigureAwait(false);
                     else
                         await Click(DDOWN, 0_800, token).ConfigureAwait(false);
@@ -419,9 +410,9 @@ namespace PokeViewer.NET.SubForms
             Item1Value.Enabled = false;
             Item2Value.Enabled = false;
             Item3Value.Enabled = false;
-            checkBox5.Enabled = false;
-            checkBox6.Enabled = false;
-            checkBox7.Enabled = false;
+            DUPItem1.Enabled = false;
+            DUPItem2.Enabled = false;
+            DUPItem3.Enabled = false;
             FillingHoldTime.Enabled = false;
             NumberOfFillings.Enabled = false;
         }
@@ -432,9 +423,9 @@ namespace PokeViewer.NET.SubForms
             Item1Value.Enabled = true;
             Item2Value.Enabled = true;
             Item3Value.Enabled = true;
-            checkBox5.Enabled = true;
-            checkBox6.Enabled = true;
-            checkBox7.Enabled = true;
+            DUPItem1.Enabled = true;
+            DUPItem2.Enabled = true;
+            DUPItem3.Enabled = true;
             FillingHoldTime.Enabled = true;
             NumberOfFillings.Enabled = true;
         }
@@ -529,25 +520,26 @@ namespace PokeViewer.NET.SubForms
             return webhook;
         }
 
-        private void SaveHookURL_Click(object sender, EventArgs e)
+        private void SaveValues_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(WebHookText.Text) || string.IsNullOrEmpty(UserDiscordIDText.Text))
-            {
-                MessageBox.Show("Please fill the fields before attempting to save.");
-                return;
-            }
+            Settings.Default.WebHook = WebHookText.Text;
+            Settings.Default.UserDiscordID = UserDiscordIDText.Text;
+            Settings.Default.StopOnShiny = StopOnShiny.Checked;
+            Settings.Default.CheckBoxOf3 = CheckBoxOf3.Checked;
+            Settings.Default.EatOnStart = EatOnStart.Checked;
+            Settings.Default.EatAgain = EatAgain.Checked;
+            Settings.Default.HoldFillings = HoldIngredients.Checked;
+            Settings.Default.Item1 = Item1Value.Text;
+            Settings.Default.Item2 = Item2Value.Text;
+            Settings.Default.Item3 = Item3Value.Text;
+            Settings.Default.Item1DUP = DUPItem1.Checked;
+            Settings.Default.Item2DUP = DUPItem2.Checked;
+            Settings.Default.Item3DUP = DUPItem3.Checked;
+            Settings.Default.HoldTime = HoldTimeToFillings.Text;
+            Settings.Default.LivenessPing = PingOnReset.Checked;
 
-            if (!string.IsNullOrEmpty(WebHookText.Text))
-            {
-                Settings.Default.WebHook = WebHookText.Text;
-                Settings.Default.Save();
-            }
-            if (!string.IsNullOrEmpty(UserDiscordIDText.Text))
-            {
-                Settings.Default.UserDiscordID = UserDiscordIDText.Text;
-                Settings.Default.Save();
-            }
-
+            Settings.Default.Save();
+            Settings.Default.Upgrade();
             MessageBox.Show("Done. Reloading form to show changes.");
         }
 
@@ -557,11 +549,6 @@ namespace PokeViewer.NET.SubForms
             Graphics G = Graphics.FromImage(FormScreenShot);
             G.CopyFromScreen(Location, new Point(0, 0), Size);
             Clipboard.SetImage(FormScreenShot);
-        }
-
-        private void AutoExport_Checkbox(object sender, EventArgs e)
-        {
-
         }
     }
 }
