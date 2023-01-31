@@ -189,6 +189,11 @@ namespace PokeViewer.NET.SubForms
         {
             var data = await SwitchConnection.ReadBytesMainAsync(offset, size, token).ConfigureAwait(false);
             var pk = new PK9(data);
+            if (pk.EncryptionConstant == Settings.Default.LastEC && pk.PID == Settings.Default.LastPID)
+                return null;
+            Settings.Default.LastEC = pk.EncryptionConstant;
+            Settings.Default.LastPID = pk.PID;
+            Settings.Default.Save();
             return pk;
         }
 
