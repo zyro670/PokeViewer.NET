@@ -85,13 +85,13 @@ namespace PokeViewer.NET.SubForms
             this.PokeStats.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.PokeStats.Multiline = true;
             this.PokeStats.Name = "PokeStats";
-            this.PokeStats.Size = new System.Drawing.Size(207, 181);
+            this.PokeStats.Size = new System.Drawing.Size(207, 222);
             this.PokeStats.TabIndex = 1;
             this.PokeStats.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // FetchButton
             // 
-            this.FetchButton.Location = new System.Drawing.Point(23, 375);
+            this.FetchButton.Location = new System.Drawing.Point(23, 414);
             this.FetchButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.FetchButton.Name = "FetchButton";
             this.FetchButton.Size = new System.Drawing.Size(107, 38);
@@ -112,7 +112,7 @@ namespace PokeViewer.NET.SubForms
             // 
             // HardStopButton
             // 
-            this.HardStopButton.Location = new System.Drawing.Point(139, 375);
+            this.HardStopButton.Location = new System.Drawing.Point(139, 414);
             this.HardStopButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.HardStopButton.Name = "HardStopButton";
             this.HardStopButton.Size = new System.Drawing.Size(93, 38);
@@ -131,7 +131,6 @@ namespace PokeViewer.NET.SubForms
             this.StopOnShiny.TabIndex = 11;
             this.StopOnShiny.Text = "Stop On Shiny?";
             this.StopOnShiny.UseVisualStyleBackColor = true;
-            this.StopOnShiny.Checked = Settings.Default.StopOnShiny;
             // 
             // CheckBoxOf3
             // 
@@ -143,7 +142,6 @@ namespace PokeViewer.NET.SubForms
             this.CheckBoxOf3.TabIndex = 12;
             this.CheckBoxOf3.Text = "3 Segment/Family of 3?";
             this.CheckBoxOf3.UseVisualStyleBackColor = true;
-            this.CheckBoxOf3.Checked = Settings.Default.CheckBoxOf3;
             // 
             // EatOnStart
             // 
@@ -155,7 +153,6 @@ namespace PokeViewer.NET.SubForms
             this.EatOnStart.TabIndex = 13;
             this.EatOnStart.Text = "Eat On Start?";
             this.EatOnStart.UseVisualStyleBackColor = true;
-            this.EatOnStart.Checked = Settings.Default.EatOnStart;
             // 
             // Item1Value
             // 
@@ -166,7 +163,6 @@ namespace PokeViewer.NET.SubForms
             this.Item1Value.TabIndex = 14;
             this.Item1Value.Text = "0";
             this.Item1Value.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.Item1Value.Text = Settings.Default.Item1;
             // 
             // Item1Label
             // 
@@ -197,7 +193,6 @@ namespace PokeViewer.NET.SubForms
             this.Item2Value.TabIndex = 17;
             this.Item2Value.Text = "5";
             this.Item2Value.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.Item2Value.Text = Settings.Default.Item2;
             // 
             // EatAgain
             // 
@@ -209,7 +204,6 @@ namespace PokeViewer.NET.SubForms
             this.EatAgain.TabIndex = 18;
             this.EatAgain.Text = "Eat Again?";
             this.EatAgain.UseVisualStyleBackColor = true;
-            this.EatAgain.Checked = Settings.Default.EatAgain;
             // 
             // Item3Label
             // 
@@ -230,7 +224,6 @@ namespace PokeViewer.NET.SubForms
             this.Item3Value.TabIndex = 20;
             this.Item3Value.Text = "0";
             this.Item3Value.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.Item3Value.Text = Settings.Default.Item3;
             // 
             // DUPItem1
             // 
@@ -242,7 +235,6 @@ namespace PokeViewer.NET.SubForms
             this.DUPItem1.TabIndex = 21;
             this.DUPItem1.Text = "DUP";
             this.DUPItem1.UseVisualStyleBackColor = true;
-            this.DUPItem1.Checked = Settings.Default.Item1DUP;
             // 
             // DUPItem2
             // 
@@ -256,7 +248,6 @@ namespace PokeViewer.NET.SubForms
             this.DUPItem2.TabIndex = 22;
             this.DUPItem2.Text = "DUP";
             this.DUPItem2.UseVisualStyleBackColor = true;
-            this.DUPItem2.Checked = Settings.Default.Item2DUP;
             // 
             // DUPItem3
             // 
@@ -270,12 +261,11 @@ namespace PokeViewer.NET.SubForms
             this.DUPItem3.TabIndex = 23;
             this.DUPItem3.Text = "DUP";
             this.DUPItem3.UseVisualStyleBackColor = true;
-            this.DUPItem3.Checked = Settings.Default.Item3DUP;
             // 
             // SandwichCount
             // 
             this.SandwichCount.AutoSize = true;
-            this.SandwichCount.Location = new System.Drawing.Point(19, 428);
+            this.SandwichCount.Location = new System.Drawing.Point(19, 467);
             this.SandwichCount.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.SandwichCount.Name = "SandwichCount";
             this.SandwichCount.Size = new System.Drawing.Size(163, 25);
@@ -305,7 +295,7 @@ namespace PokeViewer.NET.SubForms
             // NextSanwichLabel
             // 
             this.NextSanwichLabel.AutoSize = true;
-            this.NextSanwichLabel.Location = new System.Drawing.Point(19, 460);
+            this.NextSanwichLabel.Location = new System.Drawing.Point(19, 499);
             this.NextSanwichLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.NextSanwichLabel.Name = "NextSanwichLabel";
             this.NextSanwichLabel.Size = new System.Drawing.Size(132, 25);
@@ -322,7 +312,6 @@ namespace PokeViewer.NET.SubForms
             this.HoldIngredients.TabIndex = 32;
             this.HoldIngredients.Text = "Hold Fillings?";
             this.HoldIngredients.UseVisualStyleBackColor = true;
-            this.HoldIngredients.Checked = Settings.Default.HoldFillings;
             // 
             // NumberOfFillings
             // 
@@ -378,11 +367,10 @@ namespace PokeViewer.NET.SubForms
             this.WebHookText.Size = new System.Drawing.Size(157, 31);
             this.WebHookText.TabIndex = 37;
             this.WebHookText.UseSystemPasswordChar = true;
-            this.WebHookText.Text = Settings.Default.WebHook;
             // 
             // SaveValues
             // 
-            this.SaveValues.Location = new System.Drawing.Point(17, 540);
+            this.SaveValues.Location = new System.Drawing.Point(17, 579);
             this.SaveValues.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.SaveValues.Name = "SaveValues";
             this.SaveValues.Size = new System.Drawing.Size(150, 38);
@@ -398,31 +386,30 @@ namespace PokeViewer.NET.SubForms
             this.UserDiscordIDText.Name = "UserDiscordIDText";
             this.UserDiscordIDText.Size = new System.Drawing.Size(157, 31);
             this.UserDiscordIDText.TabIndex = 40;
-            this.UserDiscordIDText.Text = Settings.Default.UserDiscordID;
             // 
-            // label2
+            // WebHookURL
             // 
             this.WebHookURL.AutoSize = true;
             this.WebHookURL.Location = new System.Drawing.Point(349, 550);
             this.WebHookURL.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.WebHookURL.Name = "label2";
-            this.WebHookURL.Size = new System.Drawing.Size(128, 25);
+            this.WebHookURL.Name = "WebHookURL";
+            this.WebHookURL.Size = new System.Drawing.Size(155, 25);
             this.WebHookURL.TabIndex = 41;
             this.WebHookURL.Text = "Discord Webhook";
             // 
-            // label3
+            // DiscordUserID
             // 
             this.DiscordUserID.AutoSize = true;
             this.DiscordUserID.Location = new System.Drawing.Point(349, 593);
             this.DiscordUserID.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.DiscordUserID.Name = "label3";
-            this.DiscordUserID.Size = new System.Drawing.Size(133, 25);
+            this.DiscordUserID.Name = "DiscordUserID";
+            this.DiscordUserID.Size = new System.Drawing.Size(136, 25);
             this.DiscordUserID.TabIndex = 42;
             this.DiscordUserID.Text = "Discord User ID";
             // 
             // ScreenshotEggView
             // 
-            this.ScreenshotEggView.Location = new System.Drawing.Point(17, 495);
+            this.ScreenshotEggView.Location = new System.Drawing.Point(17, 534);
             this.ScreenshotEggView.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.ScreenshotEggView.Name = "ScreenshotEggView";
             this.ScreenshotEggView.Size = new System.Drawing.Size(150, 38);
@@ -431,23 +418,22 @@ namespace PokeViewer.NET.SubForms
             this.ScreenshotEggView.UseVisualStyleBackColor = true;
             this.ScreenshotEggView.Click += new System.EventHandler(this.button1_Click_1);
             // 
-            // Liveness Check
+            // PingOnReset
             // 
             this.PingOnReset.AutoSize = true;
             this.PingOnReset.Location = new System.Drawing.Point(260, 207);
             this.PingOnReset.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.PingOnReset.Name = "PingOnReset";
-            this.PingOnReset.Size = new System.Drawing.Size(144, 29);
+            this.PingOnReset.Size = new System.Drawing.Size(146, 29);
             this.PingOnReset.TabIndex = 44;
             this.PingOnReset.Text = "Ping on Reset";
             this.PingOnReset.UseVisualStyleBackColor = true;
-            this.PingOnReset.Checked = Settings.Default.LivenessPing;
             // 
             // Egg_Viewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(483, 652);
+            this.ClientSize = new System.Drawing.Size(510, 713);
             this.Controls.Add(this.PingOnReset);
             this.Controls.Add(this.ScreenshotEggView);
             this.Controls.Add(this.DiscordUserID);
