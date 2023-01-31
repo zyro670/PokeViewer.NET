@@ -198,11 +198,6 @@ namespace PokeViewer.NET.SubForms
         {
             var data = await SwitchConnection.ReadBytesMainAsync(offset, size, token).ConfigureAwait(false);
             var pk = new PK9(data);
-            if (pk.PID == Settings.Default.LastPID && pk.EncryptionConstant == Settings.Default.LastEC)
-                return null;
-            Settings.Default.LastPID = pk.PID;
-            Settings.Default.LastEC = pk.EncryptionConstant;
-            Settings.Default.Save();
             return pk;
         }
 
@@ -536,21 +531,22 @@ namespace PokeViewer.NET.SubForms
 
         private void SaveHookURL_Click(object sender, EventArgs e)
         {
-            Settings.Default.WebHook = WebHookText.Text;
-            Settings.Default.UserDiscordID = UserDiscordIDText.Text;
-            Settings.Default.StopOnShiny = StopOnShiny.Checked;
-            Settings.Default.CheckBoxOf3 = CheckBoxOf3.Checked;
-            Settings.Default.EatOnStart = EatOnStart.Checked;
-            Settings.Default.EatAgain = EatAgain.Checked;
-            Settings.Default.HoldFillings = HoldIngredients.Checked;
-            Settings.Default.Item1 = Item1Value.Text;
-            Settings.Default.Item2 = Item2Value.Text;
-            Settings.Default.Item3 = Item3Value.Text;
-            Settings.Default.Item1DUP = DUPItem1.Checked;
-            Settings.Default.Item2DUP = DUPItem2.Checked;
-            Settings.Default.Item3DUP = DUPItem3.Checked;
-            Settings.Default.HoldTime = FillingHoldTime.Text;
-            Settings.Default.LivenessPing = PingOnReset.Checked;
+            if (string.IsNullOrEmpty(WebHookText.Text) || string.IsNullOrEmpty(UserDiscordIDText.Text))
+            {
+                MessageBox.Show("Please fill the fields before attempting to save.");
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(WebHookText.Text))
+            {
+                Settings.Default.WebHook = WebHookText.Text;
+                Settings.Default.Save();
+            }
+            if (!string.IsNullOrEmpty(UserDiscordIDText.Text))
+            {
+                Settings.Default.UserDiscordID = UserDiscordIDText.Text;
+                Settings.Default.Save();
+            }
 
             MessageBox.Show("Done. Reloading form to show changes.");
         }

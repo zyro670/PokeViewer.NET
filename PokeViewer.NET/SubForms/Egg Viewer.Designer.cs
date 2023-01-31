@@ -357,7 +357,7 @@ namespace PokeViewer.NET.SubForms
             this.FillingHoldTime.Name = "FillingHoldTime";
             this.FillingHoldTime.Size = new System.Drawing.Size(45, 31);
             this.FillingHoldTime.TabIndex = 36;
-            this.FillingHoldTime.Text = Settings.Default.HoldTime;
+            this.FillingHoldTime.Text = "690";
             // 
             // WebHookText
             // 
