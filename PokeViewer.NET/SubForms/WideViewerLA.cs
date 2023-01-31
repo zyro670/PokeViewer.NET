@@ -1,4 +1,5 @@
-﻿using PKHeX.Core;
+﻿using Newtonsoft.Json.Linq;
+using PKHeX.Core;
 using SysBot.Base;
 using static PokeViewer.NET.RoutineExecutor;
 
@@ -24,22 +25,22 @@ namespace PokeViewer.NET.WideViewForms
         {
             List<PA8> viewing = new();
             var pk = new PA8();
-            ulong ofs = 0;
             int size = 0x168;
-            string value = "";
+            int value = 0;
             if (SwitchConnection.Connected)
             {
                 for (int i = 0; i < 5; i++)
                 {
                     switch (i)
                     {
-                        case 0: value = "90"; break;
-                        case 1: value = "F0"; break;
-                        case 2: value = "150"; break;
-                        case 3: value = "1B0"; break;
-                        case 4: value = "210"; break;
+                        case 0: value = 0x90; break;
+                        case 1: value = 0xF0; break;
+                        case 2: value = 0x150; break;
+                        case 3: value = 0x1B0; break;
+                        case 4: value = 0x210; break;
                     }
-                    ofs = await GetPointerAddress($"[[[[[main+42A6F00]+98]+{value}]+10]+58]", CancellationToken.None).ConfigureAwait(false);
+                    var ptr = new long[] { 0x42A6F00, 0x95, value, 0x10, 0x58 };
+                    var ofs = await SwitchConnection.PointerAll(ptr, CancellationToken.None).ConfigureAwait(false);
                     pk = await ReadInBattlePokemonLA(ofs, size).ConfigureAwait(false);
                     LASanityCheck(pk, i);
                 }
@@ -100,41 +101,7 @@ namespace PokeViewer.NET.WideViewForms
             var pk = new PA8(data);
             return pk;
         }
-
-        public async Task<ulong> GetPointerAddress(string pointer, CancellationToken token, bool heaprealtive = false) //Code from LiveHex
-        {
-            var ptr = pointer;
-            if (string.IsNullOrWhiteSpace(ptr) || ptr.IndexOfAny(new char[] { '-', '/', '*' }) != -1)
-                return 0;
-            while (ptr.Contains("]]"))
-                ptr = ptr.Replace("]]", "]+0]");
-            uint finadd = 0;
-            if (!ptr.EndsWith("]"))
-            {
-                finadd = Util.GetHexValue(ptr.Split('+').Last());
-                ptr = ptr[..ptr.LastIndexOf('+')];
-            }
-            var jumps = ptr.Replace("main", "").Replace("[", "").Replace("]", "").Split(new[] { "+" }, StringSplitOptions.RemoveEmptyEntries);
-            if (jumps.Length == 0)
-                return 0;
-
-            var initaddress = Util.GetHexValue(jumps[0].Trim());
-            ulong address = BitConverter.ToUInt64(await SwitchConnection.ReadBytesMainAsync(initaddress, 0x8, token).ConfigureAwait(false), 0);
-            foreach (var j in jumps)
-            {
-                var val = Util.GetHexValue(j.Trim());
-                if (val == initaddress)
-                    continue;
-                address = BitConverter.ToUInt64(await SwitchConnection.ReadBytesAbsoluteAsync(address + val, 0x8, token).ConfigureAwait(false), 0);
-            }
-            address += finadd;
-            if (heaprealtive)
-            {
-                ulong heap = await SwitchConnection.GetHeapBaseAsync(token);
-                address -= heap;
-            }
-            return address;
-        }
+        
     }
 }
 

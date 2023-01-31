@@ -53,7 +53,7 @@
             this.TrainerView = new System.Windows.Forms.Button();
             this.DayCareView = new System.Windows.Forms.Button();
             this.OverworldView = new System.Windows.Forms.Button();
-            this.InGameScreenshot = new System.Windows.Forms.Button();            
+            this.InGameScreenshot = new System.Windows.Forms.Button();
             this.Raids = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.PokeSprite)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Specialty)).BeginInit();
@@ -64,7 +64,7 @@
             // 
             // Connect
             // 
-            this.Connect.Location = new System.Drawing.Point(19, 32);
+            this.Connect.Location = new System.Drawing.Point(18, 32);
             this.Connect.Name = "Connect";
             this.Connect.Size = new System.Drawing.Size(75, 25);
             this.Connect.TabIndex = 0;
@@ -150,7 +150,7 @@
             // HidePIDEC
             // 
             this.HidePIDEC.AutoSize = true;
-            this.HidePIDEC.Location = new System.Drawing.Point(19, 68);
+            this.HidePIDEC.Location = new System.Drawing.Point(19, 64);
             this.HidePIDEC.Name = "HidePIDEC";
             this.HidePIDEC.Size = new System.Drawing.Size(91, 19);
             this.HidePIDEC.TabIndex = 13;

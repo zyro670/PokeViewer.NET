@@ -1,4 +1,5 @@
-﻿using PKHeX.Core;
+﻿using Newtonsoft.Json.Linq;
+using PKHeX.Core;
 using PKHeX.Drawing.Misc;
 using PokeViewer.NET.SubForms;
 using PokeViewer.NET.WideViewForms;
@@ -16,8 +17,8 @@ namespace PokeViewer.NET
         public static RoutineExecutor Executor = new();
 
         public MainViewer()
-        {
-            InitializeComponent();
+        {            
+            InitializeComponent();            
         }
 
         delegate void ChangeButtonStateCallback(Button sender, bool State);
@@ -156,7 +157,6 @@ namespace PokeViewer.NET
                 string url = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/OriginMarks/icon_generation_00%5Esb.png";
                 OriginIcon.ImageLocation = url;
                 OverworldView.Visible = false;
-                SwitchConnection.Reset();
                 this.Close();
                 Application.Restart();
             }
@@ -338,8 +338,9 @@ namespace PokeViewer.NET
             var pk = new PK9(data);
             if (UniqueBox.Checked)
             {
-                offset = await GetPointerAddress("[[[[[[main+42F3DD8]+D8]+48]+18]+D8]+1E0]", CancellationToken.None).ConfigureAwait(false);
-                data = await SwitchConnection.ReadBytesAbsoluteAsync(offset, size, CancellationToken.None).ConfigureAwait(false); // RaidLobbyPokemon
+                var ptr = new long[] { 0x42F3DD8, 0xD8, 0x48, 0x18, 0xD8, 0x1E0 };
+                var ofs = await SwitchConnection.PointerAll(ptr, CancellationToken.None).ConfigureAwait(false);
+                data = await SwitchConnection.ReadBytesAbsoluteAsync(ofs, size, CancellationToken.None).ConfigureAwait(false); // RaidLobbyPokemon
                 pk = new PK9(data);
                 return pk;
             }
@@ -366,6 +367,7 @@ namespace PokeViewer.NET
                     "[[[[main+28ED668]+68]+1E8]+1D0]+128",
                     "[[[[[main+296C030]+60]+40]+1B0]+58]"
                 };
+
                 for (int i = 0; i < campers.Length; i++)
                 {
                     var pointer = campers[i];
@@ -423,9 +425,8 @@ namespace PokeViewer.NET
             var ptr = new long[] { 0 };
             switch (GameType)
             {
-                // Add SV overworld title here
-                /*case (int)GameSelected.Scarlet or (int)GameSelected.Violet:
-                ptr = new long[] { 0x42C30E8, 0x1A9 }; break;*/
+                case (int)GameSelected.Scarlet or (int)GameSelected.Violet:
+                ptr = new long[] { 0x43A7848, 0x348, 0x10, 0xD8, 0x28 }; break;
                 case (int)GameSelected.LA:
                 ptr = new long[] { 0x42C30E8, 0x1A9 }; break;
                 case (int)GameSelected.BD:
@@ -503,7 +504,8 @@ namespace PokeViewer.NET
                 {
                     case (int)GameSelected.Scarlet or (int)GameSelected.Violet:
                         {
-                            var ofs = await GetPointerAddress("[[[[[main+42FD3C0]+10]+2D0]+2A0]+48]+2E0", CancellationToken.None).ConfigureAwait(false);
+                            var ptr = new long[] { 0x42FD3C0, 0x10, 0x2D0, 0x2A0, 0x48, 0x2E0 };
+                            var ofs = await SwitchConnection.PointerAll(ptr, CancellationToken.None).ConfigureAwait(false);
                             var size = 0x158;
                             var pk = await ReadInBattlePokemonSV(ofs, size).ConfigureAwait(false);
                             SanityCheck(pk);
@@ -531,7 +533,8 @@ namespace PokeViewer.NET
                         }
                     case (int)GameSelected.LA:
                         {
-                            var ofs = await GetPointerAddress("[[[[[main+42a6f00]+D0]+B8]+300]+70]+60]+98]+10]", CancellationToken.None).ConfigureAwait(false);
+                            var ptr = new long[] { 0x42A6F00, 0xD0, 0xB8, 0x300, 0x70, 0x60, 0x98, 0x10 };
+                            var ofs = await SwitchConnection.PointerAll(ptr, CancellationToken.None).ConfigureAwait(false);
                             var size = 0x168;
                             var pk = await ReadInBattlePokemonLA(ofs, size).ConfigureAwait(false);
                             SanityCheck(pk);
@@ -539,7 +542,8 @@ namespace PokeViewer.NET
                         }; break;
                     case (int)GameSelected.BD:
                         {
-                            var ofs = await GetPointerAddress("[[[[main+4C59EF0]+20]+98]]+20", CancellationToken.None).ConfigureAwait(false);
+                            var ptr = new long[] { 0x4C59EF0, 0x20, 0x98, 0x00, 0x20 };
+                            var ofs = await SwitchConnection.PointerAll(ptr, CancellationToken.None).ConfigureAwait(false);
                             var size = 0x168;
                             var pk = await ReadInBattlePokemonBDSP(ofs, size).ConfigureAwait(false);
                             SanityCheck(pk);
@@ -547,7 +551,8 @@ namespace PokeViewer.NET
                         }; break;
                     case (int)GameSelected.SP:
                         {
-                            var ofs = await GetPointerAddress("[[[[main+4E70FC8]+20]+98]]+20", CancellationToken.None).ConfigureAwait(false);
+                            var ptr = new long[] { 0x4E70FC8, 0x20, 0x98, 0x00, 0x20 };
+                            var ofs = await SwitchConnection.PointerAll(ptr, CancellationToken.None).ConfigureAwait(false);
                             int size = 0x168;
                             var pk = await ReadInBattlePokemonBDSP(ofs, size).ConfigureAwait(false);
                             SanityCheck(pk);
@@ -743,42 +748,7 @@ namespace PokeViewer.NET
                         break;
                     }
             }
-        }
-
-        public async Task<ulong> GetPointerAddress(string pointer, CancellationToken token, bool heaprealtive = false) //Code from LiveHex
-        {
-            var ptr = pointer;
-            if (string.IsNullOrWhiteSpace(ptr) || ptr.IndexOfAny(new char[] { '-', '/', '*' }) != -1)
-                return 0;
-            while (ptr.Contains("]]"))
-                ptr = ptr.Replace("]]", "]+0]");
-            uint finadd = 0;
-            if (!ptr.EndsWith("]"))
-            {
-                finadd = Util.GetHexValue(ptr.Split('+').Last());
-                ptr = ptr[..ptr.LastIndexOf('+')];
-            }
-            var jumps = ptr.Replace("main", "").Replace("[", "").Replace("]", "").Split(new[] { "+" }, StringSplitOptions.RemoveEmptyEntries);
-            if (jumps.Length == 0)
-                return 0;
-
-            var initaddress = Util.GetHexValue(jumps[0].Trim());
-            ulong address = BitConverter.ToUInt64(await SwitchConnection.ReadBytesMainAsync(initaddress, 0x8, token).ConfigureAwait(false), 0);
-            foreach (var j in jumps)
-            {
-                var val = Util.GetHexValue(j.Trim());
-                if (val == initaddress)
-                    continue;
-                address = BitConverter.ToUInt64(await SwitchConnection.ReadBytesAbsoluteAsync(address + val, 0x8, token).ConfigureAwait(false), 0);
-            }
-            address += finadd;
-            if (heaprealtive)
-            {
-                ulong heap = await SwitchConnection.GetHeapBaseAsync(token);
-                address -= heap;
-            }
-            return address;
-        }
+        }        
 
         private void BoxView_Click(object sender, EventArgs e)
         {
@@ -843,6 +813,41 @@ namespace PokeViewer.NET
         {
             using RaidCodeEntry WideForm = new();
             WideForm.ShowDialog();
+        }
+
+        public async Task<ulong> GetPointerAddress(string pointer, CancellationToken token, bool heaprealtive = false) //Code from LiveHex
+        {
+            var ptr = pointer;
+            if (string.IsNullOrWhiteSpace(ptr) || ptr.IndexOfAny(new char[] { '-', '/', '*' }) != -1)
+                return 0;
+            while (ptr.Contains("]]"))
+                ptr = ptr.Replace("]]", "]+0]");
+            uint finadd = 0;
+            if (!ptr.EndsWith("]"))
+            {
+                finadd = Util.GetHexValue(ptr.Split('+').Last());
+                ptr = ptr[..ptr.LastIndexOf('+')];
+            }
+            var jumps = ptr.Replace("main", "").Replace("[", "").Replace("]", "").Split(new[] { "+" }, StringSplitOptions.RemoveEmptyEntries);
+            if (jumps.Length == 0)
+                return 0;
+
+            var initaddress = Util.GetHexValue(jumps[0].Trim());
+            ulong address = BitConverter.ToUInt64(await SwitchConnection.ReadBytesMainAsync(initaddress, 0x8, token).ConfigureAwait(false), 0);
+            foreach (var j in jumps)
+            {
+                var val = Util.GetHexValue(j.Trim());
+                if (val == initaddress)
+                    continue;
+                address = BitConverter.ToUInt64(await SwitchConnection.ReadBytesAbsoluteAsync(address + val, 0x8, token).ConfigureAwait(false), 0);
+            }
+            address += finadd;
+            if (heaprealtive)
+            {
+                ulong heap = await SwitchConnection.GetHeapBaseAsync(token);
+                address -= heap;
+            }
+            return address;
         }
     }
 }

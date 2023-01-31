@@ -107,7 +107,8 @@ namespace PokeViewer.NET
                     case (int)GameSelected.Scarlet or (int)GameSelected.Violet:
                         {
                             var slotsize = 344;
-                            var b1s1 = await GetPointerAddress("[[[main+43A77C8]+108]+9B0]", token).ConfigureAwait(false);
+                            var ptr = new long[] { 0x43A77C8, 0x108, 0x9B0 };
+                            var b1s1 = await SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false);
                             var boxsize = 30 * slotsize;
                             var boxStart = b1s1 + (ulong)(box * boxsize);
                             var slotstart = boxStart + (ulong)(i * slotsize);
@@ -119,7 +120,8 @@ namespace PokeViewer.NET
                     case (int)GameSelected.LA:
                         {
                             var slotsize = 360;
-                            var b1s1 = await GetPointerAddress("[[main+42BA6B0]+1F0]+68", token).ConfigureAwait(false);
+                            var ptr = new long[] { 0x42BA6B0, 0x1F0, 0x68 };
+                            var b1s1 = await SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false);
                             var boxsize = 30 * slotsize;
                             var boxStart = b1s1 + (ulong)(box * boxsize);
                             var slotstart = boxStart + (ulong)(i * slotsize);
@@ -396,42 +398,7 @@ namespace PokeViewer.NET
             await ReadBoxes(offset, size, currentbox, CancellationToken.None).ConfigureAwait(false);
 
             ReadInProgress = false;
-        }
-
-        public async Task<ulong> GetPointerAddress(string pointer, CancellationToken token, bool heaprealtive = false) //Code from LiveHex
-        {
-            var ptr = pointer;
-            if (string.IsNullOrWhiteSpace(ptr) || ptr.IndexOfAny(new char[] { '-', '/', '*' }) != -1)
-                return 0;
-            while (ptr.Contains("]]"))
-                ptr = ptr.Replace("]]", "]+0]");
-            uint finadd = 0;
-            if (!ptr.EndsWith("]"))
-            {
-                finadd = Util.GetHexValue(ptr.Split('+').Last());
-                ptr = ptr[..ptr.LastIndexOf('+')];
-            }
-            var jumps = ptr.Replace("main", "").Replace("[", "").Replace("]", "").Split(new[] { "+" }, StringSplitOptions.RemoveEmptyEntries);
-            if (jumps.Length == 0)
-                return 0;
-
-            var initaddress = Util.GetHexValue(jumps[0].Trim());
-            ulong address = BitConverter.ToUInt64(await SwitchConnection.ReadBytesMainAsync(initaddress, 0x8, token).ConfigureAwait(false), 0);
-            foreach (var j in jumps)
-            {
-                var val = Util.GetHexValue(j.Trim());
-                if (val == initaddress)
-                    continue;
-                address = BitConverter.ToUInt64(await SwitchConnection.ReadBytesAbsoluteAsync(address + val, 0x8, token).ConfigureAwait(false), 0);
-            }
-            address += finadd;
-            if (heaprealtive)
-            {
-                ulong heap = await SwitchConnection.GetHeapBaseAsync(token);
-                address -= heap;
-            }
-            return address;
-        }
+        }        
 
         private uint GetBDSPSlotValue(int slot)
         {

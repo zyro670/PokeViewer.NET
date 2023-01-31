@@ -44,11 +44,11 @@ namespace PokeViewer.NET.WideViewForms
             WideView10Button.Text = "Viewing...";
             int i = 0;
             int d = 0;
-            string ofs = "";
+            int ofs = 0;
             if (GameType == (int)GameSelected.BD)
-                ofs = "4C5A638";
+                ofs = 0x4C5A638;
             else if (GameType == (int)GameSelected.SP)
-                ofs = "4E71710";
+                ofs = 0x4E71710;
             var sprite = string.Empty;
             List<string> spriteBox = new();
             List<string> textBox = new();
@@ -57,7 +57,8 @@ namespace PokeViewer.NET.WideViewForms
             TextBox[] outputBox = { textBox1, textBox2, textBox3, textBox4, textBox5, textBox6, textBox7, textBox8, textBox9, textBox10 };
             for (int y = 0; y < 5; y++)
             {
-                PB8? pk = await ReadUntilPresentAbsolute(await GetPointerAddress($"main+{ofs}]+B8]]+A8]+10]+10]+{20 + (i * 10)}]+10]+10]+20", token).ConfigureAwait(false), 0_200, 0_200, token).ConfigureAwait(false) ?? new();
+                var ptr = new long[] { ofs, 0xB8, 0x00, 0xA8, 0x10, 0x10, 0x20 + (i * 10), 0x10, 0x10, 0x20 };
+                PB8? pk = await ReadUntilPresentAbsolute(await SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false), 0_200, 0_200, token).ConfigureAwait(false) ?? new();
                 if (pk.Species != 0 && pk.Species < (int)Species.MAX_COUNT)
                 {
                     string pid = $"{Environment.NewLine}PID: {pk.PID:X8}";
@@ -81,7 +82,8 @@ namespace PokeViewer.NET.WideViewForms
             i = 0;
             for (int z = 0; z < 5; z++)
             {
-                PB8? pk = await ReadUntilPresentAbsolute(await GetPointerAddress($"main+{ofs}]+B8]]+A8]+10]+10]+{28 + (i * 10)}]+10]+10]+20", token).ConfigureAwait(false), 0_200, 0_200, token).ConfigureAwait(false) ?? new();
+                var ptr = new long[] { ofs, 0xB8, 0x00, 0xA8, 0x10, 0x10, 0x28 + (i * 10), 0x10, 0x10, 0x20 };
+                PB8? pk = await ReadUntilPresentAbsolute(await SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false), 0_200, 0_200, token).ConfigureAwait(false) ?? new(); 
                 if (pk.Species != 0 && pk.Species < (int)Species.MAX_COUNT)
                 {
                     string pid = $"{Environment.NewLine}PID: {pk.PID:X8}";
@@ -111,44 +113,9 @@ namespace PokeViewer.NET.WideViewForms
            
             WideView10Button.Enabled = true;
             WideView10Button.Text = "WideView";
-        }
+        }        
 
-        public async Task<ulong> GetPointerAddress(string pointer, CancellationToken token, bool heaprealtive = false) //Code from LiveHex
-        {
-            var ptr = pointer;
-            if (string.IsNullOrWhiteSpace(ptr) || ptr.IndexOfAny(new char[] { '-', '/', '*' }) != -1)
-                return 0;
-            while (ptr.Contains("]]"))
-                ptr = ptr.Replace("]]", "]+0]");
-            uint finadd = 0;
-            if (!ptr.EndsWith("]"))
-            {
-                finadd = Util.GetHexValue(ptr.Split('+').Last());
-                ptr = ptr[..ptr.LastIndexOf('+')];
-            }
-            var jumps = ptr.Replace("main", "").Replace("[", "").Replace("]", "").Split(new[] { "+" }, StringSplitOptions.RemoveEmptyEntries);
-            if (jumps.Length == 0)
-                return 0;
-
-            var initaddress = Util.GetHexValue(jumps[0].Trim());
-            ulong address = BitConverter.ToUInt64(await SwitchConnection.ReadBytesMainAsync(initaddress, 0x8, token).ConfigureAwait(false), 0);
-            foreach (var j in jumps)
-            {
-                var val = Util.GetHexValue(j.Trim());
-                if (val == initaddress)
-                    continue;
-                address = BitConverter.ToUInt64(await SwitchConnection.ReadBytesAbsoluteAsync(address + val, 0x8, token).ConfigureAwait(false), 0);
-            }
-            address += finadd;
-            if (heaprealtive)
-            {
-                ulong heap = await SwitchConnection.GetHeapBaseAsync(token);
-                address -= heap;
-            }
-            return address;
-        }
-
-        public async Task<PB8?> ReadUntilPresentAbsolute(ulong offset, int waitms, int waitInterval, CancellationToken token, int size = 0x158) // Need to eliminate duplicate code, currently a hack
+        public async Task<PB8?> ReadUntilPresentAbsolute(ulong offset, int waitms, int waitInterval, CancellationToken token, int size = 0x158)
         {
             int msWaited = 0;
             while (msWaited < waitms)

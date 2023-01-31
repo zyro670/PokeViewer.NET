@@ -41,8 +41,6 @@ namespace PokeViewer.NET.SubForms
             var token = CancellationToken.None;
             eggcount = 0;
 
-            // Blank out previous egg data
-            await SwitchConnection.WriteBytesMainAsync(new byte[344], EggData, token).ConfigureAwait(false);
             await SwitchConnection.WriteBytesMainAsync(BlankVal, PicnicMenu, token).ConfigureAwait(false);
 
             if (EatOnStart.Checked)
@@ -84,6 +82,8 @@ namespace PokeViewer.NET.SubForms
                         }
                     }
 
+                    await Task.Delay(1_000, token).ConfigureAwait(false);
+                    pk = await ReadPokemonSV(EggData, 344, token).ConfigureAwait(false);
                     while (pk != null && (Species)pk.Species != Species.None && pkprev.EncryptionConstant != pk.EncryptionConstant)
                     {
                         waiting = 0;
@@ -126,7 +126,7 @@ namespace PokeViewer.NET.SubForms
                                 EnableOptions();
                                 WindowState = _WindowState;
                                 Activate();
-                                MessageBox.Show("Rare Shiny Found!");                                
+                                MessageBox.Show("Rare Shiny Found! Claim your egg before closing the picnic!");                                
                                 return;
                             }
 
@@ -135,7 +135,7 @@ namespace PokeViewer.NET.SubForms
                             EnableOptions();
                             WindowState = _WindowState;
                             Activate();
-                            MessageBox.Show("Match found!");
+                            MessageBox.Show("Match found! Claim your egg before closing the picnic!");
                             return;
                         }
 
@@ -193,12 +193,12 @@ namespace PokeViewer.NET.SubForms
             }
             for (int i = 0; i < 10; i++)
                 await Click(A, 0_500, token).ConfigureAwait(false); 
-            await Click(X, 1_500, token).ConfigureAwait(false);
+            await Click(X, 3_000, token).ConfigureAwait(false);
             if (hasReset) 
             {
-                await Click(DRIGHT, 0_250, token).ConfigureAwait(false);
-                await Click(DDOWN, 0_250, token).ConfigureAwait(false);
-                await Click(DDOWN, 0_250, token).ConfigureAwait(false);
+                await Click(DRIGHT, 0_500, token).ConfigureAwait(false);
+                await Click(DDOWN, 0_500, token).ConfigureAwait(false);
+                await Click(DDOWN, 0_500, token).ConfigureAwait(false);
             }
             await Click(A, 7_000, token).ConfigureAwait(false); 
         }
@@ -209,7 +209,7 @@ namespace PokeViewer.NET.SubForms
             await SetStick(LEFT, 0, 30000, 0_700, token).ConfigureAwait(false); // Face up to table
             await SetStick(LEFT, 0, 0, 0, token).ConfigureAwait(false);
             await Click(A, 1_500, token).ConfigureAwait(false);
-            await Click(A, 4_000, token).ConfigureAwait(false);
+            await Click(A, 5_000, token).ConfigureAwait(false);
             await Click(X, 1_500, token).ConfigureAwait(false);
 
             if (!string.IsNullOrEmpty(Item1Value.Text))
@@ -286,28 +286,40 @@ namespace PokeViewer.NET.SubForms
                 }
             }
 
-            sandwichcount++;
-            SandwichCount.Text = $"Sandwiches Made: {sandwichcount}";
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 12; i++) // If everything is properly positioned
                 await Click(A, 0_800, token).ConfigureAwait(false);
 
-            bool inPicnic = await IsInPicnic(token).ConfigureAwait(false);
+            // Sandwich failsafe
+            for (int i = 0; i < 5; i++) //Attempt this several times to ensure it goes through
+                await SetStick(LEFT, 0, 30000, 1_000, token).ConfigureAwait(false); // Scroll to the absolute top
+            await SetStick(LEFT, 0, 0, 0, token).ConfigureAwait(false);
 
-            while (!inPicnic)
+            while (await PicnicState(token).ConfigureAwait(false) == 2) // Until we start eating the sandwich
             {
-                await Click(A, 3_000, token).ConfigureAwait(false);
-                inPicnic = await IsInPicnic(token).ConfigureAwait(false);
+                await SetStick(LEFT, 0, -5000, 0_300, token).ConfigureAwait(false); // Scroll down slightly and press A a few times; repeat until un-stuck
+                await SetStick(LEFT, 0, 0, 0, token).ConfigureAwait(false);
+
+                for (int i = 0; i < 6; i++)
+                    await Click(A, 0_800, token).ConfigureAwait(false);
             }
 
-            if (inPicnic)
-            {
-                await Task.Delay(2_500, token).ConfigureAwait(false);
-                await SetStick(LEFT, 0, -10000, 0_500, token).ConfigureAwait(false); // Face down to basket
-                await SetStick(LEFT, 0, 0, 0, token).ConfigureAwait(false);
+            while (await PicnicState(token).ConfigureAwait(false) == 3)  // eating the sandwich
                 await Task.Delay(1_000, token).ConfigureAwait(false);
-                await SetStick(LEFT, 0, 5000, 0_200, token).ConfigureAwait(false); // Face up to basket
-                await SetStick(LEFT, 0, 0, 0, token).ConfigureAwait(false);
+
+            sandwichcount++;
+            SandwichCount.Text = $"Sandwiches Made: {sandwichcount}";
+
+            while (!await IsInPicnic(token).ConfigureAwait(false)) // Acknowledge the sandwich and return to the picnic
+            {
+                await Click(A, 5_000, token).ConfigureAwait(false); // Wait a long time to give the flag a chance to update and avoid sandwich re-entry
             }
+            await Task.Delay(2_500, token).ConfigureAwait(false);
+            await SetStick(LEFT, 0, -10000, 0_500, token).ConfigureAwait(false); // Face down to basket
+            await SetStick(LEFT, 0, 0, 0, token).ConfigureAwait(false);
+            await Task.Delay(1_000, token).ConfigureAwait(false);
+            await SetStick(LEFT, 0, 5000, 0_200, token).ConfigureAwait(false); // Face up to basket
+            await SetStick(LEFT, 0, 0, 0, token).ConfigureAwait(false);
+
         }
 
         public new async Task Click(SwitchButton b, int delay, CancellationToken token)
@@ -333,7 +345,13 @@ namespace PokeViewer.NET.SubForms
             SwitchConnection.Reset();
             this.Close();  
             Application.Restart();
-        }        
+        }
+
+        private async Task<int> PicnicState(CancellationToken token)
+        {
+            var Data = await SwitchConnection.ReadBytesMainAsync(PicnicMenu, 1, token).ConfigureAwait(false);
+            return Data[0]; // 1 when in picnic, 2 in sandwich menu, 3 when eating, 2 when done eating
+        }
 
         private async Task<bool> IsInPicnic(CancellationToken token)
         {
