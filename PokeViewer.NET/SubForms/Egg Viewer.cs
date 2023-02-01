@@ -40,7 +40,7 @@ namespace PokeViewer.NET.SubForms
             DUPItem2.Checked = Settings.Default.Item2DUP;
             Item3Value.Text = Settings.Default.Item3;
             DUPItem3.Checked = Settings.Default.Item3DUP;
-            HoldTimeToFillings.Text = Settings.Default.HoldTime;
+            FillingHoldTime.Text = Settings.Default.HoldTime;
             WebHookText.Text = Settings.Default.WebHook;
             UserDiscordIDText.Text = Settings.Default.UserDiscordID;
         }
