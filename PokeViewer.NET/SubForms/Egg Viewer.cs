@@ -21,9 +21,30 @@ namespace PokeViewer.NET.SubForms
         public Egg_Viewer()
         {
             InitializeComponent();
+            StartWithSavedValues();
             SwitchConnection.Connect();
             _logger = LogManager.GetCurrentClassLogger();
         }
+
+        private void StartWithSavedValues()
+        {
+            StopOnShiny.Checked = Settings.Default.StopOnShiny;
+            CheckBoxOf3.Checked = Settings.Default.CheckBoxOf3;
+            EatOnStart.Checked = Settings.Default.EatOnStart;
+            EatAgain.Checked = Settings.Default.EatAgain;
+            HoldIngredients.Checked = Settings.Default.HoldFillings;
+            PingOnReset.Checked = Settings.Default.LivenessPing;
+            Item1Value.Text = Settings.Default.Item1;
+            DUPItem1.Checked = Settings.Default.Item1DUP;
+            Item2Value.Text = Settings.Default.Item2;
+            DUPItem2.Checked = Settings.Default.Item2DUP;
+            Item3Value.Text = Settings.Default.Item3;
+            DUPItem3.Checked = Settings.Default.Item3DUP;
+            FillingHoldTime.Text = Settings.Default.HoldTime;
+            WebHookText.Text = Settings.Default.WebHook;
+            UserDiscordIDText.Text = Settings.Default.UserDiscordID;
+        }
+
         private int eggcount = 0;
         private int sandwichcount = 0;
         private int shinycount = 0;
@@ -189,6 +210,11 @@ namespace PokeViewer.NET.SubForms
         {
             var data = await SwitchConnection.ReadBytesMainAsync(offset, size, token).ConfigureAwait(false);
             var pk = new PK9(data);
+            if (pk.EncryptionConstant == Settings.Default.LastEC && pk.PID == Settings.Default.LastPID)
+                return null;
+            Settings.Default.LastEC = pk.EncryptionConstant;
+            Settings.Default.LastPID = pk.PID;
+            Settings.Default.Save();
             return pk;
         }
 
@@ -535,7 +561,7 @@ namespace PokeViewer.NET.SubForms
             Settings.Default.Item1DUP = DUPItem1.Checked;
             Settings.Default.Item2DUP = DUPItem2.Checked;
             Settings.Default.Item3DUP = DUPItem3.Checked;
-            Settings.Default.HoldTime = HoldTimeToFillings.Text;
+            Settings.Default.HoldTime = FillingHoldTime.Text;
             Settings.Default.LivenessPing = PingOnReset.Checked;
 
             Settings.Default.Save();

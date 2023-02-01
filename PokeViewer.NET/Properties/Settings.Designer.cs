@@ -262,5 +262,29 @@ namespace PokeViewer.NET.Properties {
                 this["LivenessPing"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public uint LastPID {
+            get {
+                return ((uint)(this["LastPID"]));
+            }
+            set {
+                this["LastPID"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public uint LastEC {
+            get {
+                return ((uint)(this["LastEC"]));
+            }
+            set {
+                this["LastEC"] = value;
+            }
+        }
     }
 }
