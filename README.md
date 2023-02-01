@@ -34,3 +34,12 @@ How to use:
 - Open picnic ingame, stay in a position where if you walk with Stick Up you would hit the table
 - Wait until all animation is done
 - Press fetch. Bot is up.
+
+---
+
+## Known Issues
+* Sometimes connection with Sysbot can lag out and bot gets out of sync. **Workaround:** restart CFW
+* Above issue might get into a scenario where I get SockedExceptions where the host closed the connection. **Workaround:** restart CFW
+* Pokémon S/V doesn't erase egg date from basket once picnic is finished. This might result in false positives for shinies after getting a shiny on a picnic. A fix was issued on v0.1.0b_rev3 but it might happen. **Workaround:** reopen game.
+    * **NOTE:** BE MINDFUL of the EC and PID of the shiny, theres always the chance of getting back to back shinies. If they are the same as the previous shiny you got it is a false positive.
+* Sometimes you might get a false positive without getting any previous shiny. I currently know no workaround of source of the problem :( It uses PkHex shiny check so it should be accurate in theory.
