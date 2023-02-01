@@ -561,7 +561,7 @@ namespace PokeViewer.NET.SubForms
             Settings.Default.Item1DUP = DUPItem1.Checked;
             Settings.Default.Item2DUP = DUPItem2.Checked;
             Settings.Default.Item3DUP = DUPItem3.Checked;
-            Settings.Default.HoldTime = HoldTimeToFillings.Text;
+            Settings.Default.HoldTime = FillingHoldTime.Text;
             Settings.Default.LivenessPing = PingOnReset.Checked;
 
             Settings.Default.Save();
