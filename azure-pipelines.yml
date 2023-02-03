@@ -40,6 +40,6 @@ steps:
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: PokeViewer.NET'
   inputs:
-    PathtoPublish: 'PokeViewer.NET\bin\Release\net6.0-windows'
+    PathtoPublish: 'PokeViewer.NET\bin\Release\net7.0-windows'
     ArtifactName: PokeViewer.NET
   condition: succeededOrFailed()
