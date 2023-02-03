@@ -58,8 +58,15 @@ namespace PokeViewer.NET
             {
                 if (pkm.IsShiny)
                     newbase = $"https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder_Sprites/scaled_up_sprites/Shiny/" + $"{pkm.Species}{pkmform}" + ".png";
-                else if (!pkm.IsShiny)
+                if (!pkm.IsShiny)
                     newbase = $"https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder_Sprites/scaled_up_sprites/" + $"{pkm.Species}{pkmform}" + ".png";
+
+                if ((Species)pkm.Species is Species.Oinkologne && (Gender)pkm.Gender is Gender.Female && !pkm.IsShiny)
+                    newbase = $"https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder_Sprites/scaled_up_sprites/" + $"{pkm.Species}f" + ".png";
+
+                if ((Species)pkm.Species >= Species.GreatTusk && (Species)pkm.Species <= Species.IronThorns && pkm.IsShiny || (Species)pkm.Species is Species.RoaringMoon or Species.IronValiant && pkm.IsShiny)
+                    newbase = $"https://www.serebii.net/Shiny/SV/new/" + $"{pkm.Species}" + ".png";
+
                 return newbase;
             }
 

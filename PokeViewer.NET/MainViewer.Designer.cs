@@ -55,6 +55,7 @@
             this.OverworldView = new System.Windows.Forms.Button();
             this.InGameScreenshot = new System.Windows.Forms.Button();
             this.Raids = new System.Windows.Forms.Button();
+            this.ToggleSwitchProtocol = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.PokeSprite)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Specialty)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.OriginIcon)).BeginInit();
@@ -150,7 +151,7 @@
             // HidePIDEC
             // 
             this.HidePIDEC.AutoSize = true;
-            this.HidePIDEC.Location = new System.Drawing.Point(19, 64);
+            this.HidePIDEC.Location = new System.Drawing.Point(18, 77);
             this.HidePIDEC.Name = "HidePIDEC";
             this.HidePIDEC.Size = new System.Drawing.Size(91, 19);
             this.HidePIDEC.TabIndex = 13;
@@ -336,12 +337,25 @@
             this.Raids.Visible = false;
             this.Raids.Click += new System.EventHandler(this.Raids_Click);
             // 
+            // ToggleSwitchProtocol
+            // 
+            this.ToggleSwitchProtocol.AutoSize = true;
+            this.ToggleSwitchProtocol.Enabled = false;
+            this.ToggleSwitchProtocol.Location = new System.Drawing.Point(18, 58);
+            this.ToggleSwitchProtocol.Name = "ToggleSwitchProtocol";
+            this.ToggleSwitchProtocol.Size = new System.Drawing.Size(52, 19);
+            this.ToggleSwitchProtocol.TabIndex = 32;
+            this.ToggleSwitchProtocol.Text = "USB?";
+            this.ToggleSwitchProtocol.UseVisualStyleBackColor = true;
+            this.ToggleSwitchProtocol.Visible = false;
+            // 
             // MainViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLight;
             this.ClientSize = new System.Drawing.Size(405, 392);
+            this.Controls.Add(this.ToggleSwitchProtocol);
             this.Controls.Add(this.Raids);
             this.Controls.Add(this.InGameScreenshot);
             this.Controls.Add(this.OverworldView);
@@ -412,5 +426,6 @@
         private Button OverworldView;
         private Button InGameScreenshot;
         private Button Raids;
+        private CheckBox ToggleSwitchProtocol;
     }
 }

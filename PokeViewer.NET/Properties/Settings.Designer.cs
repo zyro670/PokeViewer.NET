@@ -94,5 +94,17 @@ namespace PokeViewer.NET.Properties {
                 this["UserDiscordID"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool UseWiFiProtocol {
+            get {
+                return ((bool)(this["UseWiFiProtocol"]));
+            }
+            set {
+                this["UseWiFiProtocol"] = value;
+            }
+        }
     }
 }
