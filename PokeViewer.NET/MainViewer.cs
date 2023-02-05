@@ -88,6 +88,13 @@ namespace PokeViewer.NET
             TodaysDate.Text = "Met Date: " + DateTime.Today.ToString("MM/dd/yyyy");
         }
 
+        private SwitchProtocol GetProtocol()
+        {
+            if (ToggleSwitchProtocol.Checked)
+                return SwitchProtocol.USB;
+            return SwitchProtocol.WiFi;
+        }
+
         private void Connect_Click(object sender, EventArgs e)
         {
             if (!SwitchConnection.Connected)
@@ -159,6 +166,7 @@ namespace PokeViewer.NET
                 this.Close();
                 Application.Restart();
             }
+
         }
 
         private void View_Click(object sender, EventArgs e)
@@ -300,7 +308,7 @@ namespace PokeViewer.NET
                     }
                     switch (GameType)
                     {
-                        case (int)GameSelected.Scarlet or (int)GameSelected.Violet: pk = await ReadInBattlePokemonSV(offset2, size).ConfigureAwait(false); break;
+                        case (int)GameSelected.Scarlet or (int)GameSelected.Violet: pk = await ReadInBattlePokemonSV(offset, size).ConfigureAwait(false); break;
                         case (int)GameSelected.SW or (int)GameSelected.SH: pk = await ReadInBattlePokemonSWSH(offset2, size).ConfigureAwait(false); break;
                         case (int)GameSelected.BD or (int)GameSelected.SP: pk = await ReadInBattlePokemonBDSP(offset, size).ConfigureAwait(false); break;
                         case (int)GameSelected.LA: pk = await ReadInBattlePokemonLA(offset, size).ConfigureAwait(false); break;
@@ -347,40 +355,41 @@ namespace PokeViewer.NET
 
         public async Task<PK8> ReadInBattlePokemonSWSH(uint offset, int size)
         {
+            var token = CancellationToken.None;
             byte[]? data = { 0 };
             PK8 pk = new();
             if (UniqueBox.Checked)
             {
                 offset = 0x886A95B8;
-                data = await SwitchConnection.ReadBytesAsync(offset, size, CancellationToken.None).ConfigureAwait(false); // RaidPokemon
+                data = await SwitchConnection.ReadBytesAsync(offset, size, token).ConfigureAwait(false); // RaidPokemon
                 pk = new PK8(data);
                 return pk;
             }
             if (UniqueBox2.Checked)
             {
-                string[] campers =
+                IReadOnlyList<long>[] campers =
                 {
-                    "[[[[[[main+2636120]+280]+D8]+78]+10]+98]",
-                    "[[[[[main+2636170]+2F0]+58]+130]+138]+D0",
-                    "[[[[main+28ED668]+68]+1E8]+1D0]+128",
-                    "[[[[[main+296C030]+60]+40]+1B0]+58]"
+                    new long[] { 0x2636120, 0x280, 0xD8, 0x78, 0x10, 0x98, 0x00 },
+                    new long[] { 0x2636170, 0x2F0, 0x58, 0x130, 0x138, 0xD0 },
+                    new long[] { 0x28ED668, 0x68, 0x1E8, 0x1D0, 0x128 },
+                    new long[] { 0x296C030, 0x60, 0x40, 0x1B0, 0x58, 0x00 }
                 };
 
                 for (int i = 0; i < campers.Length; i++)
                 {
                     var pointer = campers[i];
-                    var ofs = await GetPointerAddress(pointer, CancellationToken.None).ConfigureAwait(false);
-                    data = await SwitchConnection.ReadBytesAbsoluteAsync(ofs, size, CancellationToken.None).ConfigureAwait(false);
+                    var ofs = await SwitchConnection.PointerAll(pointer, token).ConfigureAwait(false);
+                    data = await SwitchConnection.ReadBytesAbsoluteAsync(ofs, size, token).ConfigureAwait(false);
                     pk = new PK8(data);
                     if (pk.Species != 0 && pk.Species < (int)Species.MAX_COUNT)
                         return pk;
                 }
             }
-            data = await SwitchConnection.ReadBytesAsync(offset, size, CancellationToken.None).ConfigureAwait(false); // WildPokemon
+            data = await SwitchConnection.ReadBytesAsync(offset, size, token).ConfigureAwait(false); // WildPokemon
             pk = new PK8(data);
             if (pk.Species == 0 || pk.Species > (int)Species.MAX_COUNT)
             {
-                data = await SwitchConnection.ReadBytesAsync(0x886BC348, size, CancellationToken.None).ConfigureAwait(false); // LegendaryPokemon
+                data = await SwitchConnection.ReadBytesAsync(0x886BC348, size, token).ConfigureAwait(false); // LegendaryPokemon
                 pk = new PK8(data);
             }
             return pk;
@@ -388,25 +397,28 @@ namespace PokeViewer.NET
 
         public async Task<PA8> ReadInBattlePokemonLA(ulong offset, int size)
         {
-            var data = await SwitchConnection.ReadBytesAbsoluteAsync(offset, size, CancellationToken.None).ConfigureAwait(false);
+            var token = CancellationToken.None;
+            var data = await SwitchConnection.ReadBytesAbsoluteAsync(offset, size, token).ConfigureAwait(false);
             var pk = new PA8(data);
             return pk;
         }
 
         public async Task<PB8> ReadInBattlePokemonBDSP(ulong offset, int size)
         {
-            var data = await SwitchConnection.ReadBytesAbsoluteAsync(offset, size, CancellationToken.None).ConfigureAwait(false);
+            var token = CancellationToken.None;
+            var data = await SwitchConnection.ReadBytesAbsoluteAsync(offset, size, token).ConfigureAwait(false);
             var pk = new PB8(data);
             return pk;
         }
 
         public async Task<PB7> ReadInBattlePokemonLGPE(uint offset, int size)
         {
-            var data = await SwitchConnection.ReadBytesMainAsync(offset, size, CancellationToken.None).ConfigureAwait(false);
+            var token = CancellationToken.None;
+            var data = await SwitchConnection.ReadBytesMainAsync(offset, size, token).ConfigureAwait(false);
             var pk = new PB7(data);
             if (pk.Species == 0 || pk.Species > (int)Species.MAX_COUNT)
             {
-                data = await SwitchConnection.ReadBytesAsync(0x9A118D68, size, CancellationToken.None).ConfigureAwait(false);
+                data = await SwitchConnection.ReadBytesAsync(0x9A118D68, size, token).ConfigureAwait(false);
                 pk = new PB7(data);
             }
             return pk;
@@ -473,10 +485,10 @@ namespace PokeViewer.NET
             bool isValid = false;
             switch (GameType)
             {
-                case (int)GameSelected.Scarlet or (int)GameSelected.Violet: isValid = (PersonalTable.SV[pk.Species]).IsPresentInGame; break;
-                case (int)GameSelected.SW or (int)GameSelected.SH: isValid = (PersonalTable.SWSH[pk.Species]).IsPresentInGame; break;
-                case (int)GameSelected.BD or (int)GameSelected.SP: isValid = (PersonalTable.BDSP[pk.Species]).IsPresentInGame; break;
-                case (int)GameSelected.LA: isValid = (PersonalTable.LA[pk.Species]).IsPresentInGame; break;
+                case (int)GameSelected.Scarlet or (int)GameSelected.Violet: isValid = PersonalTable.SV.IsPresentInGame(pk.Species, pk.Form); break;
+                case (int)GameSelected.SW or (int)GameSelected.SH: isValid = PersonalTable.SWSH.IsPresentInGame(pk.Species, pk.Form); break;
+                case (int)GameSelected.BD or (int)GameSelected.SP: isValid = PersonalTable.BDSP.IsPresentInGame(pk.Species, pk.Form); break;
+                case (int)GameSelected.LA: isValid = PersonalTable.LA.IsPresentInGame(pk.Species, pk.Form); break;
                 case (int)GameSelected.LGP or (int)GameSelected.LGE: isValid = pk.Species < (int)Species.Mewtwo && pk.Species != (int)Species.Meltan && pk.Species != (int)Species.Melmetal; break;
             }
             if (!isValid || pk.Species < 0 || pk.Species > (int)Species.MAX_COUNT)
@@ -494,6 +506,7 @@ namespace PokeViewer.NET
         }
         private async void ReadEncounter_ClickAsync(object sender, EventArgs e)
         {
+            var token = CancellationToken.None;
             View.Enabled = false;
             if (SwitchConnection.Connected)
             {
@@ -503,7 +516,7 @@ namespace PokeViewer.NET
                     case (int)GameSelected.Scarlet or (int)GameSelected.Violet:
                         {
                             var ptr = new long[] { 0x42FD3C0, 0x10, 0x2D0, 0x2A0, 0x48, 0x2E0 };
-                            var ofs = await SwitchConnection.PointerAll(ptr, CancellationToken.None).ConfigureAwait(false);
+                            var ofs = await SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false);
                             var size = 0x158;
                             var pk = await ReadInBattlePokemonSV(ofs, size).ConfigureAwait(false);
                             SanityCheck(pk);
@@ -531,8 +544,8 @@ namespace PokeViewer.NET
                         }
                     case (int)GameSelected.LA:
                         {
-                            var ptr = new long[] { 0x42A6F00, 0xD0, 0xB8, 0x300, 0x70, 0x60, 0x98, 0x10 };
-                            var ofs = await SwitchConnection.PointerAll(ptr, CancellationToken.None).ConfigureAwait(false);
+                            var ptr = new long[] { 0x42A6F00, 0xD0, 0xB8, 0x300, 0x70, 0x60, 0x98, 0x10, 0x00 };
+                            var ofs = await SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false);
                             var size = 0x168;
                             var pk = await ReadInBattlePokemonLA(ofs, size).ConfigureAwait(false);
                             SanityCheck(pk);
@@ -541,7 +554,7 @@ namespace PokeViewer.NET
                     case (int)GameSelected.BD:
                         {
                             var ptr = new long[] { 0x4C59EF0, 0x20, 0x98, 0x00, 0x20 };
-                            var ofs = await SwitchConnection.PointerAll(ptr, CancellationToken.None).ConfigureAwait(false);
+                            var ofs = await SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false);
                             var size = 0x168;
                             var pk = await ReadInBattlePokemonBDSP(ofs, size).ConfigureAwait(false);
                             SanityCheck(pk);
@@ -550,7 +563,7 @@ namespace PokeViewer.NET
                     case (int)GameSelected.SP:
                         {
                             var ptr = new long[] { 0x4E70FC8, 0x20, 0x98, 0x00, 0x20 };
-                            var ofs = await SwitchConnection.PointerAll(ptr, CancellationToken.None).ConfigureAwait(false);
+                            var ofs = await SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false);
                             int size = 0x168;
                             var pk = await ReadInBattlePokemonBDSP(ofs, size).ConfigureAwait(false);
                             SanityCheck(pk);
@@ -811,41 +824,6 @@ namespace PokeViewer.NET
         {
             using RaidCodeEntry WideForm = new();
             WideForm.ShowDialog();
-        }
-
-        public async Task<ulong> GetPointerAddress(string pointer, CancellationToken token, bool heaprealtive = false) //Code from LiveHex
-        {
-            var ptr = pointer;
-            if (string.IsNullOrWhiteSpace(ptr) || ptr.IndexOfAny(new char[] { '-', '/', '*' }) != -1)
-                return 0;
-            while (ptr.Contains("]]"))
-                ptr = ptr.Replace("]]", "]+0]");
-            uint finadd = 0;
-            if (!ptr.EndsWith("]"))
-            {
-                finadd = Util.GetHexValue(ptr.Split('+').Last());
-                ptr = ptr[..ptr.LastIndexOf('+')];
-            }
-            var jumps = ptr.Replace("main", "").Replace("[", "").Replace("]", "").Split(new[] { "+" }, StringSplitOptions.RemoveEmptyEntries);
-            if (jumps.Length == 0)
-                return 0;
-
-            var initaddress = Util.GetHexValue(jumps[0].Trim());
-            ulong address = BitConverter.ToUInt64(await SwitchConnection.ReadBytesMainAsync(initaddress, 0x8, token).ConfigureAwait(false), 0);
-            foreach (var j in jumps)
-            {
-                var val = Util.GetHexValue(j.Trim());
-                if (val == initaddress)
-                    continue;
-                address = BitConverter.ToUInt64(await SwitchConnection.ReadBytesAbsoluteAsync(address + val, 0x8, token).ConfigureAwait(false), 0);
-            }
-            address += finadd;
-            if (heaprealtive)
-            {
-                ulong heap = await SwitchConnection.GetHeapBaseAsync(token);
-                address -= heap;
-            }
-            return address;
-        }
+        }        
     }
 }
