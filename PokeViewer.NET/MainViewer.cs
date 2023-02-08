@@ -181,12 +181,12 @@ namespace PokeViewer.NET
             bool isValid = false;
             switch (GameType)
             {
-                case (int)GameSelected.Scarlet or (int)GameSelected.Violet: isValid = (PersonalTable.SV[pk.Species]).IsPresentInGame; break;
-                case (int)GameSelected.SW or (int)GameSelected.SH: isValid = (PersonalTable.SWSH[pk.Species]).IsPresentInGame; break;
-                case (int)GameSelected.BD or (int)GameSelected.SP: isValid = (PersonalTable.BDSP[pk.Species]).IsPresentInGame; break;
+                case (int)GameSelected.Scarlet or (int)GameSelected.Violet: isValid = PersonalTable.SV.IsPresentInGame(pk.Species, pk.Form); break;
+                case (int)GameSelected.SW or (int)GameSelected.SH: isValid = PersonalTable.SWSH.IsPresentInGame(pk.Species, pk.Form); break;
+                case (int)GameSelected.BD or (int)GameSelected.SP: isValid = PersonalTable.BDSP.IsPresentInGame(pk.Species, pk.Form); break;
                 case (int)GameSelected.LA:
                     {
-                        isValid = (PersonalTable.LA[pk.Species]).IsPresentInGame;
+                        isValid = PersonalTable.LA.IsPresentInGame(pk.Species, pk.Form);
                         if (!isValid)
                         {
                             if ((Species)pk.Species is Species.Decidueye or Species.Typhlosion or Species.Samurott or Species.Qwilfish or Species.Lilligant or Species.Sliggoo or Species.Goodra

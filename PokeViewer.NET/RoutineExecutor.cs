@@ -54,7 +54,7 @@ namespace PokeViewer.NET
             if (pkm.Form != 0)
                 pkmform = $"-{pkm.Form}";
 
-            if ((Species)pkm.Species > Species.Enamorus || (Species)pkm.Species == Species.Wooper && pkm.Form != 0 || (Species)pkm.Species == Species.Tauros && pkm.Form != 0)
+            if ((Species)pkm.Species >= Species.Sprigatito || (Species)pkm.Species == Species.Wooper && pkm.Form != 0 || (Species)pkm.Species == Species.Tauros && pkm.Form != 0)
             {
                 if (pkm.IsShiny)
                     newbase = $"https://raw.githubusercontent.com/zyro670/PokeTextures/main/Placeholder_Sprites/scaled_up_sprites/Shiny/" + $"{pkm.Species}{pkmform}" + ".png";
@@ -67,6 +67,15 @@ namespace PokeViewer.NET
                 if ((Species)pkm.Species >= Species.GreatTusk && (Species)pkm.Species <= Species.IronThorns && pkm.IsShiny || (Species)pkm.Species is Species.RoaringMoon or Species.IronValiant && pkm.IsShiny)
                     newbase = $"https://www.serebii.net/Shiny/SV/new/" + $"{pkm.Species}" + ".png";
 
+                return newbase;
+            }
+
+            if ((Species)pkm.Species == Species.Enamorus)
+            {
+                if (!pkm.IsShiny)
+                    newbase = "https://raw.githubusercontent.com/zyro670/HomeImages/master/128x128/poke_capture_0905_000_fd_n_00000000_f_n.png";
+                else
+                    newbase = "https://raw.githubusercontent.com/zyro670/HomeImages/master/128x128/poke_capture_0905_000_fd_n_00000000_f_r.png";
                 return newbase;
             }
 
