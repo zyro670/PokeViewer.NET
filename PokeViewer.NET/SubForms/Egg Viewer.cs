@@ -92,8 +92,8 @@ namespace PokeViewer.NET.SubForms
                     Application.Exit();
                 }
             }
-            await SwitchConnection.SendAsync(SwitchCommand.DetachController(true), CancellationToken.None).ConfigureAwait(false);
-            SwitchConnection.Disconnect();
+            if (FetchButton.Enabled == false)
+                this.PerformSafely(EnableOptions);
         }
 
         private async Task WaitForEggs(CancellationToken token)
@@ -165,28 +165,67 @@ namespace PokeViewer.NET.SubForms
                             ShinyFoundLabel.Text = $"Shinies Found: {shinycount}";
                         }
 
+                        // Found Shiny
                         if (pk.IsShiny && (Species)pk.Species != Species.None && StopOnShiny.Checked)
                         {
+                            // Male = 0, Female = 1, Genderless = 2
+                            // found Shiny but it is not selected gender
+                            var genderText = pk.Gender == 0 ? "Male" : pk.Gender == 1 ? "Female" : "Genderless";
+                            if (genderDropdown.Text != "Any" && !genderDropdown.Text.Equals(genderText))
+                                break;
+
+                            // found shiny but it is not rare form
                             if ((Species)pk.Species is Species.Dunsparce or Species.Tandemaus && pk.EncryptionConstant % 100 != 0 && CheckBoxOf3.Checked)
                                 break;
 
+                            // Found Family of 3 or 3 Segment 
                             if ((Species)pk.Species is Species.Dunsparce or Species.Tandemaus && pk.EncryptionConstant % 100 == 0 && CheckBoxOf3.Checked)
                             {
                                 await Click(HOME, 0_500, token).ConfigureAwait(false);
                                 SendNotifications(output, sprite);
-                                EnableOptions();
-                                WindowState = _WindowState;
-                                Activate();
+                                //WindowState = _WindowState;
+                                //Activate();
                                 MessageBox.Show("Rare Shiny Found!");
                                 return;
                             }
 
+                            // Found regular shiny
                             await Click(HOME, 0_500, token).ConfigureAwait(false);
                             SendNotifications(output, sprite);
-                            EnableOptions();
-                            WindowState = _WindowState;
-                            Activate();
+                            //WindowState = _WindowState;
+                            //Activate();
                             MessageBox.Show("Match found!");
+                            return;
+                        }
+
+                        var ivSpreadMatch = false;
+                        // HP
+                        if (HPIVCheckbox.Checked)
+                            ivSpreadMatch = pk.IV_HP == HPIVNumber.Value;
+                        // Atk
+                        if (AtkIVCheckbox.Checked)
+                            ivSpreadMatch = pk.IV_ATK == AtkIVNumber.Value;
+                        // Def
+                        if (DefIVCheckbox.Checked)
+                            ivSpreadMatch = pk.IV_DEF == DefIVNumber.Value;
+                        // SpA
+                        if (SpAIVCheckbox.Checked)
+                            ivSpreadMatch = pk.IV_SPA == SpAIVNumber.Value;
+                        // SpD
+                        if (SpDIVCheckbox.Checked)
+                            ivSpreadMatch = pk.IV_SPD == SpDIVNumber.Value;
+                        // Spe
+                        if (SpeIVCheckbox.Checked)
+                            ivSpreadMatch = pk.IV_SPE == SpeIVNumber.Value;
+
+                        if (ivSpreadMatch)
+                        {
+                            // Found matching IV spread
+                            await Click(HOME, 0_500, token).ConfigureAwait(false);
+                            SendNotifications(output, sprite);
+                            //WindowState = _WindowState;
+                            //Activate();
+                            MessageBox.Show("IV Match found!");
                             return;
                         }
 
@@ -195,7 +234,7 @@ namespace PokeViewer.NET.SubForms
                     if (ctr == 10)
                     {
                         this.PerformSafely(() => BasketCount.Text = $"Resetting..");
-                        if(PingOnReset.Checked)
+                        if (PingOnReset.Checked)
                             SendStatusPing(output, sprite);
                         await ReopenPicnic(token).ConfigureAwait(false);
                         ctr = 0;
@@ -206,6 +245,7 @@ namespace PokeViewer.NET.SubForms
                 await MakeSandwich(token).ConfigureAwait(false);
             }
         }
+
         private async Task<PK9> ReadPokemonSV(uint offset, int size, CancellationToken token)
         {
             var data = await SwitchConnection.ReadBytesMainAsync(offset, size, token).ConfigureAwait(false);

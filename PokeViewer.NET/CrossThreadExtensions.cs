@@ -37,5 +37,17 @@
                 action(p1, p2);
             }
         }
+
+        public static T GetSafely<T>(this Control target, Func<T> action)
+        {
+            if (target.InvokeRequired)
+            {
+                return target.Invoke(action);
+            }
+            else
+            {
+                return action();
+            }
+        }
     }
 }
