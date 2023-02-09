@@ -251,12 +251,12 @@ namespace PokeViewer.NET.SubForms
             }
             for (int i = 0; i < 10; i++)
                 await Click(A, 0_500, token).ConfigureAwait(false);
-            await Click(X, 1_500, token).ConfigureAwait(false);
+            await Click(X, 3_000, token).ConfigureAwait(false);
             if (hasReset)
             {
-                await Click(DRIGHT, 0_250, token).ConfigureAwait(false);
-                await Click(DDOWN, 0_250, token).ConfigureAwait(false);
-                await Click(DDOWN, 0_250, token).ConfigureAwait(false);
+                await Click(DRIGHT, 0_500, token).ConfigureAwait(false);
+                await Click(DDOWN, 0_500, token).ConfigureAwait(false);
+                await Click(DDOWN, 0_500, token).ConfigureAwait(false);
             }
             await Click(A, 7_000, token).ConfigureAwait(false);
         }
@@ -273,7 +273,7 @@ namespace PokeViewer.NET.SubForms
             _logger.Debug($"Open table menu");
             await Click(A, 1_500, token).ConfigureAwait(false);
             _logger.Debug($"Select make sandwich");
-            await Click(A, 4_000, token).ConfigureAwait(false);
+            await Click(A, 5_000, token).ConfigureAwait(false);
             _logger.Debug($"Go Free Mode");
             await Click(X, 1_500, token).ConfigureAwait(false);
 
