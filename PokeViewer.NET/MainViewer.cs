@@ -234,7 +234,7 @@ namespace PokeViewer.NET
                 case 1: gender = " (F)"; break;
                 case 2: break;
             }
-            string output = $"{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{isAlpha}{(Species)pk.Species}{form}{gender}{pid}{ec}{Environment.NewLine}Nature: {(Nature)pk.Nature}{Environment.NewLine}Ability: {(Ability)pk.Ability}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}{msg}";
+            string output = $"{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{isAlpha}{(Species)pk.Species}{form}{gender}{ec}{pid}{Environment.NewLine}Nature: {(Nature)pk.Nature}{Environment.NewLine}Ability: {(Ability)pk.Ability}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}{msg}";
             LiveStats.Text = $"{(Move)pk.Move1} - {pk.Move1_PP}PP{Environment.NewLine}{(Move)pk.Move2} - {pk.Move2_PP}PP{Environment.NewLine}{(Move)pk.Move3} - {pk.Move3_PP}PP{Environment.NewLine}{(Move)pk.Move4} - {pk.Move4_PP}PP";
             ViewBox.Text = output;
             sprite = PokeImg(pk, isGmax);

@@ -26,7 +26,7 @@ namespace PokeViewer.NET.WideViewForms
             List<PA8> viewing = new();
             var pk = new PA8();
             int size = 0x168;
-            int value = 0;
+            uint value = 0x00;
             if (SwitchConnection.Connected)
             {
                 for (int i = 0; i < 5; i++)
@@ -39,7 +39,7 @@ namespace PokeViewer.NET.WideViewForms
                         case 3: value = 0x1B0; break;
                         case 4: value = 0x210; break;
                     }
-                    var ptr = new long[] { 0x42A6F00, 0x95, value, 0x10, 0x58 };
+                    var ptr = new long[] { 0x42A6F00, 0x98, value, 0x10, 0x58, 0x00 };
                     var ofs = await SwitchConnection.PointerAll(ptr, CancellationToken.None).ConfigureAwait(false);
                     pk = await ReadInBattlePokemonLA(ofs, size).ConfigureAwait(false);
                     LASanityCheck(pk, i);
@@ -55,7 +55,7 @@ namespace PokeViewer.NET.WideViewForms
             TextBox[] outputBox = { textBox1, textBox2, textBox3, textBox4, textBox5 };
             PictureBox[] alphaboxes = { pictureBox6, pictureBox7, pictureBox8, pictureBox9, pictureBox10 };
             string? sprite = string.Empty;
-            bool isValid = (PersonalTable.LA[pk.Species]).IsPresentInGame;
+            bool isValid = PersonalTable.LA.IsPresentInGame(pk.Species, pk.Form);
             if (!isValid || pk.Species < 0 || pk.Species > (int)Species.MAX_COUNT)
             {
                 outputBox[count].Text = "No Pokémon present.";
