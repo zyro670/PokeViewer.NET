@@ -383,6 +383,7 @@
             this.Controls.Add(this.Typing2);
             this.Controls.Add(this.Typing1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "MainViewer";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;

@@ -25,8 +25,8 @@ namespace PokeViewer.NET.WideViewForms
             var species = (Species)BitConverter.ToUInt16(await SwitchConnection.ReadBytesAsync(LastSpawnOffset, 2, token).ConfigureAwait(false), 0);
             var flag = BitConverter.ToUInt16(await SwitchConnection.ReadBytesAsync(LastSpawnSprite, 2, token).ConfigureAwait(false), 0);
             flagbox.Text = $"{flag}";
-            pk.Species = (int)species;            
-            var sprite = PokeImg(pk, pk.CanGigantamax, false);
+            pk.Species = (ushort)species;            
+            var sprite = PokeImg(pk, pk.CanGigantamax);
             pictureBox1.Load(sprite);
             /*if (pk.Species == 0)
             {
@@ -48,12 +48,12 @@ namespace PokeViewer.NET.WideViewForms
                 flagbox.Text = $"{flag}";
                 if (species != 0 && species < Species.MAX_COUNT)
                 {
-                    pk.Species = (int)species;
+                    pk.Species = (ushort)species;
                     if (flag <= 1)
                         CommonEdits.SetIsShiny(pk, false);
                     if (flag > 1 && flag < 4)
                         CommonEdits.SetIsShiny(pk, true);
-                    sprite = PokeImg(pk, false, false);
+                    sprite = PokeImg(pk, false);
                     pictureBox1.Load(sprite);
                 }
                 /*if (!await IsOnOverworldTitle(token).ConfigureAwait(false))

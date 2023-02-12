@@ -6,6 +6,7 @@ using SysBot.Base;
 using System.Net.Sockets;
 using System.Text;
 using static PokeViewer.NET.RoutineExecutor;
+using static PokeViewer.NET.ViewerUtil;
 
 namespace PokeViewer.NET
 {
@@ -13,24 +14,12 @@ namespace PokeViewer.NET
     {
         private static SwitchConnectionConfig Config = new() { Protocol = SwitchProtocol.WiFi, IP = Properties.Settings.Default.SwitchIP, Port = 6000 };
         public SwitchSocketAsync SwitchConnection = new(Config);
-        public static RoutineExecutor Executor = new();
 
         public MainViewer()
         {
             InitializeComponent();
         }
 
-        delegate void ChangeButtonStateCallback(Button sender, bool State);
-        delegate void TextboxSetTextCallback(TextBox sender, string Text);
-        private const string VioletID = "01008F6008C5E000";
-        private const string ScarletID = "0100A3D008C5C000";
-        private const string LegendsArceusID = "01001F5010DFA000";
-        private const string ShiningPearlID = "010018E011D92000";
-        private const string BrilliantDiamondID = "0100000011D90000";
-        private const string SwordID = "0100ABF008968000";
-        private const string ShieldID = "01008DB008C2C000";
-        private const string EeveeID = "0100187003A36000";
-        private const string PikachuID = "010003F003A34000";
         private int GameType;
         private string RefreshTime = Properties.Settings.Default.RefreshRate;
 
@@ -700,12 +689,6 @@ namespace PokeViewer.NET
             ViewBox.Text = "Click View!";
             var bg = "https://raw.githubusercontent.com/kwsch/PKHeX/master/PKHeX.Drawing.PokeSprite/Resources/img/Pokemon%20Sprite%20Overlays/starter.png";
             PokeSprite.ImageLocation = bg;
-        }
-
-        public async Task<string> GetTitleID(CancellationToken token)
-        {
-            var bytes = await SwitchConnection.ReadRaw(SwitchCommand.GetTitleID(), 17, token).ConfigureAwait(false);
-            return Encoding.ASCII.GetString(bytes).Trim();
         }
 
         private void CaptureWindow_Click(object sender, EventArgs e)
