@@ -186,6 +186,11 @@ namespace PokeViewer.NET
                     bool hasMark = HasMark((PK8)pk, out RibbonIndex mark);
                     msg = hasMark ? $"{Environment.NewLine}Mark: {mark.ToString().Replace("Mark", "")}" : "";
                 }
+                if (pk is PK9)
+                {
+                    bool hasMark = HasMark((PK9)pk, out RibbonIndex mark);
+                    msg = hasMark ? $"{Environment.NewLine}Mark: {mark.ToString().Replace("Mark", "")}" : "";
+                }
                 string alpha = string.Empty;
                 if (pk is PA8)
                 {
