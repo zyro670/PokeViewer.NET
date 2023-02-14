@@ -12,13 +12,12 @@ namespace PokeViewer.NET.SubForms
 {
     public partial class Egg_Viewer : Form
     {
-        private readonly static SwitchConnectionConfig Config = new() { Protocol = SwitchProtocol.WiFi, IP = Properties.Settings.Default.SwitchIP, Port = 6000 };
-        public SwitchSocketAsync SwitchConnection = new(Config);
+        private readonly SwitchSocketAsync SwitchConnection;
         private readonly FormWindowState _WindowState;
-        public Egg_Viewer()
+        public Egg_Viewer(SwitchSocketAsync switchConnection)
         {
             InitializeComponent();
-            SwitchConnection.Connect();
+            SwitchConnection = switchConnection;
         }
         private int eggcount = 0;
         private int sandwichcount = 0;

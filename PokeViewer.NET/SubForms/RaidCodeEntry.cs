@@ -10,12 +10,11 @@ namespace PokeViewer.NET.SubForms
 {
     public partial class RaidCodeEntry : Form
     {
-        private readonly static SwitchConnectionConfig Config = new() { Protocol = SwitchProtocol.WiFi, IP = Properties.Settings.Default.SwitchIP, Port = 6000 };
-        public SwitchSocketAsync SwitchConnection = new(Config);
-        public RaidCodeEntry()
+        private readonly SwitchSocketAsync SwitchConnection;
+        public RaidCodeEntry(SwitchSocketAsync switchConnection)
         {
             InitializeComponent();
-            SwitchConnection.Connect();
+            SwitchConnection = switchConnection;
         }
 
         private async void button1_Click(object sender, EventArgs e)

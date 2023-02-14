@@ -1,5 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-using PKHeX.Core;
+﻿using PKHeX.Core;
 using SysBot.Base;
 using static PokeViewer.NET.RoutineExecutor;
 
@@ -7,13 +6,12 @@ namespace PokeViewer.NET.WideViewForms
 {
     public partial class WideViewerLA : Form
     {
-        private readonly static SwitchConnectionConfig Config = new() { Protocol = SwitchProtocol.WiFi, IP = Properties.Settings.Default.SwitchIP, Port = 6000 };
-        public SwitchSocketAsync SwitchConnection = new(Config);
+        private readonly SwitchSocketAsync SwitchConnection;
         public static RoutineExecutor Executor = new();
-        public WideViewerLA()
+        public WideViewerLA(SwitchSocketAsync switchConnection)
         {
             InitializeComponent();
-            SwitchConnection.Connect();
+            SwitchConnection = switchConnection;
         }
 
         private void button1_Click(object sender, EventArgs e)

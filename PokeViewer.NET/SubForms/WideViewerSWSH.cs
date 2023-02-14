@@ -1,5 +1,4 @@
 ﻿using PKHeX.Core;
-using PokeViewer.NET.Properties;
 using SysBot.Base;
 using static PokeViewer.NET.RoutineExecutor;
 using static SysBot.Base.SwitchButton;
@@ -8,18 +7,17 @@ namespace PokeViewer.NET.WideViewForms
 {
     public partial class WideViewerSWSH : Form
     {
-        private readonly static SwitchConnectionConfig Config = new() { Protocol = SwitchProtocol.WiFi, IP = Settings.Default.SwitchIP, Port = 6000 };
-        public SwitchSocketAsync SwitchConnection = new(Config);
+        private readonly SwitchSocketAsync SwitchConnection;
         public int GameType;
-        public WideViewerSWSH()
+        public WideViewerSWSH(SwitchSocketAsync switchConnection)
         {
             InitializeComponent();
-            SwitchConnection.Connect();            
+            SwitchConnection = switchConnection;
         }
 
-        private uint StartingOffset = 0x4505B880;
-        private uint KCoordIncrement = 192;
-        private uint FishingOffset = 0x4505B640; // Not in any wild area
+        private readonly uint StartingOffset = 0x4505B880;
+        private readonly uint KCoordIncrement = 192;
+        private readonly uint FishingOffset = 0x4505B640; // Not in any wild area
         private uint DefaultOffset;
 
         public new async Task Click(SwitchButton b, int delay, CancellationToken token)

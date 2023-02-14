@@ -12,7 +12,7 @@ namespace PokeViewer.NET
 {
     public partial class MainViewer : Form
     {
-        private static SwitchConnectionConfig Config = new() { Protocol = SwitchProtocol.WiFi, IP = Properties.Settings.Default.SwitchIP, Port = 6000 };
+        private static readonly SwitchConnectionConfig Config = new() { Protocol = SwitchProtocol.WiFi, IP = Properties.Settings.Default.SwitchIP, Port = 6000 };
         public SwitchSocketAsync SwitchConnection = new(Config);
 
         public MainViewer()
@@ -581,7 +581,7 @@ namespace PokeViewer.NET
             {
                 case ScarletID:
                     {
-                        url = url + "SC.png";
+                        url += "SC.png";
                         type = (int)GameSelected.Scarlet;
                         WideView.Visible = false;
                         WideView.Text = "Raid View";
@@ -598,7 +598,7 @@ namespace PokeViewer.NET
                     }
                 case VioletID:
                     {
-                        url = url + "VI.png";
+                        url += "VI.png";
                         type = (int)GameSelected.Violet;
                         WideView.Visible = false;
                         WideView.Text = "Raid View";
@@ -615,7 +615,7 @@ namespace PokeViewer.NET
                     }
                 case LegendsArceusID:
                     {
-                        url = url + "LA.png";
+                        url += "LA.png";
                         type = (int)GameSelected.LA;
                         TrainerView.Visible = false;
                         DayCareView.Visible = false;
@@ -625,7 +625,7 @@ namespace PokeViewer.NET
                     }
                 case ShiningPearlID:
                     {
-                        url = url + "SP.png";
+                        url += "SP.png";
                         type = (int)GameSelected.SP;
                         TrainerView.Visible = false;
                         OverworldView.Visible = false;
@@ -635,7 +635,7 @@ namespace PokeViewer.NET
                     }
                 case BrilliantDiamondID:
                     {
-                        url = url + "BD.png";
+                        url += "BD.png";
                         type = (int)GameSelected.BD;
                         TrainerView.Visible = false;
                         OverworldView.Visible = false;
@@ -645,7 +645,7 @@ namespace PokeViewer.NET
                     }
                 case SwordID:
                     {
-                        url = url + "SW.png";
+                        url += "SW.png";
                         type = (int)GameSelected.SW;
                         UniqueBox.Visible = true; UniqueBox2.Visible = true;
                         UniqueBox.Text = "Raid"; UniqueBox2.Text = "Curry";
@@ -656,7 +656,7 @@ namespace PokeViewer.NET
                     }
                 case ShieldID:
                     {
-                        url = url + "SH.png";
+                        url += "SH.png";
                         type = (int)GameSelected.SH;
                         UniqueBox.Visible = true; UniqueBox2.Visible = true;
                         UniqueBox.Text = "Raid"; UniqueBox2.Text = "Curry";
@@ -666,7 +666,7 @@ namespace PokeViewer.NET
                     }
                 case EeveeID:
                     {
-                        url = url + "LGE.png"; type = (int)GameSelected.LGE;
+                        url += "LGE.png"; type = (int)GameSelected.LGE;
                         WideView.Enabled = false;
                         DayCareView.Visible = false;
                         OverworldView.Visible = false;
@@ -675,7 +675,7 @@ namespace PokeViewer.NET
                     }
                 case PikachuID:
                     {
-                        url = url + "LGP.png"; type = (int)GameSelected.LGP;
+                        url += "LGP.png"; type = (int)GameSelected.LGP;
                         WideView.Enabled = false;
                         DayCareView.Visible = false;
                         OverworldView.Visible = false;
@@ -721,13 +721,13 @@ namespace PokeViewer.NET
                     }
                 case (int)GameSelected.LA:
                     {
-                        using WideViewerLA WideForm = new();
+                        using WideViewerLA WideForm = new(SwitchConnection);
                         WideForm.ShowDialog();
                         break;
                     }
                 case (int)GameSelected.BD or (int)GameSelected.SP:
                     {
-                        using WideViewerBDSP WideForm = new();
+                        using WideViewerBDSP WideForm = new(SwitchConnection);
                         WideForm.ShowDialog();
                         break;
                     }
@@ -735,7 +735,7 @@ namespace PokeViewer.NET
                     {
                         WideView.Text = "Preparing...";
                         WideView.Enabled = false;
-                        using WideViewerSWSH WideForm = new();
+                        using WideViewerSWSH WideForm = new(SwitchConnection);
                         WideForm.ShowDialog();
                         WideView.Text = "WideView";
                         WideView.Enabled = true;
@@ -746,19 +746,19 @@ namespace PokeViewer.NET
 
         private void BoxView_Click(object sender, EventArgs e)
         {
-            using BoxViewerMode BoxForm = new(GameType);
+            using BoxViewerMode BoxForm = new(GameType, SwitchConnection);
             BoxForm.ShowDialog();
         }
 
         private void BattleView_Click(object sender, EventArgs e)
         {
-            using TrainerViewer Form = new(GameType);
+            using TrainerViewer Form = new(GameType, SwitchConnection);
             Form.ShowDialog();
         }
 
         private void OverworldView_Click(object sender, EventArgs e)
         {
-            using OverworldViewSV WideForm = new();
+            using OverworldViewSV WideForm = new(SwitchConnection);
             WideForm.ShowDialog();
         }
 
@@ -776,18 +776,20 @@ namespace PokeViewer.NET
             FileStream stream = new(fn, FileMode.Open);
             var img = Image.FromStream(stream);
             Clipboard.SetImage(img);
-            using (Form form = new Form())
+            using (Form form = new())
             {
                 Bitmap vimg = (Bitmap)img;
 
                 form.StartPosition = FormStartPosition.CenterScreen;
 
                 Bitmap original = vimg;
-                Bitmap resized = new Bitmap(original, new Size(original.Width / 2, original.Height / 2));
+                Bitmap resized = new(original, new Size(original.Width / 2, original.Height / 2));
 
-                PictureBox pb = new PictureBox();
-                pb.Dock = DockStyle.Fill;
-                pb.Image = resized;
+                PictureBox pb = new()
+                {
+                    Dock = DockStyle.Fill,
+                    Image = resized
+                };
                 form.Size = resized.Size;
 
                 form.Controls.Add(pb);
@@ -799,13 +801,13 @@ namespace PokeViewer.NET
 
         private void DayCareView_Click(object sender, EventArgs e)
         {
-            using Egg_Viewer WideForm = new();
+            using Egg_Viewer WideForm = new(SwitchConnection);
             WideForm.ShowDialog();
         }
 
         private void Raids_Click(object sender, EventArgs e)
         {
-            using RaidCodeEntry WideForm = new();
+            using RaidCodeEntry WideForm = new(SwitchConnection);
             WideForm.ShowDialog();
         }        
     }

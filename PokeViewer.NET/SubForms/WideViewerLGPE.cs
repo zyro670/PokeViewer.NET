@@ -7,13 +7,12 @@ namespace PokeViewer.NET.WideViewForms
 {
     public partial class WideViewerLGPE : Form
     {
-        private readonly static SwitchConnectionConfig Config = new() { Protocol = SwitchProtocol.WiFi, IP = Settings.Default.SwitchIP, Port = 6000 };
-        public SwitchSocketAsync SwitchConnection = new(Config);
+        private readonly SwitchSocketAsync SwitchConnection;
 
-        public WideViewerLGPE()
+        public WideViewerLGPE(SwitchSocketAsync switchConnection)
         {
             InitializeComponent();
-            SwitchConnection.Connect();
+            SwitchConnection = switchConnection;
             SwitchConnection.SendAsync(SwitchCommand.Configure(SwitchConfigureParameter.controllerType, 1, true), CancellationToken.None);
         }
 

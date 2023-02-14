@@ -1,18 +1,16 @@
 ﻿using PKHeX.Core;
 using SysBot.Base;
-using PokeViewer.NET.Properties;
 using static PokeViewer.NET.RoutineExecutor;
 
 namespace PokeViewer.NET.WideViewForms
 {
     public partial class WideViewerBDSP : Form
     {
-        private readonly static SwitchConnectionConfig Config = new() { Protocol = SwitchProtocol.WiFi, IP = Settings.Default.SwitchIP, Port = 6000 };
-        public SwitchSocketAsync SwitchConnection = new(Config);
-        public WideViewerBDSP()
+        private readonly SwitchSocketAsync SwitchConnection;
+        public WideViewerBDSP(SwitchSocketAsync switchConnection)
         {
             InitializeComponent();
-            SwitchConnection.Connect();
+            SwitchConnection = switchConnection;
             Window_Loaded();
         }
 

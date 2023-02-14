@@ -1,21 +1,18 @@
 ﻿using PKHeX.Core;
-using PKHeX.Drawing.Misc;
 using SysBot.Base;
-using static SysBot.Base.SwitchButton;
 using static PokeViewer.NET.RoutineExecutor;
 
 namespace PokeViewer.NET.SubForms
 {
     public partial class OverworldViewSV : Form
     {
-        private readonly static SwitchConnectionConfig Config = new() { Protocol = SwitchProtocol.WiFi, IP = Properties.Settings.Default.SwitchIP, Port = 6000 };
-        public SwitchSocketAsync SwitchConnection = new(Config);
         public static RoutineExecutor Executor = new();
+        private readonly SwitchSocketAsync SwitchConnection;
 
-        public OverworldViewSV()
+        public OverworldViewSV(SwitchSocketAsync switchConnection)
         {
             InitializeComponent();
-            SwitchConnection.Connect();
+            SwitchConnection = switchConnection;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -31,28 +28,20 @@ namespace PokeViewer.NET.SubForms
             string? url = string.Empty;
             string? sprite = string.Empty;
             string value = string.Empty;
-            //string ptr = "[[[main+4385F30]+80]+8]";
             button1.Text = "Scanning...";
-            //var ofs = new long[] { 0x43A7890, 0x38, 0x30, 0x08, 0x150 };
-            //var block = await SwitchConnection.PointerAll(ofs, token).ConfigureAwait(false);
-            //var info = await SwitchConnection.ReadBytesAbsoluteAsync(block, 0x2490, token).ConfigureAwait(false);
-           // var ads = await GetPointerAddress($"[{ptr}+{0x4320 + 8:X}]", token);
-          //  var val = await SwitchConnection.ReadBytesAbsoluteAsync(ads, 0x2490, token);
-
             for (int i = 0; i < 8; i++)
-            {
-               // var adata = val.Slice(0 + (i * 0x150), 344);                                
+            {                              
                 switch (i)
                 {
-                    case 0: value = "[[[[[[[main+43A7890]+08]+08]+30]+08]+A0]+C0]"; break;
-                    case 1: value = "[[[[[[[main+43A7890]+08]+08]+30]+08]+A0]+30]"; break;
-                    case 2: value = "[[[[[[[main+43A7890]+08]+08]+30]+08]+10]+30]"; break;
-                    case 3: value = "[[[[[[[main+43A7890]+08]+30]+30]+08]+10]+30]"; break;
-                    case 4: value = "[[[[[[[main+43A7890]+08]+10]+30]+08]+10]+30]"; break;
-                    case 5: value = "[[[[[[[main+43A7890]+08]+50]+30]+118]+A0]+30]"; break;
-                    case 6: value = "[[[[[[[main+43A7890]+08]+30]]+30]+08]+30]"; break;
-                    case 7: value = "[[[[[[[main+43A7890]+08]+50]+30]+08]+10]+30]"; break;
-                    case 8: value = "[[[[[[[main+43A7890]+08]+28]]+30]+08]+30]"; break;
+                    case 0: value = "[[[[[[main+437D188]+28]+20]+30]+08]+30]"; break;
+                    case 1: value = "[[[[[[main+437D188]+28]+50]+30]+08]+30]"; break;
+                    case 2: value = "[[[[[[main+437D188]+28]+60]+30]+08]+30]"; break;
+                    case 3: value = "[[[[[[main+437D188]+28]+70]+30]+08]+30]"; break;
+                    case 4: value = "[[[[[[main+437D188]+28]+78]+30]+08]+30]"; break;
+                    case 5: value = "[[[[[[main+437D188]+28]+80]+30]+08]+30]"; break;
+                    case 6: value = "[[[[[[main+437D188]+28]+90]+30]+08]+30]"; break;
+                    case 7: value = "[[[[[[main+437D188]+28]+98]+30]+08]+30]"; break;
+                    case 8: value = "[[[[[[main+437D188]+28]+18]+30]+08]+30]"; break;
                     case 9: break;
                 }
                 var ofs = await GetPointerAddress(value, token).ConfigureAwait(false);
@@ -60,18 +49,16 @@ namespace PokeViewer.NET.SubForms
 
                 var pk = new PK9(data);
                 //var pk = await ReadOverworldPokemonSV(ofs, size).ConfigureAwait(false);
-                //bool isValid = PersonalTable.SV[pk.Species].IsPresentInGame;
-                if (pk == null || pk.Species < 0 || pk.Species > (int)Species.MAX_COUNT)
+                bool isValid = PersonalTable.SV.IsPresentInGame(pk.Species, pk.Form);
+                if (!isValid || pk == null || pk.Species < 0 || pk.Species > (int)Species.MAX_COUNT)
                 {
                     outputBox[i].Text = "No Pokémon present.";
                     sprite = "https://raw.githubusercontent.com/kwsch/PKHeX/master/PKHeX.Drawing.PokeSprite/Resources/img/Pokemon%20Sprite%20Overlays/starter.png";
                     boxes[i].Load(sprite);
                     button1.Text = "Done";
-                    //return;
+                    return;
                 }
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 string pid = $"{Environment.NewLine}PID: {pk.PID:X8}";
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
                 string ec = $"{Environment.NewLine}EC: {pk.EncryptionConstant:X8}";
                 var form = FormOutput(pk.Species, pk.Form, out _);
                 string gender = string.Empty;

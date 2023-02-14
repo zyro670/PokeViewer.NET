@@ -1,5 +1,4 @@
 ﻿using PKHeX.Core;
-using PokeViewer.NET.Properties;
 using PokeViewer.NET.WideViewForms;
 using SysBot.Base;
 using static PokeViewer.NET.RoutineExecutor;
@@ -10,21 +9,20 @@ namespace PokeViewer.NET
     {
         public int GameType;
         public List<string> CurrentSlotStats = new();
-        private readonly static SwitchConnectionConfig Config = new() { Protocol = SwitchProtocol.WiFi, IP = Settings.Default.SwitchIP, Port = 6000 };
-        public SwitchSocketAsync SwitchConnection = new(Config);
-        public ToolTip tt = new ToolTip();
+        public ToolTip tt = new();
         public bool ReadInProgress;
-        public BoxViewerMode(int gametype)
+        private readonly SwitchSocketAsync SwitchConnection;
+        public BoxViewerMode(int gametype, SwitchSocketAsync switchConnection)
         {
             InitializeComponent();
-            SwitchConnection.Connect();
+            SwitchConnection = switchConnection;
             GameType = gametype;
             this.Text = VersionString(GameType);
             label2.Text = $"{(GameSelected)GameType}";
             button1.Text = "View";
         }
 
-        private string VersionString(int type)
+        private static string VersionString(int type)
         {
             string vers = string.Empty;
             switch (type)
@@ -90,11 +88,11 @@ namespace PokeViewer.NET
 
         private async Task ReadBoxes(uint offset, int size, int boxnumber, CancellationToken token)
         {
-            PictureBox[] boxes = 
-            { 
-                pictureBox1, pictureBox2, pictureBox3, pictureBox4, pictureBox5, pictureBox6, pictureBox7, pictureBox8, pictureBox9, pictureBox10, 
-                pictureBox11, pictureBox12, pictureBox13, pictureBox14, pictureBox15, pictureBox16, pictureBox17, pictureBox18, pictureBox19, pictureBox20, 
-                pictureBox21, pictureBox22, pictureBox23, pictureBox24, pictureBox25, pictureBox26, pictureBox27, pictureBox28, pictureBox29, pictureBox30 
+            PictureBox[] boxes =
+            {
+                pictureBox1, pictureBox2, pictureBox3, pictureBox4, pictureBox5, pictureBox6, pictureBox7, pictureBox8, pictureBox9, pictureBox10,
+                pictureBox11, pictureBox12, pictureBox13, pictureBox14, pictureBox15, pictureBox16, pictureBox17, pictureBox18, pictureBox19, pictureBox20,
+                pictureBox21, pictureBox22, pictureBox23, pictureBox24, pictureBox25, pictureBox26, pictureBox27, pictureBox28, pictureBox29, pictureBox30
             };
             var box = boxnumber - 1;
             PKM pk = new PK9();
@@ -112,7 +110,7 @@ namespace PokeViewer.NET
                             var boxsize = 30 * slotsize;
                             var boxStart = b1s1 + (ulong)(box * boxsize);
                             var slotstart = boxStart + (ulong)(i * slotsize);
-                            
+
                             pk = await ReadBoxPokemonSV(slotstart, size, token).ConfigureAwait(false);
 
                             break;
@@ -137,13 +135,13 @@ namespace PokeViewer.NET
                             var b1s1 = new long[] { 0x4C64DC0, 0xB8, 0x10, 0xA0, boxvalue, sizeup, 0x20 };
                             var boxStart = await SwitchConnection.PointerAll(b1s1, token).ConfigureAwait(false);
                             _ = new PB8();
-                            pk = await ReadBoxPokemonBDSP(boxStart, size, token).ConfigureAwait(false);                            
+                            pk = await ReadBoxPokemonBDSP(boxStart, size, token).ConfigureAwait(false);
                             break;
                         }
                     case (int)GameSelected.SP:
                         {
                             var sizeup = GetBDSPSlotValue(i);
-                            var boxvalue = GetBDSPBoxValue(box);                            
+                            var boxvalue = GetBDSPBoxValue(box);
                             var b1s1 = new long[] { 0x4E7BE98, 0xB8, 0x10, 0xA0, boxvalue, sizeup, 0x20 };
                             var boxStart = await SwitchConnection.PointerAll(b1s1, token).ConfigureAwait(false);
                             _ = new PB8();
@@ -162,7 +160,7 @@ namespace PokeViewer.NET
                             pk = await ReadBoxPokemonLGPE((uint)GetSlotOffset(box, i), LGPESlotSize + LGPEGapSize, token).ConfigureAwait(false);
                             break;
                         }
-                }                
+                }
                 if (pk.Species is 0 or > (int)Species.MAX_COUNT)
                 {
                     boxes[i].Image = null;
@@ -216,6 +214,7 @@ namespace PokeViewer.NET
             }
             button1.Text = "View";
             button1.Enabled = true;
+
         }
 
         private readonly uint LGPEStart = 0x533675B0;
@@ -266,15 +265,16 @@ namespace PokeViewer.NET
             {
                 PictureBox? pbox = sender as PictureBox;
                 tt = new();
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-                if (pbox.Image == null)
+                if (pbox is not null)
                 {
-                    tt.SetToolTip(pbox, null);
-                    return;
+                    if (pbox.Image == null)
+                    {
+                        tt.SetToolTip(pbox, null);
+                        return;
+                    }
+                    var currentslot = int.Parse(pbox.Name.Replace("pictureBox", "")) - 1;
+                    tt.SetToolTip(pbox, CurrentSlotStats[currentslot]);
                 }
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-                var currentslot = int.Parse(pbox.Name.Replace("pictureBox", "")) - 1;
-                tt.SetToolTip(pbox, CurrentSlotStats[currentslot]);
             }
         }
 
@@ -405,7 +405,7 @@ namespace PokeViewer.NET
             ReadInProgress = false;
         }        
 
-        private uint GetBDSPSlotValue(int slot)
+        private static uint GetBDSPSlotValue(int slot)
         {
             switch (slot)
             {
@@ -444,7 +444,7 @@ namespace PokeViewer.NET
             return (uint)slot;
         }
 
-        private uint GetBDSPBoxValue(int slot)
+        private static uint GetBDSPBoxValue(int slot)
         {
             switch (slot)
             {

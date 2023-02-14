@@ -6,19 +6,19 @@ namespace PokeViewer.NET.WideViewForms
 {    
     public partial class TrainerViewer : Form
     {
-        private readonly static SwitchConnectionConfig Config = new() { Protocol = SwitchProtocol.WiFi, IP = Properties.Settings.Default.SwitchIP, Port = 6000 };
-        public SwitchSocketAsync SwitchConnection = new(Config);
+        private readonly SwitchSocketAsync SwitchConnection;
         public static RoutineExecutor Executor = new();
         public int GameType;
-        public TrainerViewer(int gameType)
+        public TrainerViewer(int gametype, SwitchSocketAsync switchConnection)
         {
             InitializeComponent();
-            GameType = gameType;
+            SwitchConnection = switchConnection;
+            GameType = gametype;
             this.Text = VersionString(GameType);
             SwitchConnection.Connect();
         }
 
-        private string VersionString(int type)
+        private static string VersionString(int type)
         {
             string vers = string.Empty;
             switch (type)
