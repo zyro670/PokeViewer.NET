@@ -106,5 +106,137 @@ namespace PokeViewer.NET.Properties {
                 this["UseWiFiProtocol"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool StopOnShiny {
+            get {
+                return ((bool)(this["StopOnShiny"]));
+            }
+            set {
+                this["StopOnShiny"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SegmentOrFamily {
+            get {
+                return ((bool)(this["SegmentOrFamily"]));
+            }
+            set {
+                this["SegmentOrFamily"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public int GenderFilter {
+            get {
+                return ((int)(this["GenderFilter"]));
+            }
+            set {
+                this["GenderFilter"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("31")]
+        public int HPFilter {
+            get {
+                return ((int)(this["HPFilter"]));
+            }
+            set {
+                this["HPFilter"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("31")]
+        public int AtkFilter {
+            get {
+                return ((int)(this["AtkFilter"]));
+            }
+            set {
+                this["AtkFilter"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("31")]
+        public int DefFilter {
+            get {
+                return ((int)(this["DefFilter"]));
+            }
+            set {
+                this["DefFilter"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("31")]
+        public int SpaFilter {
+            get {
+                return ((int)(this["SpaFilter"]));
+            }
+            set {
+                this["SpaFilter"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("31")]
+        public int SpdFilter {
+            get {
+                return ((int)(this["SpdFilter"]));
+            }
+            set {
+                this["SpdFilter"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("31")]
+        public int SpeFilter {
+            get {
+                return ((int)(this["SpeFilter"]));
+            }
+            set {
+                this["SpeFilter"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IgnoreIVFilter {
+            get {
+                return ((bool)(this["IgnoreIVFilter"]));
+            }
+            set {
+                this["IgnoreIVFilter"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int PresetIVS {
+            get {
+                return ((int)(this["PresetIVS"]));
+            }
+            set {
+                this["PresetIVS"] = value;
+            }
+        }
     }
 }

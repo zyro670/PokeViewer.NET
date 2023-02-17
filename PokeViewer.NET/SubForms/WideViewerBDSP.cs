@@ -25,8 +25,8 @@ namespace PokeViewer.NET.WideViewForms
             string title = await SwitchConnection.GetTitleID(token).ConfigureAwait(false);
             switch (title)
             {
-                case ShiningPearlID: type = (int)GameSelected.SP; break;
-                case BrilliantDiamondID: type = (int)GameSelected.BD; break;
+                case ShiningPearlID: type = (int)GameSelected.ShiningPearl; break;
+                case BrilliantDiamondID: type = (int)GameSelected.BrilliantDiamond; break;
             }
             GameType = type;
         }
@@ -43,9 +43,9 @@ namespace PokeViewer.NET.WideViewForms
             int i = 0;
             int d = 0;
             int ofs = 0;
-            if (GameType == (int)GameSelected.BD)
+            if (GameType == (int)GameSelected.BrilliantDiamond)
                 ofs = 0x4C5A638;
-            else if (GameType == (int)GameSelected.SP)
+            else if (GameType == (int)GameSelected.ShiningPearl)
                 ofs = 0x4E71710;
             var sprite = string.Empty;
             List<string> spriteBox = new();
@@ -55,7 +55,7 @@ namespace PokeViewer.NET.WideViewForms
             TextBox[] outputBox = { textBox1, textBox2, textBox3, textBox4, textBox5, textBox6, textBox7, textBox8, textBox9, textBox10 };
             for (int y = 0; y < 5; y++)
             {
-                var ptr = new long[] { ofs, 0xB8, 0x00, 0xA8, 0x10, 0x10, 0x20 + (i * 10), 0x10, 0x10, 0x20 };
+                var ptr = new long[] { ofs, 0xB8, 0x00, 0xA8, 0x10, 0x10, 0x20 + (i * 0x10), 0x10, 0x10, 0x20 };
                 PB8? pk = await ReadUntilPresentAbsolute(await SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false), 0_200, 0_200, token).ConfigureAwait(false) ?? new();
                 if (pk.Species != 0 && pk.Species < (int)Species.MAX_COUNT)
                 {
@@ -80,7 +80,7 @@ namespace PokeViewer.NET.WideViewForms
             i = 0;
             for (int z = 0; z < 5; z++)
             {
-                var ptr = new long[] { ofs, 0xB8, 0x00, 0xA8, 0x10, 0x10, 0x28 + (i * 10), 0x10, 0x10, 0x20 };
+                var ptr = new long[] { ofs, 0xB8, 0x00, 0xA8, 0x10, 0x10, 0x28 + (i * 0x10), 0x10, 0x10, 0x20 };
                 PB8? pk = await ReadUntilPresentAbsolute(await SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false), 0_200, 0_200, token).ConfigureAwait(false) ?? new(); 
                 if (pk.Species != 0 && pk.Species < (int)Species.MAX_COUNT)
                 {

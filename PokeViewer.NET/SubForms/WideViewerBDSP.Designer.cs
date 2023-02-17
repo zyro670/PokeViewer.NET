@@ -265,7 +265,7 @@
             // 
             // WideView10Button
             // 
-            this.WideView10Button.Location = new System.Drawing.Point(362, 486);
+            this.WideView10Button.Location = new System.Drawing.Point(362, 492);
             this.WideView10Button.Name = "WideView10Button";
             this.WideView10Button.Size = new System.Drawing.Size(116, 23);
             this.WideView10Button.TabIndex = 20;
@@ -278,7 +278,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.ClientSize = new System.Drawing.Size(816, 517);
+            this.ClientSize = new System.Drawing.Size(825, 520);
             this.Controls.Add(this.WideView10Button);
             this.Controls.Add(this.textBox10);
             this.Controls.Add(this.textBox9);
@@ -300,7 +300,7 @@
             this.Controls.Add(this.WideImage3);
             this.Controls.Add(this.WideImage2);
             this.Controls.Add(this.WideImage1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.MaximizeBox = false;
             this.Name = "WideViewerBDSP";
             this.Text = "PokeViewer.NET - WideViewBDSP - Underground Spawns";

@@ -23,5 +23,38 @@
     <Setting Name="UseWiFiProtocol" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="StopOnShiny" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="SegmentOrFamily" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="GenderFilter" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">3</Value>
+    </Setting>
+    <Setting Name="HPFilter" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">31</Value>
+    </Setting>
+    <Setting Name="AtkFilter" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">31</Value>
+    </Setting>
+    <Setting Name="DefFilter" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">31</Value>
+    </Setting>
+    <Setting Name="SpaFilter" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">31</Value>
+    </Setting>
+    <Setting Name="SpdFilter" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">31</Value>
+    </Setting>
+    <Setting Name="SpeFilter" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">31</Value>
+    </Setting>
+    <Setting Name="IgnoreIVFilter" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="PresetIVS" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

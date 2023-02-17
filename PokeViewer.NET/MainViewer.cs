@@ -4,9 +4,10 @@ using PokeViewer.NET.SubForms;
 using PokeViewer.NET.WideViewForms;
 using SysBot.Base;
 using System.Net.Sockets;
-using System.Text;
 using static PokeViewer.NET.RoutineExecutor;
 using static PokeViewer.NET.ViewerUtil;
+using Octokit;
+using System.Diagnostics;
 
 namespace PokeViewer.NET
 {
@@ -14,10 +15,13 @@ namespace PokeViewer.NET
     {
         private static readonly SwitchConnectionConfig Config = new() { Protocol = SwitchProtocol.WiFi, IP = Properties.Settings.Default.SwitchIP, Port = 6000 };
         public SwitchSocketAsync SwitchConnection = new(Config);
-
+        private const string ViewerVersion = "1.0.0";
         public MainViewer()
         {
             InitializeComponent();
+            DisableTabsOnStart();
+            VersionLabel.Text = $"v{ViewerVersion}";
+            CheckLinkLabel();
         }
 
         private int GameType;
@@ -35,14 +39,51 @@ namespace PokeViewer.NET
             HpLabel.Visible = false;
             UniqueBox.Visible = false;
             UniqueBox2.Visible = false;
-            LoadOriginDefault(sender, e);
+            LoadOriginDefault();
             LoadDateTime(sender, e);
         }
 
-        private void LoadOriginDefault(object send, EventArgs e)
+        private async void CheckLinkLabel()
+        {
+            //Get all releases from GitHub
+            //Source: https://octokitnet.readthedocs.io/en/latest/getting-started/
+            GitHubClient client = new(new ProductHeaderValue("Poke-Viewer-NET"));
+            IReadOnlyList<Release> releases = await client.Repository.Release.GetAll("zyro670", "PokeViewer.NET");
+
+            //Setup the versions
+            Version latestGitHubVersion = new(releases[0].TagName);
+            Version localVersion = new(ViewerVersion); //Replace this with your local version. 
+                                                         //Only tested with numeric values.
+
+            //Compare the Versions
+            //Source: https://stackoverflow.com/questions/7568147/compare-version-numbers-without-using-split-function
+            int versionComparison = localVersion.CompareTo(latestGitHubVersion);
+            if (versionComparison < 0)
+            {
+                //The version on GitHub is more up to date than this local release.
+                linkLabel1.Text = "An update is available!";
+                linkLabel1.SetBounds(40, 160, linkLabel1.Width, linkLabel1.Height);
+
+            }
+            else if (versionComparison > 0)
+            {
+                //This local version is greater than the release version on GitHub.
+                linkLabel1.Text = "You are on a test build.";
+                linkLabel1.SetBounds(40, 160, linkLabel1.Width, linkLabel1.Height);
+            }
+            else
+            {
+                //This local Version and the Version on GitHub are equal.
+                linkLabel1.Text = "You are on the latest release.";
+                linkLabel1.SetBounds(24, 160, linkLabel1.Width, linkLabel1.Height);
+            }
+        }
+
+        private void LoadOriginDefault()
         {
             string url = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/OriginMarks/icon_generation_00%5Esb.png";
             OriginIcon.ImageLocation = url;
+            ConnectionSpriteBox.ImageLocation = url;
         }
 
         private void CheckForIP(object sender, EventArgs e)
@@ -72,16 +113,18 @@ namespace PokeViewer.NET
             Properties.Settings.Default.Save();
         }
 
+        private void CheckForUSBChecked(object sender, EventArgs e)
+        {
+            if (ToggleSwitchProtocol.Checked)
+                ConnectionGroupBox.Text = "Switch Port";
+            else
+                ConnectionGroupBox.Text = "Switch IP";
+
+        }
+
         private void LoadDateTime(object sender, EventArgs e)
         {
             TodaysDate.Text = "Met Date: " + DateTime.Today.ToString("MM/dd/yyyy");
-        }
-
-        private SwitchProtocol GetProtocol()
-        {
-            if (ToggleSwitchProtocol.Checked)
-                return SwitchProtocol.USB;
-            return SwitchProtocol.WiFi;
         }
 
         private void Connect_Click(object sender, EventArgs e)
@@ -91,6 +134,10 @@ namespace PokeViewer.NET
                 try
                 {
                     SwitchConnection.Connect();
+                    Height = 507;
+                    Width = 511;
+                    ConnectionGroupBox.SetBounds(135, 130, ConnectionGroupBox.Width, ConnectionGroupBox.Height);
+                    EnableTabs();
                     Connect.Text = "Disconnect";
                     View.Enabled = true;
                     SwitchIP.Enabled = false;
@@ -104,14 +151,7 @@ namespace PokeViewer.NET
                     HidePIDEC.Visible = true;
                     HpLabel.Visible = true;
                     View.Visible = true;
-                    WideView.Visible = true;
-                    WideView.Enabled = true;
-                    BoxViewer.Visible = true;
-                    BoxViewer.Enabled = true;
-                    TrainerView.Visible = true;
-                    DayCareView.Visible = true;
-                    OverworldView.Visible = true;
-                    Raids.Visible = true;
+                    ToggleSwitchProtocol.Enabled = false;
                     Window_Loaded();
                 }
                 catch (SocketException err)
@@ -124,36 +164,15 @@ namespace PokeViewer.NET
             {
                 SwitchConnection.Disconnect();
                 SwitchConnection.Reset();
-                Connect.Text = "Connect";
-                SwitchIP.Enabled = true;
-                View.Enabled = false;
-                ViewBox.Visible = false;
-                PokeSprite.Visible = false;
-                LiveStats.Visible = false;
-                RefreshStats.Visible = false;
-                Refresh.Visible = false;
-                RefreshBox.Visible = false;
-                InGameScreenshot.Visible = false;
-                HidePIDEC.Visible = false;
-                View.Visible = false;
-                Typing1.Visible = false;
-                Typing2.Visible = false;
-                Specialty.Visible = false;
-                HpLabel.Visible = false;
-                UniqueBox.Visible = false;
-                UniqueBox2.Visible = false;
-                WideView.Visible = false;
-                WideView.Enabled = false;
-                BoxViewer.Visible = false;
-                TrainerView.Visible = false;
-                DayCareView.Visible = false;
-                Raids.Visible = false;
-                LiveStats.Clear();
-                string url = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/OriginMarks/icon_generation_00%5Esb.png";
-                OriginIcon.ImageLocation = url;
-                OverworldView.Visible = false;
-                this.Close();
-                Application.Restart();
+                DialogResult dialogResult = MessageBox.Show("Close Application?", "Disconnecting PokeViewer.NET", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.No)
+                {
+                    System.Windows.Forms.Application.Restart();
+                }
+                else if (dialogResult == DialogResult.Yes)
+                {
+                    this.Close();
+                }
             }
 
         }
@@ -171,9 +190,9 @@ namespace PokeViewer.NET
             switch (GameType)
             {
                 case (int)GameSelected.Scarlet or (int)GameSelected.Violet: isValid = PersonalTable.SV.IsPresentInGame(pk.Species, pk.Form); break;
-                case (int)GameSelected.SW or (int)GameSelected.SH: isValid = PersonalTable.SWSH.IsPresentInGame(pk.Species, pk.Form); break;
-                case (int)GameSelected.BD or (int)GameSelected.SP: isValid = PersonalTable.BDSP.IsPresentInGame(pk.Species, pk.Form); break;
-                case (int)GameSelected.LA:
+                case (int)GameSelected.Sword or (int)GameSelected.Shield: isValid = PersonalTable.SWSH.IsPresentInGame(pk.Species, pk.Form); break;
+                case (int)GameSelected.BrilliantDiamond or (int)GameSelected.ShiningPearl: isValid = PersonalTable.BDSP.IsPresentInGame(pk.Species, pk.Form); break;
+                case (int)GameSelected.LegendsArceus:
                     {
                         isValid = PersonalTable.LA.IsPresentInGame(pk.Species, pk.Form);
                         if (!isValid)
@@ -184,7 +203,7 @@ namespace PokeViewer.NET
                         }
                         break;
                     }
-                case (int)GameSelected.LGP or (int)GameSelected.LGE: isValid = pk.Species < (int)Species.Mewtwo && pk.Species != (int)Species.Meltan && pk.Species != (int)Species.Melmetal; break;
+                case (int)GameSelected.LetsGoPikachu or (int)GameSelected.LetsGoEevee: isValid = pk.Species < (int)Species.Mewtwo && pk.Species != (int)Species.Meltan && pk.Species != (int)Species.Melmetal; break;
             }
             if (!isValid || pk.Species < 0 || pk.Species > (int)Species.MAX_COUNT)
             {
@@ -228,11 +247,11 @@ namespace PokeViewer.NET
             ViewBox.Text = output;
             sprite = PokeImg(pk, isGmax);
             PokeSprite.Load(sprite);
-            var imgt1 = TypeSpriteUtil.GetTypeSpriteWide(pk.PersonalInfo.Type1);
+            var imgt1 = TypeSpriteUtil.GetTypeSpriteGem(pk.PersonalInfo.Type1);
             Typing1.Image = imgt1;
             if (pk.PersonalInfo.Type1 != pk.PersonalInfo.Type2)
             {
-                var imgt2 = TypeSpriteUtil.GetTypeSpriteWide(pk.PersonalInfo.Type2);
+                var imgt2 = TypeSpriteUtil.GetTypeSpriteGem(pk.PersonalInfo.Type2);
                 Typing2.Image = imgt2;
             }
             if (alpha)
@@ -292,16 +311,16 @@ namespace PokeViewer.NET
                 {
                     if (!SwitchConnection.Connected)
                     {
-                        Application.Restart();
+                        System.Windows.Forms.Application.Restart();
                         Environment.Exit(0);
                     }
                     switch (GameType)
                     {
                         case (int)GameSelected.Scarlet or (int)GameSelected.Violet: pk = await ReadInBattlePokemonSV(offset, size).ConfigureAwait(false); break;
-                        case (int)GameSelected.SW or (int)GameSelected.SH: pk = await ReadInBattlePokemonSWSH(offset2, size).ConfigureAwait(false); break;
-                        case (int)GameSelected.BD or (int)GameSelected.SP: pk = await ReadInBattlePokemonBDSP(offset, size).ConfigureAwait(false); break;
-                        case (int)GameSelected.LA: pk = await ReadInBattlePokemonLA(offset, size).ConfigureAwait(false); break;
-                        case (int)GameSelected.LGP or (int)GameSelected.LGE: pk = await ReadInBattlePokemonLGPE(offset2, size).ConfigureAwait(false); break;
+                        case (int)GameSelected.Sword or (int)GameSelected.Shield: pk = await ReadInBattlePokemonSWSH(offset2, size).ConfigureAwait(false); break;
+                        case (int)GameSelected.BrilliantDiamond or (int)GameSelected.ShiningPearl: pk = await ReadInBattlePokemonBDSP(offset, size).ConfigureAwait(false); break;
+                        case (int)GameSelected.LegendsArceus: pk = await ReadInBattlePokemonLA(offset, size).ConfigureAwait(false); break;
+                        case (int)GameSelected.LetsGoPikachu or (int)GameSelected.LetsGoEevee: pk = await ReadInBattlePokemonLGPE(offset2, size).ConfigureAwait(false); break;
                     }
                     LiveStats.Text = $"{GameInfo.GetStrings(1).Move[pk.Move1]} - {pk.Move1_PP}PP{Environment.NewLine}{GameInfo.GetStrings(1).Move[pk.Move2]} - {pk.Move2_PP}PP{Environment.NewLine}{GameInfo.GetStrings(1).Move[pk.Move3]} - {pk.Move3_PP}PP{Environment.NewLine}{GameInfo.GetStrings(1).Move[pk.Move4]} - {pk.Move4_PP}PP";
                     HpLabel.Text = $"HP - {(pk.Stat_HPCurrent / StartingHP) * 100}%";
@@ -325,7 +344,6 @@ namespace PokeViewer.NET
             }
             View.Enabled = true;
         }
-
 
         public async Task<PK9> ReadInBattlePokemonSV(ulong offset, int size)
         {
@@ -426,18 +444,18 @@ namespace PokeViewer.NET
             {
                 case (int)GameSelected.Scarlet or (int)GameSelected.Violet:
                     ptr = new long[] { 0x43A7848, 0x348, 0x10, 0xD8, 0x28 }; break;
-                case (int)GameSelected.LA:
+                case (int)GameSelected.LegendsArceus:
                     ptr = new long[] { 0x42C30E8, 0x1A9 }; break;
-                case (int)GameSelected.BD:
+                case (int)GameSelected.BrilliantDiamond:
                     ptr = new long[] { 0x4C59C98, 0xB8, 0x3C }; break;
-                case (int)GameSelected.SP:
+                case (int)GameSelected.ShiningPearl:
                     ptr = new long[] { 0x4E70D70, 0xB8, 0x3C }; break;
-                case (int)GameSelected.SW or (int)GameSelected.SH:
+                case (int)GameSelected.Sword or (int)GameSelected.Shield:
                     {
                         var data = await SwitchConnection.ReadBytesAsync((uint)(GameType == (int)GameVersion.SH ? 0x3F128626 : 0x3F128624), 1, token).ConfigureAwait(false);
-                        return data[0] == (GameType == (int)GameSelected.SH ? 0x40 : 0x41);
+                        return data[0] == (GameType == (int)GameSelected.Shield ? 0x40 : 0x41);
                     }
-                case (int)GameSelected.LGP or (int)GameSelected.LGE:
+                case (int)GameSelected.LetsGoPikachu or (int)GameSelected.LetsGoEevee:
                     {
                         var data = await SwitchConnection.ReadBytesMainAsync(0x163F694, 1, token).ConfigureAwait(false);
                         return data[0] == 0;
@@ -475,10 +493,10 @@ namespace PokeViewer.NET
             switch (GameType)
             {
                 case (int)GameSelected.Scarlet or (int)GameSelected.Violet: isValid = PersonalTable.SV.IsPresentInGame(pk.Species, pk.Form); break;
-                case (int)GameSelected.SW or (int)GameSelected.SH: isValid = PersonalTable.SWSH.IsPresentInGame(pk.Species, pk.Form); break;
-                case (int)GameSelected.BD or (int)GameSelected.SP: isValid = PersonalTable.BDSP.IsPresentInGame(pk.Species, pk.Form); break;
-                case (int)GameSelected.LA: isValid = PersonalTable.LA.IsPresentInGame(pk.Species, pk.Form); break;
-                case (int)GameSelected.LGP or (int)GameSelected.LGE: isValid = pk.Species < (int)Species.Mewtwo && pk.Species != (int)Species.Meltan && pk.Species != (int)Species.Melmetal; break;
+                case (int)GameSelected.Sword or (int)GameSelected.Shield: isValid = PersonalTable.SWSH.IsPresentInGame(pk.Species, pk.Form); break;
+                case (int)GameSelected.BrilliantDiamond or (int)GameSelected.ShiningPearl: isValid = PersonalTable.BDSP.IsPresentInGame(pk.Species, pk.Form); break;
+                case (int)GameSelected.LegendsArceus: isValid = PersonalTable.LA.IsPresentInGame(pk.Species, pk.Form); break;
+                case (int)GameSelected.LetsGoPikachu or (int)GameSelected.LetsGoEevee: isValid = pk.Species < (int)Species.Mewtwo && pk.Species != (int)Species.Meltan && pk.Species != (int)Species.Melmetal; break;
             }
             if (!isValid || pk.Species < 0 || pk.Species > (int)Species.MAX_COUNT)
             {
@@ -512,7 +530,7 @@ namespace PokeViewer.NET
                             FillPokeData(pk, ofs, 0, size);
                             return;
                         }
-                    case (int)GameSelected.SW or (int)GameSelected.SH:
+                    case (int)GameSelected.Sword or (int)GameSelected.Shield:
                         {
                             if (UniqueBox.Checked && UniqueBox2.Checked)
                             {
@@ -531,7 +549,7 @@ namespace PokeViewer.NET
                             FillPokeData(pk, 0, ufs, size);
                             break;
                         }
-                    case (int)GameSelected.LA:
+                    case (int)GameSelected.LegendsArceus:
                         {
                             var ptr = new long[] { 0x42A6F00, 0xD0, 0xB8, 0x300, 0x70, 0x60, 0x98, 0x10, 0x00 };
                             var ofs = await SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false);
@@ -540,7 +558,7 @@ namespace PokeViewer.NET
                             SanityCheck(pk);
                             FillPokeData(pk, ofs, 0, size);
                         }; break;
-                    case (int)GameSelected.BD:
+                    case (int)GameSelected.BrilliantDiamond:
                         {
                             var ptr = new long[] { 0x4C59EF0, 0x20, 0x98, 0x00, 0x20 };
                             var ofs = await SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false);
@@ -549,7 +567,7 @@ namespace PokeViewer.NET
                             SanityCheck(pk);
                             FillPokeData(pk, ofs, 0, size);
                         }; break;
-                    case (int)GameSelected.SP:
+                    case (int)GameSelected.ShiningPearl:
                         {
                             var ptr = new long[] { 0x4E70FC8, 0x20, 0x98, 0x00, 0x20 };
                             var ofs = await SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false);
@@ -558,7 +576,7 @@ namespace PokeViewer.NET
                             SanityCheck(pk);
                             FillPokeData(pk, ofs, 0, size);
                         }; break;
-                    case (int)GameSelected.LGP or (int)GameSelected.LGE:
+                    case (int)GameSelected.LetsGoPikachu or (int)GameSelected.LetsGoEevee:
                         {
                             uint ufs = 0x163EDC0;
                             int size = 0x158;
@@ -583,108 +601,70 @@ namespace PokeViewer.NET
                     {
                         url += "SC.png";
                         type = (int)GameSelected.Scarlet;
-                        WideView.Visible = false;
-                        WideView.Text = "Raid View";
                         View.Enabled = false;
-                        TrainerView.Visible = false;
-                        DayCareView.Visible = false;
                         UniqueBox.Visible = true;
                         UniqueBox.Text = "Raid Lobby";
                         UniqueBox.Enabled = false;
-                        OverworldView.Visible = true;
-                        OverworldView.Enabled = false;
-                        DayCareView.Visible = true;
                         break;
                     }
                 case VioletID:
                     {
                         url += "VI.png";
                         type = (int)GameSelected.Violet;
-                        WideView.Visible = false;
-                        WideView.Text = "Raid View";
                         View.Enabled = false;
-                        TrainerView.Visible = false;
-                        DayCareView.Visible = false;
                         UniqueBox.Visible = true;
                         UniqueBox.Text = "Raid Lobby";
                         UniqueBox.Enabled = false;
-                        OverworldView.Visible = true;
-                        OverworldView.Enabled = false;
-                        DayCareView.Visible = true;
                         break;
                     }
                 case LegendsArceusID:
                     {
                         url += "LA.png";
-                        type = (int)GameSelected.LA;
-                        TrainerView.Visible = false;
-                        DayCareView.Visible = false;
-                        OverworldView.Visible = false;
-                        Raids.Visible = false;
+                        type = (int)GameSelected.LegendsArceus;
                         break;
                     }
                 case ShiningPearlID:
                     {
                         url += "SP.png";
-                        type = (int)GameSelected.SP;
-                        TrainerView.Visible = false;
-                        OverworldView.Visible = false;
-                        DayCareView.Visible = false;
-                        Raids.Visible = false;
+                        type = (int)GameSelected.ShiningPearl;
                         break;
                     }
                 case BrilliantDiamondID:
                     {
                         url += "BD.png";
-                        type = (int)GameSelected.BD;
-                        TrainerView.Visible = false;
-                        OverworldView.Visible = false;
-                        DayCareView.Visible = false;
-                        Raids.Visible = false;
+                        type = (int)GameSelected.BrilliantDiamond;
                         break;
                     }
                 case SwordID:
                     {
                         url += "SW.png";
-                        type = (int)GameSelected.SW;
+                        type = (int)GameSelected.Sword;
                         UniqueBox.Visible = true; UniqueBox2.Visible = true;
                         UniqueBox.Text = "Raid"; UniqueBox2.Text = "Curry";
-                        OverworldView.Visible = false;
-                        DayCareView.Visible = false;
-                        Raids.Visible = false;
                         break;
                     }
                 case ShieldID:
                     {
                         url += "SH.png";
-                        type = (int)GameSelected.SH;
+                        type = (int)GameSelected.Shield;
                         UniqueBox.Visible = true; UniqueBox2.Visible = true;
                         UniqueBox.Text = "Raid"; UniqueBox2.Text = "Curry";
-                        OverworldView.Visible = false;
-                        Raids.Visible = false;
                         break;
                     }
                 case EeveeID:
                     {
-                        url += "LGE.png"; type = (int)GameSelected.LGE;
-                        WideView.Enabled = false;
-                        DayCareView.Visible = false;
-                        OverworldView.Visible = false;
-                        Raids.Visible = false;
+                        url += "LGE.png"; type = (int)GameSelected.LetsGoEevee;
                         break;
                     }
                 case PikachuID:
                     {
-                        url += "LGP.png"; type = (int)GameSelected.LGP;
-                        WideView.Enabled = false;
-                        DayCareView.Visible = false;
-                        OverworldView.Visible = false;
-                        Raids.Visible = false;
+                        url += "LGP.png"; type = (int)GameSelected.LetsGoPikachu;
                         break;
                     }
             }
 
             OriginIcon.ImageLocation = url;
+            ConnectionSpriteBox.ImageLocation = url;
             GameType = type;
             ViewBox.Text = "Click View!";
             var bg = "https://raw.githubusercontent.com/kwsch/PKHeX/master/PKHeX.Drawing.PokeSprite/Resources/img/Pokemon%20Sprite%20Overlays/starter.png";
@@ -710,58 +690,6 @@ namespace PokeViewer.NET
             Properties.Settings.Default.Save();
         }
 
-        private void WideView_Click(object sender, EventArgs e)
-        {
-            switch (GameType)
-            {
-                case (int)GameSelected.Scarlet or (int)GameSelected.Violet:
-                    {
-                        MessageBox.Show("Wide View currently not supported");
-                        break;
-                    }
-                case (int)GameSelected.LA:
-                    {
-                        using WideViewerLA WideForm = new(SwitchConnection);
-                        WideForm.ShowDialog();
-                        break;
-                    }
-                case (int)GameSelected.BD or (int)GameSelected.SP:
-                    {
-                        using WideViewerBDSP WideForm = new(SwitchConnection);
-                        WideForm.ShowDialog();
-                        break;
-                    }
-                case (int)GameSelected.SW or (int)GameSelected.SH:
-                    {
-                        WideView.Text = "Preparing...";
-                        WideView.Enabled = false;
-                        using WideViewerSWSH WideForm = new(SwitchConnection);
-                        WideForm.ShowDialog();
-                        WideView.Text = "WideView";
-                        WideView.Enabled = true;
-                        break;
-                    }
-            }
-        }
-
-        private void BoxView_Click(object sender, EventArgs e)
-        {
-            using BoxViewerMode BoxForm = new(GameType, SwitchConnection);
-            BoxForm.ShowDialog();
-        }
-
-        private void BattleView_Click(object sender, EventArgs e)
-        {
-            using TrainerViewer Form = new(GameType, SwitchConnection);
-            Form.ShowDialog();
-        }
-
-        private void OverworldView_Click(object sender, EventArgs e)
-        {
-            using OverworldViewSV WideForm = new(SwitchConnection);
-            WideForm.ShowDialog();
-        }
-
         private void InGameScreenshot_Click(object sender, EventArgs e)
         {
             var fn = "screenshot.jpg";
@@ -773,7 +701,7 @@ namespace PokeViewer.NET
             }
             var bytes = SwitchConnection.Screengrab(CancellationToken.None).Result;
             File.WriteAllBytes(fn, bytes);
-            FileStream stream = new(fn, FileMode.Open);
+            FileStream stream = new(fn, System.IO.FileMode.Open);
             var img = Image.FromStream(stream);
             Clipboard.SetImage(img);
             using (Form form = new())
@@ -799,16 +727,146 @@ namespace PokeViewer.NET
             File.Delete(fn);
         }
 
-        private void DayCareView_Click(object sender, EventArgs e)
+        private void ViewerControl_SelectedIndexChanged(object sender, EventArgs e)
         {
-            using Egg_Viewer WideForm = new(SwitchConnection);
-            WideForm.ShowDialog();
+            if (!SwitchConnection.Connected)
+                return;
+            if (ViewerControl.SelectedTab.Text is "Raid 🎉")
+            {
+                if (GameType is (int)GameSelected.Scarlet or (int)GameSelected.Violet)
+                {
+                    RaidCodeEntry RaidForm = new(SwitchConnection);
+                    RaidForm.ShowDialog();
+                    return;
+                }
+                else
+                {
+                    MessageBox.Show($"Raid View currently not supported for {(GameSelected)GameType}.");
+                    ViewerControl.TabPages.Remove(ViewerControl.SelectedTab);
+                    return;
+                }
+
+            }
+
+            Form form = new();
+            string currentTab = ViewerControl.SelectedTab.Text;
+            if (currentTab is not "Wide 🔭" && GameType is (int)GameSelected.BrilliantDiamond or (int)GameSelected.ShiningPearl)
+            {
+                ViewerControl.Height = 550;
+                ViewerControl.Width = 511;
+                Height = 507;
+                Width = 511;
+            }
+            switch (currentTab)
+            {
+                case "Connection 🔌": return;
+                case "View 🔎":
+                    switch (GameType)
+                    {
+                        case (int)GameSelected.Scarlet or (int)GameSelected.Violet:
+                            {
+                                MessageBox.Show($"View currently not supported for {(GameSelected)GameType}.");
+                                ViewerControl.TabPages.Remove(ViewerControl.SelectedTab);
+                                return;
+                            }
+                    }
+                    break;                    
+                case "Box 📦": form = new BoxViewerMode(GameType, SwitchConnection) { TopLevel = false }; break;
+                case "Egg 🥚":
+                    switch (GameType)
+                    {
+                        case (int)GameSelected.Scarlet or (int)GameSelected.Violet:
+                            {
+                                form = new Egg_Viewer(SwitchConnection) { TopLevel = false }; break;
+                            }
+                        case (int)GameSelected.LegendsArceus or (int)GameSelected.BrilliantDiamond or (int)GameSelected.ShiningPearl or (int)GameSelected.Sword or (int)GameSelected.Shield:
+                            {
+                                MessageBox.Show($"Egg View currently not supported for {(GameSelected)GameType}.");
+                                ViewerControl.TabPages.Remove(ViewerControl.SelectedTab);
+                                return;
+                            }
+                    }
+                    break;
+                case "Wide 🔭":
+                    switch (GameType)
+                    {
+                        case (int)GameSelected.Scarlet or (int)GameSelected.Violet:
+                            {
+                                MessageBox.Show($"Wide View currently not supported for {(GameSelected)GameType}.");
+                                ViewerControl.TabPages.Remove(ViewerControl.SelectedTab);
+                                return;
+                            }
+                        case (int)GameSelected.LegendsArceus:
+                            {
+                                form = new WideViewerLA(SwitchConnection) { TopLevel = false }; break;
+                            }
+                        case (int)GameSelected.BrilliantDiamond or (int)GameSelected.ShiningPearl:
+                            {
+                                form = new WideViewerBDSP(SwitchConnection) { TopLevel = false };
+                                ViewerControl.Height = 560;
+                                ViewerControl.Width = 825;
+                                Height = 600;
+                                Width = 850; 
+                                break;
+                            }
+                        case (int)GameSelected.Sword or (int)GameSelected.Shield:
+                            {
+                                form = new WideViewerSWSH(SwitchConnection) { TopLevel = false }; break;
+                            }
+                    }
+                    break;
+                case "NPC 🤖":
+                    switch (GameType)
+                    {
+                        case (int)GameSelected.Scarlet or (int)GameSelected.Violet or (int)GameSelected.LegendsArceus or (int)GameSelected.BrilliantDiamond or (int)GameSelected.ShiningPearl:
+                            {
+                                MessageBox.Show($"NPC View currently not supported for {(GameSelected)GameType}.");
+                                ViewerControl.TabPages.Remove(ViewerControl.SelectedTab);
+                                return;
+                            }
+                        case (int)GameSelected.Sword or (int)GameSelected.Shield or (int)GameSelected.LetsGoPikachu or (int)GameSelected.LetsGoEevee:
+                            {
+                                form = new NPCViewer(GameType, SwitchConnection) { TopLevel = false }; break;
+                            }
+                    }
+                    break;
+            }
+            int curr = ViewerControl.SelectedIndex;
+            TabPage tbp = ViewerControl.TabPages[curr];
+            ViewerControl.TabPages.Contains(tbp);
+            if (!tbp.Controls.Contains(form))
+                tbp.Controls.Add(form);
+            form.WindowState = FormWindowState.Maximized;
+            form.ControlBox = false;
+            form.Show();
+            Refresh();
+
         }
 
-        private void Raids_Click(object sender, EventArgs e)
+        private void DisableTabsOnStart()
         {
-            using RaidCodeEntry WideForm = new(SwitchConnection);
-            WideForm.ShowDialog();
-        }        
+            ViewerControl.TabPages.Remove(tabPage2);
+            ViewerControl.TabPages.Remove(tabPage3);
+            ViewerControl.TabPages.Remove(tabPage4);
+            ViewerControl.TabPages.Remove(tabPage5);
+            ViewerControl.TabPages.Remove(tabPage6);
+            ViewerControl.TabPages.Remove(tabPage7);
+
+        }
+
+        private void EnableTabs()
+        {
+            ViewerControl.TabPages.Add(tabPage2);
+            ViewerControl.TabPages.Add(tabPage3);
+            ViewerControl.TabPages.Add(tabPage4);
+            ViewerControl.TabPages.Add(tabPage5);
+            ViewerControl.TabPages.Add(tabPage6);
+            ViewerControl.TabPages.Add(tabPage7);
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo("https://github.com/zyro670/PokeViewer.NET/releases") { UseShellExecute = true });
+        }
     }
 }

@@ -588,6 +588,7 @@
             this.MaximizeBox = false;
             this.Name = "BoxViewerMode";
             this.Text = "PokeViewer.NET - Box Viewer";
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();

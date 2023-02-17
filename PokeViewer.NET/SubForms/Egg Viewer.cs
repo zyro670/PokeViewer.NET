@@ -13,7 +13,6 @@ namespace PokeViewer.NET.SubForms
     public partial class Egg_Viewer : Form
     {
         private readonly SwitchSocketAsync SwitchConnection;
-        private readonly FormWindowState _WindowState;
         public Egg_Viewer(SwitchSocketAsync switchConnection)
         {
             InitializeComponent();
@@ -25,6 +24,7 @@ namespace PokeViewer.NET.SubForms
         private readonly uint EggData = 0x04386040;
         private readonly uint PicnicMenu = 0x04416020;
         private readonly byte[] BlankVal = { 0x01 };
+        private int[] IVFilters = Array.Empty<int>();
         public IReadOnlyList<long> OverworldPointer { get; } = new long[] { 0x43A7848, 0x348, 0x10, 0xD8, 0x28 };
         private ulong OverworldOffset;
 
@@ -34,6 +34,8 @@ namespace PokeViewer.NET.SubForms
         {
             if (!string.IsNullOrEmpty(Settings.Default.WebHook))
                 WebHookText.Text = Settings.Default.WebHook;
+
+            IVFilters = GrabIvFilters();
 
             if (FetchButton.Enabled == true)
                 DisableOptions();
@@ -113,17 +115,22 @@ namespace PokeViewer.NET.SubForms
                             ShinyFoundLabel.Text = $"Shinies Found: {shinycount}";
                         }
 
-                        if (pk.IsShiny && (Species)pk.Species != Species.None && StopOnShiny.Checked)
+                        if (!pk.IVs.SequenceEqual(IVFilters) && !Settings.Default.IgnoreIVFilter)
+                            break; // ivs != iv filters and ignore filter is false
+
+                        if (pk.Gender != Settings.Default.GenderFilter && Settings.Default.GenderFilter != 3)
+                            break; // gender != gender filter when gender is not Any
+
+                        if (pk.IsShiny && (Species)pk.Species != Species.None && Settings.Default.StopOnShiny == true)
                         {                            
-                            if ((Species)pk.Species is Species.Dunsparce or Species.Tandemaus && pk.EncryptionConstant % 100 != 0 && CheckBoxOf3.Checked)
+                            if ((Species)pk.Species is Species.Dunsparce or Species.Tandemaus && pk.EncryptionConstant % 100 != 0 && Settings.Default.SegmentOrFamily == true)
                                 break;
 
-                            if ((Species)pk.Species is Species.Dunsparce or Species.Tandemaus && pk.EncryptionConstant % 100 == 0 && CheckBoxOf3.Checked)
+                            if ((Species)pk.Species is Species.Dunsparce or Species.Tandemaus && pk.EncryptionConstant % 100 == 0 && Settings.Default.SegmentOrFamily == true)
                             {
                                 await Click(HOME, 0_500, token).ConfigureAwait(false);
                                 SendNotifications(output, sprite);
                                 EnableOptions();
-                                WindowState = _WindowState;
                                 Activate();
                                 MessageBox.Show("Rare Shiny Found! Claim your egg before closing the picnic!");                                
                                 return;
@@ -132,7 +139,6 @@ namespace PokeViewer.NET.SubForms
                             await Click(HOME, 0_500, token).ConfigureAwait(false);
                             SendNotifications(output, sprite);
                             EnableOptions();
-                            WindowState = _WindowState;
                             Activate();
                             MessageBox.Show("Match found! Claim your egg before closing the picnic!");
                             return;
@@ -341,9 +347,16 @@ namespace PokeViewer.NET.SubForms
 
         private void button2_Click(object sender, EventArgs e)
         {
-            SwitchConnection.Reset();
-            this.Close();  
-            Application.Restart();
+            if (SwitchConnection.Connected)
+            {
+                SwitchConnection.Reset();
+                HardStopButton.Text = "Connect";
+            }
+            else
+            {
+                SwitchConnection.Connect();
+                HardStopButton.Text = "HardStop";
+            }
         }
 
         private async Task<int> PicnicState(CancellationToken token)
@@ -375,6 +388,7 @@ namespace PokeViewer.NET.SubForms
             checkBox7.Enabled = false;
             FillingHoldTime.Enabled = false;
             NumberOfFillings.Enabled = false;
+            StopConditionsButton.Enabled = false;
         }
 
         private void EnableOptions()
@@ -388,6 +402,7 @@ namespace PokeViewer.NET.SubForms
             checkBox7.Enabled = true;
             FillingHoldTime.Enabled = true;
             NumberOfFillings.Enabled = true;
+            StopConditionsButton.Enabled = true;
         }
 
         private static HttpClient? _client;
@@ -469,6 +484,27 @@ namespace PokeViewer.NET.SubForms
             Graphics G = Graphics.FromImage(FormScreenShot);
             G.CopyFromScreen(Location, new Point(0, 0), Size);
             Clipboard.SetImage(FormScreenShot);
+        }
+
+        private void StopConditionsButton_Click(object sender, EventArgs e)
+        {
+            using EggViewerConditions miniform = new();
+            miniform.ShowDialog();
+        }
+
+        private static int[] GrabIvFilters()
+        {
+            int[] ivsequence = Array.Empty<int>();
+            int filters = Settings.Default.PresetIVS;
+            switch (filters)
+            {
+                case 0: ivsequence = new[] { Settings.Default.HPFilter, Settings.Default.AtkFilter, Settings.Default.DefFilter, Settings.Default.SpaFilter, Settings.Default.SpdFilter, Settings.Default.SpeFilter }; break;
+                case 1: ivsequence = new[] { 31, 31, 31, 31, 31, 31 }; break;
+                case 2: ivsequence = new[] { 31, 0, 31, 31, 31, 0 }; break;
+                case 3: ivsequence = new[] { 31, 0, 31, 31, 31, 31 }; break;
+                case 4: ivsequence = new[] { 31, 31, 31, 31, 31, 0 }; break;
+            }
+            return ivsequence;
         }
     }
 }

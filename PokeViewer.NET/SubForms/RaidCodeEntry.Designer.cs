@@ -43,9 +43,11 @@
             this.button4 = new System.Windows.Forms.Button();
             this.panel4 = new System.Windows.Forms.Panel();
             this.panel5 = new System.Windows.Forms.Panel();
+            this.label7 = new System.Windows.Forms.Label();
             this.ScreenToTextPanel = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel3.SuspendLayout();
+            this.panel5.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -148,7 +150,7 @@
             // 
             // ClearAll
             // 
-            this.ClearAll.Location = new System.Drawing.Point(120, 19);
+            this.ClearAll.Location = new System.Drawing.Point(120, 50);
             this.ClearAll.Name = "ClearAll";
             this.ClearAll.Size = new System.Drawing.Size(93, 23);
             this.ClearAll.TabIndex = 2;
@@ -168,7 +170,7 @@
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(120, 50);
+            this.button4.Location = new System.Drawing.Point(120, 19);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(93, 23);
             this.button4.TabIndex = 4;
@@ -179,24 +181,34 @@
             // panel4
             // 
             this.panel4.BackColor = System.Drawing.Color.LightGray;
-            this.panel4.Location = new System.Drawing.Point(138, 88);
+            this.panel4.Location = new System.Drawing.Point(191, 88);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(101, 28);
+            this.panel4.Size = new System.Drawing.Size(39, 28);
             this.panel4.TabIndex = 9;
             // 
             // panel5
             // 
             this.panel5.BackColor = System.Drawing.Color.LightGray;
-            this.panel5.Location = new System.Drawing.Point(-8, 87);
+            this.panel5.Controls.Add(this.label7);
+            this.panel5.Location = new System.Drawing.Point(-10, 87);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(91, 29);
+            this.panel5.Size = new System.Drawing.Size(141, 29);
             this.panel5.TabIndex = 10;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(45, 4);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(80, 15);
+            this.label7.TabIndex = 12;
+            this.label7.Text = "Img Finder ->";
             // 
             // ScreenToTextPanel
             // 
-            this.ScreenToTextPanel.Location = new System.Drawing.Point(83, 90);
+            this.ScreenToTextPanel.Location = new System.Drawing.Point(128, 90);
             this.ScreenToTextPanel.Name = "ScreenToTextPanel";
-            this.ScreenToTextPanel.Size = new System.Drawing.Size(56, 18);
+            this.ScreenToTextPanel.Size = new System.Drawing.Size(65, 18);
             this.ScreenToTextPanel.TabIndex = 11;
             // 
             // panel1
@@ -226,6 +238,8 @@
             this.TransparencyKey = System.Drawing.Color.Magenta;
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
+            this.panel5.ResumeLayout(false);
+            this.panel5.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.ResumeLayout(false);
@@ -251,5 +265,6 @@
         private Label label3;
         private Label label2;
         private Label label1;
+        private Label label7;
     }
 }

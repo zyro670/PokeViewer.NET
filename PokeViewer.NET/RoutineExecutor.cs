@@ -1,5 +1,4 @@
 ﻿using PKHeX.Core;
-using SysBot.Base;
 using SysBot.Pokemon;
 using System.Net;
 
@@ -7,8 +6,6 @@ namespace PokeViewer.NET
 {
     public class RoutineExecutor
     {
-        private readonly static SwitchConnectionConfig Config = new() { Protocol = SwitchProtocol.WiFi, IP = Properties.Settings.Default.SwitchIP, Port = 6000 };
-        public SwitchSocketAsync SwitchConnection = new(Config);
         public int GameType;
 
         public static byte[] DownloadRemoteImageFile(string uri)
@@ -133,13 +130,13 @@ namespace PokeViewer.NET
     }
     enum GameSelected
     {
-        LGP = 0,
-        LGE = 1,
-        SW = 2,
-        SH = 3,
-        BD = 4,
-        SP = 5,
-        LA = 6,
+        LetsGoPikachu = 0,
+        LetsGoEevee = 1,
+        Sword = 2,
+        Shield = 3,
+        BrilliantDiamond = 4,
+        ShiningPearl = 5,
+        LegendsArceus = 6,
         Scarlet = 7,
         Violet = 8,
     }

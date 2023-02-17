@@ -7,7 +7,7 @@ This project was designed to make viewing encountered Pokemon convenient through
 Special credits and thanks to the minds behind the resources used for this project:
 - [LegoFigure11](https://github.com/LegoFigure11) for the skeleton framework of which the app is based off of.
 - [Kurt](https://github.com/kwsch) for SysBot.Base connectivity, SysBot.NET and PKHeX through which various routines and Poketasks were modified for this project.
-- [architdate](https://github.com/architdate) for GetPointerAddress and various tasks for Box Viewing modified for this project.
+- [architdate](https://github.com/architdate) for various tasks for Box Viewing modified for this project.
 - [Lusamine](https://github.com/Lusamine) for various Poketasks across game versions, image dumps, and data offsets.
 - [Koi-3088](https://github.com/Koi-3088) for the assistance with many of the implementations as well as PokeImg and FormOutput.
 - [sora10pls](https://github.com/sora10pls) for image and texture dumps.
@@ -17,8 +17,8 @@ Special credits and thanks to the minds behind the resources used for this proje
 
 Requirements:
 - CFW.
-- [SysBot.Base.](https://github.com/Koi-3088/sys-usb-botbase/releases)
-- [ldn_mitm.](https://github.com/spacemeowx2/ldn_mitm/releases) for Sword and Shield titles without being connected to Y-COMM. Not required for other titles.
+- [SysBot.Base](https://github.com/Koi-3088/sys-usb-botbase/releases)
+- [ldn_mitm](https://github.com/spacemeowx2/ldn_mitm/releases) for Sword and Shield titles without being connected to Y-COMM. Not required for other titles.
 
 -----
 
@@ -27,6 +27,7 @@ Supported Games:
 - Sword & Shield.
 - Brilliant Diamond & Shining Pearl.
 - Legends Arceus.
+- Scarlet & Violet
 
 -----
 
@@ -56,3 +57,7 @@ How to use:
 `TrainerView`
 
 - Read Party Pokemon of NPC Trainers when in battle with them.
+
+`EggView & RaidView`
+
+- Refer to their respective Wikipages.

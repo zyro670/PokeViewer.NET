@@ -63,10 +63,12 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.ClientSize = new System.Drawing.Size(246, 210);
             this.Controls.Add(this.flagbox);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.pictureBox1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.MaximizeBox = false;
             this.Name = "WideViewerLGPE";
             this.Text = "PokeViewer.NET - WideViewLGPE - Last Spawn";

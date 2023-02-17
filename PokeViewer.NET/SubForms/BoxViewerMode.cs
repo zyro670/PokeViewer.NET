@@ -27,10 +27,10 @@ namespace PokeViewer.NET
             string vers = string.Empty;
             switch (type)
             {
-                case (int)GameSelected.SW or (int)GameSelected.SH: vers = "PokeViewer.NET - Box Viewer (SWSH)"; break;
-                case (int)GameSelected.BD or (int)GameSelected.SP: vers = "PokeViewer.NET - Box Viewer (BDSP)"; break;
-                case (int)GameSelected.LA: vers = "PokeViewer.NET - Box Viewer (LA)"; break;
-                case (int)GameSelected.LGP or (int)GameSelected.LGE: vers = "PokeViewer.NET - Box Viewer (LGPE)"; break;
+                case (int)GameSelected.Sword or (int)GameSelected.Shield: vers = "PokeViewer.NET - Box Viewer (SWSH)"; break;
+                case (int)GameSelected.BrilliantDiamond or (int)GameSelected.ShiningPearl: vers = "PokeViewer.NET - Box Viewer (BDSP)"; break;
+                case (int)GameSelected.LegendsArceus: vers = "PokeViewer.NET - Box Viewer (LA)"; break;
+                case (int)GameSelected.LetsGoPikachu or (int)GameSelected.LetsGoEevee: vers = "PokeViewer.NET - Box Viewer (LGPE)"; break;
                 case (int)GameSelected.Scarlet or (int)GameSelected.Violet: vers = "PokeViewer.NET - Box Viewer (SV)"; break;
             }
             return vers;
@@ -52,28 +52,28 @@ namespace PokeViewer.NET
                         size = 0x158;
                         break;
                     }
-                case (int)GameSelected.LA:
+                case (int)GameSelected.LegendsArceus:
                     {
                         size = 0x168;
                         break;
                     }
-                case (int)GameSelected.BD:
+                case (int)GameSelected.BrilliantDiamond:
                     {
                         size = 0x168;
                         break;
                     }
-                case (int)GameSelected.SP:
+                case (int)GameSelected.ShiningPearl:
                     {
                         size = 0x168;
                         break;
                     }
-                case (int)GameSelected.SW or (int)GameSelected.SH:
+                case (int)GameSelected.Sword or (int)GameSelected.Shield:
                     {
                         size = 0x158;
                         offset = 0x45075880;
                         break;
                     }
-                case (int)GameSelected.LGP or (int)GameSelected.LGE:
+                case (int)GameSelected.LetsGoPikachu or (int)GameSelected.LetsGoEevee:
                     {
                         size = 0x158;
                         offset = 0x533675B0;
@@ -115,7 +115,7 @@ namespace PokeViewer.NET
 
                             break;
                         }
-                    case (int)GameSelected.LA:
+                    case (int)GameSelected.LegendsArceus:
                         {
                             var slotsize = 360;
                             var ptr = new long[] { 0x42BA6B0, 0x1F0, 0x68 };
@@ -128,7 +128,7 @@ namespace PokeViewer.NET
                             pk = await ReadBoxPokemonLA(slotstart, size, token).ConfigureAwait(false);
                             break;
                         }
-                    case (int)GameSelected.BD:
+                    case (int)GameSelected.BrilliantDiamond:
                         {
                             var sizeup = GetBDSPSlotValue(i);
                             var boxvalue = GetBDSPBoxValue(box);
@@ -138,7 +138,7 @@ namespace PokeViewer.NET
                             pk = await ReadBoxPokemonBDSP(boxStart, size, token).ConfigureAwait(false);
                             break;
                         }
-                    case (int)GameSelected.SP:
+                    case (int)GameSelected.ShiningPearl:
                         {
                             var sizeup = GetBDSPSlotValue(i);
                             var boxvalue = GetBDSPBoxValue(box);
@@ -148,13 +148,13 @@ namespace PokeViewer.NET
                             pk = await ReadBoxPokemonBDSP(boxStart, size, token).ConfigureAwait(false);
                             break;
                         }
-                    case (int)GameSelected.SW or (int)GameSelected.SH:
+                    case (int)GameSelected.Sword or (int)GameSelected.Shield:
                         {
                             _ = new PK8();
                             pk = await ReadBoxPokemonSWSH((uint)(offset + (size * i + (size * 30 * box))), size, token).ConfigureAwait(false);
                             break;
                         }
-                    case (int)GameSelected.LGP or (int)GameSelected.LGE:
+                    case (int)GameSelected.LetsGoPikachu or (int)GameSelected.LetsGoEevee:
                         {
                             _ = new PB7();
                             pk = await ReadBoxPokemonLGPE((uint)GetSlotOffset(box, i), LGPESlotSize + LGPEGapSize, token).ConfigureAwait(false);
@@ -310,28 +310,28 @@ namespace PokeViewer.NET
                         size = 0x158;
                         break;
                     }
-                case (int)GameSelected.LA:
+                case (int)GameSelected.LegendsArceus:
                     {
                         size = 0x168;
                         break;
                     }
-                case (int)GameSelected.BD:
+                case (int)GameSelected.BrilliantDiamond:
                     {
                         size = 0x168;
                         break;
                     }
-                case (int)GameSelected.SP:
+                case (int)GameSelected.ShiningPearl:
                     {
                         size = 0x168;
                         break;
                     }
-                case (int)GameSelected.SW or (int)GameSelected.SH:
+                case (int)GameSelected.Sword or (int)GameSelected.Shield:
                     {
                         size = 0x158;
                         offset = 0x45075880;
                         break;
                     }
-                case (int)GameSelected.LGP or (int)GameSelected.LGE:
+                case (int)GameSelected.LetsGoPikachu or (int)GameSelected.LetsGoEevee:
                     {
                         size = 0x158;
                         break;
@@ -366,28 +366,28 @@ namespace PokeViewer.NET
                         size = 0x158;
                         break;
                     }
-                case (int)GameSelected.LA:
+                case (int)GameSelected.LegendsArceus:
                     {
                         size = 0x168;
                         break;
                     }
-                case (int)GameSelected.BD:
+                case (int)GameSelected.BrilliantDiamond:
                     {
                         size = 0x168;
                         break;
                     }
-                case (int)GameSelected.SP:
+                case (int)GameSelected.ShiningPearl:
                     {
                         size = 0x168;
                         break;
                     }
-                case (int)GameSelected.SW or (int)GameSelected.SH:
+                case (int)GameSelected.Sword or (int)GameSelected.Shield:
                     {
                         size = 0x158;
                         offset = 0x45075880;
                         break;
                     }
-                case (int)GameSelected.LGP or (int)GameSelected.LGE:
+                case (int)GameSelected.LetsGoPikachu or (int)GameSelected.LetsGoEevee:
                     {
                         size = 0x158;
                         offset = 0x533675B0;
