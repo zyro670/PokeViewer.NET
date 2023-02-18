@@ -1,5 +1,4 @@
-﻿
-namespace PokeViewer.NET
+﻿namespace PokeViewer.NET
 {
     public partial class ViewerUtil
     {

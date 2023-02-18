@@ -1,5 +1,4 @@
-﻿
-namespace PokeViewer.NET.WideViewForms
+﻿namespace PokeViewer.NET.WideViewForms
 {
     public partial class BoxViewerMini : Form
     {

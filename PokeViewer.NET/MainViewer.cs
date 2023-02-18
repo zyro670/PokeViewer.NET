@@ -15,7 +15,7 @@ namespace PokeViewer.NET
     {
         private static readonly SwitchConnectionConfig Config = new() { Protocol = SwitchProtocol.WiFi, IP = Properties.Settings.Default.SwitchIP, Port = 6000 };
         public SwitchSocketAsync SwitchConnection = new(Config);
-        private const string ViewerVersion = "1.0.0";
+        private const string ViewerVersion = "1.0.1";
         public MainViewer()
         {
             InitializeComponent();
@@ -25,7 +25,7 @@ namespace PokeViewer.NET
         }
 
         private int GameType;
-        private string RefreshTime = Properties.Settings.Default.RefreshRate;
+        private readonly string RefreshTime = Properties.Settings.Default.RefreshRate;
 
         private void PokeViewerForm_Load(object sender, EventArgs e)
         {
@@ -52,8 +52,7 @@ namespace PokeViewer.NET
 
             //Setup the versions
             Version latestGitHubVersion = new(releases[0].TagName);
-            Version localVersion = new(ViewerVersion); //Replace this with your local version. 
-                                                         //Only tested with numeric values.
+            Version localVersion = new(ViewerVersion); 
 
             //Compare the Versions
             //Source: https://stackoverflow.com/questions/7568147/compare-version-numbers-without-using-split-function
@@ -68,8 +67,8 @@ namespace PokeViewer.NET
             else if (versionComparison > 0)
             {
                 //This local version is greater than the release version on GitHub.
-                linkLabel1.Text = "You are on a test build.";
-                linkLabel1.SetBounds(40, 160, linkLabel1.Width, linkLabel1.Height);
+                linkLabel1.Text = "You are on an azure-artifact build.";
+                linkLabel1.SetBounds(8, 160, linkLabel1.Width, linkLabel1.Height);
             }
             else
             {
@@ -750,7 +749,7 @@ namespace PokeViewer.NET
 
             Form form = new();
             string currentTab = ViewerControl.SelectedTab.Text;
-            if (currentTab is not "Wide 🔭" && GameType is (int)GameSelected.BrilliantDiamond or (int)GameSelected.ShiningPearl)
+            if (currentTab is not "Wide 🔭" && GameType is (int)GameSelected.BrilliantDiamond or (int)GameSelected.ShiningPearl or (int)GameSelected.Sword or (int)GameSelected.Shield)
             {
                 ViewerControl.Height = 550;
                 ViewerControl.Width = 511;
@@ -769,6 +768,8 @@ namespace PokeViewer.NET
                                 ViewerControl.TabPages.Remove(ViewerControl.SelectedTab);
                                 return;
                             }
+                        case (int)GameSelected.LegendsArceus or (int)GameSelected.BrilliantDiamond or (int)GameSelected.ShiningPearl or (int)GameSelected.Sword or (int)GameSelected.Shield or (int)GameSelected.LetsGoPikachu or (int)GameSelected.LetsGoEevee:
+                            return;
                     }
                     break;                    
                 case "Box 📦": form = new BoxViewerMode(GameType, SwitchConnection) { TopLevel = false }; break;
@@ -779,7 +780,7 @@ namespace PokeViewer.NET
                             {
                                 form = new Egg_Viewer(SwitchConnection) { TopLevel = false }; break;
                             }
-                        case (int)GameSelected.LegendsArceus or (int)GameSelected.BrilliantDiamond or (int)GameSelected.ShiningPearl or (int)GameSelected.Sword or (int)GameSelected.Shield:
+                        case (int)GameSelected.LegendsArceus or (int)GameSelected.BrilliantDiamond or (int)GameSelected.ShiningPearl or (int)GameSelected.Sword or (int)GameSelected.Shield or (int)GameSelected.LetsGoPikachu or (int)GameSelected.LetsGoEevee:
                             {
                                 MessageBox.Show($"Egg View currently not supported for {(GameSelected)GameType}.");
                                 ViewerControl.TabPages.Remove(ViewerControl.SelectedTab);
@@ -790,7 +791,7 @@ namespace PokeViewer.NET
                 case "Wide 🔭":
                     switch (GameType)
                     {
-                        case (int)GameSelected.Scarlet or (int)GameSelected.Violet:
+                        case (int)GameSelected.Scarlet or (int)GameSelected.Violet or (int)GameSelected.LetsGoPikachu or (int)GameSelected.LetsGoEevee:
                             {
                                 MessageBox.Show($"Wide View currently not supported for {(GameSelected)GameType}.");
                                 ViewerControl.TabPages.Remove(ViewerControl.SelectedTab);
@@ -798,7 +799,12 @@ namespace PokeViewer.NET
                             }
                         case (int)GameSelected.LegendsArceus:
                             {
-                                form = new WideViewerLA(SwitchConnection) { TopLevel = false }; break;
+                                form = new WideViewerLA(SwitchConnection) { TopLevel = false }; 
+                                ViewerControl.Height = 380;
+                                ViewerControl.Width = 780;
+                                Height = 400;
+                                Width = 800;
+                                break;
                             }
                         case (int)GameSelected.BrilliantDiamond or (int)GameSelected.ShiningPearl:
                             {
@@ -811,7 +817,12 @@ namespace PokeViewer.NET
                             }
                         case (int)GameSelected.Sword or (int)GameSelected.Shield:
                             {
-                                form = new WideViewerSWSH(SwitchConnection) { TopLevel = false }; break;
+                                form = new WideViewerSWSH(SwitchConnection) { TopLevel = false };
+                                ViewerControl.Height = 600;
+                                ViewerControl.Width = 890;
+                                Height = 580;
+                                Width = 870; 
+                                break;
                             }
                     }
                     break;
