@@ -39,9 +39,10 @@ namespace PokeViewer.NET.WideViewForms
             for (uint i = 0; i < 10; i++)
             {
                 uint fishing = 0x4505B640 + i * KCoordIncrement;
-                byte[] check = await SwitchConnection.ReadBytesAsync(fishing, 2, token).ConfigureAwait(false);
+                byte[] check = await SwitchConnection.ReadBytesAsync(fishing, 4, token).ConfigureAwait(false);
                 Species species = (Species)BitConverter.ToUInt16(check.Slice(0, 2), 0);
-                if (species == 0 || species > Species.MAX_COUNT || !(PersonalTable.SWSH[(int)species]).IsPresentInGame)
+                var form = (byte)BitConverter.ToUInt16(check.Slice(0x2, 2), 0);
+                if (species == 0 || species > Species.MAX_COUNT || !PersonalTable.SWSH.IsPresentInGame((ushort)species, form))
                     continue;
 
                 var data = await SwitchConnection.ReadBytesAsync(fishing + 0x39, 1, token).ConfigureAwait(false);
@@ -60,9 +61,10 @@ namespace PokeViewer.NET.WideViewForms
                     }
 
                     uint startingoffset = StartingOffset + i * KCoordIncrement;
-                    byte[] check = await SwitchConnection.ReadBytesAsync(startingoffset, 2, token).ConfigureAwait(false);
+                    byte[] check = await SwitchConnection.ReadBytesAsync(startingoffset, 4, token).ConfigureAwait(false);
                     Species species = (Species)BitConverter.ToUInt16(check.Slice(0, 2), 0);
-                    if (species == 0 || species > Species.MAX_COUNT || !(PersonalTable.SWSH[(int)species]).IsPresentInGame)
+                    var form = (byte)BitConverter.ToUInt16(check.Slice(0x2, 2), 0);
+                    if (species == 0 || species > Species.MAX_COUNT || !PersonalTable.SWSH.IsPresentInGame((ushort)species, form))
                         continue;
 
                     var data = await SwitchConnection.ReadBytesAsync(startingoffset + 0x39, 1, token).ConfigureAwait(false);
@@ -124,8 +126,8 @@ namespace PokeViewer.NET.WideViewForms
                 var data = await SwitchConnection.ReadBytesAsync(newoffset, 56, token).ConfigureAwait(false);
 
                 species = (Species)BitConverter.ToUInt16(data.Slice(0, 2), 0);
-
-                if (species == 0 || species > Species.MAX_COUNT || !(PersonalTable.SWSH[(int)species]).IsPresentInGame)
+                var form = (byte)BitConverter.ToUInt16(data.Slice(0x2, 2), 0);
+                if (species == 0 || species > Species.MAX_COUNT || !PersonalTable.SWSH.IsPresentInGame((ushort)species, form))
                     continue;
                 var lastdata = await SwitchConnection.ReadBytesAsync(newoffset + 0x39, 1, token).ConfigureAwait(false);
                 if (lastdata[0] != 255)

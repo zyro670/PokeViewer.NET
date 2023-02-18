@@ -1,5 +1,4 @@
 ﻿using PKHeX.Core;
-using PokeViewer.NET.Properties;
 using SysBot.Base;
 using static PokeViewer.NET.RoutineExecutor;
 

@@ -17,6 +17,8 @@ namespace PokeViewer.NET.SubForms
         {
             InitializeComponent();
             SwitchConnection = switchConnection;
+            WebHookText.Text = Properties.Settings.Default.WebHook;
+            UserDiscordIDText.Text = Properties.Settings.Default.UserDiscordID;
         }
         private int eggcount = 0;
         private int sandwichcount = 0;
@@ -475,7 +477,7 @@ namespace PokeViewer.NET.SubForms
                 Settings.Default.Save();
             }
 
-            MessageBox.Show("Done. Reloading form to show changes.");
+            MessageBox.Show("Done.");
         }
 
         private void button1_Click_1(object sender, EventArgs e)

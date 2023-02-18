@@ -8,36 +8,38 @@ trigger:
 
 pool:
   name: Azure Pipelines
-  vmImage: 'windows-2022'
+  vmImage: 'windows-latest'
   demands:
   - msbuild
   - visualstudio
 
 variables:
-  Solution: '**/*.sln'
-  Project: '**/PokeViewer.NET.csproj'
-  Platform: 'x64'
-  Configuration: 'Release'
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
 
 steps:
 - task: NuGetToolInstaller@1
-  inputs:
-    versionSpec: '5.8.0'
 
 - task: NuGetCommand@2
   inputs:
     command: 'restore'
-    restoreSolution: '$(Solution)'
+    restoreSolution: '**/*.sln'
 
 - task: VSBuild@1
   inputs:
-    solution: '$(Project)'
-    msbuildArgs: '/t:restore;rebuild;publish 
-    /p:Configuration=$(Configuration);Platform=$(Platform);PublishSingleFile=true;OutputPath=$(Build.ArtifactStagingDirectory)\'
+    solution: '$(solution)'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
 
-- task: PublishPipelineArtifact@1
-  displayName: 'Publish Artifact: PokeViewer.NET-x64'
+- task: VSTest@2
   inputs:
-    TargetPath: '$(Build.ArtifactStagingDirectory)\publish\'
-    ArtifactName: PokeViewer.NET-x64
-  condition: succeeded()
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+
+- task: PublishBuildArtifact@1
+  displayName: 'Publish Artifact: PokeViewer.NET'
+  inputs:
+    PathtoPublish: 'PokeViewer.NET\bin\x64\Release\net7.0-windows'
+    ArtifactName: PokeViewer.NET
+  condition: succeededOrFailed()
