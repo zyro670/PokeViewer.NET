@@ -29,10 +29,12 @@
         private void InitializeComponent()
         {
             this.StopConditions = new System.Windows.Forms.GroupBox();
+            this.ScaleBox = new System.Windows.Forms.CheckBox();
+            this.ShinyBox = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.PresetIVs = new System.Windows.Forms.Label();
             this.PresetIVBox = new System.Windows.Forms.ComboBox();
             this.GenderBox = new System.Windows.Forms.ComboBox();
-            this.StopOnShiny = new System.Windows.Forms.CheckBox();
             this.IgnoreIVFilter = new System.Windows.Forms.CheckBox();
             this.CheckBoxOf3 = new System.Windows.Forms.CheckBox();
             this.TargetSPE = new System.Windows.Forms.Label();
@@ -62,10 +64,12 @@
             // 
             // StopConditions
             // 
+            this.StopConditions.Controls.Add(this.ScaleBox);
+            this.StopConditions.Controls.Add(this.ShinyBox);
+            this.StopConditions.Controls.Add(this.label1);
             this.StopConditions.Controls.Add(this.PresetIVs);
             this.StopConditions.Controls.Add(this.PresetIVBox);
             this.StopConditions.Controls.Add(this.GenderBox);
-            this.StopConditions.Controls.Add(this.StopOnShiny);
             this.StopConditions.Controls.Add(this.IgnoreIVFilter);
             this.StopConditions.Controls.Add(this.CheckBoxOf3);
             this.StopConditions.Controls.Add(this.TargetSPE);
@@ -84,15 +88,51 @@
             this.StopConditions.Controls.Add(this.SpaFilter);
             this.StopConditions.Location = new System.Drawing.Point(35, 12);
             this.StopConditions.Name = "StopConditions";
-            this.StopConditions.Size = new System.Drawing.Size(226, 244);
+            this.StopConditions.Size = new System.Drawing.Size(346, 244);
             this.StopConditions.TabIndex = 63;
             this.StopConditions.TabStop = false;
             this.StopConditions.Text = "Stop Conditions";
             // 
+            // ScaleBox
+            // 
+            this.ScaleBox.AutoSize = true;
+            this.ScaleBox.Location = new System.Drawing.Point(23, 48);
+            this.ScaleBox.Name = "ScaleBox";
+            this.ScaleBox.Size = new System.Drawing.Size(124, 19);
+            this.ScaleBox.TabIndex = 66;
+            this.ScaleBox.Text = "Mini/Jumbo Only?";
+            this.ScaleBox.UseVisualStyleBackColor = true;
+            // 
+            // ShinyBox
+            // 
+            this.ShinyBox.FormattingEnabled = true;
+            this.ShinyBox.Items.AddRange(new object[] {
+            "DisableOption",
+            "NonShiny",
+            "AnyShiny",
+            "StarOnly",
+            "SquareOnly"});
+            this.ShinyBox.Location = new System.Drawing.Point(150, 18);
+            this.ShinyBox.MaxDropDownItems = 5;
+            this.ShinyBox.Name = "ShinyBox";
+            this.ShinyBox.Size = new System.Drawing.Size(121, 23);
+            this.ShinyBox.TabIndex = 65;
+            this.ShinyBox.Text = "DisableOption";
+            this.ShinyBox.SelectedIndexChanged += new System.EventHandler(this.ShinyBox_SelectedIndexChanged);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(75, 21);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(71, 15);
+            this.label1.TabIndex = 64;
+            this.label1.Text = "Shiny Target";
+            // 
             // PresetIVs
             // 
             this.PresetIVs.AutoSize = true;
-            this.PresetIVs.Location = new System.Drawing.Point(14, 189);
+            this.PresetIVs.Location = new System.Drawing.Point(66, 186);
             this.PresetIVs.Name = "PresetIVs";
             this.PresetIVs.Size = new System.Drawing.Size(60, 15);
             this.PresetIVs.TabIndex = 63;
@@ -107,7 +147,7 @@
             "0 ATK 0 SPE",
             "0 ATK 5 IV",
             "0 SPE 5 IV"});
-            this.PresetIVBox.Location = new System.Drawing.Point(78, 186);
+            this.PresetIVBox.Location = new System.Drawing.Point(130, 183);
             this.PresetIVBox.Name = "PresetIVBox";
             this.PresetIVBox.Size = new System.Drawing.Size(141, 23);
             this.PresetIVBox.TabIndex = 62;
@@ -122,29 +162,17 @@
             "Female",
             "Genderless",
             "Any"});
-            this.GenderBox.Location = new System.Drawing.Point(90, 75);
+            this.GenderBox.Location = new System.Drawing.Point(219, 47);
             this.GenderBox.MaxDropDownItems = 4;
             this.GenderBox.Name = "GenderBox";
             this.GenderBox.Size = new System.Drawing.Size(106, 23);
             this.GenderBox.TabIndex = 61;
             this.GenderBox.Text = "Male";
             // 
-            // StopOnShiny
-            // 
-            this.StopOnShiny.AutoSize = true;
-            this.StopOnShiny.Checked = true;
-            this.StopOnShiny.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.StopOnShiny.Location = new System.Drawing.Point(39, 24);
-            this.StopOnShiny.Name = "StopOnShiny";
-            this.StopOnShiny.Size = new System.Drawing.Size(106, 19);
-            this.StopOnShiny.TabIndex = 11;
-            this.StopOnShiny.Text = "Stop On Shiny?";
-            this.StopOnShiny.UseVisualStyleBackColor = true;
-            // 
             // IgnoreIVFilter
             // 
             this.IgnoreIVFilter.AutoSize = true;
-            this.IgnoreIVFilter.Location = new System.Drawing.Point(60, 218);
+            this.IgnoreIVFilter.Location = new System.Drawing.Point(112, 215);
             this.IgnoreIVFilter.Name = "IgnoreIVFilter";
             this.IgnoreIVFilter.Size = new System.Drawing.Size(107, 19);
             this.IgnoreIVFilter.TabIndex = 60;
@@ -154,7 +182,7 @@
             // CheckBoxOf3
             // 
             this.CheckBoxOf3.AutoSize = true;
-            this.CheckBoxOf3.Location = new System.Drawing.Point(39, 41);
+            this.CheckBoxOf3.Location = new System.Drawing.Point(88, 76);
             this.CheckBoxOf3.Name = "CheckBoxOf3";
             this.CheckBoxOf3.Size = new System.Drawing.Size(150, 19);
             this.CheckBoxOf3.TabIndex = 12;
@@ -164,7 +192,7 @@
             // TargetSPE
             // 
             this.TargetSPE.AutoSize = true;
-            this.TargetSPE.Location = new System.Drawing.Point(151, 157);
+            this.TargetSPE.Location = new System.Drawing.Point(203, 154);
             this.TargetSPE.Name = "TargetSPE";
             this.TargetSPE.Size = new System.Drawing.Size(26, 15);
             this.TargetSPE.TabIndex = 59;
@@ -173,7 +201,7 @@
             // TargetSPD
             // 
             this.TargetSPD.AutoSize = true;
-            this.TargetSPD.Location = new System.Drawing.Point(78, 157);
+            this.TargetSPD.Location = new System.Drawing.Point(130, 154);
             this.TargetSPD.Name = "TargetSPD";
             this.TargetSPD.Size = new System.Drawing.Size(28, 15);
             this.TargetSPD.TabIndex = 58;
@@ -182,7 +210,7 @@
             // GenderFilter
             // 
             this.GenderFilter.AutoSize = true;
-            this.GenderFilter.Location = new System.Drawing.Point(30, 78);
+            this.GenderFilter.Location = new System.Drawing.Point(168, 49);
             this.GenderFilter.Name = "GenderFilter";
             this.GenderFilter.Size = new System.Drawing.Size(45, 15);
             this.GenderFilter.TabIndex = 45;
@@ -191,7 +219,7 @@
             // TargetSPA
             // 
             this.TargetSPA.AutoSize = true;
-            this.TargetSPA.Location = new System.Drawing.Point(5, 157);
+            this.TargetSPA.Location = new System.Drawing.Point(57, 154);
             this.TargetSPA.Name = "TargetSPA";
             this.TargetSPA.Size = new System.Drawing.Size(27, 15);
             this.TargetSPA.TabIndex = 57;
@@ -200,7 +228,7 @@
             // TargetIVs
             // 
             this.TargetIVs.AutoSize = true;
-            this.TargetIVs.Location = new System.Drawing.Point(88, 105);
+            this.TargetIVs.Location = new System.Drawing.Point(140, 102);
             this.TargetIVs.Name = "TargetIVs";
             this.TargetIVs.Size = new System.Drawing.Size(46, 15);
             this.TargetIVs.TabIndex = 53;
@@ -209,7 +237,7 @@
             // TargetDEF
             // 
             this.TargetDEF.AutoSize = true;
-            this.TargetDEF.Location = new System.Drawing.Point(150, 128);
+            this.TargetDEF.Location = new System.Drawing.Point(202, 125);
             this.TargetDEF.Name = "TargetDEF";
             this.TargetDEF.Size = new System.Drawing.Size(27, 15);
             this.TargetDEF.TabIndex = 56;
@@ -218,7 +246,7 @@
             // TargetHP
             // 
             this.TargetHP.AutoSize = true;
-            this.TargetHP.Location = new System.Drawing.Point(7, 128);
+            this.TargetHP.Location = new System.Drawing.Point(59, 125);
             this.TargetHP.Name = "TargetHP";
             this.TargetHP.Size = new System.Drawing.Size(23, 15);
             this.TargetHP.TabIndex = 54;
@@ -227,7 +255,7 @@
             // TargetATK
             // 
             this.TargetATK.AutoSize = true;
-            this.TargetATK.Location = new System.Drawing.Point(78, 128);
+            this.TargetATK.Location = new System.Drawing.Point(130, 125);
             this.TargetATK.Name = "TargetATK";
             this.TargetATK.Size = new System.Drawing.Size(27, 15);
             this.TargetATK.TabIndex = 55;
@@ -235,7 +263,7 @@
             // 
             // HPFilter
             // 
-            this.HPFilter.Location = new System.Drawing.Point(33, 126);
+            this.HPFilter.Location = new System.Drawing.Point(85, 123);
             this.HPFilter.Maximum = new decimal(new int[] {
             31,
             0,
@@ -252,7 +280,7 @@
             // 
             // AtkFilter
             // 
-            this.AtkFilter.Location = new System.Drawing.Point(106, 125);
+            this.AtkFilter.Location = new System.Drawing.Point(158, 122);
             this.AtkFilter.Maximum = new decimal(new int[] {
             31,
             0,
@@ -269,7 +297,7 @@
             // 
             // SpeFilter
             // 
-            this.SpeFilter.Location = new System.Drawing.Point(180, 154);
+            this.SpeFilter.Location = new System.Drawing.Point(232, 151);
             this.SpeFilter.Maximum = new decimal(new int[] {
             31,
             0,
@@ -286,7 +314,7 @@
             // 
             // DefFilter
             // 
-            this.DefFilter.Location = new System.Drawing.Point(180, 125);
+            this.DefFilter.Location = new System.Drawing.Point(232, 122);
             this.DefFilter.Maximum = new decimal(new int[] {
             31,
             0,
@@ -303,7 +331,7 @@
             // 
             // SpdFilter
             // 
-            this.SpdFilter.Location = new System.Drawing.Point(106, 154);
+            this.SpdFilter.Location = new System.Drawing.Point(158, 151);
             this.SpdFilter.Maximum = new decimal(new int[] {
             31,
             0,
@@ -320,7 +348,7 @@
             // 
             // SpaFilter
             // 
-            this.SpaFilter.Location = new System.Drawing.Point(33, 155);
+            this.SpaFilter.Location = new System.Drawing.Point(85, 152);
             this.SpaFilter.Maximum = new decimal(new int[] {
             31,
             0,
@@ -337,7 +365,7 @@
             // 
             // SaveButton
             // 
-            this.SaveButton.Location = new System.Drawing.Point(68, 262);
+            this.SaveButton.Location = new System.Drawing.Point(122, 270);
             this.SaveButton.Name = "SaveButton";
             this.SaveButton.Size = new System.Drawing.Size(75, 23);
             this.SaveButton.TabIndex = 64;
@@ -347,7 +375,7 @@
             // 
             // ResetButton
             // 
-            this.ResetButton.Location = new System.Drawing.Point(149, 262);
+            this.ResetButton.Location = new System.Drawing.Point(203, 270);
             this.ResetButton.Name = "ResetButton";
             this.ResetButton.Size = new System.Drawing.Size(75, 23);
             this.ResetButton.TabIndex = 65;
@@ -359,7 +387,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(296, 300);
+            this.ClientSize = new System.Drawing.Size(422, 310);
             this.ControlBox = false;
             this.Controls.Add(this.ResetButton);
             this.Controls.Add(this.SaveButton);
@@ -381,7 +409,6 @@
         #endregion
 
         private GroupBox StopConditions;
-        private CheckBox StopOnShiny;
         private CheckBox IgnoreIVFilter;
         private CheckBox CheckBoxOf3;
         private Label TargetSPE;
@@ -403,5 +430,8 @@
         private ComboBox GenderBox;
         private Label PresetIVs;
         private ComboBox PresetIVBox;
+        private ComboBox ShinyBox;
+        private Label label1;
+        private CheckBox ScaleBox;
     }
 }

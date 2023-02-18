@@ -15,7 +15,7 @@ namespace PokeViewer.NET
     {
         private static readonly SwitchConnectionConfig Config = new() { Protocol = SwitchProtocol.WiFi, IP = Properties.Settings.Default.SwitchIP, Port = 6000 };
         public SwitchSocketAsync SwitchConnection = new(Config);
-        private const string ViewerVersion = "1.0.1";
+        private const string ViewerVersion = "1.0.2";
         public MainViewer()
         {
             InitializeComponent();
@@ -183,6 +183,7 @@ namespace PokeViewer.NET
 
         private async void FillPokeData(PKM pk, ulong offset, uint offset2, int size)
         {
+            var token = CancellationToken.None;
             Specialty.Visible = false;
             var sprite = string.Empty;
             bool isValid = false;
@@ -323,7 +324,7 @@ namespace PokeViewer.NET
                     }
                     LiveStats.Text = $"{GameInfo.GetStrings(1).Move[pk.Move1]} - {pk.Move1_PP}PP{Environment.NewLine}{GameInfo.GetStrings(1).Move[pk.Move2]} - {pk.Move2_PP}PP{Environment.NewLine}{GameInfo.GetStrings(1).Move[pk.Move3]} - {pk.Move3_PP}PP{Environment.NewLine}{GameInfo.GetStrings(1).Move[pk.Move4]} - {pk.Move4_PP}PP";
                     HpLabel.Text = $"HP - {(pk.Stat_HPCurrent / StartingHP) * 100}%";
-                    await Task.Delay(refr, CancellationToken.None).ConfigureAwait(false); // Wait time between reads
+                    await Task.Delay(refr, token).ConfigureAwait(false); // Wait time between reads
                 }
                 LiveStats.Clear();
                 HpLabel.Text = "          HP%";
@@ -346,13 +347,14 @@ namespace PokeViewer.NET
 
         public async Task<PK9> ReadInBattlePokemonSV(ulong offset, int size)
         {
-            var data = await SwitchConnection.ReadBytesAbsoluteAsync(offset, size, CancellationToken.None).ConfigureAwait(false);
+            var token = CancellationToken.None;
+            var data = await SwitchConnection.ReadBytesAbsoluteAsync(offset, size, token).ConfigureAwait(false);
             var pk = new PK9(data);
             if (UniqueBox.Checked)
             {
                 var ptr = new long[] { 0x42F3DD8, 0xD8, 0x48, 0x18, 0xD8, 0x1E0 };
-                var ofs = await SwitchConnection.PointerAll(ptr, CancellationToken.None).ConfigureAwait(false);
-                data = await SwitchConnection.ReadBytesAbsoluteAsync(ofs, size, CancellationToken.None).ConfigureAwait(false); // RaidLobbyPokemon
+                var ofs = await SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false);
+                data = await SwitchConnection.ReadBytesAbsoluteAsync(ofs, size, token).ConfigureAwait(false); // RaidLobbyPokemon
                 pk = new PK9(data);
                 return pk;
             }
@@ -689,8 +691,9 @@ namespace PokeViewer.NET
             Properties.Settings.Default.Save();
         }
 
-        private void InGameScreenshot_Click(object sender, EventArgs e)
+        private async void InGameScreenshot_Click(object sender, EventArgs e)
         {
+            var token = CancellationToken.None;
             var fn = "screenshot.jpg";
             if (!SwitchConnection.Connected)
             {
@@ -698,7 +701,7 @@ namespace PokeViewer.NET
                 MessageBox.Show($"No device connected! In-Game Screenshot not possible!");
                 return;
             }
-            var bytes = SwitchConnection.Screengrab(CancellationToken.None).Result;
+            var bytes = await SwitchConnection.Screengrab(token).ConfigureAwait(false);
             File.WriteAllBytes(fn, bytes);
             FileStream stream = new(fn, System.IO.FileMode.Open);
             var img = Image.FromStream(stream);

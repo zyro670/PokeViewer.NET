@@ -109,13 +109,13 @@ namespace PokeViewer.NET.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool StopOnShiny {
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public int ShinyFilter {
             get {
-                return ((bool)(this["StopOnShiny"]));
+                return ((int)(this["ShinyFilter"]));
             }
             set {
-                this["StopOnShiny"] = value;
+                this["ShinyFilter"] = value;
             }
         }
         
@@ -236,6 +236,18 @@ namespace PokeViewer.NET.Properties {
             }
             set {
                 this["PresetIVS"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool MinMaxOnly {
+            get {
+                return ((bool)(this["MinMaxOnly"]));
+            }
+            set {
+                this["MinMaxOnly"] = value;
             }
         }
     }

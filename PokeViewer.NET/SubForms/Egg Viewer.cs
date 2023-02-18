@@ -123,12 +123,21 @@ namespace PokeViewer.NET.SubForms
                         if (pk.Gender != Settings.Default.GenderFilter && Settings.Default.GenderFilter != 3)
                             break; // gender != gender filter when gender is not Any
 
-                        if (pk.IsShiny && (Species)pk.Species != Species.None && Settings.Default.StopOnShiny == true)
-                        {                            
-                            if ((Species)pk.Species is Species.Dunsparce or Species.Tandemaus && pk.EncryptionConstant % 100 != 0 && Settings.Default.SegmentOrFamily == true)
+                        if (Settings.Default.MinMaxOnly && pk.Scale > 0 && pk.Scale < 255) // Mini/Jumbo Only
+                            break;
+
+                        if (pk.IsShiny && (Species)pk.Species != Species.None && Settings.Default.ShinyFilter is not 0 or 1)
+                        {
+                            if (Settings.Default.ShinyFilter is 4 && pk.ShinyXor != 0) // SquareOnly
                                 break;
 
-                            if ((Species)pk.Species is Species.Dunsparce or Species.Tandemaus && pk.EncryptionConstant % 100 == 0 && Settings.Default.SegmentOrFamily == true)
+                            if (Settings.Default.ShinyFilter is 3 && pk.ShinyXor > 0 && pk.ShinyXor > 16) // StarOnly
+                                break;
+
+                            if ((Species)pk.Species is Species.Dunsparce or Species.Tandemaus && pk.EncryptionConstant % 100 != 0 && Settings.Default.SegmentOrFamily)
+                                break;
+
+                            if ((Species)pk.Species is Species.Dunsparce or Species.Tandemaus && pk.EncryptionConstant % 100 == 0 && Settings.Default.SegmentOrFamily)
                             {
                                 await Click(HOME, 0_500, token).ConfigureAwait(false);
                                 SendNotifications(output, sprite);
@@ -478,14 +487,6 @@ namespace PokeViewer.NET.SubForms
             }
 
             MessageBox.Show("Done.");
-        }
-
-        private void button1_Click_1(object sender, EventArgs e)
-        {
-            Bitmap FormScreenShot = new(Width, Height);
-            Graphics G = Graphics.FromImage(FormScreenShot);
-            G.CopyFromScreen(Location, new Point(0, 0), Size);
-            Clipboard.SetImage(FormScreenShot);
         }
 
         private void StopConditionsButton_Click(object sender, EventArgs e)

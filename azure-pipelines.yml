@@ -2,44 +2,36 @@
 # Build and run tests for .NET Desktop or Windows classic desktop solutions.
 # Add steps that publish symbols, save build artifacts, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/apps/windows/dot-net
-
 trigger:
 - main
-
 pool:
   name: Azure Pipelines
   vmImage: 'windows-latest'
   demands:
   - msbuild
   - visualstudio
-
 variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
-
 steps:
 - task: NuGetToolInstaller@1
-
 - task: NuGetCommand@2
   inputs:
     command: 'restore'
     restoreSolution: '**/*.sln'
-
 - task: VSBuild@1
   inputs:
     solution: '$(solution)'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
-
 - task: VSTest@2
   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
-
-- task: PublishBuildArtifact@1
+- task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: PokeViewer.NET'
   inputs:
-    PathtoPublish: 'PokeViewer.NET\bin\x64\Release\net7.0-windows'
+    PathtoPublish: 'PokeViewer.NET\bin\Release\net7.0-windows'
     ArtifactName: PokeViewer.NET
   condition: succeededOrFailed()

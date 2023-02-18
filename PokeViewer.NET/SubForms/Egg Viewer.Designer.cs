@@ -60,7 +60,6 @@ namespace PokeViewer.NET.SubForms
             this.UserDiscordIDText = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.ScreenshotEggView = new System.Windows.Forms.Button();
             this.StopConditionsButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.PokeSpriteBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BallBox)).BeginInit();
@@ -354,21 +353,11 @@ namespace PokeViewer.NET.SubForms
             this.label3.TabIndex = 42;
             this.label3.Text = "User ID To Ping";
             // 
-            // ScreenshotEggView
-            // 
-            this.ScreenshotEggView.Location = new System.Drawing.Point(88, 312);
-            this.ScreenshotEggView.Name = "ScreenshotEggView";
-            this.ScreenshotEggView.Size = new System.Drawing.Size(105, 23);
-            this.ScreenshotEggView.TabIndex = 43;
-            this.ScreenshotEggView.Text = "Screenshot";
-            this.ScreenshotEggView.UseVisualStyleBackColor = true;
-            this.ScreenshotEggView.Click += new System.EventHandler(this.button1_Click_1);
-            // 
             // StopConditionsButton
             // 
-            this.StopConditionsButton.Location = new System.Drawing.Point(258, 39);
+            this.StopConditionsButton.Location = new System.Drawing.Point(88, 314);
             this.StopConditionsButton.Name = "StopConditionsButton";
-            this.StopConditionsButton.Size = new System.Drawing.Size(101, 23);
+            this.StopConditionsButton.Size = new System.Drawing.Size(105, 23);
             this.StopConditionsButton.TabIndex = 63;
             this.StopConditionsButton.Text = "Stop Conditions";
             this.StopConditionsButton.UseVisualStyleBackColor = true;
@@ -381,7 +370,6 @@ namespace PokeViewer.NET.SubForms
             this.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.ClientSize = new System.Drawing.Size(426, 374);
             this.Controls.Add(this.StopConditionsButton);
-            this.Controls.Add(this.ScreenshotEggView);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.UserDiscordIDText);
@@ -455,7 +443,6 @@ namespace PokeViewer.NET.SubForms
         private TextBox UserDiscordIDText;
         private Label label2;
         private Label label3;
-        private Button ScreenshotEggView;
         private Button StopConditionsButton;
     }
 }

@@ -23,8 +23,8 @@
     <Setting Name="UseWiFiProtocol" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="StopOnShiny" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+    <Setting Name="ShinyFilter" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">2</Value>
     </Setting>
     <Setting Name="SegmentOrFamily" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
@@ -55,6 +55,9 @@
     </Setting>
     <Setting Name="PresetIVS" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="MinMaxOnly" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>
 </SettingsFile>
