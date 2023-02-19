@@ -2,6 +2,7 @@
 using PokeViewer.NET.WideViewForms;
 using SysBot.Base;
 using static PokeViewer.NET.RoutineExecutor;
+using static PokeViewer.NET.ViewerUtil;
 
 namespace PokeViewer.NET
 {
@@ -12,6 +13,8 @@ namespace PokeViewer.NET
         public ToolTip tt = new();
         public bool ReadInProgress;
         private readonly SwitchSocketAsync SwitchConnection;
+        private List<PKM> PKMs = new();
+        public string DumpFolder { get; set; } = AppDomain.CurrentDomain.BaseDirectory;
         public BoxViewerMode(int gametype, SwitchSocketAsync switchConnection)
         {
             InitializeComponent();
@@ -38,6 +41,7 @@ namespace PokeViewer.NET
 
         private async void button1_ClickAsync(object sender, EventArgs e)
         {
+            var token = CancellationToken.None;
             ReadInProgress = true;
             tt.RemoveAll();
             tt.Dispose();
@@ -81,7 +85,7 @@ namespace PokeViewer.NET
                     }
             }
             var currentbox = int.Parse(textBox1.Text);
-            await ReadBoxes(offset, size, currentbox, CancellationToken.None).ConfigureAwait(false);
+            await ReadBoxes(offset, size, currentbox, token).ConfigureAwait(false);
 
             ReadInProgress = false;
         }
@@ -98,6 +102,10 @@ namespace PokeViewer.NET
             PKM pk = new PK9();
             button1.Text = "Reading...";
             button1.Enabled = false;
+            button2.Enabled = false;
+            button3.Enabled = false;
+            textBox1.Enabled = false;
+            checkBox1.Enabled = false;
             for (int i = 0; i < 30; i++)
             {
                 switch (GameType)
@@ -111,8 +119,9 @@ namespace PokeViewer.NET
                             var boxStart = b1s1 + (ulong)(box * boxsize);
                             var slotstart = boxStart + (ulong)(i * slotsize);
 
+                            _ = new PK9();
                             pk = await ReadBoxPokemonSV(slotstart, size, token).ConfigureAwait(false);
-
+                            PKMs.Add(pk);
                             break;
                         }
                     case (int)GameSelected.LegendsArceus:
@@ -126,6 +135,7 @@ namespace PokeViewer.NET
 
                             _ = new PA8();
                             pk = await ReadBoxPokemonLA(slotstart, size, token).ConfigureAwait(false);
+                            PKMs.Add(pk);
                             break;
                         }
                     case (int)GameSelected.BrilliantDiamond:
@@ -136,6 +146,7 @@ namespace PokeViewer.NET
                             var boxStart = await SwitchConnection.PointerAll(b1s1, token).ConfigureAwait(false);
                             _ = new PB8();
                             pk = await ReadBoxPokemonBDSP(boxStart, size, token).ConfigureAwait(false);
+                            PKMs.Add(pk);
                             break;
                         }
                     case (int)GameSelected.ShiningPearl:
@@ -146,6 +157,7 @@ namespace PokeViewer.NET
                             var boxStart = await SwitchConnection.PointerAll(b1s1, token).ConfigureAwait(false);
                             _ = new PB8();
                             pk = await ReadBoxPokemonBDSP(boxStart, size, token).ConfigureAwait(false);
+                            PKMs.Add(pk);
                             break;
                         }
                     case (int)GameSelected.Sword or (int)GameSelected.Shield:
@@ -158,6 +170,7 @@ namespace PokeViewer.NET
                         {
                             _ = new PB7();
                             pk = await ReadBoxPokemonLGPE((uint)GetSlotOffset(box, i), LGPESlotSize + LGPEGapSize, token).ConfigureAwait(false);
+                            PKMs.Add(pk);
                             break;
                         }
                 }
@@ -212,8 +225,21 @@ namespace PokeViewer.NET
                 var sprite = PokeImg(pk, isGmax);
                 boxes[i].Load(sprite);
             }
+            if (checkBox1.Checked)
+            {
+                foreach (var pkm in PKMs)
+                {
+                    if ((Species)pkm.Species is not Species.None)
+                        DumpPokemon(DumpFolder, "boxdump", pkm);
+                }
+            }
             button1.Text = "View";
+            label2.Text = $"{(GameSelected)GameType}";
             button1.Enabled = true;
+            button2.Enabled = true;
+            button3.Enabled = true;
+            textBox1.Enabled = true;
+            checkBox1.Enabled = true;
 
         }
 
@@ -278,20 +304,6 @@ namespace PokeViewer.NET
             }
         }
 
-        private static bool HasMark(IRibbonIndex pk, out RibbonIndex result)
-        {
-            result = default;
-            for (var mark = RibbonIndex.MarkLunchtime; mark <= RibbonIndex.MarkSlump; mark++)
-            {
-                if (pk.GetRibbon((int)mark))
-                {
-                    result = mark;
-                    return true;
-                }
-            }
-            return false;
-        }
-
         private void button2_Click(object sender, EventArgs e)
         {
             ForwardClick(sender, e);
@@ -299,6 +311,7 @@ namespace PokeViewer.NET
 
         private async void ForwardClick(object sender, EventArgs e)
         {
+            var token = CancellationToken.None;
             ReadInProgress = true;
             CurrentSlotStats = new();
             uint offset = 0x00;
@@ -343,7 +356,7 @@ namespace PokeViewer.NET
             else
                 currentbox = currentbox + 1;
             textBox1.Text = currentbox.ToString();
-            await ReadBoxes(offset, size, currentbox, CancellationToken.None).ConfigureAwait(false);
+            await ReadBoxes(offset, size, currentbox, token).ConfigureAwait(false);
 
             ReadInProgress = false;
         }
@@ -355,6 +368,7 @@ namespace PokeViewer.NET
 
         private async void BackwardClick(object sender, EventArgs e)
         {
+            var token = CancellationToken.None;
             ReadInProgress = true;
             CurrentSlotStats = new();
             uint offset = 0x00;
@@ -400,7 +414,7 @@ namespace PokeViewer.NET
             else
                 currentbox = currentbox - 1;
             textBox1.Text = currentbox.ToString();
-            await ReadBoxes(offset, size, currentbox, CancellationToken.None).ConfigureAwait(false);
+            await ReadBoxes(offset, size, currentbox, token).ConfigureAwait(false);
 
             ReadInProgress = false;
         }        

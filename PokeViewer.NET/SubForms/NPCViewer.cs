@@ -49,6 +49,7 @@ namespace PokeViewer.NET.WideViewForms
                 CurrentSlotStats.Add("No Pokémon present.");
                 sprite = "https://raw.githubusercontent.com/kwsch/PKHeX/master/PKHeX.Drawing.PokeSprite/Resources/img/Pokemon%20Sprite%20Overlays/starter.png";
                 boxes[count].Load(sprite);
+                boxes[count].SizeMode = PictureBoxSizeMode.CenterImage;
                 return;
             }
 
@@ -61,10 +62,11 @@ namespace PokeViewer.NET.WideViewForms
                 case 1: gender = " (F)"; break;
                 case 2: break;
             }
-            string output = $"{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{(Species)pk.Species}{form}{gender}{Environment.NewLine}{(Nature)pk.Nature} Nature{Environment.NewLine}Ability: {(Ability)pk.Ability}{Environment.NewLine}Level: {pk.CurrentLevel}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}{Environment.NewLine}{GameInfo.GetStrings(1).Move[pk.Move1]} - {pk.Move1_PP}{Environment.NewLine}{GameInfo.GetStrings(1).Move[pk.Move2]} - {pk.Move2_PP}{Environment.NewLine}{GameInfo.GetStrings(1).Move[pk.Move3]} - {pk.Move3_PP}{Environment.NewLine}{GameInfo.GetStrings(1).Move[pk.Move4]} - {pk.Move4_PP}";
+            string output = $"{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{(Species)pk.Species}{form}{gender}{Environment.NewLine}{(Nature)pk.Nature} Nature | Ability: {(Ability)pk.Ability} | IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}{Environment.NewLine}{GameInfo.GetStrings(1).Move[pk.Move1]} - {pk.Move1_PP} | {GameInfo.GetStrings(1).Move[pk.Move2]} - {pk.Move2_PP}{Environment.NewLine}{GameInfo.GetStrings(1).Move[pk.Move3]} - {pk.Move3_PP} | {GameInfo.GetStrings(1).Move[pk.Move4]} - {pk.Move4_PP}";
             CurrentSlotStats.Add(output);
             sprite = PokeImg(pk, isGmax);
             boxes[count].Load(sprite);
+            boxes[count].SizeMode = PictureBoxSizeMode.Zoom;
 
             return;
         }
@@ -83,28 +85,73 @@ namespace PokeViewer.NET.WideViewForms
             return pk;
         }
 
+        public async Task<PB8> ReadInBattlePokemonBDSP(ulong offset, int size)
+        {
+            var token = CancellationToken.None;
+            var data = await SwitchConnection.ReadBytesAbsoluteAsync(offset, size, token).ConfigureAwait(false);
+            var pk = new PB8(data);
+            return pk;
+        }
+
         private async void button1_ClickAsync(object sender, EventArgs e)
         {
             uint ofs = 0x886BC348;
+            var token = CancellationToken.None;
             tt.RemoveAll();
             tt.Dispose();
             tt = new();
-            if (SwitchConnection.Connected)
+            for (int i = 0; i < 6; i++)
             {
-                for (int i = 0; i < 6; i++)
+                switch (GameType)
                 {
-                    switch (GameType)
-                    {
-                        case (int)GameSelected.Sword or (int)GameSelected.Shield:
-                            var pk8 = await ReadInBattlePokemonSWSH((uint)(ofs + (i * 0x7A0)), 0x158).ConfigureAwait(false); SanityCheck(pk8, i); break;
-                        case (int)GameSelected.LetsGoPikachu or (int)GameSelected.LetsGoEevee: ofs = 0x9A119D20;
-                            var pb7 = await ReadInBattlePokemonLGPE((uint)(ofs + (i * 0x280)), 0x158).ConfigureAwait(false); SanityCheck(pb7, i); break;
-                    }
-            
+                    case (int)GameSelected.Sword or (int)GameSelected.Shield:
+                        var pk8 = await ReadInBattlePokemonSWSH((uint)(ofs + (i * 0x7A0)), 0x158).ConfigureAwait(false); SanityCheck(pk8, i); break;
+                    case (int)GameSelected.LetsGoPikachu or (int)GameSelected.LetsGoEevee:
+                        ofs = 0x9A119D20;
+                        var pb7 = await ReadInBattlePokemonLGPE((uint)(ofs + (i * 0x280)), 0x158).ConfigureAwait(false); SanityCheck(pb7, i); break;
+                    case (int)GameSelected.BrilliantDiamond:
+                        {
+                            var val = 0x20;
+                            switch (i)
+                            {
+                                case 0: val = 0x20; break;
+                                case 1: val = 0x28; break;
+                                case 2: val = 0x30; break;
+                                case 3: val = 0x38; break;
+                                case 4: val = 0x40; break;
+                                case 5: val = 0x48; break;
+                            }
+                            var ptr = new long[] { 0x4C64DC0, 0xB8, 0x10, 0x800, 0x58, 0x28, 0x10, val, 0x20, 0x18, 0x20 };
+                            var ufs = await SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false);
+                            var size = 0x168;
+                            var pb8 = await ReadInBattlePokemonBDSP(ufs, size).ConfigureAwait(false);
+                            SanityCheck(pb8, i);
+                            break;
+                        }
+                    case (int)GameSelected.ShiningPearl:
+                        {
+                            var val = 0x20;
+                            switch (i)
+                            {
+                                case 0: val = 0x20; break;
+                                case 1: val = 0x28; break;
+                                case 2: val = 0x30; break;
+                                case 3: val = 0x38; break;
+                                case 4: val = 0x40; break;
+                                case 5: val = 0x48; break;
+                            }
+                            var ptr = new long[] { 0x4E7BE98, 0xB8, 0x10, 0x800, 0x58, 0x28, 0x10, val, 0x20, 0x18, 0x20 };
+                            var ufs = await SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false);
+                            var size = 0x168;
+                            var pb8 = await ReadInBattlePokemonBDSP(ufs, size).ConfigureAwait(false);
+                            SanityCheck(pb8, i);
+                            break;
+                        }
                 }
+                var res = $"{CurrentSlotStats[i]}{Environment.NewLine}----------{Environment.NewLine}";
+                textBox1.Text += res;
+
             }
-            else
-                return;
         }
 
         private void pictureBox_MouseHover(object sender, EventArgs e)

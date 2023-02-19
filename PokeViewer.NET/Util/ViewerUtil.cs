@@ -1,4 +1,7 @@
-﻿namespace PokeViewer.NET
+﻿using PKHeX.Core;
+using SysBot.Base;
+
+namespace PokeViewer.NET
 {
     public partial class ViewerUtil
     {
@@ -15,6 +18,71 @@
         delegate void ChangeButtonStateCallback(Button sender, bool State);
         delegate void TextboxSetTextCallback(TextBox sender, string Text);
 
+        public static void DumpPokemon(string folder, string subfolder, PKM pk)
+        {
+            string form = pk.Form > 0 ? $"-{pk.Form:00}" : string.Empty;
+            string ballFormatted = string.Empty;
+            string shinytype = string.Empty;
+            string marktype = string.Empty;
+            if (pk.IsShiny)
+            {
+                if (pk.Format >= 8 && (pk.ShinyXor == 0 || pk.FatefulEncounter || pk.Version == (int)GameVersion.GO))
+                    shinytype = " ■";
+                else
+                    shinytype = " ★";
+            }
 
+            string IVList = pk.IV_HP + "." + pk.IV_ATK + "." + pk.IV_DEF + "." + pk.IV_SPA + "." + pk.IV_SPD + "." + pk.IV_SPE;
+
+            string TIDFormatted = pk.Generation >= 7 ? $"{pk.TrainerTID7:000000}" : $"{pk.TID16:00000}";
+
+            if (pk.Ball != (int)Ball.None)
+                ballFormatted = " - " + GameInfo.Strings.balllist[pk.Ball].Split(' ')[0];
+
+            string speciesName = SpeciesName.GetSpeciesNameGeneration(pk.Species, (int)LanguageID.English, pk.Format);
+            if (pk is IGigantamax gmax && gmax.CanGigantamax)
+                speciesName += "-Gmax";
+
+            string OTInfo = string.IsNullOrEmpty(pk.OT_Name) ? "" : $" - {pk.OT_Name} - {TIDFormatted}{ballFormatted}";
+
+            if (pk is PK8)
+            {
+                bool hasMark = HasMark((PK8)pk, out RibbonIndex mark);
+                if (hasMark)
+                    marktype = hasMark ? $"{mark.ToString().Replace("Mark", "")}Mark - " : "";
+            }
+
+            string filename = $"{pk.Species:000}{form}{shinytype} - {speciesName} - {marktype}{IVList}{OTInfo} - {pk.EncryptionConstant:X8}";
+            string filetype = "";
+            if (pk is PK8)
+                filetype = ".pk8";
+            if (pk is PB8)
+                filetype = ".pb8";
+            if (pk is PA8)
+                filetype = ".pa8";
+            if (pk is PK9)
+                filetype = ".pk9";
+            if (!Directory.Exists(folder))
+                return;
+            var dir = Path.Combine(folder, subfolder);
+            Directory.CreateDirectory(dir);
+            var fn = Path.Combine(dir, filename + filetype);
+            File.WriteAllBytes(fn, pk.DecryptedPartyData);
+            LogUtil.LogInfo($"Saved file: {fn}", "Dump");
+        }
+
+        public static bool HasMark(IRibbonIndex pk, out RibbonIndex result)
+        {
+            result = default;
+            for (var mark = RibbonIndex.MarkLunchtime; mark <= RibbonIndex.MarkSlump; mark++)
+            {
+                if (pk.GetRibbon((int)mark))
+                {
+                    result = mark;
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

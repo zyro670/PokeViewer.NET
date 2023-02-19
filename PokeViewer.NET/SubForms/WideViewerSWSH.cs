@@ -1,6 +1,7 @@
 ﻿using PKHeX.Core;
 using SysBot.Base;
 using static PokeViewer.NET.RoutineExecutor;
+using static PokeViewer.NET.ViewerUtil;
 using static SysBot.Base.SwitchButton;
 
 namespace PokeViewer.NET.WideViewForms
@@ -35,7 +36,7 @@ namespace PokeViewer.NET.WideViewForms
 
         private async Task<uint> GetOverworldOffsets(CancellationToken token)
         {
-            List<uint> offset = new List<uint>();
+            List<uint> offset = new();
             for (uint i = 0; i < 10; i++)
             {
                 uint fishing = 0x4505B640 + i * KCoordIncrement;
@@ -82,7 +83,6 @@ namespace PokeViewer.NET.WideViewForms
             if (offset.FirstOrDefault() != 0)
             {
                 DefaultOffset = offset.FirstOrDefault();
-                MessageBox.Show($"Starting offset set to 0x{DefaultOffset:X8}");
             }
             return DefaultOffset;
         }
@@ -103,6 +103,8 @@ namespace PokeViewer.NET.WideViewForms
             button1.Enabled = false;
             button1.Text = "Saving...";
             await OverworldSaveGame(token).ConfigureAwait(false);
+            button1.Text = "Preparing...";
+            await GetOverworldOffsets(token).ConfigureAwait(false);
             button1.Text = "Viewing...";
             int d = 0;
             int aura;
@@ -189,38 +191,10 @@ namespace PokeViewer.NET.WideViewForms
             button1.Text = "WideView";
         }
 
-        public static bool HasMark(IRibbonIndex pk, out RibbonIndex result)
-        {
-            result = default;
-            for (var mark = RibbonIndex.MarkLunchtime; mark <= RibbonIndex.MarkSlump; mark++)
-            {
-                if (pk.GetRibbon((int)mark))
-                {
-                    result = mark;
-                    return true;
-                }
-            }
-            return false;
-        }
-
         private void button1_Click(object sender, EventArgs e)
         {
             WideViewOverworld(CancellationToken.None).ConfigureAwait(false);
         }
 
-        private async void button2_Click(object sender, EventArgs e)
-        {
-            button1.Enabled = false;
-            button1.Text = "Preparing...";
-            button2.Enabled = false;
-            button2.Text = "Refreshing...";
-            var token = CancellationToken.None;
-            await OverworldSaveGame(token).ConfigureAwait(false);
-            await GetOverworldOffsets(token).ConfigureAwait(false);
-            button1.Enabled = true;
-            button1.Text = "Ready!";
-            button2.Enabled = true;
-            button2.Text = "Refresh Offsets";
-        }
     }
 }

@@ -13,12 +13,13 @@ namespace PokeViewer.NET.SubForms
     public partial class Egg_Viewer : Form
     {
         private readonly SwitchSocketAsync SwitchConnection;
+        private bool isFetching;
         public Egg_Viewer(SwitchSocketAsync switchConnection)
         {
             InitializeComponent();
             SwitchConnection = switchConnection;
-            WebHookText.Text = Properties.Settings.Default.WebHook;
-            UserDiscordIDText.Text = Properties.Settings.Default.UserDiscordID;
+            WebHookText.Text = Settings.Default.WebHook;
+            UserDiscordIDText.Text = Settings.Default.UserDiscordID;
         }
         private int eggcount = 0;
         private int sandwichcount = 0;
@@ -27,23 +28,26 @@ namespace PokeViewer.NET.SubForms
         private readonly uint PicnicMenu = 0x04416020;
         private readonly byte[] BlankVal = { 0x01 };
         private int[] IVFilters = Array.Empty<int>();
-        public IReadOnlyList<long> OverworldPointer { get; } = new long[] { 0x43A7848, 0x348, 0x10, 0xD8, 0x28 };
+        private IReadOnlyList<long> OverworldPointer { get; } = new long[] { 0x43A7848, 0x348, 0x10, 0xD8, 0x28 };
         private ulong OverworldOffset;
-
-        public string DumpFolder { get; set; } = AppDomain.CurrentDomain.BaseDirectory;
 
         private async void button1_Click(object sender, EventArgs e)
         {
+            var token = CancellationToken.None;
+            isFetching = true;
+
             if (!string.IsNullOrEmpty(Settings.Default.WebHook))
                 WebHookText.Text = Settings.Default.WebHook;
+
+            if (ScreenOffBox.Checked)
+                await SetScreen(ScreenState.Off, token).ConfigureAwait(false);
 
             IVFilters = GrabIvFilters();
 
             if (FetchButton.Enabled == true)
                 DisableOptions();
-            var token = CancellationToken.None;
-            eggcount = 0;
 
+            eggcount = 0;
             await SwitchConnection.WriteBytesMainAsync(BlankVal, PicnicMenu, token).ConfigureAwait(false);
 
             if (EatOnStart.Checked)
@@ -68,7 +72,7 @@ namespace PokeViewer.NET.SubForms
                 {
                     NextSanwichLabel.Text = $"Next Sandwich: {endTime:hh\\:mm\\:ss}";
                     var pk = await ReadPokemonSV(EggData, 344, token).ConfigureAwait(false);
-                    while (pk == null ||pkprev.EncryptionConstant == pk.EncryptionConstant || (Species)pk.Species == Species.None)
+                    while (pk == null || pkprev.EncryptionConstant == pk.EncryptionConstant || (Species)pk.Species == Species.None)
                     {
                         waiting++;
                         await Task.Delay(1_500, token).ConfigureAwait(false);
@@ -89,6 +93,10 @@ namespace PokeViewer.NET.SubForms
                     pk = await ReadPokemonSV(EggData, 344, token).ConfigureAwait(false);
                     while (pk != null && (Species)pk.Species != Species.None && pkprev.EncryptionConstant != pk.EncryptionConstant)
                     {
+                        pk = await ReadPokemonSV(EggData, 344, token).ConfigureAwait(false);
+                        if (pk == null || pkprev.EncryptionConstant == pk.EncryptionConstant || (Species)pk.Species == Species.None)
+                            break;
+
                         waiting = 0;
                         ctr++;
                         eggcount++;
@@ -103,55 +111,26 @@ namespace PokeViewer.NET.SubForms
                             case 1: gender = " (F)"; break;
                             case 2: break;
                         }
-                        string output = $"{$"Egg #{eggcount}"}{Environment.NewLine}{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{(Species)pk.Species}{form}{gender}{pid}{ec}{Environment.NewLine}Nature: {(Nature)pk.Nature}{Environment.NewLine}Ability: {(Ability)pk.Ability}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}";
+                        string output = $"{$"Egg #{eggcount}"}{Environment.NewLine}{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{(Species)pk.Species}{form}{gender}{pid}{ec}{Environment.NewLine}Nature: {(Nature)pk.Nature}{Environment.NewLine}Ability: {(Ability)pk.Ability}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}{Environment.NewLine}Scale: {PokeSizeDetailedUtil.GetSizeRating(pk.Scale)}";
                         PokeStats.Text = output;
+                        LogUtil.LogText(output);
                         var sprite = PokeImg(pk, false);
                         PokeSpriteBox.Load(sprite);
                         var ballsprite = SpriteUtil.GetBallSprite(pk.Ball);
                         BallBox.Image = ballsprite;
 
                         await Task.Delay(0_500, token).ConfigureAwait(false);
-                        if (pk.IsShiny)
+
+                        bool match = ValidateEncounter(pk);
+                        if (match)
                         {
-                            shinycount++;
-                            ShinyFoundLabel.Text = $"Shinies Found: {shinycount}";
-                        }
-
-                        if (!pk.IVs.SequenceEqual(IVFilters) && !Settings.Default.IgnoreIVFilter)
-                            break; // ivs != iv filters and ignore filter is false
-
-                        if (pk.Gender != Settings.Default.GenderFilter && Settings.Default.GenderFilter != 3)
-                            break; // gender != gender filter when gender is not Any
-
-                        if (Settings.Default.MinMaxOnly && pk.Scale > 0 && pk.Scale < 255) // Mini/Jumbo Only
-                            break;
-
-                        if (pk.IsShiny && (Species)pk.Species != Species.None && Settings.Default.ShinyFilter is not 0 or 1)
-                        {
-                            if (Settings.Default.ShinyFilter is 4 && pk.ShinyXor != 0) // SquareOnly
-                                break;
-
-                            if (Settings.Default.ShinyFilter is 3 && pk.ShinyXor > 0 && pk.ShinyXor > 16) // StarOnly
-                                break;
-
-                            if ((Species)pk.Species is Species.Dunsparce or Species.Tandemaus && pk.EncryptionConstant % 100 != 0 && Settings.Default.SegmentOrFamily)
-                                break;
-
-                            if ((Species)pk.Species is Species.Dunsparce or Species.Tandemaus && pk.EncryptionConstant % 100 == 0 && Settings.Default.SegmentOrFamily)
-                            {
-                                await Click(HOME, 0_500, token).ConfigureAwait(false);
-                                SendNotifications(output, sprite);
-                                EnableOptions();
-                                Activate();
-                                MessageBox.Show("Rare Shiny Found! Claim your egg before closing the picnic!");                                
-                                return;
-                            }
-
                             await Click(HOME, 0_500, token).ConfigureAwait(false);
                             SendNotifications(output, sprite);
                             EnableOptions();
                             Activate();
                             MessageBox.Show("Match found! Claim your egg before closing the picnic!");
+                            if (ScreenOffBox.Checked)
+                                await SetScreen(ScreenState.On, token).ConfigureAwait(false);
                             return;
                         }
 
@@ -169,6 +148,44 @@ namespace PokeViewer.NET.SubForms
                 await MakeSandwich(token).ConfigureAwait(false);
             }
         }
+
+        private bool ValidateEncounter(PK9 pk)
+        {
+            if (pk.IsShiny)
+            {
+                shinycount++;
+                ShinyFoundLabel.Text = $"Shinies Found: {shinycount}";
+            }
+
+            if (!pk.IVs.SequenceEqual(IVFilters) && !Settings.Default.IgnoreIVFilter)
+                return false; // ivs != iv filters and ignore filter is false
+
+            if (pk.Gender != Settings.Default.GenderFilter && Settings.Default.GenderFilter != 3)
+                return false; // gender != gender filter when gender is not Any
+
+            if (Settings.Default.MinMaxOnly && pk.Scale > 0 && pk.Scale < 255) // Mini/Jumbo Only
+                return false;
+
+            if (!pk.IsShiny && Settings.Default.ShinyFilter is not 0 or 1)
+                return false;
+
+            if (pk.IsShiny && Settings.Default.ShinyFilter is not 0 or 1)
+            {
+                if (Settings.Default.ShinyFilter is 4 && pk.ShinyXor != 0) // SquareOnly
+                    return false;
+
+                if (Settings.Default.ShinyFilter is 3 && pk.ShinyXor > 0 && pk.ShinyXor > 16) // StarOnly
+                    return false;
+
+                if ((Species)pk.Species is Species.Dunsparce or Species.Tandemaus && pk.EncryptionConstant % 100 != 0 && Settings.Default.SegmentOrFamily)
+                    return false;
+
+                if ((Species)pk.Species is Species.Dunsparce or Species.Tandemaus && pk.EncryptionConstant % 100 == 0 && Settings.Default.SegmentOrFamily)
+                    return true;                
+            }
+            return true;
+        }
+
         private async Task<PK9> ReadPokemonSV(uint offset, int size, CancellationToken token)
         {
             var data = await SwitchConnection.ReadBytesMainAsync(offset, size, token).ConfigureAwait(false);
@@ -176,7 +193,7 @@ namespace PokeViewer.NET.SubForms
             return pk;
         }
 
-        public async Task SetStick(SwitchStick stick, short x, short y, int delay, CancellationToken token)
+        private async Task SetStick(SwitchStick stick, short x, short y, int delay, CancellationToken token)
         {
             var cmd = SwitchCommand.SetStick(stick, x, y, true);
             await SwitchConnection.SendAsync(cmd, token).ConfigureAwait(false);
@@ -338,35 +355,34 @@ namespace PokeViewer.NET.SubForms
 
         }
 
-        public new async Task Click(SwitchButton b, int delay, CancellationToken token)
+        private new async Task Click(SwitchButton b, int delay, CancellationToken token)
         {
             await SwitchConnection.SendAsync(SwitchCommand.Click(b, true), token).ConfigureAwait(false);
             await Task.Delay(delay, token).ConfigureAwait(false);
         }
 
-        public async Task Hold(SwitchButton b, int delay, CancellationToken token)
+        private async Task Hold(SwitchButton b, int delay, CancellationToken token)
         {
             await SwitchConnection.SendAsync(SwitchCommand.Hold(b, true), token).ConfigureAwait(false);
             await Task.Delay(delay, token).ConfigureAwait(false);
         }
 
-        public async Task Release(SwitchButton b, int delay, CancellationToken token)
+        private async Task Release(SwitchButton b, int delay, CancellationToken token)
         {
             await SwitchConnection.SendAsync(SwitchCommand.Release(b, true), token).ConfigureAwait(false);
             await Task.Delay(delay, token).ConfigureAwait(false);
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private async void button2_Click(object sender, EventArgs e)
         {
-            if (SwitchConnection.Connected)
+            var token = CancellationToken.None;
+            if (isFetching)
             {
+                isFetching = false;
                 SwitchConnection.Reset();
-                HardStopButton.Text = "Connect";
-            }
-            else
-            {
-                SwitchConnection.Connect();
-                HardStopButton.Text = "HardStop";
+                EnableOptions();
+                if (ScreenOffBox.Checked)
+                    await SetScreen(ScreenState.On, token).ConfigureAwait(false);
             }
         }
 
@@ -382,10 +398,15 @@ namespace PokeViewer.NET.SubForms
             return Data[0] == 0x01; // 1 when in picnic, 2 in sandwich menu, 3 when eating, 2 when done eating
         }
 
-        public async Task<bool> IsOnOverworld(ulong offset, CancellationToken token)
+        private async Task<bool> IsOnOverworld(ulong offset, CancellationToken token)
         {
             var data = await SwitchConnection.ReadBytesAbsoluteAsync(offset, 1, token).ConfigureAwait(false);
             return data[0] == 0x11;
+        }
+
+        private async Task SetScreen(ScreenState state, CancellationToken token)
+        {
+            await SwitchConnection.SendAsync(SwitchCommand.SetScreen(state, true), token).ConfigureAwait(false);
         }
 
         private void DisableOptions()
@@ -400,6 +421,10 @@ namespace PokeViewer.NET.SubForms
             FillingHoldTime.Enabled = false;
             NumberOfFillings.Enabled = false;
             StopConditionsButton.Enabled = false;
+            EatOnStart.Enabled = false;
+            EatAgain.Enabled = false;
+            HoldIngredients.Enabled = false;
+            ScreenOffBox.Enabled = false;
         }
 
         private void EnableOptions()
@@ -414,10 +439,14 @@ namespace PokeViewer.NET.SubForms
             FillingHoldTime.Enabled = true;
             NumberOfFillings.Enabled = true;
             StopConditionsButton.Enabled = true;
+            EatOnStart.Enabled = true;
+            EatAgain.Enabled = true;
+            HoldIngredients.Enabled = true;
+            ScreenOffBox.Enabled = true;
         }
 
         private static HttpClient? _client;
-        public static HttpClient Client
+        private static HttpClient Client
         {
             get
             {
@@ -427,9 +456,9 @@ namespace PokeViewer.NET.SubForms
             }
         }
 
-        public static string[]? DiscordWebhooks;
+        private static string[]? DiscordWebhooks;
 
-        public async void SendNotifications(string results, string thumbnail)
+        private async void SendNotifications(string results, string thumbnail)
         {
             if (string.IsNullOrEmpty(results))
                 return;
@@ -442,7 +471,7 @@ namespace PokeViewer.NET.SubForms
                 await Client.PostAsync(url, content).ConfigureAwait(false);
         }
 
-        public static object GenerateWebhook(string results, string thumbnail)
+        private static object GenerateWebhook(string results, string thumbnail)
         {
             var WebHook = new
             {

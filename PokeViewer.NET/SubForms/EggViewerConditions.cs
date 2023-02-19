@@ -24,6 +24,7 @@ namespace PokeViewer.NET.SubForms
             Settings.Default.IgnoreIVFilter = IgnoreIVFilter.Checked;
             Settings.Default.PresetIVS = PresetIVBox.SelectedIndex;
             Settings.Default.MinMaxOnly = ScaleBox.Checked;
+            Settings.Default.IgnoreIVFilter = IgnoreIVFilter.Checked;
 
             Settings.Default.Save();
             this.Close();
@@ -61,6 +62,7 @@ namespace PokeViewer.NET.SubForms
                 IgnoreIVFilter.Checked = true;
             PresetIVBox.SelectedIndex = Settings.Default.PresetIVS;
             ScaleBox.Checked = Settings.Default.MinMaxOnly;
+            IgnoreIVFilter.Checked = Settings.Default.IgnoreIVFilter;
         }
 
         private void PresetIVBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -71,19 +73,19 @@ namespace PokeViewer.NET.SubForms
                 case 0: break; // Disablecheck
                 case 1:
                     {
-                        HPFilter.Value = 31; AtkFilter.Value = 31; DefFilter.Value = 31; SpaFilter.Value = 31; SpdFilter.Value = 31; SpeFilter.Value = 31; break;
+                        HPFilter.Value = 31; AtkFilter.Value = 31; DefFilter.Value = 31; SpaFilter.Value = 31; SpdFilter.Value = 31; SpeFilter.Value = 31; IgnoreIVFilter.Checked = false; break;
                     }
                 case 2:
                     {
-                        HPFilter.Value = 31; AtkFilter.Value = 0; DefFilter.Value = 31; SpaFilter.Value = 31; SpdFilter.Value = 31; SpeFilter.Value = 0; break;
+                        HPFilter.Value = 31; AtkFilter.Value = 0; DefFilter.Value = 31; SpaFilter.Value = 31; SpdFilter.Value = 31; SpeFilter.Value = 0; IgnoreIVFilter.Checked = false; break;
                     }
                 case 3:
                     {
-                        HPFilter.Value = 31; AtkFilter.Value = 0; DefFilter.Value = 31; SpaFilter.Value = 31; SpdFilter.Value = 31; SpeFilter.Value = 31; break;
+                        HPFilter.Value = 31; AtkFilter.Value = 0; DefFilter.Value = 31; SpaFilter.Value = 31; SpdFilter.Value = 31; SpeFilter.Value = 31; IgnoreIVFilter.Checked = false; break;
                     }
                 case 4:
                     {
-                        HPFilter.Value = 31; AtkFilter.Value = 31; DefFilter.Value = 31; SpaFilter.Value = 31; SpdFilter.Value = 31; SpeFilter.Value = 0; break;
+                        HPFilter.Value = 31; AtkFilter.Value = 31; DefFilter.Value = 31; SpaFilter.Value = 31; SpdFilter.Value = 31; SpeFilter.Value = 0; IgnoreIVFilter.Checked = false; break;
                     }
             }
         }

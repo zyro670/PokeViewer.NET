@@ -27,7 +27,7 @@ namespace PokeViewer.NET
         public static string FormOutput(ushort species, byte form, out string[] formString)
         {
             var strings = GameInfo.GetStrings("en");
-            formString = FormConverter.GetFormList(species, strings.Types, strings.forms, GameInfo.GenderSymbolASCII, typeof(EntityContext) == typeof(PK8) ? EntityContext.Gen8 : EntityContext.Gen4);
+            formString = FormConverter.GetFormList(species, strings.Types, strings.forms, GameInfo.GenderSymbolASCII, typeof(EntityContext) == typeof(PK9) ? EntityContext.Gen9 : EntityContext.Gen4);
             if (formString.Length is 0)
                 return string.Empty;
 

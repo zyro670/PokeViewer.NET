@@ -1,6 +1,7 @@
 ﻿using PKHeX.Core;
 using SysBot.Base;
 using static PokeViewer.NET.RoutineExecutor;
+using static PokeViewer.NET.ViewerUtil;
 
 namespace PokeViewer.NET.SubForms
 {
@@ -92,20 +93,6 @@ namespace PokeViewer.NET.SubForms
             var pk = new PK9(data);
 
             return pk;
-        }
-
-        public static bool HasMark(IRibbonIndex pk, out RibbonIndex result)
-        {
-            result = default;
-            for (var mark = RibbonIndex.MarkLunchtime; mark <= RibbonIndex.MarkSlump; mark++)
-            {
-                if (pk.GetRibbon((int)mark))
-                {
-                    result = mark;
-                    return true;
-                }
-            }
-            return false;
         }
 
         public async Task<ulong> GetPointerAddress(string pointer, CancellationToken token, bool heaprealtive = false) //Code from LiveHex

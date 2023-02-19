@@ -56,6 +56,7 @@
             // 
             this.flagbox.Location = new System.Drawing.Point(111, 175);
             this.flagbox.Name = "flagbox";
+            this.flagbox.ReadOnly = true;
             this.flagbox.Size = new System.Drawing.Size(27, 23);
             this.flagbox.TabIndex = 4;
             // 

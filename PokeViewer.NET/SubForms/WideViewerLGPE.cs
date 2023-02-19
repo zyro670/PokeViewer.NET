@@ -26,13 +26,6 @@ namespace PokeViewer.NET.WideViewForms
             pk.Species = (ushort)species;            
             var sprite = PokeImg(pk, pk.CanGigantamax);
             pictureBox1.Load(sprite);
-            /*if (pk.Species == 0)
-            {
-                await Task.Delay(7_000, token).ConfigureAwait(false);
-                await Click(SwitchButton.B, 1_200, token).ConfigureAwait(false);
-                await Click(SwitchButton.A, 1_200, token).ConfigureAwait(false);
-                await Click(SwitchButton.A, 1_200, token).ConfigureAwait(false);
-            }*/
             while (!token.IsCancellationRequested)
             {
                 species = (Species)BitConverter.ToUInt16(await SwitchConnection.ReadBytesAsync(LastSpawnOffset, 2, token).ConfigureAwait(false), 0);
@@ -54,16 +47,9 @@ namespace PokeViewer.NET.WideViewForms
                     sprite = PokeImg(pk, false);
                     pictureBox1.Load(sprite);
                 }
-                /*if (!await IsOnOverworldTitle(token).ConfigureAwait(false))
-                {
-                    await Task.Delay(7_000, token).ConfigureAwait(false);
-                    await Click(SwitchButton.B, 1_200, token).ConfigureAwait(false);
-                    await Click(SwitchButton.A, 1_200, token).ConfigureAwait(false);
-                    await Click(SwitchButton.A, 1_200, token).ConfigureAwait(false);
-                }*/
             }
-            //button1.Text = "Shiny found!";
-            //await Click(SwitchButton.X, 1_000, token).ConfigureAwait(false);
+            button1.Text = "Shiny found!";
+            await Click(SwitchButton.HOME, 1_000, token).ConfigureAwait(false);
         }
 
         private async void button1_Click(object sender, EventArgs e)
@@ -80,10 +66,5 @@ namespace PokeViewer.NET.WideViewForms
             await Task.Delay(delay, token).ConfigureAwait(false);
         }
 
-        public async Task<bool> IsOnOverworldTitle(CancellationToken token)
-        {
-            var data = await SwitchConnection.ReadBytesMainAsync(0x163F694, 1, token).ConfigureAwait(false);
-            return data[0] == 0;
-        }
     }
 }
