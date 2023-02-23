@@ -122,10 +122,12 @@ namespace PokeViewer.NET.SubForms
                         await Task.Delay(0_500, token).ConfigureAwait(false);
 
                         bool match = ValidateEncounter(pk);
+                        if (!match && pk.IsShiny)
+                            SendNotifications(output, sprite, match);
                         if (match)
                         {
                             await Click(HOME, 0_500, token).ConfigureAwait(false);
-                            SendNotifications(output, sprite);
+                            SendNotifications(output, sprite, match);
                             EnableOptions();
                             Activate();
                             MessageBox.Show("Match found! Claim your egg before closing the picnic!");
@@ -458,30 +460,32 @@ namespace PokeViewer.NET.SubForms
 
         private static string[]? DiscordWebhooks;
 
-        private async void SendNotifications(string results, string thumbnail)
+        private async void SendNotifications(string results, string thumbnail, bool pinguser)
         {
             if (string.IsNullOrEmpty(results))
                 return;
             DiscordWebhooks = WebHookText.Text.Split(',');
             if (DiscordWebhooks == null)
                 return;
-            var webhook = GenerateWebhook(results, thumbnail);
+            var webhook = GenerateWebhook(results, thumbnail, pinguser);
             var content = new StringContent(JsonConvert.SerializeObject(webhook), Encoding.UTF8, "application/json");
             foreach (var url in DiscordWebhooks)
                 await Client.PostAsync(url, content).ConfigureAwait(false);
         }
 
-        private static object GenerateWebhook(string results, string thumbnail)
+        private static object GenerateWebhook(string results, string thumbnail, bool pinguser)
         {
+            string userContent = pinguser ? $"<@{Settings.Default.UserDiscordID}>" : "";
+            string title = pinguser ? $"Match Found!" : "Unwanted match..";
             var WebHook = new
             {
                 username = $"EggViewer.NET",
-                content = $"<@{Settings.Default.UserDiscordID}>",
+                content = userContent,
                 embeds = new List<object>
                 {
                     new
                     {
-                        title = $"Match Found!",                        
+                        title = title,                        
                         thumbnail = new
                         {
                             url = thumbnail

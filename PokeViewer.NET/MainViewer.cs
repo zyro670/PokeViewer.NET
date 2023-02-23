@@ -15,7 +15,7 @@ namespace PokeViewer.NET
     {
         private static readonly SwitchConnectionConfig Config = new() { Protocol = SwitchProtocol.WiFi, IP = Properties.Settings.Default.SwitchIP, Port = 6000 };
         public SwitchSocketAsync SwitchConnection = new(Config);
-        private const string ViewerVersion = "1.1.0";
+        private const string ViewerVersion = "1.1.1";
         public MainViewer()
         {
             InitializeComponent();
