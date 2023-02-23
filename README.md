@@ -2,6 +2,8 @@
 
 This project was designed to make viewing Pokemon convenient through the use of a Windows app that supports all mainstream Nintendo Switch Pokémon games.
 
+[Support Server: Rosé Garden](https://discord.gg/G23Mx85Mdz)
+
 ![](https://i.imgur.com/Ou6Ndtg.png)
 
 Special credits and thanks to the minds behind the resources used for this project:
