@@ -62,6 +62,7 @@
             this.WidePage = new System.Windows.Forms.TabPage();
             this.NPCPage = new System.Windows.Forms.TabPage();
             this.RaidPage = new System.Windows.Forms.TabPage();
+            this.InGameScreenshotPage = new System.Windows.Forms.TabPage();
             ((System.ComponentModel.ISupportInitialize)(this.PokeSprite)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Specialty)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.OriginIcon)).BeginInit();
@@ -296,6 +297,7 @@
             this.ViewerControl.Controls.Add(this.WidePage);
             this.ViewerControl.Controls.Add(this.NPCPage);
             this.ViewerControl.Controls.Add(this.RaidPage);
+            this.ViewerControl.Controls.Add(this.InGameScreenshotPage);
             this.ViewerControl.Location = new System.Drawing.Point(0, 2);
             this.ViewerControl.Name = "ViewerControl";
             this.ViewerControl.SelectedIndex = 0;
@@ -434,6 +436,16 @@
             this.RaidPage.Text = "Raid 🎉";
             this.RaidPage.UseVisualStyleBackColor = true;
             // 
+            // InGameScreenshotPage
+            // 
+            this.InGameScreenshotPage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.InGameScreenshotPage.Location = new System.Drawing.Point(4, 24);
+            this.InGameScreenshotPage.Name = "InGameScreenshotPage";
+            this.InGameScreenshotPage.Size = new System.Drawing.Size(503, 482);
+            this.InGameScreenshotPage.TabIndex = 7;
+            this.InGameScreenshotPage.Text = "Screenshot 📷";
+            this.InGameScreenshotPage.UseVisualStyleBackColor = true;
+            // 
             // MainViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -499,5 +511,6 @@
         private PictureBox ConnectionSpriteBox;
         private Label VersionLabel;
         private LinkLabel linkLabel1;
+        private TabPage InGameScreenshotPage;
     }
 }

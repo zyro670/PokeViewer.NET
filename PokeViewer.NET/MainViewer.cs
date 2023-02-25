@@ -16,6 +16,7 @@ namespace PokeViewer.NET
         private static readonly SwitchConnectionConfig Config = new() { Protocol = SwitchProtocol.WiFi, IP = Properties.Settings.Default.SwitchIP, Port = 6000 };
         public SwitchSocketAsync SwitchConnection = new(Config);
         private const string ViewerVersion = "1.1.1";
+        private bool[] FormLoaded = new bool[7];
         public MainViewer()
         {
             InitializeComponent();
@@ -119,7 +120,7 @@ namespace PokeViewer.NET
 
         private async void Connect_Click(object sender, EventArgs e)
         {
-            await Task.Delay(0_500, CancellationToken.None).ConfigureAwait(false);
+            await Task.Delay(0_050, CancellationToken.None).ConfigureAwait(false);
             if (!SwitchConnection.Connected)
             {
                 try
@@ -140,7 +141,6 @@ namespace PokeViewer.NET
             else if (SwitchConnection.Connected)
             {
                 SwitchConnection.Disconnect();
-                SwitchConnection.Reset();
                 System.Windows.Forms.Application.Restart();
             }
 
@@ -567,6 +567,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(BoxPage);
                             ViewerControl.TabPages.Add(EggPage);
                             ViewerControl.TabPages.Add(RaidPage);
+                            ViewerControl.TabPages.Add(InGameScreenshotPage);
                         });
                         break;
                     }
@@ -583,6 +584,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(BoxPage);
                             ViewerControl.TabPages.Add(EggPage);
                             ViewerControl.TabPages.Add(RaidPage);
+                            ViewerControl.TabPages.Add(InGameScreenshotPage);
                         });
                         break;
                     }
@@ -595,6 +597,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(ViewPage);
                             ViewerControl.TabPages.Add(BoxPage);
                             ViewerControl.TabPages.Add(WidePage);
+                            ViewerControl.TabPages.Add(InGameScreenshotPage);
                         });
                         break;
                     }
@@ -608,6 +611,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(BoxPage);
                             ViewerControl.TabPages.Add(WidePage);
                             ViewerControl.TabPages.Add(NPCPage);
+                            ViewerControl.TabPages.Add(InGameScreenshotPage);
                         });
                         break;
                     }
@@ -621,6 +625,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(BoxPage);
                             ViewerControl.TabPages.Add(WidePage);
                             ViewerControl.TabPages.Add(NPCPage);
+                            ViewerControl.TabPages.Add(InGameScreenshotPage);
                         });
                         break;
                     }
@@ -636,6 +641,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(BoxPage);
                             ViewerControl.TabPages.Add(WidePage);
                             ViewerControl.TabPages.Add(NPCPage);
+                            ViewerControl.TabPages.Add(InGameScreenshotPage);
                         });
                         break;
                     }
@@ -651,6 +657,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(BoxPage);
                             ViewerControl.TabPages.Add(WidePage);
                             ViewerControl.TabPages.Add(NPCPage);
+                            ViewerControl.TabPages.Add(InGameScreenshotPage);
                         });
                         break;
                     }
@@ -663,6 +670,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(BoxPage);
                             ViewerControl.TabPages.Add(WidePage);
                             ViewerControl.TabPages.Add(NPCPage);
+                            ViewerControl.TabPages.Add(InGameScreenshotPage);
                         });
                         break;
                     }
@@ -675,6 +683,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(BoxPage);
                             ViewerControl.TabPages.Add(WidePage);
                             ViewerControl.TabPages.Add(NPCPage);
+                            ViewerControl.TabPages.Add(InGameScreenshotPage);
                         });
                         break;
                     }
@@ -707,7 +716,7 @@ namespace PokeViewer.NET
             Properties.Settings.Default.Save();
         }
 
-        private async void InGameScreenshot_Click(object sender, EventArgs e)
+        private void InGameScreenshot_Click(object sender, EventArgs e)
         {
             var token = CancellationToken.None;
             var fn = "screenshot.jpg";
@@ -717,7 +726,7 @@ namespace PokeViewer.NET
                 MessageBox.Show($"No device connected! In-Game Screenshot not possible!");
                 return;
             }
-            var bytes = await SwitchConnection.Screengrab(token).ConfigureAwait(false);
+            var bytes = SwitchConnection.Screengrab(token).Result;
             File.WriteAllBytes(fn, bytes);
             FileStream stream = new(fn, System.IO.FileMode.Open);
             var img = Image.FromStream(stream);
@@ -749,6 +758,7 @@ namespace PokeViewer.NET
         {
             if (!SwitchConnection.Connected)
                 return;
+
             if (ViewerControl.SelectedTab.Text is "Raid 🎉")
             {
                 RaidCodeEntry RaidForm = new(SwitchConnection);
@@ -756,8 +766,22 @@ namespace PokeViewer.NET
                 return;
             }
 
-            Form form = new();
+            int selectedInt = 0;
             string currentTab = ViewerControl.SelectedTab.Text;
+            switch (currentTab)
+            {
+                case "Connection 🔌": selectedInt = 0; break;
+                case "View 🔎": selectedInt = 1; break;
+                case "Box 📦": selectedInt = 2; break;
+                case "Egg 🥚": selectedInt = 3; break;
+                case "Wide 🔭": selectedInt = 4; break;
+                case "NPC 🤖": selectedInt = 5; break;
+                case "Screenshot 📷": selectedInt = 6; break;
+            }
+
+            if (FormLoaded[selectedInt])
+                return;
+            
             if (currentTab is not "Wide 🔭" && GameType is (int)GameSelected.BrilliantDiamond or (int)GameSelected.ShiningPearl or (int)GameSelected.Sword or (int)GameSelected.Shield or (int)GameSelected.LetsGoPikachu or (int)GameSelected.LetsGoEevee)
             {
                 ViewerControl.Height = 550;
@@ -765,12 +789,16 @@ namespace PokeViewer.NET
                 Height = 507;
                 Width = 511;
             }
+
+            Form form = new();
             switch (currentTab)
             {
-                case "Connection 🔌" or "View 🔎": return;
-                case "Box 📦": form = new BoxViewerMode(GameType, SwitchConnection) { TopLevel = false }; break;
-                case "Egg 🥚": form = new Egg_Viewer(SwitchConnection) { TopLevel = false }; break;
+                case "Connection 🔌": FormLoaded[0] = true; return;
+                case "View 🔎": FormLoaded[1] = true; return;
+                case "Box 📦": form = new BoxViewerMode(GameType, SwitchConnection) { TopLevel = false }; FormLoaded[2] = true; break;
+                case "Egg 🥚": form = new Egg_Viewer(SwitchConnection) { TopLevel = false }; FormLoaded[3] = true; break;
                 case "Wide 🔭":
+                    FormLoaded[4] = true;
                     switch (GameType)
                     {
                         case (int)GameSelected.LegendsArceus:
@@ -811,7 +839,8 @@ namespace PokeViewer.NET
                             }
                     }
                     break;
-                case "NPC 🤖": form = new NPCViewer(GameType, SwitchConnection) { TopLevel = false }; break;
+                case "NPC 🤖": form = new NPCViewer(GameType, SwitchConnection) { TopLevel = false }; FormLoaded[5] = true; break;
+                case "Screenshot 📷": form = new ScreenshotForm(SwitchConnection) { TopLevel = false }; FormLoaded[6] = true; break;
             }
             int curr = ViewerControl.SelectedIndex;
             TabPage tbp = ViewerControl.TabPages[curr];
@@ -833,6 +862,7 @@ namespace PokeViewer.NET
             ViewerControl.TabPages.Remove(WidePage);
             ViewerControl.TabPages.Remove(NPCPage);
             ViewerControl.TabPages.Remove(RaidPage);
+            ViewerControl.TabPages.Remove(InGameScreenshotPage);
 
         }
 

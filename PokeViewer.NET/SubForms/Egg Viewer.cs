@@ -13,7 +13,6 @@ namespace PokeViewer.NET.SubForms
     public partial class Egg_Viewer : Form
     {
         private readonly SwitchSocketAsync SwitchConnection;
-        private bool isFetching;
         public Egg_Viewer(SwitchSocketAsync switchConnection)
         {
             InitializeComponent();
@@ -34,8 +33,11 @@ namespace PokeViewer.NET.SubForms
         private async void button1_Click(object sender, EventArgs e)
         {
             var token = CancellationToken.None;
-            isFetching = true;
+            await PerformEggRoutine(token).ConfigureAwait(false);
+        }
 
+        private async Task PerformEggRoutine(CancellationToken token)
+        {
             if (!string.IsNullOrEmpty(Settings.Default.WebHook))
                 WebHookText.Text = Settings.Default.WebHook;
 
@@ -375,17 +377,14 @@ namespace PokeViewer.NET.SubForms
             await Task.Delay(delay, token).ConfigureAwait(false);
         }
 
-        private async void button2_Click(object sender, EventArgs e)
+        private void button2_Click(object sender, EventArgs e)
         {
-            var token = CancellationToken.None;
-            if (isFetching)
-            {
-                isFetching = false;
-                SwitchConnection.Reset();
-                EnableOptions();
-                if (ScreenOffBox.Checked)
-                    await SetScreen(ScreenState.On, token).ConfigureAwait(false);
-            }
+            DialogResult dialogResult = MessageBox.Show("This will restart the application. Do you wish to continue?", "Hard Stop Initiated", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (dialogResult == DialogResult.Yes)
+                Application.Restart();
+
+            else if (dialogResult == DialogResult.No)
+                return;
         }
 
         private async Task<int> PicnicState(CancellationToken token)

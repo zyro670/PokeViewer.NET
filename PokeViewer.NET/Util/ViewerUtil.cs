@@ -84,5 +84,6 @@ namespace PokeViewer.NET
             }
             return false;
         }
+
     }
 }
