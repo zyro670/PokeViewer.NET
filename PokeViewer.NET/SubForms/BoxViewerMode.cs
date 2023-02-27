@@ -1,6 +1,5 @@
 ﻿using PKHeX.Core;
 using PokeViewer.NET.WideViewForms;
-using SysBot.Base;
 using static PokeViewer.NET.RoutineExecutor;
 using static PokeViewer.NET.ViewerUtil;
 
@@ -12,15 +11,15 @@ namespace PokeViewer.NET
         public List<string> CurrentSlotStats = new();
         public ToolTip tt = new();
         public bool ReadInProgress;
-        private readonly SwitchSocketAsync SwitchConnection;
         private List<PKM> PKMs = new();
         public string DumpFolder { get; set; } = AppDomain.CurrentDomain.BaseDirectory;
-        public BoxViewerMode(int gametype, SwitchSocketAsync switchConnection)
+        private readonly ViewerExecutor Executor;
+        public BoxViewerMode(int gametype, ViewerExecutor executor)
         {
             InitializeComponent();
-            SwitchConnection = switchConnection;
             GameType = gametype;
-            this.Text = VersionString(GameType);
+            Executor = executor;
+            Text = VersionString(GameType);
             label2.Text = $"{(GameSelected)GameType}";
             button1.Text = "View";
         }
@@ -114,7 +113,7 @@ namespace PokeViewer.NET
                         {
                             var slotsize = 344;
                             var ptr = new long[] { 0x4384B18, 0x128, 0x9B0, 0x0 };
-                            var b1s1 = await SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false);
+                            var b1s1 = await Executor.SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false);
                             var boxsize = 30 * slotsize;
                             var boxStart = b1s1 + (ulong)(box * boxsize);
                             var slotstart = boxStart + (ulong)(i * slotsize);
@@ -128,7 +127,7 @@ namespace PokeViewer.NET
                         {
                             var slotsize = 360;
                             var ptr = new long[] { 0x42BA6B0, 0x1F0, 0x68 };
-                            var b1s1 = await SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false);
+                            var b1s1 = await Executor.SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false);
                             var boxsize = 30 * slotsize;
                             var boxStart = b1s1 + (ulong)(box * boxsize);
                             var slotstart = boxStart + (ulong)(i * slotsize);
@@ -143,7 +142,7 @@ namespace PokeViewer.NET
                             var sizeup = GetBDSPSlotValue(i);
                             var boxvalue = GetBDSPBoxValue(box);
                             var b1s1 = new long[] { 0x4C64DC0, 0xB8, 0x10, 0xA0, boxvalue, sizeup, 0x20 };
-                            var boxStart = await SwitchConnection.PointerAll(b1s1, token).ConfigureAwait(false);
+                            var boxStart = await Executor.SwitchConnection.PointerAll(b1s1, token).ConfigureAwait(false);
                             _ = new PB8();
                             pk = await ReadBoxPokemonBDSP(boxStart, size, token).ConfigureAwait(false);
                             PKMs.Add(pk);
@@ -154,7 +153,7 @@ namespace PokeViewer.NET
                             var sizeup = GetBDSPSlotValue(i);
                             var boxvalue = GetBDSPBoxValue(box);
                             var b1s1 = new long[] { 0x4E7BE98, 0xB8, 0x10, 0xA0, boxvalue, sizeup, 0x20 };
-                            var boxStart = await SwitchConnection.PointerAll(b1s1, token).ConfigureAwait(false);
+                            var boxStart = await Executor.SwitchConnection.PointerAll(b1s1, token).ConfigureAwait(false);
                             _ = new PB8();
                             pk = await ReadBoxPokemonBDSP(boxStart, size, token).ConfigureAwait(false);
                             PKMs.Add(pk);
@@ -251,36 +250,36 @@ namespace PokeViewer.NET
         private ulong GetSlotOffset(int box, int slot) => GetBoxOffset(box) + (ulong)((LGPESlotSize + LGPEGapSize) * slot);
 
         private async Task<PK8> ReadBoxPokemonSWSH(uint offset, int size, CancellationToken token)
-        {        
-            var data = await SwitchConnection.ReadBytesAsync(offset, size, token).ConfigureAwait(false);
+        {
+            var data = await Executor.SwitchConnection.ReadBytesAsync(offset, size, token).ConfigureAwait(false);
             var pk = new PK8(data);
             return pk;
         }
 
         private async Task<PK9> ReadBoxPokemonSV(ulong offset, int size, CancellationToken token)
         {
-            var data = await SwitchConnection.ReadBytesAbsoluteAsync(offset, size, token).ConfigureAwait(false);
+            var data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(offset, size, token).ConfigureAwait(false);
             var pk = new PK9(data);
             return pk;
         }
 
         private async Task<PA8> ReadBoxPokemonLA(ulong offset, int size, CancellationToken token)
         {
-            var data = await SwitchConnection.ReadBytesAbsoluteAsync(offset, size, token).ConfigureAwait(false);
+            var data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(offset, size, token).ConfigureAwait(false);
             var pk = new PA8(data);
             return pk;
         }
 
         private async Task<PB8> ReadBoxPokemonBDSP(ulong offset, int size, CancellationToken token)
         {
-            var data = await SwitchConnection.ReadBytesAbsoluteAsync(offset, size, token).ConfigureAwait(false);
+            var data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(offset, size, token).ConfigureAwait(false);
             var pk = new PB8(data);
             return pk;
         }
 
         private async Task<PB7> ReadBoxPokemonLGPE(uint offset, int size, CancellationToken token)
         {
-            var data = await SwitchConnection.ReadBytesAsync(offset, size, token).ConfigureAwait(false);
+            var data = await Executor.SwitchConnection.ReadBytesAsync(offset, size, token).ConfigureAwait(false);
             var pk = new PB7(data);
             return pk;
         }
@@ -417,7 +416,7 @@ namespace PokeViewer.NET
             await ReadBoxes(offset, size, currentbox, token).ConfigureAwait(false);
 
             ReadInProgress = false;
-        }        
+        }
 
         private static uint GetBDSPSlotValue(int slot)
         {
@@ -510,19 +509,20 @@ namespace PokeViewer.NET
         private void PictureBox_DoubleClick(object sender, EventArgs e)
         {
             PictureBox? pbox = sender as PictureBox;
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-            if (pbox.Image == null)
+            if (pbox is not null)
             {
-                MessageBox.Show("No data present, click view and try again.");
-                return;
+                if (pbox.Image is null)
+                {
+                    MessageBox.Show("No data present, click view and try again.");
+                    return;
+                }
+                var currentslot = int.Parse(pbox.Name.Replace("pictureBox", "")) - 1;
+                if (pbox.Image is not null)
+                {
+                    using BoxViewerMini form = new(pbox, CurrentSlotStats[currentslot].ToString());
+                    form.ShowDialog();
+                }
             }
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-            var currentslot = int.Parse(pbox.Name.Replace("pictureBox", "")) - 1;
-            if (pbox.Image != null)
-            {
-                using BoxViewerMini form = new(pbox, CurrentSlotStats[currentslot].ToString());
-                form.ShowDialog();
-            }            
         }
 
     }

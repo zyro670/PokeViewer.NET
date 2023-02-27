@@ -62,6 +62,8 @@ namespace PokeViewer.NET.SubForms
             this.label3 = new System.Windows.Forms.Label();
             this.StopConditionsButton = new System.Windows.Forms.Button();
             this.ScreenOffBox = new System.Windows.Forms.CheckBox();
+            this.UptimeLabel = new System.Windows.Forms.Label();
+            this.SquareStarCount = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.PokeSpriteBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BallBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NumberOfFillings)).BeginInit();
@@ -325,7 +327,7 @@ namespace PokeViewer.NET.SubForms
             // WebHookText
             // 
             this.WebHookText.BackColor = System.Drawing.SystemColors.Control;
-            this.WebHookText.Location = new System.Drawing.Point(200, 312);
+            this.WebHookText.Location = new System.Drawing.Point(200, 337);
             this.WebHookText.Name = "WebHookText";
             this.WebHookText.Size = new System.Drawing.Size(111, 23);
             this.WebHookText.TabIndex = 37;
@@ -333,7 +335,7 @@ namespace PokeViewer.NET.SubForms
             // 
             // SaveHookURL
             // 
-            this.SaveHookURL.Location = new System.Drawing.Point(85, 343);
+            this.SaveHookURL.Location = new System.Drawing.Point(85, 368);
             this.SaveHookURL.Name = "SaveHookURL";
             this.SaveHookURL.Size = new System.Drawing.Size(105, 23);
             this.SaveHookURL.TabIndex = 39;
@@ -344,7 +346,7 @@ namespace PokeViewer.NET.SubForms
             // UserDiscordIDText
             // 
             this.UserDiscordIDText.BackColor = System.Drawing.SystemColors.Control;
-            this.UserDiscordIDText.Location = new System.Drawing.Point(200, 343);
+            this.UserDiscordIDText.Location = new System.Drawing.Point(200, 368);
             this.UserDiscordIDText.Name = "UserDiscordIDText";
             this.UserDiscordIDText.Size = new System.Drawing.Size(111, 23);
             this.UserDiscordIDText.TabIndex = 40;
@@ -352,7 +354,7 @@ namespace PokeViewer.NET.SubForms
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(317, 315);
+            this.label2.Location = new System.Drawing.Point(317, 340);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(84, 15);
             this.label2.TabIndex = 41;
@@ -361,7 +363,7 @@ namespace PokeViewer.NET.SubForms
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(317, 345);
+            this.label3.Location = new System.Drawing.Point(317, 370);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(86, 15);
             this.label3.TabIndex = 42;
@@ -369,7 +371,7 @@ namespace PokeViewer.NET.SubForms
             // 
             // StopConditionsButton
             // 
-            this.StopConditionsButton.Location = new System.Drawing.Point(85, 314);
+            this.StopConditionsButton.Location = new System.Drawing.Point(85, 339);
             this.StopConditionsButton.Name = "StopConditionsButton";
             this.StopConditionsButton.Size = new System.Drawing.Size(105, 23);
             this.StopConditionsButton.TabIndex = 63;
@@ -387,12 +389,32 @@ namespace PokeViewer.NET.SubForms
             this.ScreenOffBox.Text = "Screen Off?";
             this.ScreenOffBox.UseVisualStyleBackColor = true;
             // 
+            // UptimeLabel
+            // 
+            this.UptimeLabel.AutoSize = true;
+            this.UptimeLabel.Location = new System.Drawing.Point(86, 309);
+            this.UptimeLabel.Name = "UptimeLabel";
+            this.UptimeLabel.Size = new System.Drawing.Size(52, 15);
+            this.UptimeLabel.TabIndex = 65;
+            this.UptimeLabel.Text = "Uptime: ";
+            // 
+            // SquareStarCount
+            // 
+            this.SquareStarCount.AutoSize = true;
+            this.SquareStarCount.Location = new System.Drawing.Point(250, 309);
+            this.SquareStarCount.Name = "SquareStarCount";
+            this.SquareStarCount.Size = new System.Drawing.Size(70, 15);
+            this.SquareStarCount.TabIndex = 66;
+            this.SquareStarCount.Text = "■ - 0 | ★ - 0";
+            // 
             // Egg_Viewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.ClientSize = new System.Drawing.Size(426, 374);
+            this.ClientSize = new System.Drawing.Size(426, 404);
+            this.Controls.Add(this.SquareStarCount);
+            this.Controls.Add(this.UptimeLabel);
             this.Controls.Add(this.ScreenOffBox);
             this.Controls.Add(this.StopConditionsButton);
             this.Controls.Add(this.label3);
@@ -470,5 +492,7 @@ namespace PokeViewer.NET.SubForms
         private Label label3;
         private Button StopConditionsButton;
         private CheckBox ScreenOffBox;
+        private Label UptimeLabel;
+        private Label SquareStarCount;
     }
 }

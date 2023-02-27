@@ -1,16 +1,15 @@
 ﻿using PKHeX.Core;
-using SysBot.Base;
 using static PokeViewer.NET.RoutineExecutor;
 
 namespace PokeViewer.NET.WideViewForms
 {
     public partial class WideViewerBDSP : Form
     {
-        private readonly SwitchSocketAsync SwitchConnection;
-        public WideViewerBDSP(SwitchSocketAsync switchConnection)
+        private readonly ViewerExecutor Executor;
+        public WideViewerBDSP(ViewerExecutor executor)
         {
             InitializeComponent();
-            SwitchConnection = switchConnection;
+            Executor = executor;
             Window_Loaded();
         }
 
@@ -22,7 +21,7 @@ namespace PokeViewer.NET.WideViewForms
         {
             var token = CancellationToken.None;
             int type = 0;
-            string title = await SwitchConnection.GetTitleID(token).ConfigureAwait(false);
+            string title = await Executor.SwitchConnection.GetTitleID(token).ConfigureAwait(false);
             switch (title)
             {
                 case ShiningPearlID: type = (int)GameSelected.ShiningPearl; break;
@@ -56,7 +55,7 @@ namespace PokeViewer.NET.WideViewForms
             for (int y = 0; y < 5; y++)
             {
                 var ptr = new long[] { ofs, 0xB8, 0x00, 0xA8, 0x10, 0x10, 0x20 + (i * 0x10), 0x10, 0x10, 0x20 };
-                PB8? pk = await ReadUntilPresentAbsolute(await SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false), 0_200, 0_200, token).ConfigureAwait(false) ?? new();
+                PB8? pk = await ReadUntilPresentAbsolute(await Executor.SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false), 0_200, 0_200, token).ConfigureAwait(false) ?? new();
                 if (pk.Species != 0 && pk.Species < (int)Species.MAX_COUNT)
                 {
                     string pid = $"{Environment.NewLine}PID: {pk.PID:X8}";
@@ -75,13 +74,13 @@ namespace PokeViewer.NET.WideViewForms
                     spriteBox.Add(sprite);
                     d++;
                 }
-                i++;                
+                i++;
             }
             i = 0;
             for (int z = 0; z < 5; z++)
             {
                 var ptr = new long[] { ofs, 0xB8, 0x00, 0xA8, 0x10, 0x10, 0x28 + (i * 0x10), 0x10, 0x10, 0x20 };
-                PB8? pk = await ReadUntilPresentAbsolute(await SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false), 0_200, 0_200, token).ConfigureAwait(false) ?? new(); 
+                PB8? pk = await ReadUntilPresentAbsolute(await Executor.SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false), 0_200, 0_200, token).ConfigureAwait(false) ?? new();
                 if (pk.Species != 0 && pk.Species < (int)Species.MAX_COUNT)
                 {
                     string pid = $"{Environment.NewLine}PID: {pk.PID:X8}";
@@ -108,17 +107,16 @@ namespace PokeViewer.NET.WideViewForms
                 boxes[b].Load(spriteBox[b]);
                 outputBox[b].Text = textBox[b];
             }
-           
+
             WideView10Button.Enabled = true;
             WideView10Button.Text = "WideView";
-        }        
-
+        }
         public async Task<PB8?> ReadUntilPresentAbsolute(ulong offset, int waitms, int waitInterval, CancellationToken token, int size = 0x158)
         {
             int msWaited = 0;
             while (msWaited < waitms)
             {
-                var data = await SwitchConnection.ReadBytesAbsoluteAsync(offset, size, token).ConfigureAwait(false);
+                var data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(offset, size, token).ConfigureAwait(false);
                 var pk = new PB8(data);
                 if (pk.Species != 0 && pk.ChecksumValid)
                     return pk;
@@ -127,6 +125,8 @@ namespace PokeViewer.NET.WideViewForms
                 msWaited += waitInterval;
             }
             return null;
-        }        
+
+        }
     }
 }
+

@@ -232,6 +232,7 @@
             this.Controls.Add(this.panel5);
             this.Controls.Add(this.panel4);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.StartPosition = FormStartPosition.CenterScreen;
             this.MaximizeBox = false;
             this.Name = "RaidCodeEntry";
             this.Text = "RaidCodeEntry";

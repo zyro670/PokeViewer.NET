@@ -1,28 +1,25 @@
-﻿using SysBot.Base;
-using Tulpep.NotificationWindow;
-
-namespace PokeViewer.NET.SubForms
+﻿namespace PokeViewer.NET.SubForms
 {
     public partial class ScreenshotForm : Form
     {
-        private readonly SwitchSocketAsync SwitchConnection;
-        public ScreenshotForm(SwitchSocketAsync switchConnection)
+        private readonly ViewerExecutor Executor;
+        public ScreenshotForm(ViewerExecutor executor)
         {
-            InitializeComponent();
-            SwitchConnection = switchConnection;
+            InitializeComponent();            
+            Executor = executor;
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             var token = CancellationToken.None;
             var fn = "screenshot.jpg";
-            if (!SwitchConnection.Connected)
+            if (!Executor.SwitchConnection.Connected)
             {
                 System.Media.SystemSounds.Beep.Play();
                 MessageBox.Show($"No device connected! In-Game Screenshot not possible!");
                 return;
             }
-            var bytes = SwitchConnection.Screengrab(token).Result;
+            var bytes = Executor.SwitchConnection.Screengrab(token).Result;
             File.WriteAllBytes(fn, bytes);
             FileStream stream = new(fn, FileMode.Open);
             var img = Image.FromStream(stream);
@@ -36,19 +33,10 @@ namespace PokeViewer.NET.SubForms
             pictureBox1.Image = resized;
             pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
 
-            PopupNotifier popup = new()
-            {
-                TitleText = "Screenshot copied to Clipboard!",
-                ContentText = "Ready for sharing!",
-                Size = new Size(300, 100),
-                TitleColor = Color.Black,
-                BorderColor = Color.Black,
-                ShowCloseButton = true,
-            };
-            popup.Popup();
-
+            MessageBox.Show("Screenshot copied to Clipboard!");
             stream.Dispose();
             File.Delete(fn);
+
         }
     }
 }

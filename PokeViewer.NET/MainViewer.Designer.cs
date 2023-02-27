@@ -53,7 +53,6 @@
             this.ViewerControl = new System.Windows.Forms.TabControl();
             this.ConnectionPage = new System.Windows.Forms.TabPage();
             this.ConnectionGroupBox = new System.Windows.Forms.GroupBox();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.VersionLabel = new System.Windows.Forms.Label();
             this.ConnectionSpriteBox = new System.Windows.Forms.PictureBox();
             this.ViewPage = new System.Windows.Forms.TabPage();
@@ -279,7 +278,6 @@
             // ToggleSwitchProtocol
             // 
             this.ToggleSwitchProtocol.AutoSize = true;
-            this.ToggleSwitchProtocol.Enabled = false;
             this.ToggleSwitchProtocol.Location = new System.Drawing.Point(118, 61);
             this.ToggleSwitchProtocol.Name = "ToggleSwitchProtocol";
             this.ToggleSwitchProtocol.Size = new System.Drawing.Size(52, 19);
@@ -319,7 +317,6 @@
             // ConnectionGroupBox
             // 
             this.ConnectionGroupBox.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.ConnectionGroupBox.Controls.Add(this.linkLabel1);
             this.ConnectionGroupBox.Controls.Add(this.VersionLabel);
             this.ConnectionGroupBox.Controls.Add(this.ConnectionSpriteBox);
             this.ConnectionGroupBox.Controls.Add(this.Connect);
@@ -327,19 +324,10 @@
             this.ConnectionGroupBox.Controls.Add(this.SwitchIP);
             this.ConnectionGroupBox.Location = new System.Drawing.Point(40, 21);
             this.ConnectionGroupBox.Name = "ConnectionGroupBox";
-            this.ConnectionGroupBox.Size = new System.Drawing.Size(200, 185);
+            this.ConnectionGroupBox.Size = new System.Drawing.Size(200, 173);
             this.ConnectionGroupBox.TabIndex = 34;
             this.ConnectionGroupBox.TabStop = false;
             this.ConnectionGroupBox.Text = "Switch IP";
-            // 
-            // linkLabel1
-            // 
-            this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Location = new System.Drawing.Point(8, 160);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(0, 15);
-            this.linkLabel1.TabIndex = 37;
-            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
             // VersionLabel
             // 
@@ -451,13 +439,14 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.ClientSize = new System.Drawing.Size(290, 246);
+            this.ClientSize = new System.Drawing.Size(290, 240);
             this.Controls.Add(this.ViewerControl);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "MainViewer";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
+            this.StartPosition = FormStartPosition.CenterScreen;
             this.Text = "PokeViewer.NET";
             this.Load += new System.EventHandler(this.PokeViewerForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.PokeSprite)).EndInit();
@@ -510,7 +499,6 @@
         private GroupBox ConnectionGroupBox;
         private PictureBox ConnectionSpriteBox;
         private Label VersionLabel;
-        private LinkLabel linkLabel1;
         private TabPage InGameScreenshotPage;
     }
 }

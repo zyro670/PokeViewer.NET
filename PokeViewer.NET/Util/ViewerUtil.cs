@@ -85,5 +85,10 @@ namespace PokeViewer.NET
             return false;
         }
 
+        public enum RoutineType
+        {
+            None,
+            Read,
+        }
     }
 }

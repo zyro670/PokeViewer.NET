@@ -12,28 +12,42 @@ namespace PokeViewer.NET.SubForms
 {
     public partial class Egg_Viewer : Form
     {
-        private readonly SwitchSocketAsync SwitchConnection;
-        public Egg_Viewer(SwitchSocketAsync switchConnection)
+        private readonly ViewerExecutor Executor;
+        public Egg_Viewer(ViewerExecutor executor)
         {
             InitializeComponent();
-            SwitchConnection = switchConnection;
+            Executor = executor;
             WebHookText.Text = Settings.Default.WebHook;
             UserDiscordIDText.Text = Settings.Default.UserDiscordID;
         }
         private int eggcount = 0;
         private int sandwichcount = 0;
-        private int shinycount = 0;
+        private int starcount = 0;
+        private int squarecount = 0;
         private readonly uint EggData = 0x04386040;
         private readonly uint PicnicMenu = 0x04416020;
         private readonly byte[] BlankVal = { 0x01 };
         private int[] IVFilters = Array.Empty<int>();
         private IReadOnlyList<long> OverworldPointer { get; } = new long[] { 0x43A7848, 0x348, 0x10, 0xD8, 0x28 };
         private ulong OverworldOffset;
+        private DateTime StartTime;
 
         private async void button1_Click(object sender, EventArgs e)
         {
             var token = CancellationToken.None;
+            StartTime = DateTime.Now;
+            UptimeOnLoad(sender, e);
             await PerformEggRoutine(token).ConfigureAwait(false);
+        }
+
+        private void UptimeOnLoad(object sender, EventArgs e)
+        {
+            var timer = new System.Timers.Timer { Interval = 1000 };
+            timer.Elapsed += (o, args) =>
+            {
+                UptimeLabel.Text = $"Uptime: {StartTime - DateTime.Now:d\\.hh\\:mm\\:ss}";
+            };
+            timer.Start();
         }
 
         private async Task PerformEggRoutine(CancellationToken token)
@@ -50,7 +64,7 @@ namespace PokeViewer.NET.SubForms
                 DisableOptions();
 
             eggcount = 0;
-            await SwitchConnection.WriteBytesMainAsync(BlankVal, PicnicMenu, token).ConfigureAwait(false);
+            await Executor.SwitchConnection.WriteBytesMainAsync(BlankVal, PicnicMenu, token).ConfigureAwait(false);
 
             if (EatOnStart.Checked)
             {
@@ -157,8 +171,12 @@ namespace PokeViewer.NET.SubForms
         {
             if (pk.IsShiny)
             {
-                shinycount++;
-                ShinyFoundLabel.Text = $"Shinies Found: {shinycount}";
+                if (pk.ShinyXor == 0)
+                    squarecount++;
+                else
+                    starcount++;
+                ShinyFoundLabel.Text = $"Shinies Found: {squarecount + starcount}";
+                SquareStarCount.Text = $"■ - {squarecount} | ★ - {starcount}";
             }
 
             if (!pk.IVs.SequenceEqual(IVFilters) && !Settings.Default.IgnoreIVFilter)
@@ -185,14 +203,14 @@ namespace PokeViewer.NET.SubForms
                     return false;
 
                 if ((Species)pk.Species is Species.Dunsparce or Species.Tandemaus && pk.EncryptionConstant % 100 == 0 && Settings.Default.SegmentOrFamily)
-                    return true;                
+                    return true;
             }
             return true;
         }
 
         private async Task<PK9> ReadPokemonSV(uint offset, int size, CancellationToken token)
         {
-            var data = await SwitchConnection.ReadBytesMainAsync(offset, size, token).ConfigureAwait(false);
+            var data = await Executor.SwitchConnection.ReadBytesMainAsync(offset, size, token).ConfigureAwait(false);
             var pk = new PK9(data);
             return pk;
         }
@@ -200,7 +218,7 @@ namespace PokeViewer.NET.SubForms
         private async Task SetStick(SwitchStick stick, short x, short y, int delay, CancellationToken token)
         {
             var cmd = SwitchCommand.SetStick(stick, x, y, true);
-            await SwitchConnection.SendAsync(cmd, token).ConfigureAwait(false);
+            await Executor.SwitchConnection.SendAsync(cmd, token).ConfigureAwait(false);
             await Task.Delay(delay, token).ConfigureAwait(false);
         }
 
@@ -210,7 +228,7 @@ namespace PokeViewer.NET.SubForms
             await Click(Y, 1_500, token).ConfigureAwait(false);
             var overworldWaitCycles = 0;
             var hasReset = false;
-            OverworldOffset = await SwitchConnection.PointerAll(OverworldPointer, token).ConfigureAwait(false);
+            OverworldOffset = await Executor.SwitchConnection.PointerAll(OverworldPointer, token).ConfigureAwait(false);
             while (!await IsOnOverworld(OverworldOffset, token).ConfigureAwait(false))
             {
                 await Click(A, 1_000, token).ConfigureAwait(false);
@@ -361,19 +379,19 @@ namespace PokeViewer.NET.SubForms
 
         private new async Task Click(SwitchButton b, int delay, CancellationToken token)
         {
-            await SwitchConnection.SendAsync(SwitchCommand.Click(b, true), token).ConfigureAwait(false);
+            await Executor.SwitchConnection.SendAsync(SwitchCommand.Click(b, true), token).ConfigureAwait(false);
             await Task.Delay(delay, token).ConfigureAwait(false);
         }
 
         private async Task Hold(SwitchButton b, int delay, CancellationToken token)
         {
-            await SwitchConnection.SendAsync(SwitchCommand.Hold(b, true), token).ConfigureAwait(false);
+            await Executor.SwitchConnection.SendAsync(SwitchCommand.Hold(b, true), token).ConfigureAwait(false);
             await Task.Delay(delay, token).ConfigureAwait(false);
         }
 
         private async Task Release(SwitchButton b, int delay, CancellationToken token)
         {
-            await SwitchConnection.SendAsync(SwitchCommand.Release(b, true), token).ConfigureAwait(false);
+            await Executor.SwitchConnection.SendAsync(SwitchCommand.Release(b, true), token).ConfigureAwait(false);
             await Task.Delay(delay, token).ConfigureAwait(false);
         }
 
@@ -389,25 +407,25 @@ namespace PokeViewer.NET.SubForms
 
         private async Task<int> PicnicState(CancellationToken token)
         {
-            var Data = await SwitchConnection.ReadBytesMainAsync(PicnicMenu, 1, token).ConfigureAwait(false);
-            return Data[0]; // 1 when in picnic, 2 in sandwich menu, 3 when eating, 2 when done eating
+            var data = await Executor.SwitchConnection.ReadBytesMainAsync(PicnicMenu, 1, token).ConfigureAwait(false);
+            return data[0]; // 1 when in picnic, 2 in sandwich menu, 3 when eating, 2 when done eating
         }
 
         private async Task<bool> IsInPicnic(CancellationToken token)
         {
-            var Data = await SwitchConnection.ReadBytesMainAsync(PicnicMenu, 1, token).ConfigureAwait(false);
-            return Data[0] == 0x01; // 1 when in picnic, 2 in sandwich menu, 3 when eating, 2 when done eating
+            var data = await Executor.SwitchConnection.ReadBytesMainAsync(PicnicMenu, 1, token).ConfigureAwait(false);
+            return data[0] == 0x01; // 1 when in picnic, 2 in sandwich menu, 3 when eating, 2 when done eating
         }
 
         private async Task<bool> IsOnOverworld(ulong offset, CancellationToken token)
         {
-            var data = await SwitchConnection.ReadBytesAbsoluteAsync(offset, 1, token).ConfigureAwait(false);
+            var data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(offset, 1, token).ConfigureAwait(false);
             return data[0] == 0x11;
         }
 
         private async Task SetScreen(ScreenState state, CancellationToken token)
         {
-            await SwitchConnection.SendAsync(SwitchCommand.SetScreen(state, true), token).ConfigureAwait(false);
+            await Executor.SwitchConnection.SendAsync(SwitchCommand.SetScreen(state, true), token).ConfigureAwait(false);
         }
 
         private void DisableOptions()
@@ -451,8 +469,7 @@ namespace PokeViewer.NET.SubForms
         {
             get
             {
-                if (_client == null)
-                    _client = new HttpClient();
+                _client ??= new HttpClient();
                 return _client;
             }
         }

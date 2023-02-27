@@ -1,17 +1,15 @@
 ﻿using PKHeX.Core;
-using SysBot.Base;
 using static PokeViewer.NET.RoutineExecutor;
 
 namespace PokeViewer.NET.WideViewForms
 {
     public partial class WideViewerLA : Form
     {
-        private readonly SwitchSocketAsync SwitchConnection;
-        public static RoutineExecutor Executor = new();
-        public WideViewerLA(SwitchSocketAsync switchConnection)
+        private readonly ViewerExecutor Executor;
+        public WideViewerLA(ViewerExecutor executor)
         {
             InitializeComponent();
-            SwitchConnection = switchConnection;
+            Executor = executor;
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -25,26 +23,21 @@ namespace PokeViewer.NET.WideViewForms
             var pk = new PA8();
             int size = 0x168;
             uint value = 0x00;
-            if (SwitchConnection.Connected)
+            for (int i = 0; i < 5; i++)
             {
-                for (int i = 0; i < 5; i++)
+                switch (i)
                 {
-                    switch (i)
-                    {
-                        case 0: value = 0x90; break;
-                        case 1: value = 0xF0; break;
-                        case 2: value = 0x150; break;
-                        case 3: value = 0x1B0; break;
-                        case 4: value = 0x210; break;
-                    }
-                    var ptr = new long[] { 0x42A6F00, 0x98, value, 0x10, 0x58, 0x00 };
-                    var ofs = await SwitchConnection.PointerAll(ptr, CancellationToken.None).ConfigureAwait(false);
-                    pk = await ReadInBattlePokemonLA(ofs, size).ConfigureAwait(false);
-                    LASanityCheck(pk, i);
+                    case 0: value = 0x90; break;
+                    case 1: value = 0xF0; break;
+                    case 2: value = 0x150; break;
+                    case 3: value = 0x1B0; break;
+                    case 4: value = 0x210; break;
                 }
+                var ptr = new long[] { 0x42A6F00, 0x98, value, 0x10, 0x58, 0x00 };
+                var ofs = await Executor.SwitchConnection.PointerAll(ptr, CancellationToken.None).ConfigureAwait(false);
+                pk = await ReadInBattlePokemonLA(ofs, size).ConfigureAwait(false);
+                LASanityCheck(pk, i);
             }
-            else 
-                return;
         }
 
         private void LASanityCheck(PA8 pk, int count)
@@ -95,11 +88,11 @@ namespace PokeViewer.NET.WideViewForms
 
         public async Task<PA8> ReadInBattlePokemonLA(ulong offset, int size)
         {
-            var data = await SwitchConnection.ReadBytesAbsoluteAsync(offset, size, CancellationToken.None).ConfigureAwait(false);
+            var data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(offset, size, CancellationToken.None).ConfigureAwait(false);
             var pk = new PA8(data);
             return pk;
         }
-        
+
     }
 }
 

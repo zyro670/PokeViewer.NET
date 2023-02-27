@@ -1,23 +1,20 @@
 ﻿using PKHeX.Core;
-using SysBot.Base;
 using static PokeViewer.NET.RoutineExecutor;
 
 namespace PokeViewer.NET.WideViewForms
 {    
     public partial class NPCViewer : Form
     {
-        private readonly SwitchSocketAsync SwitchConnection;
-        public static RoutineExecutor Executor = new();
+        private readonly ViewerExecutor Executor;
         public int GameType;
         public ToolTip tt = new();
         public List<string> CurrentSlotStats = new();
-        public NPCViewer(int gametype, SwitchSocketAsync switchConnection)
+        public NPCViewer(int gametype, ViewerExecutor executor)
         {
             InitializeComponent();
-            SwitchConnection = switchConnection;
+            Executor = executor;
             GameType = gametype;
-            this.Text = VersionString(GameType);
-            SwitchConnection.Connect();
+            Text = VersionString(GameType);
         }
 
         private static string VersionString(int type)
@@ -35,7 +32,6 @@ namespace PokeViewer.NET.WideViewForms
         private void SanityCheck(PKM pk, int count)
         {
             PictureBox[] boxes = { pictureBox1, pictureBox2, pictureBox3, pictureBox4, pictureBox5, pictureBox6 };
-            string? sprite = string.Empty;
             bool isValid = false;
             switch (GameType)
             {
@@ -44,6 +40,7 @@ namespace PokeViewer.NET.WideViewForms
                 case (int)GameSelected.LegendsArceus: isValid = PersonalTable.LA.IsPresentInGame(pk.Species, pk.Form); break;
                 case (int)GameSelected.LetsGoPikachu or (int)GameSelected.LetsGoEevee: isValid = pk.Species < (int)Species.Mewtwo && pk.Species != (int)Species.Meltan && pk.Species != (int)Species.Melmetal; break;
             }
+            string? sprite;
             if (!isValid || pk.Species <= 0 || pk.Species > (int)Species.MAX_COUNT)
             {
                 CurrentSlotStats.Add("No Pokémon present.");
@@ -73,14 +70,14 @@ namespace PokeViewer.NET.WideViewForms
 
         public async Task<PK8> ReadInBattlePokemonSWSH(uint offset, int size)
         {
-            var data = await SwitchConnection.ReadBytesAsync(offset, size, CancellationToken.None).ConfigureAwait(false);
+            var data = await Executor.SwitchConnection.ReadBytesAsync(offset, size, CancellationToken.None).ConfigureAwait(false);
             var pk = new PK8(data);
             return pk;
         }
 
         public async Task<PB7> ReadInBattlePokemonLGPE(uint offset, int size)
         {
-            var data = await SwitchConnection.ReadBytesAsync(offset, size, CancellationToken.None).ConfigureAwait(false);
+            var data = await Executor.SwitchConnection.ReadBytesAsync(offset, size, CancellationToken.None).ConfigureAwait(false);
             var pk = new PB7(data);
             return pk;
         }
@@ -88,7 +85,7 @@ namespace PokeViewer.NET.WideViewForms
         public async Task<PB8> ReadInBattlePokemonBDSP(ulong offset, int size)
         {
             var token = CancellationToken.None;
-            var data = await SwitchConnection.ReadBytesAbsoluteAsync(offset, size, token).ConfigureAwait(false);
+            var data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(offset, size, token).ConfigureAwait(false);
             var pk = new PB8(data);
             return pk;
         }
@@ -122,7 +119,7 @@ namespace PokeViewer.NET.WideViewForms
                                 case 5: val = 0x48; break;
                             }
                             var ptr = new long[] { 0x4C64DC0, 0xB8, 0x10, 0x800, 0x58, 0x28, 0x10, val, 0x20, 0x18, 0x20 };
-                            var ufs = await SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false);
+                            var ufs = await Executor.SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false);
                             var size = 0x168;
                             var pb8 = await ReadInBattlePokemonBDSP(ufs, size).ConfigureAwait(false);
                             SanityCheck(pb8, i);
@@ -141,7 +138,7 @@ namespace PokeViewer.NET.WideViewForms
                                 case 5: val = 0x48; break;
                             }
                             var ptr = new long[] { 0x4E7BE98, 0xB8, 0x10, 0x800, 0x58, 0x28, 0x10, val, 0x20, 0x18, 0x20 };
-                            var ufs = await SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false);
+                            var ufs = await Executor.SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false);
                             var size = 0x168;
                             var pb8 = await ReadInBattlePokemonBDSP(ufs, size).ConfigureAwait(false);
                             SanityCheck(pb8, i);

@@ -8,66 +8,74 @@ using static PokeViewer.NET.RoutineExecutor;
 using static PokeViewer.NET.ViewerUtil;
 using Octokit;
 using System.Diagnostics;
+using PokeViewer.NET.Properties;
 
 namespace PokeViewer.NET
 {
     public partial class MainViewer : Form
     {
-        private static readonly SwitchConnectionConfig Config = new() { Protocol = SwitchProtocol.WiFi, IP = Properties.Settings.Default.SwitchIP, Port = 6000 };
-        public SwitchSocketAsync SwitchConnection = new(Config);
-        private const string ViewerVersion = "1.1.1";
+        public ViewerExecutor Executor = null!;
+        private const string ViewerVersion = "1.2.0";
+        private const int AzureBuildID = 371;
         private bool[] FormLoaded = new bool[7];
+        private int GameType;
+        private readonly string RefreshTime = Settings.Default.RefreshRate;
         public MainViewer()
         {
             InitializeComponent();
             DisableTabsOnStart();
             VersionLabel.Text = $"v{ViewerVersion}";
-            CheckLinkLabel();
+            CheckReleaseLabel();
         }
-
-        private int GameType;
-        private readonly string RefreshTime = Properties.Settings.Default.RefreshRate;
 
         private void PokeViewerForm_Load(object sender, EventArgs e)
         {
-            SwitchIP.Text = Properties.Settings.Default.SwitchIP;
+            SwitchIP.Text = Settings.Default.SwitchIP;
             LoadOriginDefault();
             LoadDateTime(sender, e);
         }
 
-        private async void CheckLinkLabel()
+        private static void GetVersionsOnStart(int azurematch)
         {
-            //Get all releases from GitHub
-            //Source: https://octokitnet.readthedocs.io/en/latest/getting-started/
-            GitHubClient client = new(new ProductHeaderValue("Poke-Viewer-NET"));
-            IReadOnlyList<Release> releases = await client.Repository.Release.GetAll("zyro670", "PokeViewer.NET");
+            if (azurematch < 0)
+            {
+                DialogResult dialogResult = MessageBox.Show("A new azure-artifact build is available. Go to artifacts page?", "An update is available", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (dialogResult == DialogResult.Yes)
+                    Process.Start(new ProcessStartInfo("https://dev.azure.com/angelosalas670/zyro670/_build?definitionId=5") { UseShellExecute = true });
 
-            //Setup the versions
-            Version latestGitHubVersion = new(releases[0].TagName);
+                else if (dialogResult == DialogResult.No)
+                    return;
+            }
+        }
+
+        private static async Task CheckAzureLabel()
+        {
+            int azurematch;
+            string latestazure = "https://dev.azure.com/angelosalas670/zyro670/_apis/build/builds?definitions=5&$top=1&api-version=5.0-preview.5";
+            HttpClient client = new();
+            var content = await client.GetStringAsync(latestazure);
+            int buildId = int.Parse(content.Substring(140, 3));
+            azurematch = AzureBuildID.CompareTo(buildId);
+            GetVersionsOnStart(azurematch);
+        }
+
+        private async void CheckReleaseLabel()
+        {
+            GitHubClient client = new(new ProductHeaderValue("PokeViewer.NET"));
+            Release releases = await client.Repository.Release.GetLatest("zyro670", "PokeViewer.NET");
+
+            Version latestGitHubVersion = new(releases.TagName);
             Version localVersion = new(ViewerVersion);
 
-            //Compare the Versions
-            //Source: https://stackoverflow.com/questions/7568147/compare-version-numbers-without-using-split-function
             int versionComparison = localVersion.CompareTo(latestGitHubVersion);
             if (versionComparison < 0)
             {
                 //The version on GitHub is more up to date than this local release.
-                linkLabel1.Text = "An update is available!";
-                linkLabel1.SetBounds(40, 160, linkLabel1.Width, linkLabel1.Height);
-
+                DialogResult dialogResult = MessageBox.Show("A new PokeViewer.NET release is available. Go to Releases page?", "An update is available", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (dialogResult == DialogResult.Yes)
+                    Process.Start(new ProcessStartInfo("https://github.com/zyro670/PokeViewer.NET/releases") { UseShellExecute = true });
             }
-            else if (versionComparison > 0)
-            {
-                //This local version is greater than the release version on GitHub.
-                linkLabel1.Text = "You are on an azure-artifact build.";
-                linkLabel1.SetBounds(8, 160, linkLabel1.Width, linkLabel1.Height);
-            }
-            else
-            {
-                //This local Version and the Version on GitHub are equal.
-                linkLabel1.Text = "You are on the latest release.";
-                linkLabel1.SetBounds(24, 160, linkLabel1.Width, linkLabel1.Height);
-            }
+            await CheckAzureLabel().ConfigureAwait(false);
         }
 
         private void LoadOriginDefault()
@@ -82,10 +90,9 @@ namespace PokeViewer.NET
             TextBox textBox = (TextBox)sender;
             if (textBox.Text != "192.168.0.0")
             {
-                Properties.Settings.Default.SwitchIP = textBox.Text;
-                Config.IP = SwitchIP.Text;
+                Settings.Default.SwitchIP = textBox.Text;
             }
-            Properties.Settings.Default.Save();
+            Settings.Default.Save();
         }
 
         private void CheckForHide(object sender, EventArgs e)
@@ -93,15 +100,15 @@ namespace PokeViewer.NET
             CheckBox checkBox = (CheckBox)sender;
             if (checkBox.Checked == true)
             {
-                Properties.Settings.Default.HidePIDEC = HidePIDEC.Checked;
+                Settings.Default.HidePIDEC = HidePIDEC.Checked;
                 HidePIDEC.Checked = true;
             }
             else
             {
-                Properties.Settings.Default.HidePIDEC = false;
+                Settings.Default.HidePIDEC = false;
                 HidePIDEC.Checked = false;
             }
-            Properties.Settings.Default.Save();
+            Settings.Default.Save();
         }
 
         private void CheckForUSBChecked(object sender, EventArgs e)
@@ -110,7 +117,6 @@ namespace PokeViewer.NET
                 ConnectionGroupBox.Text = "Switch Port";
             else
                 ConnectionGroupBox.Text = "Switch IP";
-
         }
 
         private void LoadDateTime(object sender, EventArgs e)
@@ -118,32 +124,51 @@ namespace PokeViewer.NET
             TodaysDate.Text = "Met Date: " + DateTime.Today.ToString("MM/dd/yyyy");
         }
 
+        private SwitchProtocol GetProtocol()
+        {
+            if (ToggleSwitchProtocol.Checked)
+                return SwitchProtocol.USB;
+            return SwitchProtocol.WiFi;
+        }
+
         private async void Connect_Click(object sender, EventArgs e)
         {
-            await Task.Delay(0_050, CancellationToken.None).ConfigureAwait(false);
-            if (!SwitchConnection.Connected)
+            var token = new CancellationToken();
+            if (Executor is null || !Executor.Connection.Connected)
             {
                 try
                 {
-                    SwitchConnection.Connect();
+                    var config = GetProtocol() switch
+                    {
+                        SwitchProtocol.USB => new SwitchConnectionConfig { Port = int.Parse(Settings.Default.SwitchIP), Protocol = SwitchProtocol.USB },
+                        SwitchProtocol.WiFi => new SwitchConnectionConfig { IP = Settings.Default.SwitchIP, Port = 6000, Protocol = SwitchProtocol.WiFi },
+                        _ => throw new ArgumentOutOfRangeException(),
+                    };
+                    var state = new ViewerState
+                    {
+                        Connection = config,
+                        InitialRoutine = RoutineType.Read,
+                    };
+                    Executor = new ViewerExecutor(state);
+                    await Executor.RunAsync(token).ConfigureAwait(false);
                     Height = 507;
                     Width = 511;
                     ConnectionGroupBox.SetBounds(135, 130, ConnectionGroupBox.Width, ConnectionGroupBox.Height);
                     Connect.Text = "Disconnect";
+                    await Executor.Connect(token).ConfigureAwait(false);
                     Window_Loaded();
                 }
                 catch (SocketException err)
                 {
-                    MessageBox.Show(err.Message);
-                    MessageBox.Show($"{Environment.NewLine}Ensure IP address is correct before connecting!");
+                    string port = ToggleSwitchProtocol.Checked ? "Port" : "IP address";
+                    MessageBox.Show($"{err.Message}{Environment.NewLine}Ensure {port} is correct before attempting to connect!");
                 }
             }
-            else if (SwitchConnection.Connected)
+            else if (Executor is not null)
             {
-                SwitchConnection.Disconnect();
+                Executor.Connection.Disconnect();
                 System.Windows.Forms.Application.Restart();
             }
-
         }
 
         private void View_Click(object sender, EventArgs e)
@@ -279,7 +304,7 @@ namespace PokeViewer.NET
                 int.TryParse(RefreshTime, out var refr);
                 while (pk.Stat_HPCurrent != 0)
                 {
-                    if (!SwitchConnection.Connected)
+                    if (!Executor.SwitchConnection.Connected)
                     {
                         System.Windows.Forms.Application.Restart();
                         Environment.Exit(0);
@@ -318,13 +343,13 @@ namespace PokeViewer.NET
         public async Task<PK9> ReadInBattlePokemonSV(ulong offset, int size)
         {
             var token = CancellationToken.None;
-            var data = await SwitchConnection.ReadBytesAbsoluteAsync(offset, size, token).ConfigureAwait(false);
+            var data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(offset, size, token).ConfigureAwait(false);
             var pk = new PK9(data);
             if (UniqueBox.Checked)
             {
                 var ptr = new long[] { 0x42F3DD8, 0xD8, 0x48, 0x18, 0xD8, 0x1E0 };
-                var ofs = await SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false);
-                data = await SwitchConnection.ReadBytesAbsoluteAsync(ofs, size, token).ConfigureAwait(false); // RaidLobbyPokemon
+                var ofs = await Executor.SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false);
+                data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(ofs, size, token).ConfigureAwait(false); // RaidLobbyPokemon
                 pk = new PK9(data);
                 return pk;
             }
@@ -339,7 +364,7 @@ namespace PokeViewer.NET
             if (UniqueBox.Checked)
             {
                 offset = 0x886A95B8;
-                data = await SwitchConnection.ReadBytesAsync(offset, size, token).ConfigureAwait(false); // RaidPokemon
+                data = await Executor.SwitchConnection.ReadBytesAsync(offset, size, token).ConfigureAwait(false); // RaidPokemon
                 pk = new PK8(data);
                 return pk;
             }
@@ -356,18 +381,18 @@ namespace PokeViewer.NET
                 for (int i = 0; i < campers.Length; i++)
                 {
                     var pointer = campers[i];
-                    var ofs = await SwitchConnection.PointerAll(pointer, token).ConfigureAwait(false);
-                    data = await SwitchConnection.ReadBytesAbsoluteAsync(ofs, size, token).ConfigureAwait(false);
+                    var ofs = await Executor.SwitchConnection.PointerAll(pointer, token).ConfigureAwait(false);
+                    data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(ofs, size, token).ConfigureAwait(false);
                     pk = new PK8(data);
                     if (pk.Species != 0 && pk.Species < (int)Species.MAX_COUNT)
                         return pk;
                 }
             }
-            data = await SwitchConnection.ReadBytesAsync(offset, size, token).ConfigureAwait(false); // WildPokemon
+            data = await Executor.SwitchConnection.ReadBytesAsync(offset, size, token).ConfigureAwait(false); // WildPokemon
             pk = new PK8(data);
             if (pk.Species == 0 || pk.Species > (int)Species.MAX_COUNT)
             {
-                data = await SwitchConnection.ReadBytesAsync(0x886BC348, size, token).ConfigureAwait(false); // LegendaryPokemon
+                data = await Executor.SwitchConnection.ReadBytesAsync(0x886BC348, size, token).ConfigureAwait(false); // LegendaryPokemon
                 pk = new PK8(data);
             }
             return pk;
@@ -376,7 +401,7 @@ namespace PokeViewer.NET
         public async Task<PA8> ReadInBattlePokemonLA(ulong offset, int size)
         {
             var token = CancellationToken.None;
-            var data = await SwitchConnection.ReadBytesAbsoluteAsync(offset, size, token).ConfigureAwait(false);
+            var data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(offset, size, token).ConfigureAwait(false);
             var pk = new PA8(data);
             return pk;
         }
@@ -384,7 +409,7 @@ namespace PokeViewer.NET
         public async Task<PB8> ReadInBattlePokemonBDSP(ulong offset, int size)
         {
             var token = CancellationToken.None;
-            var data = await SwitchConnection.ReadBytesAbsoluteAsync(offset, size, token).ConfigureAwait(false);
+            var data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(offset, size, token).ConfigureAwait(false);
             var pk = new PB8(data);
             return pk;
         }
@@ -392,11 +417,11 @@ namespace PokeViewer.NET
         public async Task<PB7> ReadInBattlePokemonLGPE(uint offset, int size)
         {
             var token = CancellationToken.None;
-            var data = await SwitchConnection.ReadBytesMainAsync(offset, size, token).ConfigureAwait(false);
+            var data = await Executor.SwitchConnection.ReadBytesMainAsync(offset, size, token).ConfigureAwait(false);
             var pk = new PB7(data);
             if (pk.Species == 0 || pk.Species > (int)Species.MAX_COUNT)
             {
-                data = await SwitchConnection.ReadBytesAsync(0x9A118D68, size, token).ConfigureAwait(false);
+                data = await Executor.SwitchConnection.ReadBytesAsync(0x9A118D68, size, token).ConfigureAwait(false);
                 pk = new PB7(data);
             }
             return pk;
@@ -404,7 +429,7 @@ namespace PokeViewer.NET
 
         protected async Task<(bool, ulong)> ValidatePointerAll(IEnumerable<long> jumps, CancellationToken token)
         {
-            var solved = await SwitchConnection.PointerAll(jumps, token).ConfigureAwait(false);
+            var solved = await Executor.SwitchConnection.PointerAll(jumps, token).ConfigureAwait(false);
             return (solved != 0, solved);
         }
 
@@ -423,12 +448,12 @@ namespace PokeViewer.NET
                     ptr = new long[] { 0x4E70D70, 0xB8, 0x3C }; break;
                 case (int)GameSelected.Sword or (int)GameSelected.Shield:
                     {
-                        var data = await SwitchConnection.ReadBytesAsync((uint)(GameType == (int)GameVersion.SH ? 0x3F128626 : 0x3F128624), 1, token).ConfigureAwait(false);
+                        var data = await Executor.SwitchConnection.ReadBytesAsync((uint)(GameType == (int)GameVersion.SH ? 0x3F128626 : 0x3F128624), 1, token).ConfigureAwait(false);
                         return data[0] == (GameType == (int)GameSelected.Shield ? 0x40 : 0x41);
                     }
                 case (int)GameSelected.LetsGoPikachu or (int)GameSelected.LetsGoEevee:
                     {
-                        var data = await SwitchConnection.ReadBytesMainAsync(0x163F694, 1, token).ConfigureAwait(false);
+                        var data = await Executor.SwitchConnection.ReadBytesMainAsync(0x163F694, 1, token).ConfigureAwait(false);
                         return data[0] == 0;
                     }
             }
@@ -440,7 +465,7 @@ namespace PokeViewer.NET
 
         public async Task<bool> IsOnOverworld(ulong offset, CancellationToken token)
         {
-            var data = await SwitchConnection.ReadBytesAbsoluteAsync(offset, 1, token).ConfigureAwait(false);
+            var data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(offset, 1, token).ConfigureAwait(false);
             return data[0] == 1;
         }
 
@@ -472,7 +497,7 @@ namespace PokeViewer.NET
         {
             var token = CancellationToken.None;
             View.Enabled = false;
-            if (SwitchConnection.Connected)
+            if (Executor.SwitchConnection.Connected)
             {
                 ViewBox.Text = "Reading encounter...";
                 switch (GameType)
@@ -480,7 +505,7 @@ namespace PokeViewer.NET
                     case (int)GameSelected.Scarlet or (int)GameSelected.Violet:
                         {
                             var ptr = new long[] { 0x42FD3C0, 0x10, 0x2D0, 0x2A0, 0x48, 0x2E0 };
-                            var ofs = await SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false);
+                            var ofs = await Executor.SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false);
                             var size = 0x158;
                             var pk = await ReadInBattlePokemonSV(ofs, size).ConfigureAwait(false);
                             SanityCheck(pk);
@@ -509,7 +534,7 @@ namespace PokeViewer.NET
                     case (int)GameSelected.LegendsArceus:
                         {
                             var ptr = new long[] { 0x42A6F00, 0xD0, 0xB8, 0x300, 0x70, 0x60, 0x98, 0x10, 0x00 };
-                            var ofs = await SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false);
+                            var ofs = await Executor.SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false);
                             var size = 0x168;
                             var pk = await ReadInBattlePokemonLA(ofs, size).ConfigureAwait(false);
                             SanityCheck(pk);
@@ -518,7 +543,7 @@ namespace PokeViewer.NET
                     case (int)GameSelected.BrilliantDiamond:
                         {
                             var ptr = new long[] { 0x4C59EF0, 0x20, 0x98, 0x00, 0x20 };
-                            var ofs = await SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false);
+                            var ofs = await Executor.SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false);
                             var size = 0x168;
                             var pk = await ReadInBattlePokemonBDSP(ofs, size).ConfigureAwait(false);
                             SanityCheck(pk);
@@ -527,7 +552,7 @@ namespace PokeViewer.NET
                     case (int)GameSelected.ShiningPearl:
                         {
                             var ptr = new long[] { 0x4E70FC8, 0x20, 0x98, 0x00, 0x20 };
-                            var ofs = await SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false);
+                            var ofs = await Executor.SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false);
                             int size = 0x168;
                             var pk = await ReadInBattlePokemonBDSP(ofs, size).ConfigureAwait(false);
                             SanityCheck(pk);
@@ -551,7 +576,7 @@ namespace PokeViewer.NET
             var token = CancellationToken.None;
             int type = 0;
             string url = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/icon_version/64x64/icon_version_";
-            string title = await SwitchConnection.GetTitleID(token).ConfigureAwait(false);
+            string title = await Executor.SwitchConnection.GetTitleID(token).ConfigureAwait(false);
             switch (title)
             {
                 case ScarletID:
@@ -720,13 +745,13 @@ namespace PokeViewer.NET
         {
             var token = CancellationToken.None;
             var fn = "screenshot.jpg";
-            if (!SwitchConnection.Connected)
+            if (!Executor.SwitchConnection.Connected)
             {
                 System.Media.SystemSounds.Beep.Play();
                 MessageBox.Show($"No device connected! In-Game Screenshot not possible!");
                 return;
             }
-            var bytes = SwitchConnection.Screengrab(token).Result;
+            var bytes = Executor.SwitchConnection.Screengrab(token).Result;
             File.WriteAllBytes(fn, bytes);
             FileStream stream = new(fn, System.IO.FileMode.Open);
             var img = Image.FromStream(stream);
@@ -756,12 +781,12 @@ namespace PokeViewer.NET
 
         private void ViewerControl_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (!SwitchConnection.Connected)
+            if (Executor is null)
                 return;
 
             if (ViewerControl.SelectedTab.Text is "Raid 🎉")
             {
-                RaidCodeEntry RaidForm = new(SwitchConnection);
+                RaidCodeEntry RaidForm = new(Executor);
                 RaidForm.ShowDialog();
                 return;
             }
@@ -781,7 +806,7 @@ namespace PokeViewer.NET
 
             if (FormLoaded[selectedInt])
                 return;
-            
+
             if (currentTab is not "Wide 🔭" && GameType is (int)GameSelected.BrilliantDiamond or (int)GameSelected.ShiningPearl or (int)GameSelected.Sword or (int)GameSelected.Shield or (int)GameSelected.LetsGoPikachu or (int)GameSelected.LetsGoEevee)
             {
                 ViewerControl.Height = 550;
@@ -795,15 +820,15 @@ namespace PokeViewer.NET
             {
                 case "Connection 🔌": FormLoaded[0] = true; return;
                 case "View 🔎": FormLoaded[1] = true; return;
-                case "Box 📦": form = new BoxViewerMode(GameType, SwitchConnection) { TopLevel = false }; FormLoaded[2] = true; break;
-                case "Egg 🥚": form = new Egg_Viewer(SwitchConnection) { TopLevel = false }; FormLoaded[3] = true; break;
+                case "Box 📦": form = new BoxViewerMode(GameType, Executor) { TopLevel = false }; FormLoaded[2] = true; break;
+                case "Egg 🥚": form = new Egg_Viewer(Executor) { TopLevel = false }; FormLoaded[3] = true; break;
                 case "Wide 🔭":
                     FormLoaded[4] = true;
                     switch (GameType)
                     {
                         case (int)GameSelected.LegendsArceus:
                             {
-                                form = new WideViewerLA(SwitchConnection) { TopLevel = false };
+                                form = new WideViewerLA(Executor) { TopLevel = false };
                                 ViewerControl.Height = 380;
                                 ViewerControl.Width = 780;
                                 Height = 400;
@@ -812,7 +837,7 @@ namespace PokeViewer.NET
                             }
                         case (int)GameSelected.BrilliantDiamond or (int)GameSelected.ShiningPearl:
                             {
-                                form = new WideViewerBDSP(SwitchConnection) { TopLevel = false };
+                                form = new WideViewerBDSP(Executor) { TopLevel = false };
                                 ViewerControl.Height = 560;
                                 ViewerControl.Width = 825;
                                 Height = 600;
@@ -821,7 +846,7 @@ namespace PokeViewer.NET
                             }
                         case (int)GameSelected.Sword or (int)GameSelected.Shield:
                             {
-                                form = new WideViewerSWSH(SwitchConnection) { TopLevel = false };
+                                form = new WideViewerSWSH(Executor) { TopLevel = false };
                                 ViewerControl.Height = 600;
                                 ViewerControl.Width = 890;
                                 Height = 580;
@@ -830,7 +855,7 @@ namespace PokeViewer.NET
                             }
                         case (int)GameSelected.LetsGoPikachu or (int)GameSelected.LetsGoEevee:
                             {
-                                form = new WideViewerLGPE(SwitchConnection) { TopLevel = false };
+                                form = new WideViewerLGPE(Executor) { TopLevel = false };
                                 ViewerControl.Height = 400;
                                 ViewerControl.Width = 475;
                                 Height = 300;
@@ -839,8 +864,8 @@ namespace PokeViewer.NET
                             }
                     }
                     break;
-                case "NPC 🤖": form = new NPCViewer(GameType, SwitchConnection) { TopLevel = false }; FormLoaded[5] = true; break;
-                case "Screenshot 📷": form = new ScreenshotForm(SwitchConnection) { TopLevel = false }; FormLoaded[6] = true; break;
+                case "NPC 🤖": form = new NPCViewer(GameType, Executor) { TopLevel = false }; FormLoaded[5] = true; break;
+                case "Screenshot 📷": form = new ScreenshotForm(Executor) { TopLevel = false }; FormLoaded[6] = true; break;
             }
             int curr = ViewerControl.SelectedIndex;
             TabPage tbp = ViewerControl.TabPages[curr];
@@ -864,11 +889,6 @@ namespace PokeViewer.NET
             ViewerControl.TabPages.Remove(RaidPage);
             ViewerControl.TabPages.Remove(InGameScreenshotPage);
 
-        }
-
-        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            Process.Start(new ProcessStartInfo("https://github.com/zyro670/PokeViewer.NET/releases") { UseShellExecute = true });
         }
 
     }

@@ -27,7 +27,7 @@ namespace PokeViewer.NET.SubForms
             Settings.Default.IgnoreIVFilter = IgnoreIVFilter.Checked;
 
             Settings.Default.Save();
-            this.Close();
+            Close();
         }
 
         private void ResetButton_Click(object sender, EventArgs e)

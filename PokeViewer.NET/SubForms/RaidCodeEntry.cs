@@ -10,11 +10,11 @@ namespace PokeViewer.NET.SubForms
 {
     public partial class RaidCodeEntry : Form
     {
-        private readonly SwitchSocketAsync SwitchConnection;
-        public RaidCodeEntry(SwitchSocketAsync switchConnection)
+        private readonly ViewerExecutor Executor;
+        public RaidCodeEntry(ViewerExecutor executor)
         {
             InitializeComponent();
-            SwitchConnection = switchConnection;
+            Executor = executor;
         }
 
         private async void button1_Click(object sender, EventArgs e)
@@ -53,7 +53,7 @@ namespace PokeViewer.NET.SubForms
                         keystopress.Add(keypress);
                 }
             }
-            await SwitchConnection.TypeMultiKeys(keystopress, token).ConfigureAwait(false);
+            await Executor.SwitchConnection.SendAsync(SwitchCommand.TypeMultipleKeys(keystopress, true), token).ConfigureAwait(false);
             await Click(PLUS, 0_500, token).ConfigureAwait(false);
             await Click(PLUS, 0_500, token).ConfigureAwait(false);
 
@@ -61,7 +61,7 @@ namespace PokeViewer.NET.SubForms
 
         public new async Task Click(SwitchButton b, int delay, CancellationToken token)
         {
-            await SwitchConnection.SendAsync(SwitchCommand.Click(b, true), token).ConfigureAwait(false);
+            await Executor.SwitchConnection.SendAsync(SwitchCommand.Click(b, true), token).ConfigureAwait(false);
             await Task.Delay(delay, token).ConfigureAwait(false);
         }
 
@@ -69,8 +69,8 @@ namespace PokeViewer.NET.SubForms
         {
             textBox1.Text = string.Empty;
             Label[] labels = { label1, label2, label3, label4, label5, label6 };
-            for (int i = 0; i < labels.Length; i++)             
-                labels[i].Text = string.Empty;            
+            for (int i = 0; i < labels.Length; i++)
+                labels[i].Text = string.Empty;
         }
 
         private async void textBox1_DoubleClicked(object sender, EventArgs e)
@@ -191,7 +191,7 @@ namespace PokeViewer.NET.SubForms
             {
 
                 //create the grayscale ColorMatrix
-                ColorMatrix colorMatrix = new ColorMatrix(
+                ColorMatrix colorMatrix = new(
                    new float[][]
                    {
              new float[] {.3f, .3f, .3f, 0, 0},
@@ -202,17 +202,15 @@ namespace PokeViewer.NET.SubForms
                    });
 
                 //create some image attributes
-                using (ImageAttributes attributes = new ImageAttributes())
-                {
+                using ImageAttributes attributes = new();
 
-                    //set the color matrix attribute
-                    attributes.SetColorMatrix(colorMatrix);
+                //set the color matrix attribute
+                attributes.SetColorMatrix(colorMatrix);
 
-                    //draw the original image on the new image
-                    //using the grayscale color matrix
-                    g.DrawImage(original, new Rectangle(0, 0, original.Width, original.Height),
-                                0, 0, original.Width, original.Height, GraphicsUnit.Pixel, attributes);
-                }
+                //draw the original image on the new image
+                //using the grayscale color matrix
+                g.DrawImage(original, new Rectangle(0, 0, original.Width, original.Height),
+                            0, 0, original.Width, original.Height, GraphicsUnit.Pixel, attributes);
             }
             return newBitmap;
         }

@@ -27,7 +27,6 @@
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
 		<PackageReference Include="Octokit" Version="5.0.0" />
-		<PackageReference Include="Tulpep.NotificationWindow" Version="1.1.38" />
 		<Reference Include="SysBot.Base">
 			<HintPath>deps\SysBot.Base.dll</HintPath>
 		</Reference>
