@@ -16,7 +16,7 @@ namespace PokeViewer.NET
     {
         public ViewerExecutor Executor = null!;
         private const string ViewerVersion = "1.2.0";
-        private const int AzureBuildID = 371;
+        private const int AzureBuildID = 373;
         private bool[] FormLoaded = new bool[7];
         private int GameType;
         private readonly string RefreshTime = Settings.Default.RefreshRate;
