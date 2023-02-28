@@ -1,5 +1,5 @@
 ﻿using PKHeX.Core;
-using PokeViewer.NET.WideViewForms;
+using PokeViewer.NET.SubForms;
 using static PokeViewer.NET.RoutineExecutor;
 using static PokeViewer.NET.ViewerUtil;
 
@@ -112,7 +112,7 @@ namespace PokeViewer.NET
                     case (int)GameSelected.Scarlet or (int)GameSelected.Violet:
                         {
                             var slotsize = 344;
-                            var ptr = new long[] { 0x4384B18, 0x128, 0x9B0, 0x0 };
+                            var ptr = new long[] { 0x44CCA18, 0xA90, 0x9B0, 0x00 };
                             var b1s1 = await Executor.SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false);
                             var boxsize = 30 * slotsize;
                             var boxStart = b1s1 + (ulong)(box * boxsize);

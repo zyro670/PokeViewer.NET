@@ -24,11 +24,11 @@ namespace PokeViewer.NET.SubForms
         private int sandwichcount = 0;
         private int starcount = 0;
         private int squarecount = 0;
-        private readonly uint EggData = 0x04386040;
-        private readonly uint PicnicMenu = 0x04416020;
+        private readonly uint EggData = 0x044AAE00;
+        private readonly uint PicnicMenu = 0x0453B020;
         private readonly byte[] BlankVal = { 0x01 };
         private int[] IVFilters = Array.Empty<int>();
-        private IReadOnlyList<long> OverworldPointer { get; } = new long[] { 0x43A7848, 0x348, 0x10, 0xD8, 0x28 };
+        private IReadOnlyList<long> OverworldPointer { get; } = new long[] { 0x44CCAE8, 0x348, 0x10, 0xD8, 0x28 };
         private ulong OverworldOffset;
         private DateTime StartTime;
 
@@ -105,14 +105,9 @@ namespace PokeViewer.NET.SubForms
                         }
                     }
 
-                    await Task.Delay(1_000, token).ConfigureAwait(false);
                     pk = await ReadPokemonSV(EggData, 344, token).ConfigureAwait(false);
                     while (pk != null && (Species)pk.Species != Species.None && pkprev.EncryptionConstant != pk.EncryptionConstant)
                     {
-                        pk = await ReadPokemonSV(EggData, 344, token).ConfigureAwait(false);
-                        if (pk == null || pkprev.EncryptionConstant == pk.EncryptionConstant || (Species)pk.Species == Species.None)
-                            break;
-
                         waiting = 0;
                         ctr++;
                         eggcount++;
@@ -478,7 +473,7 @@ namespace PokeViewer.NET.SubForms
 
         private async void SendNotifications(string results, string thumbnail, bool pinguser)
         {
-            if (string.IsNullOrEmpty(results))
+            if (string.IsNullOrEmpty(results) || string.IsNullOrEmpty(WebHookText.Text))
                 return;
             DiscordWebhooks = WebHookText.Text.Split(',');
             if (DiscordWebhooks == null)

@@ -57,6 +57,7 @@
             this.ConnectionSpriteBox = new System.Windows.Forms.PictureBox();
             this.ViewPage = new System.Windows.Forms.TabPage();
             this.BoxPage = new System.Windows.Forms.TabPage();
+            this.PartyPage = new System.Windows.Forms.TabPage();
             this.EggPage = new System.Windows.Forms.TabPage();
             this.WidePage = new System.Windows.Forms.TabPage();
             this.NPCPage = new System.Windows.Forms.TabPage();
@@ -291,6 +292,7 @@
             this.ViewerControl.Controls.Add(this.ConnectionPage);
             this.ViewerControl.Controls.Add(this.ViewPage);
             this.ViewerControl.Controls.Add(this.BoxPage);
+            this.ViewerControl.Controls.Add(this.PartyPage);
             this.ViewerControl.Controls.Add(this.EggPage);
             this.ViewerControl.Controls.Add(this.WidePage);
             this.ViewerControl.Controls.Add(this.NPCPage);
@@ -384,6 +386,15 @@
             this.BoxPage.Text = "Box 📦";
             this.BoxPage.UseVisualStyleBackColor = true;
             // 
+            // PartyPage
+            // 
+            this.PartyPage.Location = new System.Drawing.Point(4, 24);
+            this.PartyPage.Name = "PartyPage";
+            this.PartyPage.Size = new System.Drawing.Size(503, 482);
+            this.PartyPage.TabIndex = 8;
+            this.PartyPage.Text = "Party 👨‍👩‍👦‍👦";
+            this.PartyPage.UseVisualStyleBackColor = true;
+            // 
             // EggPage
             // 
             this.EggPage.Location = new System.Drawing.Point(4, 24);
@@ -446,7 +457,7 @@
             this.MaximizeBox = false;
             this.Name = "MainViewer";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
-            this.StartPosition = FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "PokeViewer.NET";
             this.Load += new System.EventHandler(this.PokeViewerForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.PokeSprite)).EndInit();
@@ -500,5 +511,6 @@
         private PictureBox ConnectionSpriteBox;
         private Label VersionLabel;
         private TabPage InGameScreenshotPage;
+        private TabPage PartyPage;
     }
 }

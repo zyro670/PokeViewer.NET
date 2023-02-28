@@ -15,9 +15,9 @@ namespace PokeViewer.NET
     public partial class MainViewer : Form
     {
         public ViewerExecutor Executor = null!;
-        private const string ViewerVersion = "1.2.0";
-        private const int AzureBuildID = 373;
-        private bool[] FormLoaded = new bool[7];
+        private const string ViewerVersion = "1.3.0";
+        private const int AzureBuildID = 374;
+        private bool[] FormLoaded = new bool[8];
         private int GameType;
         private readonly string RefreshTime = Settings.Default.RefreshRate;
         public MainViewer()
@@ -590,6 +590,7 @@ namespace PokeViewer.NET
                         BeginInvoke((MethodInvoker)delegate ()
                         {
                             ViewerControl.TabPages.Add(BoxPage);
+                            ViewerControl.TabPages.Add(PartyPage);
                             ViewerControl.TabPages.Add(EggPage);
                             ViewerControl.TabPages.Add(RaidPage);
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
@@ -607,6 +608,7 @@ namespace PokeViewer.NET
                         BeginInvoke((MethodInvoker)delegate ()
                         {
                             ViewerControl.TabPages.Add(BoxPage);
+                            ViewerControl.TabPages.Add(PartyPage);
                             ViewerControl.TabPages.Add(EggPage);
                             ViewerControl.TabPages.Add(RaidPage);
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
@@ -734,11 +736,11 @@ namespace PokeViewer.NET
         {
             CheckBox chextBox = (CheckBox)sender;
             if (chextBox.Checked)
-                Properties.Settings.Default.RefreshStats = true;
+                Settings.Default.RefreshStats = true;
             else
-                Properties.Settings.Default.RefreshStats = false;
+                Settings.Default.RefreshStats = false;
 
-            Properties.Settings.Default.Save();
+            Settings.Default.Save();
         }
 
         private void InGameScreenshot_Click(object sender, EventArgs e)
@@ -798,10 +800,11 @@ namespace PokeViewer.NET
                 case "Connection 🔌": selectedInt = 0; break;
                 case "View 🔎": selectedInt = 1; break;
                 case "Box 📦": selectedInt = 2; break;
-                case "Egg 🥚": selectedInt = 3; break;
-                case "Wide 🔭": selectedInt = 4; break;
-                case "NPC 🤖": selectedInt = 5; break;
-                case "Screenshot 📷": selectedInt = 6; break;
+                case "Party 👨‍👩‍👦‍👦": selectedInt = 3; break;                
+                case "Egg 🥚": selectedInt = 4; break;
+                case "Wide 🔭": selectedInt = 5; break;
+                case "NPC 🤖": selectedInt = 6; break;
+                case "Screenshot 📷": selectedInt = 7; break;
             }
 
             if (FormLoaded[selectedInt])
@@ -821,9 +824,10 @@ namespace PokeViewer.NET
                 case "Connection 🔌": FormLoaded[0] = true; return;
                 case "View 🔎": FormLoaded[1] = true; return;
                 case "Box 📦": form = new BoxViewerMode(GameType, Executor) { TopLevel = false }; FormLoaded[2] = true; break;
-                case "Egg 🥚": form = new Egg_Viewer(Executor) { TopLevel = false }; FormLoaded[3] = true; break;
+                case "Party 👨‍👩‍👦‍👦": form = new PartyViewer(GameType, Executor) { TopLevel = false }; FormLoaded[3] = true; break;
+                case "Egg 🥚": form = new Egg_Viewer(Executor) { TopLevel = false }; FormLoaded[4] = true; break;
                 case "Wide 🔭":
-                    FormLoaded[4] = true;
+                    FormLoaded[5] = true;
                     switch (GameType)
                     {
                         case (int)GameSelected.LegendsArceus:
@@ -864,8 +868,8 @@ namespace PokeViewer.NET
                             }
                     }
                     break;
-                case "NPC 🤖": form = new NPCViewer(GameType, Executor) { TopLevel = false }; FormLoaded[5] = true; break;
-                case "Screenshot 📷": form = new ScreenshotForm(Executor) { TopLevel = false }; FormLoaded[6] = true; break;
+                case "NPC 🤖": form = new NPCViewer(GameType, Executor) { TopLevel = false }; FormLoaded[6] = true; break;
+                case "Screenshot 📷": form = new ScreenshotForm(Executor) { TopLevel = false }; FormLoaded[7] = true; break;
             }
             int curr = ViewerControl.SelectedIndex;
             TabPage tbp = ViewerControl.TabPages[curr];
@@ -883,6 +887,7 @@ namespace PokeViewer.NET
         {
             ViewerControl.TabPages.Remove(ViewPage);
             ViewerControl.TabPages.Remove(BoxPage);
+            ViewerControl.TabPages.Remove(PartyPage);
             ViewerControl.TabPages.Remove(EggPage);
             ViewerControl.TabPages.Remove(WidePage);
             ViewerControl.TabPages.Remove(NPCPage);

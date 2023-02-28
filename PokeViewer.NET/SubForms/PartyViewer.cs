@@ -1,15 +1,15 @@
 ﻿using PKHeX.Core;
 using static PokeViewer.NET.RoutineExecutor;
 
-namespace PokeViewer.NET.WideViewForms
+namespace PokeViewer.NET.SubForms
 {    
-    public partial class NPCViewer : Form
+    public partial class PartyViewer : Form
     {
         private readonly ViewerExecutor Executor;
         public int GameType;
         public ToolTip tt = new();
         public List<string> CurrentSlotStats = new();
-        public NPCViewer(int gametype, ViewerExecutor executor)
+        public PartyViewer(int gametype, ViewerExecutor executor)
         {
             InitializeComponent();
             Executor = executor;
@@ -22,10 +22,10 @@ namespace PokeViewer.NET.WideViewForms
             string vers = string.Empty;
             switch (type)
             {
-                case (int)GameSelected.Sword or (int)GameSelected.Shield: vers = "PokeViewer.NET - NPC View (SWSH)"; break;
-                case (int)GameSelected.BrilliantDiamond or (int)GameSelected.ShiningPearl: vers = "PokeViewer.NET - NPC View (BDSP)"; break;
-                case (int)GameSelected.LegendsArceus: vers = "PokeViewer.NET - NPC View (LA)"; break;
-                case (int)GameSelected.LetsGoPikachu or (int)GameSelected.LetsGoEevee: vers = "PokeViewer.NET - NPC View (LGPE)"; break;
+                case (int)GameSelected.Sword or (int)GameSelected.Shield: vers = "PokeViewer.NET - Party View (SWSH)"; break;
+                case (int)GameSelected.BrilliantDiamond or (int)GameSelected.ShiningPearl: vers = "PokeViewer.NET - Party View (BDSP)"; break;
+                case (int)GameSelected.LegendsArceus: vers = "PokeViewer.NET - Party View (LA)"; break;
+                case (int)GameSelected.LetsGoPikachu or (int)GameSelected.LetsGoEevee: vers = "PokeViewer.NET - Party View (LGPE)"; break;
             }
             return vers;
         }
@@ -93,6 +93,8 @@ namespace PokeViewer.NET.WideViewForms
 
         private async void button1_ClickAsync(object sender, EventArgs e)
         {
+            textBox1.Text = "";
+            CurrentSlotStats = new();
             uint ofs = 0x886BC348;
             var token = CancellationToken.None;
             tt.RemoveAll();
@@ -102,6 +104,26 @@ namespace PokeViewer.NET.WideViewForms
             {
                 switch (GameType)
                 {
+                    case (int)GameSelected.Scarlet or (int)GameSelected.Violet:
+                        {
+                            var val = 0x30;
+                            switch (i)
+                            {
+                                case 0: break;
+                                case 1: val = 0x38; break;
+                                case 2: val = 0x40; break;
+                                case 3: val = 0x48; break;
+                                case 4: val = 0x50; break;
+                                case 5: val = 0x58; break;
+                            }
+                            var pointer = new long[] { 0x44CCA58, 0x08, val, 0x30, 0x00 };
+                            var offset = await Executor.SwitchConnection.PointerAll(pointer, token).ConfigureAwait(false);
+                            var data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(offset, 0x158, token).ConfigureAwait(false);
+                            var pk = new PK9(data);
+                            SanityCheck(pk, i);
+
+                        }
+                        break;
                     case (int)GameSelected.Sword or (int)GameSelected.Shield:
                         var pk8 = await ReadInBattlePokemonSWSH((uint)(ofs + (i * 0x7A0)), 0x158).ConfigureAwait(false); SanityCheck(pk8, i); break;
                     case (int)GameSelected.LetsGoPikachu or (int)GameSelected.LetsGoEevee:
