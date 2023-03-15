@@ -776,12 +776,19 @@ namespace PokeViewer.NET.SubForms
                     if (i > Outbreaktotal - 1)
                         continue;
 
-                    var kocount = await ReadEncryptedBlockUint(koblock, token).ConfigureAwait(false);
-                    var totalcount = await ReadEncryptedBlockUint(totalblock, token).ConfigureAwait(false);
-                    var form = await ReadEncryptedBlockByte(formblock, token).ConfigureAwait(false);
+                    var kocountTask = ReadEncryptedBlockUint(koblock, token);
+                    var totalcountTask = ReadEncryptedBlockUint(totalblock, token);
+                    var formTask = ReadEncryptedBlockByte(formblock, token);
+                    var speciesTask = ReadEncryptedBlockUint(block, token);
+                    await Task.WhenAll(kocountTask, totalcountTask, formTask, speciesTask).ConfigureAwait(false);
+                    var form = formTask.Result;
+                    var totalcount = totalcountTask.Result;
+                    var kocount = kocountTask.Result;
+                    var species = speciesTask.Result;
+
                     PK9 pk = new()
                     {
-                        Species = SpeciesConverter.GetNational9((ushort)await ReadEncryptedBlockUint(block, token).ConfigureAwait(false)),
+                        Species = SpeciesConverter.GetNational9((ushort)species),
                         Form = form,
                     };
                     CommonEdits.SetIsShiny(pk, false);
