@@ -478,7 +478,7 @@ namespace PokeViewer.NET.SubForms
 
         private async Task RolloverCorrectionSV(CancellationToken token)
         {
-            await Task.Delay(0_050, token).ConfigureAwait (false);
+            await Task.Delay(0_050, token).ConfigureAwait(false);
             await Click(HOME, 2_000, token).ConfigureAwait(false); // Back to title screen
 
             for (int i = 0; i < 2; i++)
@@ -751,9 +751,9 @@ namespace PokeViewer.NET.SubForms
                     break;
                 }
 
-                for (int i = 0; i < list.Length; i++)                
+                for (int i = 0; i < list.Length; i++)
                     list[i].Text = string.Empty;
-                
+
                 await SVSaveGameOverworld(token).ConfigureAwait(false);
                 var block = Blocks.KOutbreakSpecies1;
                 var koblock = Blocks.KMassOutbreakKO1;
@@ -787,17 +787,17 @@ namespace PokeViewer.NET.SubForms
                     CommonEdits.SetIsShiny(pk, false);
                     string pkform = form is 0 ? "" : $"-{form}";
                     strings.Add($"{(Species)pk.Species}{pkform}{Environment.NewLine}Count: {kocount}/{totalcount}");
-                    var img = SpriteUtil.SB8a.GetSprite(pk.Species, pk.Form, 0, 0, 0, false, Shiny.Never, EntityContext.Gen9);                    
+                    var img = SpriteUtil.SB8a.GetSprite(pk.Species, pk.Form, 0, 0, 0, false, Shiny.Never, EntityContext.Gen9);
                     imagestrings.Add(img);
-                    mons.Add($"{(Species)pk.Species}");                   
+                    mons.Add($"{(Species)pk.Species}");
                 }
 
                 TotalOutbreaks.Text = $"Total Outbreaks: {Outbreaktotal}";
 
-                for (int i = 0; i < imagestrings.Count; i++)
+                for (int i = 0; i < 8; i++)
                 {
-                    spritelist[i].Image = imagestrings[i];
-                    list[i].Text = strings[i].ToString();
+                    spritelist[i].Image = i < imagestrings.Count ? imagestrings[i] : null;
+                    list[i].Text = i < imagestrings.Count ? strings[i].ToString() : string.Empty;
                 }
 
                 for (int i = 0; i < mons.Count; i++)
@@ -823,7 +823,7 @@ namespace PokeViewer.NET.SubForms
 
                 if (HardStopOutbreak.Checked)
                 {
-                    MessageBox.Show("HardStop enabled, ending task. Uncheck if you wish to scan until match is found.");                    
+                    MessageBox.Show("HardStop enabled, ending task. Uncheck if you wish to scan until match is found.");
                     {
                         OutbreakScan.Enabled = true;
                         OutbreakScan.Text = "Outbreak Scan";
