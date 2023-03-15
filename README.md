@@ -13,7 +13,7 @@ Special credits and thanks to the minds behind the resources used for this proje
 - [Lusamine](https://github.com/Lusamine) for various Pokétasks across game versions, image dumps, and data offsets.
 - [Koi-3088](https://github.com/Koi-3088) for the assistance with many of the implementations as well as PokéImg and FormOutput.
 - [sora10pls](https://github.com/sora10pls) for image and texture dumps.
-- [hp3721](https://github.com/hp3721) & [Manu098vm](https://github.com/Manu098vm) for help with pointers and general knowledge.
+- [hp3721](https://github.com/hp3721), [Manu098vm](https://github.com/Manu098vm), & [santacrab2](https://github.com/santacrab2) for help with pointers and general knowledge.
 
 -----
 
