@@ -63,6 +63,7 @@
             this.NPCPage = new System.Windows.Forms.TabPage();
             this.RaidPage = new System.Windows.Forms.TabPage();
             this.InGameScreenshotPage = new System.Windows.Forms.TabPage();
+            this.MiscPage = new System.Windows.Forms.TabPage();
             ((System.ComponentModel.ISupportInitialize)(this.PokeSprite)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Specialty)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.OriginIcon)).BeginInit();
@@ -298,6 +299,7 @@
             this.ViewerControl.Controls.Add(this.NPCPage);
             this.ViewerControl.Controls.Add(this.RaidPage);
             this.ViewerControl.Controls.Add(this.InGameScreenshotPage);
+            this.ViewerControl.Controls.Add(this.MiscPage);
             this.ViewerControl.Location = new System.Drawing.Point(0, 2);
             this.ViewerControl.Name = "ViewerControl";
             this.ViewerControl.SelectedIndex = 0;
@@ -445,6 +447,15 @@
             this.InGameScreenshotPage.Text = "Screenshot 📷";
             this.InGameScreenshotPage.UseVisualStyleBackColor = true;
             // 
+            // MiscPage
+            // 
+            this.MiscPage.Location = new System.Drawing.Point(4, 24);
+            this.MiscPage.Name = "MiscPage";
+            this.MiscPage.Size = new System.Drawing.Size(503, 482);
+            this.MiscPage.TabIndex = 9;
+            this.MiscPage.Text = "Misc 📓";
+            this.MiscPage.UseVisualStyleBackColor = true;
+            // 
             // MainViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -512,5 +523,6 @@
         private Label VersionLabel;
         private TabPage InGameScreenshotPage;
         private TabPage PartyPage;
+        private TabPage MiscPage;
     }
 }

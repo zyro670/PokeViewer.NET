@@ -64,6 +64,7 @@ namespace PokeViewer.NET.SubForms
             this.ScreenOffBox = new System.Windows.Forms.CheckBox();
             this.UptimeLabel = new System.Windows.Forms.Label();
             this.SquareStarCount = new System.Windows.Forms.Label();
+            this.HidePIDEC = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.PokeSpriteBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.BallBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.NumberOfFillings)).BeginInit();
@@ -73,7 +74,7 @@ namespace PokeViewer.NET.SubForms
             // 
             this.PokeSpriteBox.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.PokeSpriteBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.PokeSpriteBox.Location = new System.Drawing.Point(89, 28);
+            this.PokeSpriteBox.Location = new System.Drawing.Point(89, 33);
             this.PokeSpriteBox.Name = "PokeSpriteBox";
             this.PokeSpriteBox.Size = new System.Drawing.Size(94, 72);
             this.PokeSpriteBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -82,7 +83,7 @@ namespace PokeViewer.NET.SubForms
             // 
             // PokeStats
             // 
-            this.PokeStats.Location = new System.Drawing.Point(89, 106);
+            this.PokeStats.Location = new System.Drawing.Point(89, 111);
             this.PokeStats.Multiline = true;
             this.PokeStats.Name = "PokeStats";
             this.PokeStats.ReadOnly = true;
@@ -92,7 +93,7 @@ namespace PokeViewer.NET.SubForms
             // 
             // FetchButton
             // 
-            this.FetchButton.Location = new System.Drawing.Point(89, 239);
+            this.FetchButton.Location = new System.Drawing.Point(89, 244);
             this.FetchButton.Name = "FetchButton";
             this.FetchButton.Size = new System.Drawing.Size(75, 23);
             this.FetchButton.TabIndex = 2;
@@ -104,7 +105,7 @@ namespace PokeViewer.NET.SubForms
             // 
             this.BallBox.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.BallBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.BallBox.Location = new System.Drawing.Point(189, 63);
+            this.BallBox.Location = new System.Drawing.Point(189, 68);
             this.BallBox.Name = "BallBox";
             this.BallBox.Size = new System.Drawing.Size(46, 37);
             this.BallBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
@@ -113,7 +114,7 @@ namespace PokeViewer.NET.SubForms
             // 
             // HardStopButton
             // 
-            this.HardStopButton.Location = new System.Drawing.Point(170, 239);
+            this.HardStopButton.Location = new System.Drawing.Point(170, 244);
             this.HardStopButton.Name = "HardStopButton";
             this.HardStopButton.Size = new System.Drawing.Size(65, 23);
             this.HardStopButton.TabIndex = 5;
@@ -124,7 +125,7 @@ namespace PokeViewer.NET.SubForms
             // EatOnStart
             // 
             this.EatOnStart.AutoSize = true;
-            this.EatOnStart.Location = new System.Drawing.Point(256, 43);
+            this.EatOnStart.Location = new System.Drawing.Point(256, 48);
             this.EatOnStart.Name = "EatOnStart";
             this.EatOnStart.Size = new System.Drawing.Size(93, 19);
             this.EatOnStart.TabIndex = 13;
@@ -134,7 +135,7 @@ namespace PokeViewer.NET.SubForms
             // Item1Value
             // 
             this.Item1Value.BackColor = System.Drawing.SystemColors.Control;
-            this.Item1Value.Location = new System.Drawing.Point(303, 129);
+            this.Item1Value.Location = new System.Drawing.Point(303, 134);
             this.Item1Value.Name = "Item1Value";
             this.Item1Value.Size = new System.Drawing.Size(32, 23);
             this.Item1Value.TabIndex = 14;
@@ -144,7 +145,7 @@ namespace PokeViewer.NET.SubForms
             // Item1Label
             // 
             this.Item1Label.AutoSize = true;
-            this.Item1Label.Location = new System.Drawing.Point(253, 134);
+            this.Item1Label.Location = new System.Drawing.Point(253, 139);
             this.Item1Label.Name = "Item1Label";
             this.Item1Label.Size = new System.Drawing.Size(40, 15);
             this.Item1Label.TabIndex = 15;
@@ -153,7 +154,7 @@ namespace PokeViewer.NET.SubForms
             // Item2Label
             // 
             this.Item2Label.AutoSize = true;
-            this.Item2Label.Location = new System.Drawing.Point(253, 159);
+            this.Item2Label.Location = new System.Drawing.Point(253, 164);
             this.Item2Label.Name = "Item2Label";
             this.Item2Label.Size = new System.Drawing.Size(40, 15);
             this.Item2Label.TabIndex = 16;
@@ -162,7 +163,7 @@ namespace PokeViewer.NET.SubForms
             // Item2Value
             // 
             this.Item2Value.BackColor = System.Drawing.SystemColors.Control;
-            this.Item2Value.Location = new System.Drawing.Point(303, 157);
+            this.Item2Value.Location = new System.Drawing.Point(303, 162);
             this.Item2Value.Name = "Item2Value";
             this.Item2Value.Size = new System.Drawing.Size(32, 23);
             this.Item2Value.TabIndex = 17;
@@ -173,7 +174,7 @@ namespace PokeViewer.NET.SubForms
             // 
             this.EatAgain.AutoSize = true;
             this.EatAgain.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.EatAgain.Location = new System.Drawing.Point(256, 65);
+            this.EatAgain.Location = new System.Drawing.Point(256, 70);
             this.EatAgain.Name = "EatAgain";
             this.EatAgain.Size = new System.Drawing.Size(81, 19);
             this.EatAgain.TabIndex = 18;
@@ -183,7 +184,7 @@ namespace PokeViewer.NET.SubForms
             // Item3Label
             // 
             this.Item3Label.AutoSize = true;
-            this.Item3Label.Location = new System.Drawing.Point(253, 186);
+            this.Item3Label.Location = new System.Drawing.Point(253, 191);
             this.Item3Label.Name = "Item3Label";
             this.Item3Label.Size = new System.Drawing.Size(40, 15);
             this.Item3Label.TabIndex = 19;
@@ -192,7 +193,7 @@ namespace PokeViewer.NET.SubForms
             // Item3Value
             // 
             this.Item3Value.BackColor = System.Drawing.SystemColors.Control;
-            this.Item3Value.Location = new System.Drawing.Point(303, 185);
+            this.Item3Value.Location = new System.Drawing.Point(303, 190);
             this.Item3Value.Name = "Item3Value";
             this.Item3Value.Size = new System.Drawing.Size(32, 23);
             this.Item3Value.TabIndex = 20;
@@ -202,7 +203,7 @@ namespace PokeViewer.NET.SubForms
             // checkBox5
             // 
             this.checkBox5.AutoSize = true;
-            this.checkBox5.Location = new System.Drawing.Point(350, 133);
+            this.checkBox5.Location = new System.Drawing.Point(350, 138);
             this.checkBox5.Name = "checkBox5";
             this.checkBox5.Size = new System.Drawing.Size(49, 19);
             this.checkBox5.TabIndex = 21;
@@ -214,7 +215,7 @@ namespace PokeViewer.NET.SubForms
             this.checkBox6.AutoSize = true;
             this.checkBox6.Checked = true;
             this.checkBox6.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox6.Location = new System.Drawing.Point(350, 159);
+            this.checkBox6.Location = new System.Drawing.Point(350, 164);
             this.checkBox6.Name = "checkBox6";
             this.checkBox6.Size = new System.Drawing.Size(49, 19);
             this.checkBox6.TabIndex = 22;
@@ -226,7 +227,7 @@ namespace PokeViewer.NET.SubForms
             this.checkBox7.AutoSize = true;
             this.checkBox7.Checked = true;
             this.checkBox7.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox7.Location = new System.Drawing.Point(350, 186);
+            this.checkBox7.Location = new System.Drawing.Point(350, 191);
             this.checkBox7.Name = "checkBox7";
             this.checkBox7.Size = new System.Drawing.Size(49, 19);
             this.checkBox7.TabIndex = 23;
@@ -236,7 +237,7 @@ namespace PokeViewer.NET.SubForms
             // SandwichCount
             // 
             this.SandwichCount.AutoSize = true;
-            this.SandwichCount.Location = new System.Drawing.Point(86, 270);
+            this.SandwichCount.Location = new System.Drawing.Point(86, 275);
             this.SandwichCount.Name = "SandwichCount";
             this.SandwichCount.Size = new System.Drawing.Size(108, 15);
             this.SandwichCount.TabIndex = 28;
@@ -245,7 +246,7 @@ namespace PokeViewer.NET.SubForms
             // ShinyFoundLabel
             // 
             this.ShinyFoundLabel.AutoSize = true;
-            this.ShinyFoundLabel.Location = new System.Drawing.Point(250, 289);
+            this.ShinyFoundLabel.Location = new System.Drawing.Point(250, 294);
             this.ShinyFoundLabel.Name = "ShinyFoundLabel";
             this.ShinyFoundLabel.Size = new System.Drawing.Size(87, 15);
             this.ShinyFoundLabel.TabIndex = 29;
@@ -254,7 +255,7 @@ namespace PokeViewer.NET.SubForms
             // BasketCount
             // 
             this.BasketCount.AutoSize = true;
-            this.BasketCount.Location = new System.Drawing.Point(250, 270);
+            this.BasketCount.Location = new System.Drawing.Point(250, 275);
             this.BasketCount.Name = "BasketCount";
             this.BasketCount.Size = new System.Drawing.Size(83, 15);
             this.BasketCount.TabIndex = 30;
@@ -263,7 +264,7 @@ namespace PokeViewer.NET.SubForms
             // NextSanwichLabel
             // 
             this.NextSanwichLabel.AutoSize = true;
-            this.NextSanwichLabel.Location = new System.Drawing.Point(86, 289);
+            this.NextSanwichLabel.Location = new System.Drawing.Point(86, 294);
             this.NextSanwichLabel.Name = "NextSanwichLabel";
             this.NextSanwichLabel.Size = new System.Drawing.Size(89, 15);
             this.NextSanwichLabel.TabIndex = 31;
@@ -272,7 +273,7 @@ namespace PokeViewer.NET.SubForms
             // HoldIngredients
             // 
             this.HoldIngredients.AutoSize = true;
-            this.HoldIngredients.Location = new System.Drawing.Point(256, 87);
+            this.HoldIngredients.Location = new System.Drawing.Point(256, 92);
             this.HoldIngredients.Name = "HoldIngredients";
             this.HoldIngredients.Size = new System.Drawing.Size(97, 19);
             this.HoldIngredients.TabIndex = 32;
@@ -282,7 +283,7 @@ namespace PokeViewer.NET.SubForms
             // NumberOfFillings
             // 
             this.NumberOfFillings.BackColor = System.Drawing.SystemColors.Control;
-            this.NumberOfFillings.Location = new System.Drawing.Point(343, 217);
+            this.NumberOfFillings.Location = new System.Drawing.Point(343, 222);
             this.NumberOfFillings.Maximum = new decimal(new int[] {
             10,
             0,
@@ -300,7 +301,7 @@ namespace PokeViewer.NET.SubForms
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(252, 222);
+            this.label1.Location = new System.Drawing.Point(252, 227);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(85, 15);
             this.label1.TabIndex = 34;
@@ -309,7 +310,7 @@ namespace PokeViewer.NET.SubForms
             // HoldTimeToFillings
             // 
             this.HoldTimeToFillings.AutoSize = true;
-            this.HoldTimeToFillings.Location = new System.Drawing.Point(251, 249);
+            this.HoldTimeToFillings.Location = new System.Drawing.Point(251, 254);
             this.HoldTimeToFillings.Name = "HoldTimeToFillings";
             this.HoldTimeToFillings.Size = new System.Drawing.Size(108, 15);
             this.HoldTimeToFillings.TabIndex = 35;
@@ -318,7 +319,7 @@ namespace PokeViewer.NET.SubForms
             // FillingHoldTime
             // 
             this.FillingHoldTime.BackColor = System.Drawing.SystemColors.Control;
-            this.FillingHoldTime.Location = new System.Drawing.Point(359, 247);
+            this.FillingHoldTime.Location = new System.Drawing.Point(359, 252);
             this.FillingHoldTime.Name = "FillingHoldTime";
             this.FillingHoldTime.Size = new System.Drawing.Size(33, 23);
             this.FillingHoldTime.TabIndex = 36;
@@ -327,7 +328,7 @@ namespace PokeViewer.NET.SubForms
             // WebHookText
             // 
             this.WebHookText.BackColor = System.Drawing.SystemColors.Control;
-            this.WebHookText.Location = new System.Drawing.Point(200, 337);
+            this.WebHookText.Location = new System.Drawing.Point(200, 342);
             this.WebHookText.Name = "WebHookText";
             this.WebHookText.Size = new System.Drawing.Size(111, 23);
             this.WebHookText.TabIndex = 37;
@@ -335,7 +336,7 @@ namespace PokeViewer.NET.SubForms
             // 
             // SaveHookURL
             // 
-            this.SaveHookURL.Location = new System.Drawing.Point(85, 368);
+            this.SaveHookURL.Location = new System.Drawing.Point(85, 373);
             this.SaveHookURL.Name = "SaveHookURL";
             this.SaveHookURL.Size = new System.Drawing.Size(105, 23);
             this.SaveHookURL.TabIndex = 39;
@@ -346,7 +347,7 @@ namespace PokeViewer.NET.SubForms
             // UserDiscordIDText
             // 
             this.UserDiscordIDText.BackColor = System.Drawing.SystemColors.Control;
-            this.UserDiscordIDText.Location = new System.Drawing.Point(200, 368);
+            this.UserDiscordIDText.Location = new System.Drawing.Point(200, 373);
             this.UserDiscordIDText.Name = "UserDiscordIDText";
             this.UserDiscordIDText.Size = new System.Drawing.Size(111, 23);
             this.UserDiscordIDText.TabIndex = 40;
@@ -354,7 +355,7 @@ namespace PokeViewer.NET.SubForms
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(317, 340);
+            this.label2.Location = new System.Drawing.Point(317, 345);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(84, 15);
             this.label2.TabIndex = 41;
@@ -363,7 +364,7 @@ namespace PokeViewer.NET.SubForms
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(317, 370);
+            this.label3.Location = new System.Drawing.Point(317, 375);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(86, 15);
             this.label3.TabIndex = 42;
@@ -371,7 +372,7 @@ namespace PokeViewer.NET.SubForms
             // 
             // StopConditionsButton
             // 
-            this.StopConditionsButton.Location = new System.Drawing.Point(85, 339);
+            this.StopConditionsButton.Location = new System.Drawing.Point(85, 344);
             this.StopConditionsButton.Name = "StopConditionsButton";
             this.StopConditionsButton.Size = new System.Drawing.Size(105, 23);
             this.StopConditionsButton.TabIndex = 63;
@@ -382,7 +383,7 @@ namespace PokeViewer.NET.SubForms
             // ScreenOffBox
             // 
             this.ScreenOffBox.AutoSize = true;
-            this.ScreenOffBox.Location = new System.Drawing.Point(256, 108);
+            this.ScreenOffBox.Location = new System.Drawing.Point(256, 113);
             this.ScreenOffBox.Name = "ScreenOffBox";
             this.ScreenOffBox.Size = new System.Drawing.Size(86, 19);
             this.ScreenOffBox.TabIndex = 64;
@@ -392,7 +393,7 @@ namespace PokeViewer.NET.SubForms
             // UptimeLabel
             // 
             this.UptimeLabel.AutoSize = true;
-            this.UptimeLabel.Location = new System.Drawing.Point(86, 309);
+            this.UptimeLabel.Location = new System.Drawing.Point(86, 314);
             this.UptimeLabel.Name = "UptimeLabel";
             this.UptimeLabel.Size = new System.Drawing.Size(52, 15);
             this.UptimeLabel.TabIndex = 65;
@@ -401,11 +402,21 @@ namespace PokeViewer.NET.SubForms
             // SquareStarCount
             // 
             this.SquareStarCount.AutoSize = true;
-            this.SquareStarCount.Location = new System.Drawing.Point(250, 309);
+            this.SquareStarCount.Location = new System.Drawing.Point(250, 314);
             this.SquareStarCount.Name = "SquareStarCount";
             this.SquareStarCount.Size = new System.Drawing.Size(70, 15);
             this.SquareStarCount.TabIndex = 66;
             this.SquareStarCount.Text = "■ - 0 | ★ - 0";
+            // 
+            // HidePIDEC
+            // 
+            this.HidePIDEC.AutoSize = true;
+            this.HidePIDEC.Location = new System.Drawing.Point(256, 27);
+            this.HidePIDEC.Name = "HidePIDEC";
+            this.HidePIDEC.Size = new System.Drawing.Size(129, 19);
+            this.HidePIDEC.TabIndex = 67;
+            this.HidePIDEC.Text = "Hide Sensitive Info?";
+            this.HidePIDEC.UseVisualStyleBackColor = true;
             // 
             // Egg_Viewer
             // 
@@ -413,6 +424,7 @@ namespace PokeViewer.NET.SubForms
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.ClientSize = new System.Drawing.Size(426, 404);
+            this.Controls.Add(this.HidePIDEC);
             this.Controls.Add(this.SquareStarCount);
             this.Controls.Add(this.UptimeLabel);
             this.Controls.Add(this.ScreenOffBox);
@@ -494,5 +506,6 @@ namespace PokeViewer.NET.SubForms
         private CheckBox ScreenOffBox;
         private Label UptimeLabel;
         private Label SquareStarCount;
+        private CheckBox HidePIDEC;
     }
 }

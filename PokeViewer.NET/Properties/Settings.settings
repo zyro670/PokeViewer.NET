@@ -59,5 +59,11 @@
     <Setting Name="MinMaxOnly" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="OutbreakSpecies" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="MiscOvershoot" Type="System.Decimal" Scope="User">
+      <Value Profile="(Default)">920</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

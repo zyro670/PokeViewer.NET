@@ -250,5 +250,29 @@ namespace PokeViewer.NET.Properties {
                 this["MinMaxOnly"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string OutbreakSpecies {
+            get {
+                return ((string)(this["OutbreakSpecies"]));
+            }
+            set {
+                this["OutbreakSpecies"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("920")]
+        public decimal MiscOvershoot {
+            get {
+                return ((decimal)(this["MiscOvershoot"]));
+            }
+            set {
+                this["MiscOvershoot"] = value;
+            }
+        }
     }
 }
