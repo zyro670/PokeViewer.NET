@@ -742,19 +742,21 @@ namespace PokeViewer.NET.SubForms
             OutbreakSearch.Enabled = false;
             while (!token.IsCancellationRequested)
             {
-                var validOutbreaks = await ReadEncryptedBlockByte(Blocks.KMassOutbreakTotalEnabled, token).ConfigureAwait(false);
-                var Outbreaktotal = Convert.ToInt32(validOutbreaks);
-
                 if (HardStopOutbreak.Checked)
                 {
                     MessageBox.Show("HardStop enabled, ending task. Uncheck if you wish to scan until match is found.");
                     break;
                 }
 
-                for (int i = 0; i < list.Length; i++)                
+                for (int i = 0; i < list.Length; i++)
+                {
+                    spritelist[i].Image = null;
                     list[i].Text = string.Empty;
+                }              
                 
                 await SVSaveGameOverworld(token).ConfigureAwait(false);
+                var validOutbreaks = await ReadEncryptedBlockByte(Blocks.KMassOutbreakTotalEnabled, token).ConfigureAwait(false);
+                var Outbreaktotal = Convert.ToInt32(validOutbreaks);
                 var block = Blocks.KOutbreakSpecies1;
                 var koblock = Blocks.KMassOutbreakKO1;
                 var totalblock = Blocks.KMassOutbreak01TotalSpawns;
