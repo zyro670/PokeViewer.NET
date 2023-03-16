@@ -6,7 +6,7 @@ using System.Text;
 using static SysBot.Base.SwitchButton;
 using static System.Buffers.Binary.BinaryPrimitives;
 using PKHeX.Drawing.PokeSprite;
-using System.Media;
+using static PokeViewer.NET.RoutineExecutor;
 
 namespace PokeViewer.NET.SubForms
 {
@@ -20,7 +20,7 @@ namespace PokeViewer.NET.SubForms
             InitializeComponent();
             Executor = executor;
             StopOnSpecies.Text = Settings.Default.OutbreakSpecies;
-            numericUpDown1.Value = Settings.Default.MiscOvershoot;
+            OverShoot.Value = Settings.Default.MiscOvershoot;
         }
 
         private async void button1_Click(object sender, EventArgs e)
@@ -43,7 +43,7 @@ namespace PokeViewer.NET.SubForms
                 pk.IVs = ivList;
                 if (pk.IVs.SequenceEqual(IVFilters))
                 {
-                    SendNotifications(textBox1.Text);
+                    SendNotifications(textBox1.Text, string.Empty);
                     await SaveGame(token).ConfigureAwait(false);
                     MessageBox.Show("Match found!");
                     return;
@@ -145,7 +145,7 @@ namespace PokeViewer.NET.SubForms
             public static DataBlock KMassOutbreak01CenterPos = new()
             {
                 Name = "KMassOutbreak01CenterPos",
-                Key = 0x2ED5F198,
+                Key = 0x2ED42F4D,
                 Type = SCTypeCode.Array,
                 Pointer = new long[] { 0x44AAC88, 0xE0, 0x80, 0x8, 0x8800 },
                 IsEncrypted = true,
@@ -181,7 +181,7 @@ namespace PokeViewer.NET.SubForms
             public static DataBlock KMassOutbreak02TotalSpawns = new()
             {
                 Name = "KMassOutbreak02TotalSpawns",
-                Key = 0xB7DC495A,
+                Key = 0xB7DA0CB7,
                 Type = SCTypeCode.Int32,
                 Pointer = new long[] { 0x44AAC88, 0xE0, 0x80, 0x8, 0x228E0 },
             };
@@ -224,14 +224,14 @@ namespace PokeViewer.NET.SubForms
             public static DataBlock KMassOutbreak03TotalSpawns = new()
             {
                 Name = "KMassOutbreak03TotalSpawns",
-                Key = 0xB7DC495A,
+                Key = 0xB7E1F47C,
                 Type = SCTypeCode.Int32,
                 Pointer = new long[] { 0x44AAC88, 0xE0, 0x80, 0x8, 0x22960 },
             };
             public static DataBlock KMassOutbreak03CenterPos = new()
             {
                 Name = "KMassOutbreak03CenterPos",
-                Key = 0x2ED5F198,
+                Key = 0x2ECE09D3,
                 Type = SCTypeCode.Array,
                 Pointer = new long[] { 0x44AAC88, 0xE0, 0x80, 0x8, 0x87C0 },
                 IsEncrypted = true,
@@ -267,14 +267,14 @@ namespace PokeViewer.NET.SubForms
             public static DataBlock KMassOutbreak04TotalSpawns = new()
             {
                 Name = "KMassOutbreak04TotalSpawns",
-                Key = 0xB7DC495A,
+                Key = 0xB7DFC571,
                 Type = SCTypeCode.Int32,
                 Pointer = new long[] { 0x44AAC88, 0xE0, 0x80, 0x8, 0x22940 },
             };
             public static DataBlock KMassOutbreak04CenterPos = new()
             {
                 Name = "KMassOutbreak04CenterPos",
-                Key = 0x2ED5F198,
+                Key = 0x2ED04676,
                 Type = SCTypeCode.Array,
                 Pointer = new long[] { 0x44AAC88, 0xE0, 0x80, 0x8, 0x87E0 },
                 IsEncrypted = true,
@@ -310,14 +310,14 @@ namespace PokeViewer.NET.SubForms
             public static DataBlock KMassOutbreak05TotalSpawns = new()
             {
                 Name = "KMassOutbreak05TotalSpawns",
-                Key = 0xB7DC495A,
+                Key = 0xB7E886B6,
                 Type = SCTypeCode.Int32,
                 Pointer = new long[] { 0x44AAC88, 0xE0, 0x80, 0x8, 0x229C0 },
             };
             public static DataBlock KMassOutbreak05CenterPos = new()
             {
                 Name = "KMassOutbreak05CenterPos",
-                Key = 0x2ED5F198,
+                Key = 0x2EC78531,
                 Type = SCTypeCode.Array,
                 Pointer = new long[] { 0x44AAC88, 0xE0, 0x80, 0x8, 0x8780 },
                 IsEncrypted = true,
@@ -353,14 +353,14 @@ namespace PokeViewer.NET.SubForms
             public static DataBlock KMassOutbreak06TotalSpawns = new()
             {
                 Name = "KMassOutbreak06TotalSpawns",
-                Key = 0xB7DC495A,
+                Key = 0xB7E49713,
                 Type = SCTypeCode.Int32,
                 Pointer = new long[] { 0x44AAC88, 0xE0, 0x80, 0x8, 0x229A0 },
             };
             public static DataBlock KMassOutbreak06CenterPos = new()
             {
                 Name = "KMassOutbreak06CenterPos",
-                Key = 0x2ED5F198,
+                Key = 0x2ECB673C,
                 Type = SCTypeCode.Array,
                 Pointer = new long[] { 0x44AAC88, 0xE0, 0x80, 0x8, 0x87A0 },
                 IsEncrypted = true,
@@ -396,14 +396,14 @@ namespace PokeViewer.NET.SubForms
             public static DataBlock KMassOutbreak07TotalSpawns = new()
             {
                 Name = "KMassOutbreak07TotalSpawns",
-                Key = 0xB7DC495A,
+                Key = 0xB7EE31D8,
                 Type = SCTypeCode.Int32,
                 Pointer = new long[] { 0x44AAC88, 0xE0, 0x80, 0x8, 0x22A00 },
             };
             public static DataBlock KMassOutbreak07CenterPos = new()
             {
                 Name = "KMassOutbreak07CenterPos",
-                Key = 0x2ED5F198,
+                Key = 0x2EC1CC77,
                 Type = SCTypeCode.Array,
                 Pointer = new long[] { 0x44AAC88, 0xE0, 0x80, 0x8, 0x8740 },
                 IsEncrypted = true,
@@ -439,14 +439,14 @@ namespace PokeViewer.NET.SubForms
             public static DataBlock KMassOutbreak08TotalSpawns = new()
             {
                 Name = "KMassOutbreak08TotalSpawns",
-                Key = 0xB7DC495A,
+                Key = 0xB7EABC8D,
                 Type = SCTypeCode.Int32,
                 Pointer = new long[] { 0x44AAC88, 0xE0, 0x80, 0x8, 0x229E0 },
             };
             public static DataBlock KMassOutbreak08CenterPos = new()
             {
                 Name = "KMassOutbreak08CenterPos",
-                Key = 0x2ED5F198,
+                Key = 0x2EC5BC1A,
                 Type = SCTypeCode.Array,
                 Pointer = new long[] { 0x44AAC88, 0xE0, 0x80, 0x8, 0x8760 },
                 IsEncrypted = true,
@@ -478,7 +478,7 @@ namespace PokeViewer.NET.SubForms
 
         private async Task RolloverCorrectionSV(CancellationToken token)
         {
-            await Task.Delay(0_050, token).ConfigureAwait (false);
+            await Task.Delay(0_050, token).ConfigureAwait(false);
             await Click(HOME, 2_000, token).ConfigureAwait(false); // Back to title screen
 
             for (int i = 0; i < 2; i++)
@@ -490,7 +490,7 @@ namespace PokeViewer.NET.SubForms
             await PressAndHold(DDOWN, 2_000, 0_250, token).ConfigureAwait(false); // Scroll to system settings
             await Click(A, 1_250, token).ConfigureAwait(false);
 
-            await PressAndHold(DDOWN, (int)numericUpDown1.Value, 0, token).ConfigureAwait(false);
+            await PressAndHold(DDOWN, (int)OverShoot.Value, 0, token).ConfigureAwait(false);
             await Click(DUP, 0_500, token).ConfigureAwait(false);
 
             await Click(A, 1_250, token).ConfigureAwait(false);
@@ -618,20 +618,20 @@ namespace PokeViewer.NET.SubForms
 
         private static string[]? DiscordWebhooks;
 
-        private async void SendNotifications(string results)
+        private async void SendNotifications(string results, string thumbnail)
         {
             if (string.IsNullOrEmpty(results) || string.IsNullOrEmpty(Settings.Default.WebHook))
                 return;
             DiscordWebhooks = Settings.Default.WebHook.Split(',');
             if (DiscordWebhooks == null)
                 return;
-            var webhook = GenerateWebhook(results);
+            var webhook = GenerateWebhook(results, thumbnail);
             var content = new StringContent(JsonConvert.SerializeObject(webhook), Encoding.UTF8, "application/json");
             foreach (var url in DiscordWebhooks)
                 await Client.PostAsync(url, content).ConfigureAwait(false);
         }
 
-        private static object GenerateWebhook(string results)
+        private static object GenerateWebhook(string results, string thumbnail)
         {
             var WebHook = new
             {
@@ -642,6 +642,10 @@ namespace PokeViewer.NET.SubForms
                     new
                     {
                         title = $"Match Found!",
+                        thumbnail = new
+                        {
+                            url = thumbnail
+                        },
                         fields = new List<object>
                         {
                             new { name = "Description               ", value = results, inline = true, },
@@ -726,7 +730,7 @@ namespace PokeViewer.NET.SubForms
         private async Task SearchForOutbreak(CancellationToken token)
         {
             Settings.Default.OutbreakSpecies = StopOnSpecies.Text;
-            Settings.Default.MiscOvershoot = numericUpDown1.Value;
+            Settings.Default.MiscOvershoot = OverShoot.Value;
             Settings.Default.Save();
 
             var text = StopOnSpecies.Text.Replace(" ", "");
@@ -735,9 +739,8 @@ namespace PokeViewer.NET.SubForms
             PictureBox[] spritelist = { OBSprite1, OBSprite2, OBSprite3, OBSprite4, OBSprite5, OBSprite6, OBSprite7, OBSprite8 };
             List<Image> imagestrings = new();
             List<string> strings = new();
-            List<string> mons = new();
-            OutbreakScan.Enabled = false;
-            OutbreakScan.Text = "Scanning...";
+            List<PK9> mons = new();
+            OutbreakScan.Enabled = false;            
             StopOnSpecies.Enabled = false;
             OutbreakSearch.Enabled = false;
             while (!token.IsCancellationRequested)
@@ -752,9 +755,12 @@ namespace PokeViewer.NET.SubForms
                 {
                     spritelist[i].Image = null;
                     list[i].Text = string.Empty;
-                }              
-                
+                }
+                TotalOutbreaks.Text = string.Empty;
+
+                OutbreakScan.Text = "Saving...";
                 await SVSaveGameOverworld(token).ConfigureAwait(false);
+                OutbreakScan.Text = "Scanning...";
                 var validOutbreaks = await ReadEncryptedBlockByte(Blocks.KMassOutbreakTotalEnabled, token).ConfigureAwait(false);
                 var Outbreaktotal = Convert.ToInt32(validOutbreaks);
                 var block = Blocks.KOutbreakSpecies1;
@@ -789,9 +795,9 @@ namespace PokeViewer.NET.SubForms
                     CommonEdits.SetIsShiny(pk, false);
                     string pkform = form is 0 ? "" : $"-{form}";
                     strings.Add($"{(Species)pk.Species}{pkform}{Environment.NewLine}Count: {kocount}/{totalcount}");
-                    var img = SpriteUtil.SB8a.GetSprite(pk.Species, pk.Form, 0, 0, 0, false, Shiny.Never, EntityContext.Gen9);                    
+                    var img = SpriteUtil.SB8a.GetSprite(pk.Species, pk.Form, 0, 0, 0, false, Shiny.Never, EntityContext.Gen9);
                     imagestrings.Add(img);
-                    mons.Add($"{(Species)pk.Species}");                   
+                    mons.Add(pk);
                 }
 
                 TotalOutbreaks.Text = $"Total Outbreaks: {Outbreaktotal}";
@@ -804,18 +810,21 @@ namespace PokeViewer.NET.SubForms
 
                 for (int i = 0; i < mons.Count; i++)
                 {
-                    bool huntedspecies = monlist.Contains($"{mons[i]}");
-                    if (huntedspecies && monlist.Length != 0)
+                    bool huntedspecies = monlist.Contains($"{(Species)mons[i].Species}");
+                    if (huntedspecies && monlist.Length != 0 && OutbreakSearch.Checked)
                     {
-                        MessageBox.Show($"{mons[i]} outbreak found!");
-                        SystemSounds.Asterisk.Play();
+                        string msg = $"{(Species)mons[i].Species} outbreak found!";
+                        if (EnableEmbed.Enabled)
                         {
-                            OutbreakScan.Enabled = true;
-                            OutbreakScan.Text = "Outbreak Scan";
-                            OutbreakSearch.Enabled = true;
-                            StopOnSpecies.Enabled = true;
-                            return;
+                            var sprite = PokeImg(mons[i], false);
+                            SendNotifications(msg, sprite);
                         }
+                        else
+                            MessageBox.Show(msg);
+
+                        EnableAssets();
+                        return;
+
                     }
                 }
 
@@ -827,26 +836,28 @@ namespace PokeViewer.NET.SubForms
                 {
                     MessageBox.Show("HardStop enabled, ending task. Uncheck if you wish to scan until match is found.");                    
                     {
-                        OutbreakScan.Enabled = true;
-                        OutbreakScan.Text = "Outbreak Scan";
-                        OutbreakSearch.Enabled = true;
-                        StopOnSpecies.Enabled = true;
+                        EnableAssets();
                         return;
                     }
                 }
                 if (OutbreakSearch.Checked)
                 {
+                    OutbreakScan.Text = "Skipping...";
                     await RolloverCorrectionSV(token).ConfigureAwait(false);
                     await Task.Delay(2_000, token).ConfigureAwait(false);
                 }
-                if (!OutbreakSearch.Checked)
+                else if (!OutbreakSearch.Checked)
                     break;
             }
+            EnableAssets();
+        }
+
+        private void EnableAssets()
+        {
             OutbreakScan.Enabled = true;
             OutbreakScan.Text = "Outbreak Scan";
             OutbreakSearch.Enabled = true;
             StopOnSpecies.Enabled = true;
         }
-
     }
 }

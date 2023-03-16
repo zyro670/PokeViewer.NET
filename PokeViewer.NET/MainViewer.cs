@@ -15,8 +15,8 @@ namespace PokeViewer.NET
     public partial class MainViewer : Form
     {
         public ViewerExecutor Executor = null!;
-        private const string ViewerVersion = "1.4.0";
-        private const int AzureBuildID = 383;
+        private const string ViewerVersion = "1.4.1";
+        private const int AzureBuildID = 387;
         private bool[] FormLoaded = new bool[9];
         private int GameType;
         private readonly string RefreshTime = Settings.Default.RefreshRate;

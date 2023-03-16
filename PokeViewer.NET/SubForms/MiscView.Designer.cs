@@ -32,7 +32,7 @@
             this.EventRaidScan = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button2 = new System.Windows.Forms.Button();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.OverShoot = new System.Windows.Forms.NumericUpDown();
             this.OutbreakScan = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -46,6 +46,7 @@
             this.label9 = new System.Windows.Forms.Label();
             this.OutbreakSearch = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.EnableEmbed = new System.Windows.Forms.CheckBox();
             this.OBSprite8 = new System.Windows.Forms.PictureBox();
             this.OBSprite7 = new System.Windows.Forms.PictureBox();
             this.OBSprite6 = new System.Windows.Forms.PictureBox();
@@ -71,7 +72,7 @@
             this.HardStopEventScan = new System.Windows.Forms.CheckBox();
             this.OverShootDelay = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.OverShoot)).BeginInit();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.OBSprite8)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.OBSprite7)).BeginInit();
@@ -116,24 +117,24 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
-            // numericUpDown1
+            // OverShoot
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(37, 67);
-            this.numericUpDown1.Maximum = new decimal(new int[] {
+            this.OverShoot.Location = new System.Drawing.Point(55, 67);
+            this.OverShoot.Maximum = new decimal(new int[] {
             1000,
             0,
             0,
             0});
-            this.numericUpDown1.Minimum = new decimal(new int[] {
+            this.OverShoot.Minimum = new decimal(new int[] {
             500,
             0,
             0,
             0});
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(59, 23);
-            this.numericUpDown1.TabIndex = 3;
-            this.numericUpDown1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.numericUpDown1.Value = new decimal(new int[] {
+            this.OverShoot.Name = "OverShoot";
+            this.OverShoot.Size = new System.Drawing.Size(59, 23);
+            this.OverShoot.TabIndex = 3;
+            this.OverShoot.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.OverShoot.Value = new decimal(new int[] {
             920,
             0,
             0,
@@ -141,7 +142,7 @@
             // 
             // OutbreakScan
             // 
-            this.OutbreakScan.Location = new System.Drawing.Point(6, 22);
+            this.OutbreakScan.Location = new System.Drawing.Point(14, 22);
             this.OutbreakScan.Name = "OutbreakScan";
             this.OutbreakScan.Size = new System.Drawing.Size(115, 23);
             this.OutbreakScan.TabIndex = 6;
@@ -153,7 +154,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label1.Location = new System.Drawing.Point(50, 78);
+            this.label1.Location = new System.Drawing.Point(58, 78);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(24, 21);
             this.label1.TabIndex = 7;
@@ -163,7 +164,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label2.Location = new System.Drawing.Point(50, 116);
+            this.label2.Location = new System.Drawing.Point(58, 116);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(24, 21);
             this.label2.TabIndex = 8;
@@ -173,7 +174,7 @@
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label3.Location = new System.Drawing.Point(50, 158);
+            this.label3.Location = new System.Drawing.Point(58, 158);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(24, 21);
             this.label3.TabIndex = 9;
@@ -183,7 +184,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label4.Location = new System.Drawing.Point(50, 200);
+            this.label4.Location = new System.Drawing.Point(58, 200);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(24, 21);
             this.label4.TabIndex = 10;
@@ -193,7 +194,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label5.Location = new System.Drawing.Point(233, 78);
+            this.label5.Location = new System.Drawing.Point(241, 78);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(24, 21);
             this.label5.TabIndex = 11;
@@ -203,7 +204,7 @@
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label6.Location = new System.Drawing.Point(233, 116);
+            this.label6.Location = new System.Drawing.Point(241, 116);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(24, 21);
             this.label6.TabIndex = 12;
@@ -213,7 +214,7 @@
             // 
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label7.Location = new System.Drawing.Point(233, 158);
+            this.label7.Location = new System.Drawing.Point(241, 158);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(24, 21);
             this.label7.TabIndex = 13;
@@ -223,7 +224,7 @@
             // 
             this.label8.AutoSize = true;
             this.label8.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.label8.Location = new System.Drawing.Point(233, 200);
+            this.label8.Location = new System.Drawing.Point(241, 200);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(24, 21);
             this.label8.TabIndex = 14;
@@ -231,15 +232,15 @@
             // 
             // StopOnSpecies
             // 
-            this.StopOnSpecies.Location = new System.Drawing.Point(107, 242);
+            this.StopOnSpecies.Location = new System.Drawing.Point(115, 242);
             this.StopOnSpecies.Name = "StopOnSpecies";
-            this.StopOnSpecies.Size = new System.Drawing.Size(265, 23);
+            this.StopOnSpecies.Size = new System.Drawing.Size(198, 23);
             this.StopOnSpecies.TabIndex = 15;
             // 
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(9, 245);
+            this.label9.Location = new System.Drawing.Point(17, 245);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(92, 15);
             this.label9.TabIndex = 16;
@@ -248,7 +249,7 @@
             // OutbreakSearch
             // 
             this.OutbreakSearch.AutoSize = true;
-            this.OutbreakSearch.Location = new System.Drawing.Point(162, 40);
+            this.OutbreakSearch.Location = new System.Drawing.Point(199, 43);
             this.OutbreakSearch.Name = "OutbreakSearch";
             this.OutbreakSearch.Size = new System.Drawing.Size(138, 19);
             this.OutbreakSearch.TabIndex = 17;
@@ -257,6 +258,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.EnableEmbed);
             this.groupBox1.Controls.Add(this.OBSprite8);
             this.groupBox1.Controls.Add(this.OBSprite7);
             this.groupBox1.Controls.Add(this.OBSprite6);
@@ -290,14 +292,24 @@
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Location = new System.Drawing.Point(12, 148);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(404, 280);
+            this.groupBox1.Size = new System.Drawing.Size(435, 280);
             this.groupBox1.TabIndex = 18;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Outbreak Conditions";
             // 
+            // EnableEmbed
+            // 
+            this.EnableEmbed.AutoSize = true;
+            this.EnableEmbed.Location = new System.Drawing.Point(319, 244);
+            this.EnableEmbed.Name = "EnableEmbed";
+            this.EnableEmbed.Size = new System.Drawing.Size(106, 19);
+            this.EnableEmbed.TabIndex = 37;
+            this.EnableEmbed.Text = "Enable Embed?";
+            this.EnableEmbed.UseVisualStyleBackColor = true;
+            // 
             // OBSprite8
             // 
-            this.OBSprite8.Location = new System.Drawing.Point(191, 196);
+            this.OBSprite8.Location = new System.Drawing.Point(199, 196);
             this.OBSprite8.Name = "OBSprite8";
             this.OBSprite8.Size = new System.Drawing.Size(45, 40);
             this.OBSprite8.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -306,7 +318,7 @@
             // 
             // OBSprite7
             // 
-            this.OBSprite7.Location = new System.Drawing.Point(191, 154);
+            this.OBSprite7.Location = new System.Drawing.Point(199, 154);
             this.OBSprite7.Name = "OBSprite7";
             this.OBSprite7.Size = new System.Drawing.Size(45, 40);
             this.OBSprite7.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -315,7 +327,7 @@
             // 
             // OBSprite6
             // 
-            this.OBSprite6.Location = new System.Drawing.Point(191, 110);
+            this.OBSprite6.Location = new System.Drawing.Point(199, 110);
             this.OBSprite6.Name = "OBSprite6";
             this.OBSprite6.Size = new System.Drawing.Size(45, 40);
             this.OBSprite6.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -324,7 +336,7 @@
             // 
             // OBSprite5
             // 
-            this.OBSprite5.Location = new System.Drawing.Point(191, 68);
+            this.OBSprite5.Location = new System.Drawing.Point(199, 68);
             this.OBSprite5.Name = "OBSprite5";
             this.OBSprite5.Size = new System.Drawing.Size(45, 40);
             this.OBSprite5.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -333,7 +345,7 @@
             // 
             // OBSprite4
             // 
-            this.OBSprite4.Location = new System.Drawing.Point(8, 196);
+            this.OBSprite4.Location = new System.Drawing.Point(16, 196);
             this.OBSprite4.Name = "OBSprite4";
             this.OBSprite4.Size = new System.Drawing.Size(45, 40);
             this.OBSprite4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -342,7 +354,7 @@
             // 
             // OBSprite3
             // 
-            this.OBSprite3.Location = new System.Drawing.Point(8, 154);
+            this.OBSprite3.Location = new System.Drawing.Point(16, 154);
             this.OBSprite3.Name = "OBSprite3";
             this.OBSprite3.Size = new System.Drawing.Size(45, 40);
             this.OBSprite3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -351,7 +363,7 @@
             // 
             // OBSprite2
             // 
-            this.OBSprite2.Location = new System.Drawing.Point(8, 110);
+            this.OBSprite2.Location = new System.Drawing.Point(16, 110);
             this.OBSprite2.Name = "OBSprite2";
             this.OBSprite2.Size = new System.Drawing.Size(45, 40);
             this.OBSprite2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -360,7 +372,7 @@
             // 
             // OBSprite1
             // 
-            this.OBSprite1.Location = new System.Drawing.Point(8, 68);
+            this.OBSprite1.Location = new System.Drawing.Point(16, 68);
             this.OBSprite1.Name = "OBSprite1";
             this.OBSprite1.Size = new System.Drawing.Size(45, 40);
             this.OBSprite1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -370,7 +382,7 @@
             // OutbreakSprite
             // 
             this.OutbreakSprite.Image = ((System.Drawing.Image)(resources.GetObject("OutbreakSprite.Image")));
-            this.OutbreakSprite.Location = new System.Drawing.Point(335, 12);
+            this.OutbreakSprite.Location = new System.Drawing.Point(361, 12);
             this.OutbreakSprite.Name = "OutbreakSprite";
             this.OutbreakSprite.Size = new System.Drawing.Size(64, 51);
             this.OutbreakSprite.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -380,7 +392,7 @@
             // TotalOutbreaks
             // 
             this.TotalOutbreaks.AutoSize = true;
-            this.TotalOutbreaks.Location = new System.Drawing.Point(4, 48);
+            this.TotalOutbreaks.Location = new System.Drawing.Point(11, 48);
             this.TotalOutbreaks.Name = "TotalOutbreaks";
             this.TotalOutbreaks.Size = new System.Drawing.Size(92, 15);
             this.TotalOutbreaks.TabIndex = 27;
@@ -389,7 +401,7 @@
             // Ob8Results
             // 
             this.Ob8Results.AutoSize = true;
-            this.Ob8Results.Location = new System.Drawing.Point(257, 203);
+            this.Ob8Results.Location = new System.Drawing.Point(265, 203);
             this.Ob8Results.Name = "Ob8Results";
             this.Ob8Results.Size = new System.Drawing.Size(117, 15);
             this.Ob8Results.TabIndex = 26;
@@ -398,7 +410,7 @@
             // Ob7Results
             // 
             this.Ob7Results.AutoSize = true;
-            this.Ob7Results.Location = new System.Drawing.Point(257, 162);
+            this.Ob7Results.Location = new System.Drawing.Point(265, 162);
             this.Ob7Results.Name = "Ob7Results";
             this.Ob7Results.Size = new System.Drawing.Size(117, 15);
             this.Ob7Results.TabIndex = 25;
@@ -407,7 +419,7 @@
             // Ob6Results
             // 
             this.Ob6Results.AutoSize = true;
-            this.Ob6Results.Location = new System.Drawing.Point(257, 120);
+            this.Ob6Results.Location = new System.Drawing.Point(265, 120);
             this.Ob6Results.Name = "Ob6Results";
             this.Ob6Results.Size = new System.Drawing.Size(117, 15);
             this.Ob6Results.TabIndex = 24;
@@ -416,7 +428,7 @@
             // Ob5Results
             // 
             this.Ob5Results.AutoSize = true;
-            this.Ob5Results.Location = new System.Drawing.Point(257, 81);
+            this.Ob5Results.Location = new System.Drawing.Point(265, 81);
             this.Ob5Results.Name = "Ob5Results";
             this.Ob5Results.Size = new System.Drawing.Size(117, 15);
             this.Ob5Results.TabIndex = 23;
@@ -425,7 +437,7 @@
             // Ob4Results
             // 
             this.Ob4Results.AutoSize = true;
-            this.Ob4Results.Location = new System.Drawing.Point(74, 204);
+            this.Ob4Results.Location = new System.Drawing.Point(82, 204);
             this.Ob4Results.Name = "Ob4Results";
             this.Ob4Results.Size = new System.Drawing.Size(117, 15);
             this.Ob4Results.TabIndex = 22;
@@ -434,7 +446,7 @@
             // Ob3Results
             // 
             this.Ob3Results.AutoSize = true;
-            this.Ob3Results.Location = new System.Drawing.Point(74, 161);
+            this.Ob3Results.Location = new System.Drawing.Point(82, 161);
             this.Ob3Results.Name = "Ob3Results";
             this.Ob3Results.Size = new System.Drawing.Size(117, 15);
             this.Ob3Results.TabIndex = 21;
@@ -443,7 +455,7 @@
             // Ob2Results
             // 
             this.Ob2Results.AutoSize = true;
-            this.Ob2Results.Location = new System.Drawing.Point(74, 119);
+            this.Ob2Results.Location = new System.Drawing.Point(82, 119);
             this.Ob2Results.Name = "Ob2Results";
             this.Ob2Results.Size = new System.Drawing.Size(117, 15);
             this.Ob2Results.TabIndex = 20;
@@ -452,7 +464,7 @@
             // Ob1Results
             // 
             this.Ob1Results.AutoSize = true;
-            this.Ob1Results.Location = new System.Drawing.Point(75, 81);
+            this.Ob1Results.Location = new System.Drawing.Point(83, 81);
             this.Ob1Results.Name = "Ob1Results";
             this.Ob1Results.Size = new System.Drawing.Size(117, 15);
             this.Ob1Results.TabIndex = 19;
@@ -461,7 +473,7 @@
             // HardStopOutbreak
             // 
             this.HardStopOutbreak.AutoSize = true;
-            this.HardStopOutbreak.Location = new System.Drawing.Point(162, 22);
+            this.HardStopOutbreak.Location = new System.Drawing.Point(199, 25);
             this.HardStopOutbreak.Name = "HardStopOutbreak";
             this.HardStopOutbreak.Size = new System.Drawing.Size(121, 19);
             this.HardStopOutbreak.TabIndex = 18;
@@ -523,7 +535,7 @@
             // OverShootDelay
             // 
             this.OverShootDelay.AutoSize = true;
-            this.OverShootDelay.Location = new System.Drawing.Point(27, 49);
+            this.OverShootDelay.Location = new System.Drawing.Point(45, 49);
             this.OverShootDelay.Name = "OverShootDelay";
             this.OverShootDelay.Size = new System.Drawing.Size(80, 15);
             this.OverShootDelay.TabIndex = 5;
@@ -531,11 +543,11 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.numericUpDown1);
+            this.groupBox2.Controls.Add(this.OverShoot);
             this.groupBox2.Controls.Add(this.OverShootDelay);
             this.groupBox2.Location = new System.Drawing.Point(279, 15);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(132, 127);
+            this.groupBox2.Size = new System.Drawing.Size(168, 127);
             this.groupBox2.TabIndex = 20;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Misc";
@@ -544,14 +556,14 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(431, 442);
+            this.ClientSize = new System.Drawing.Size(482, 442);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.RaidEventScan);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "MiscView";
             this.Text = "MiscView";
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.OverShoot)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.OBSprite8)).EndInit();
@@ -577,7 +589,7 @@
         private Button EventRaidScan;
         private TextBox textBox1;
         private Button button2;
-        private NumericUpDown numericUpDown1;
+        private NumericUpDown OverShoot;
         private Button OutbreakScan;
         private Label label1;
         private Label label2;
@@ -616,5 +628,6 @@
         private PictureBox OBSprite3;
         private PictureBox OBSprite2;
         private GroupBox groupBox2;
+        private CheckBox EnableEmbed;
     }
 }
