@@ -105,6 +105,15 @@ namespace PokeViewer.NET
             button3.Enabled = false;
             textBox1.Enabled = false;
             checkBox1.Enabled = false;
+
+            var ptr = new long[] { 0x44A98C8, 0x130, 0x9B0, 0x0 };
+            var b1s1 = await Executor.SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false);
+            switch (b1s1)
+            {
+                case (int)GameSelected.Scarlet or (int)GameSelected.Violet: break;
+                case (int)GameSelected.LegendsArceus: ptr = new long[] { 0x42BA6B0, 0x1F0, 0x68 }; b1s1 = await Executor.SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false); break;
+            }
+
             for (int i = 0; i < 30; i++)
             {
                 switch (GameType)
@@ -112,8 +121,6 @@ namespace PokeViewer.NET
                     case (int)GameSelected.Scarlet or (int)GameSelected.Violet:
                         {
                             var slotsize = 344;
-                            var ptr = new long[] { 0x44A98C8, 0x130, 0x9B0, 0x0 };
-                            var b1s1 = await Executor.SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false);
                             var boxsize = 30 * slotsize;
                             var boxStart = b1s1 + (ulong)(box * boxsize);
                             var slotstart = boxStart + (ulong)(i * slotsize);
@@ -126,8 +133,6 @@ namespace PokeViewer.NET
                     case (int)GameSelected.LegendsArceus:
                         {
                             var slotsize = 360;
-                            var ptr = new long[] { 0x42BA6B0, 0x1F0, 0x68 };
-                            var b1s1 = await Executor.SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false);
                             var boxsize = 30 * slotsize;
                             var boxStart = b1s1 + (ulong)(box * boxsize);
                             var slotstart = boxStart + (ulong)(i * slotsize);
@@ -141,8 +146,8 @@ namespace PokeViewer.NET
                         {
                             var sizeup = GetBDSPSlotValue(i);
                             var boxvalue = GetBDSPBoxValue(box);
-                            var b1s1 = new long[] { 0x4C64DC0, 0xB8, 0x10, 0xA0, boxvalue, sizeup, 0x20 };
-                            var boxStart = await Executor.SwitchConnection.PointerAll(b1s1, token).ConfigureAwait(false);
+                            var b1s1b = new long[] { 0x4C64DC0, 0xB8, 0x10, 0xA0, boxvalue, sizeup, 0x20 };
+                            var boxStart = await Executor.SwitchConnection.PointerAll(b1s1b, token).ConfigureAwait(false);
                             _ = new PB8();
                             pk = await ReadBoxPokemonBDSP(boxStart, size, token).ConfigureAwait(false);
                             PKMs.Add(pk);
@@ -152,8 +157,8 @@ namespace PokeViewer.NET
                         {
                             var sizeup = GetBDSPSlotValue(i);
                             var boxvalue = GetBDSPBoxValue(box);
-                            var b1s1 = new long[] { 0x4E7BE98, 0xB8, 0x10, 0xA0, boxvalue, sizeup, 0x20 };
-                            var boxStart = await Executor.SwitchConnection.PointerAll(b1s1, token).ConfigureAwait(false);
+                            var b1s1b = new long[] { 0x4E7BE98, 0xB8, 0x10, 0xA0, boxvalue, sizeup, 0x20 };
+                            var boxStart = await Executor.SwitchConnection.PointerAll(b1s1b, token).ConfigureAwait(false);
                             _ = new PB8();
                             pk = await ReadBoxPokemonBDSP(boxStart, size, token).ConfigureAwait(false);
                             PKMs.Add(pk);

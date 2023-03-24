@@ -24,6 +24,7 @@ namespace PokeViewer.NET.SubForms
         private int sandwichcount = 0;
         private int starcount = 0;
         private int squarecount = 0;
+        private PK9 prevShiny = new();
         private readonly uint EggData = 0x044AAE00;
         private readonly uint PicnicMenu = 0x0453B020;
         private readonly byte[] BlankVal = { 0x01 };
@@ -88,7 +89,7 @@ namespace PokeViewer.NET.SubForms
                 {
                     NextSanwichLabel.Text = $"Next Sandwich: {endTime:hh\\:mm\\:ss}";
                     var pk = await ReadPokemonSV(EggData, 344, token).ConfigureAwait(false);
-                    while (pk == null || pkprev.EncryptionConstant == pk.EncryptionConstant || (Species)pk.Species == Species.None)
+                    while (pk == prevShiny || pk == null || pkprev.EncryptionConstant == pk.EncryptionConstant || (Species)pk.Species == Species.None)
                     {
                         waiting++;
                         await Task.Delay(1_500, token).ConfigureAwait(false);
@@ -138,6 +139,7 @@ namespace PokeViewer.NET.SubForms
                             SendNotifications(output, sprite, match);
                         if (match)
                         {
+                            prevShiny = pk;
                             await Click(HOME, 0_500, token).ConfigureAwait(false);
                             SendNotifications(output, sprite, match);
                             EnableOptions();
@@ -539,7 +541,7 @@ namespace PokeViewer.NET.SubForms
 
         private void StopConditionsButton_Click(object sender, EventArgs e)
         {
-            using EggViewerConditions miniform = new();
+            using StopConditions miniform = new();
             miniform.ShowDialog();
         }
 

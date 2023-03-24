@@ -2,9 +2,9 @@
 
 namespace PokeViewer.NET.SubForms
 {
-    public partial class EggViewerConditions : Form
+    public partial class StopConditions : Form
     {
-        public EggViewerConditions()
+        public StopConditions()
         {
             InitializeComponent();
             LoadDefaults();

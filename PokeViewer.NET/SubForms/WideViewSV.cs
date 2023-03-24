@@ -43,6 +43,14 @@ namespace PokeViewer.NET.SubForms
             PictureBox[] markboxes = { pictureBox2, pictureBox4, pictureBox6, pictureBox8, pictureBox10, pictureBox12, pictureBox14, pictureBox16, pictureBox18, pictureBox20, pictureBox22, pictureBox24, pictureBox26, pictureBox28, pictureBox30 };
             string? url;
             string? sprite;
+
+            for (int i = 0; i < 15; i++)
+            {
+                boxes[i].Image = null;
+                markboxes[i].Image = null;
+                outputBox[i].Text = string.Empty;
+            }
+
             await SVSaveGameOverworld(token).ConfigureAwait(false);
             button1.Text = "Scanning...";
             var test = await ReadBlock(Blocks.Overworld, token).ConfigureAwait(false);
@@ -155,7 +163,7 @@ namespace PokeViewer.NET.SubForms
                 Name = "Overworld",
                 Key = 0x173304D8,
                 Type = SCTypeCode.Object,
-                Pointer = new long[] { 0x44AAC88, 0xE0, 0x80, 0x8, 0x4340 },
+                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0x4340 },
                 IsEncrypted = true,
                 Size = 2490,
             };

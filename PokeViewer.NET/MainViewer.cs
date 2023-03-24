@@ -16,7 +16,7 @@ namespace PokeViewer.NET
     {
         public ViewerExecutor Executor = null!;
         private const string ViewerVersion = "1.4.1";
-        private const int AzureBuildID = 387;
+        private const int AzureBuildID = 390;
         private bool[] FormLoaded = new bool[9];
         private int GameType;
         private readonly string RefreshTime = Settings.Default.RefreshRate;
@@ -812,63 +812,60 @@ namespace PokeViewer.NET
                 case "Misc 📓": selectedInt = 8; break;
             }
 
-            if (FormLoaded[selectedInt])
+            if (selectedInt is 5 && FormLoaded[5] is true)
             {
-                if (selectedInt is 5)
+                switch (GameType)
                 {
-                    switch (GameType)
-                    {
-                        case (int)GameSelected.Scarlet or (int)GameSelected.Violet:
-                            {
-                                ViewerControl.Height = 680;
-                                ViewerControl.Width = 750;
-                                Height = 710;
-                                Width = 765;
-                                break;
-                            }
-                        case (int)GameSelected.LegendsArceus:
-                            {
-                                ViewerControl.Height = 380;
-                                ViewerControl.Width = 780;
-                                Height = 400;
-                                Width = 800;
-                                break;
-                            }
-                        case (int)GameSelected.BrilliantDiamond or (int)GameSelected.ShiningPearl:
-                            {
-                                ViewerControl.Height = 560;
-                                ViewerControl.Width = 825;
-                                Height = 600;
-                                Width = 850;
-                                break;
-                            }
-                        case (int)GameSelected.Sword or (int)GameSelected.Shield:
-                            {
-                                ViewerControl.Height = 600;
-                                ViewerControl.Width = 890;
-                                Height = 580;
-                                Width = 870;
-                                break;
-                            }
-                        case (int)GameSelected.LetsGoPikachu or (int)GameSelected.LetsGoEevee:
-                            {
-                                ViewerControl.Height = 400;
-                                ViewerControl.Width = 475;
-                                Height = 300;
-                                Width = 400;
-                                break;
-                            }
-                    }
+                    case (int)GameSelected.Scarlet or (int)GameSelected.Violet:
+                        {
+                            ViewerControl.Height = 680;
+                            ViewerControl.Width = 750;
+                            Height = 710;
+                            Width = 765;
+                            break;
+                        }
+                    case (int)GameSelected.LegendsArceus:
+                        {
+                            ViewerControl.Height = 380;
+                            ViewerControl.Width = 780;
+                            Height = 400;
+                            Width = 800;
+                            break;
+                        }
+                    case (int)GameSelected.BrilliantDiamond or (int)GameSelected.ShiningPearl:
+                        {
+                            ViewerControl.Height = 560;
+                            ViewerControl.Width = 825;
+                            Height = 600;
+                            Width = 850;
+                            break;
+                        }
+                    case (int)GameSelected.Sword or (int)GameSelected.Shield:
+                        {
+                            ViewerControl.Height = 600;
+                            ViewerControl.Width = 890;
+                            Height = 580;
+                            Width = 870;
+                            break;
+                        }
+                    case (int)GameSelected.LetsGoPikachu or (int)GameSelected.LetsGoEevee:
+                        {
+                            ViewerControl.Height = 400;
+                            ViewerControl.Width = 475;
+                            Height = 300;
+                            Width = 400;
+                            break;
+                        }
                 }
                 return;
             }
-
-            if (currentTab is not "Wide 🔭" && GameType is (int)GameSelected.BrilliantDiamond or (int)GameSelected.ShiningPearl or (int)GameSelected.Sword or (int)GameSelected.Shield or (int)GameSelected.LetsGoPikachu or (int)GameSelected.LetsGoEevee or(int)GameSelected.Scarlet or (int)GameSelected.Violet)
+            else if (selectedInt is not 5 && FormLoaded[selectedInt] is true)
             {
                 ViewerControl.Height = 550;
                 ViewerControl.Width = 511;
                 Height = 507;
                 Width = 511;
+                return;
             }
 
             Form form = new();

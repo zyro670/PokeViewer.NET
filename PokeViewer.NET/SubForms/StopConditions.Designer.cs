@@ -1,6 +1,6 @@
 ﻿namespace PokeViewer.NET.SubForms
 {
-    partial class EggViewerConditions
+    partial class StopConditions
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.StopConditions = new System.Windows.Forms.GroupBox();
+            this.StopConditionsGroup = new System.Windows.Forms.GroupBox();
             this.ScaleBox = new System.Windows.Forms.CheckBox();
             this.ShinyBox = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -53,7 +53,7 @@
             this.SpaFilter = new System.Windows.Forms.NumericUpDown();
             this.SaveButton = new System.Windows.Forms.Button();
             this.ResetButton = new System.Windows.Forms.Button();
-            this.StopConditions.SuspendLayout();
+            this.StopConditionsGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.HPFilter)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.AtkFilter)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SpeFilter)).BeginInit();
@@ -62,36 +62,36 @@
             ((System.ComponentModel.ISupportInitialize)(this.SpaFilter)).BeginInit();
             this.SuspendLayout();
             // 
-            // StopConditions
+            // StopConditionsGroup
             // 
-            this.StopConditions.Controls.Add(this.ScaleBox);
-            this.StopConditions.Controls.Add(this.ShinyBox);
-            this.StopConditions.Controls.Add(this.label1);
-            this.StopConditions.Controls.Add(this.PresetIVs);
-            this.StopConditions.Controls.Add(this.PresetIVBox);
-            this.StopConditions.Controls.Add(this.GenderBox);
-            this.StopConditions.Controls.Add(this.IgnoreIVFilter);
-            this.StopConditions.Controls.Add(this.CheckBoxOf3);
-            this.StopConditions.Controls.Add(this.TargetSPE);
-            this.StopConditions.Controls.Add(this.TargetSPD);
-            this.StopConditions.Controls.Add(this.GenderFilter);
-            this.StopConditions.Controls.Add(this.TargetSPA);
-            this.StopConditions.Controls.Add(this.TargetIVs);
-            this.StopConditions.Controls.Add(this.TargetDEF);
-            this.StopConditions.Controls.Add(this.TargetHP);
-            this.StopConditions.Controls.Add(this.TargetATK);
-            this.StopConditions.Controls.Add(this.HPFilter);
-            this.StopConditions.Controls.Add(this.AtkFilter);
-            this.StopConditions.Controls.Add(this.SpeFilter);
-            this.StopConditions.Controls.Add(this.DefFilter);
-            this.StopConditions.Controls.Add(this.SpdFilter);
-            this.StopConditions.Controls.Add(this.SpaFilter);
-            this.StopConditions.Location = new System.Drawing.Point(35, 12);
-            this.StopConditions.Name = "StopConditions";
-            this.StopConditions.Size = new System.Drawing.Size(346, 244);
-            this.StopConditions.TabIndex = 63;
-            this.StopConditions.TabStop = false;
-            this.StopConditions.Text = "Stop Conditions";
+            this.StopConditionsGroup.Controls.Add(this.ScaleBox);
+            this.StopConditionsGroup.Controls.Add(this.ShinyBox);
+            this.StopConditionsGroup.Controls.Add(this.label1);
+            this.StopConditionsGroup.Controls.Add(this.PresetIVs);
+            this.StopConditionsGroup.Controls.Add(this.PresetIVBox);
+            this.StopConditionsGroup.Controls.Add(this.GenderBox);
+            this.StopConditionsGroup.Controls.Add(this.IgnoreIVFilter);
+            this.StopConditionsGroup.Controls.Add(this.CheckBoxOf3);
+            this.StopConditionsGroup.Controls.Add(this.TargetSPE);
+            this.StopConditionsGroup.Controls.Add(this.TargetSPD);
+            this.StopConditionsGroup.Controls.Add(this.GenderFilter);
+            this.StopConditionsGroup.Controls.Add(this.TargetSPA);
+            this.StopConditionsGroup.Controls.Add(this.TargetIVs);
+            this.StopConditionsGroup.Controls.Add(this.TargetDEF);
+            this.StopConditionsGroup.Controls.Add(this.TargetHP);
+            this.StopConditionsGroup.Controls.Add(this.TargetATK);
+            this.StopConditionsGroup.Controls.Add(this.HPFilter);
+            this.StopConditionsGroup.Controls.Add(this.AtkFilter);
+            this.StopConditionsGroup.Controls.Add(this.SpeFilter);
+            this.StopConditionsGroup.Controls.Add(this.DefFilter);
+            this.StopConditionsGroup.Controls.Add(this.SpdFilter);
+            this.StopConditionsGroup.Controls.Add(this.SpaFilter);
+            this.StopConditionsGroup.Location = new System.Drawing.Point(35, 12);
+            this.StopConditionsGroup.Name = "StopConditionsGroup";
+            this.StopConditionsGroup.Size = new System.Drawing.Size(346, 244);
+            this.StopConditionsGroup.TabIndex = 63;
+            this.StopConditionsGroup.TabStop = false;
+            this.StopConditionsGroup.Text = "Stop Conditions";
             // 
             // ScaleBox
             // 
@@ -391,11 +391,11 @@
             this.ControlBox = false;
             this.Controls.Add(this.ResetButton);
             this.Controls.Add(this.SaveButton);
-            this.Controls.Add(this.StopConditions);
-            this.Name = "EggViewerConditions";
-            this.Text = "EggViewerConditions";
-            this.StopConditions.ResumeLayout(false);
-            this.StopConditions.PerformLayout();
+            this.Controls.Add(this.StopConditionsGroup);
+            this.Name = "Stop Conditions";
+            this.Text = "Stop Conditions";
+            this.StopConditionsGroup.ResumeLayout(false);
+            this.StopConditionsGroup.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.HPFilter)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.AtkFilter)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.SpeFilter)).EndInit();
@@ -408,7 +408,7 @@
 
         #endregion
 
-        private GroupBox StopConditions;
+        private GroupBox StopConditionsGroup;
         private CheckBox IgnoreIVFilter;
         private CheckBox CheckBoxOf3;
         private Label TargetSPE;
