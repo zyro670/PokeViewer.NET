@@ -16,7 +16,7 @@ namespace PokeViewer.NET
     {
         public ViewerExecutor Executor = null!;
         private const string ViewerVersion = "1.4.1";
-        private const int AzureBuildID = 390;
+        private const int AzureBuildID = 393;
         private bool[] FormLoaded = new bool[9];
         private int GameType;
         private readonly string RefreshTime = Settings.Default.RefreshRate;
@@ -41,7 +41,7 @@ namespace PokeViewer.NET
             {
                 DialogResult dialogResult = MessageBox.Show("A new azure-artifact build is available. Go to artifacts page?", "An update is available", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (dialogResult == DialogResult.Yes)
-                    Process.Start(new ProcessStartInfo("https://dev.azure.com/angelosalas670/zyro670/_build?definitionId=5") { UseShellExecute = true });
+                    Process.Start(new ProcessStartInfo("https://dev.azure.com/zyrocodez/zyro670/_build?definitionId=5") { UseShellExecute = true });
 
                 else if (dialogResult == DialogResult.No)
                     return;
@@ -51,10 +51,10 @@ namespace PokeViewer.NET
         private static async Task CheckAzureLabel()
         {
             int azurematch;
-            string latestazure = "https://dev.azure.com/angelosalas670/zyro670/_apis/build/builds?definitions=5&$top=1&api-version=5.0-preview.5";
+            string latestazure = "https://dev.azure.com/zyrocodez/zyro670/_apis/build/builds?definitions=5&$top=1&api-version=5.0-preview.5";
             HttpClient client = new();
             var content = await client.GetStringAsync(latestazure);
-            int buildId = int.Parse(content.Substring(140, 3));
+            int buildId = int.Parse(content.Substring(135, 3));
             azurematch = AzureBuildID.CompareTo(buildId);
             GetVersionsOnStart(azurematch);
         }
