@@ -151,12 +151,15 @@ namespace PokeViewer.NET
                     };
                     Executor = new ViewerExecutor(state);
                     await Executor.RunAsync(token).ConfigureAwait(false);
-                    Height = 507;
-                    Width = 511;
-                    ConnectionGroupBox.SetBounds(135, 130, ConnectionGroupBox.Width, ConnectionGroupBox.Height);
-                    Connect.Text = "Disconnect";
-                    await Executor.Connect(token).ConfigureAwait(false);
-                    Window_Loaded();
+                    await Invoke(async () =>
+                    {
+                        Height = 507;
+                        Width = 511;
+                        ConnectionGroupBox.SetBounds(135, 130, ConnectionGroupBox.Width, ConnectionGroupBox.Height);
+                        Connect.Text = "Disconnect";
+                        await Executor.Connect(token).ConfigureAwait(false);
+                        Window_Loaded();
+                    });
                 }
                 catch (SocketException err)
                 {
