@@ -160,8 +160,7 @@ namespace PokeViewer.NET.SubForms
                             MapSprite = Image.FromStream(stream);
                         }
                         CenterPOS = POSlist[i];
-                        MapViewSV form = new(MapSprite, CenterPOS);
-                        await Task.Run(() => { form.ShowDialog(); }, token);
+                        MapViewSV form = new(MapSprite, CenterPOS);                        
 
                         string msg = $"{(Species)mons[i].Species} outbreak found!";
                         if (EnableWebhook.Checked)
@@ -172,7 +171,9 @@ namespace PokeViewer.NET.SubForms
                         else
                             MessageBox.Show(msg);
 
-                        EnableAssets();                        
+                        EnableAssets();
+
+                        await Task.Run(() => { form.ShowDialog(); }, token).ConfigureAwait(false);
                         return;
 
                     }
