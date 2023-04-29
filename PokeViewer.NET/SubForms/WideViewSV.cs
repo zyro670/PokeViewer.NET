@@ -10,6 +10,8 @@ namespace PokeViewer.NET.SubForms
     public partial class WideViewSV : Form
     {
         private readonly ViewerExecutor Executor;
+        private static ulong BaseBlockKeyPointer = 0;
+        public IReadOnlyList<long> BlockKeyPointer = new List<long>() { 0x44B5158, 0xD8, 0x0, 0x0, 0x30, 0x0 };
 
         public WideViewSV(ViewerExecutor executor)
         {
@@ -17,9 +19,11 @@ namespace PokeViewer.NET.SubForms
             Executor = executor;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private async void button1_Click(object sender, EventArgs e)
         {
-            ScanOverworld(CancellationToken.None).ConfigureAwait(false);
+            var token = CancellationToken.None;
+            BaseBlockKeyPointer = await Executor.SwitchConnection.PointerAll(BlockKeyPointer, token).ConfigureAwait(false);
+            await ScanOverworld(CancellationToken.None).ConfigureAwait(false);
         }
 
         public async Task SVSaveGameOverworld(CancellationToken token)
@@ -102,47 +106,43 @@ namespace PokeViewer.NET.SubForms
 
         private async Task<byte[]> ReadBlock(DataBlock block, CancellationToken token)
         {
-            return await ReadEncryptedBlock(block, token).ConfigureAwait(false);
+            return await ReadEncryptedBlockObject(block, token).ConfigureAwait(false);
         }
 
-        private async Task<byte[]> ReadEncryptedBlock(DataBlock block, CancellationToken token)
+        private async Task<byte[]> ReadEncryptedBlockObject(DataBlock block, CancellationToken token)
         {
-            var address = await GetBlockAddress(block, token).ConfigureAwait(false);
+            var address = await SearchSaveKey(block.Key, token).ConfigureAwait(false);
+            address = BitConverter.ToUInt64(await Executor.SwitchConnection.ReadBytesAbsoluteAsync(address + 8, 0x8, token).ConfigureAwait(false), 0);
             var header = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(address, 5, token).ConfigureAwait(false);
             header = DecryptBlock(block.Key, header);
             var size = ReadUInt32LittleEndian(header.AsSpan()[1..]);
-            var data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(address, 5 + (int)size, token);
+            var data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(address, 5 + (int)size, token).ConfigureAwait(false);
             var res = DecryptBlock(block.Key, data)[5..];
+
             return res;
         }
 
-        private static IEnumerable<long> PreparePointer(IEnumerable<long> pointer)
+        public async Task<ulong> SearchSaveKey(uint key, CancellationToken token)
         {
-            var count = pointer.Count();
-            var p = new long[count + 1];
-            for (var i = 0; i < pointer.Count(); i++)
-                p[i] = pointer.ElementAt(i);
-            p[count - 1] += 8;
-            p[count] = 0x0;
-            return p;
-        }
+            var data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(BaseBlockKeyPointer + 8, 16, token).ConfigureAwait(false);
+            var start = BitConverter.ToUInt64(data.AsSpan()[..8]);
+            var end = BitConverter.ToUInt64(data.AsSpan()[8..]);
 
-        private async Task<ulong> GetBlockAddress(DataBlock block, CancellationToken token)
-        {
-            var read_key = ReadUInt32LittleEndian(await Executor.SwitchConnection.PointerPeek(4, block.Pointer!, token).ConfigureAwait(false));
-            if (read_key == block.Key)
-                return await Executor.SwitchConnection.PointerAll(PreparePointer(block.Pointer!), token).ConfigureAwait(false);
-            var direction = block.Key > read_key ? 1 : -1;
-            var base_offset = block.Pointer![block.Pointer.Count - 1];
-            for (var offset = base_offset; offset < base_offset + 0x1000 && offset > base_offset - 0x1000; offset += direction * 0x20)
+            while (start < end)
             {
-                var pointer = block.Pointer!.ToArray();
-                pointer[^1] = offset;
-                read_key = ReadUInt32LittleEndian(await Executor.SwitchConnection.PointerPeek(4, pointer, token).ConfigureAwait(false));
-                if (read_key == block.Key)
-                    return await Executor.SwitchConnection.PointerAll(PreparePointer(pointer), token).ConfigureAwait(false);
+                var block_ct = (end - start) / 48;
+                var mid = start + (block_ct >> 1) * 48;
+
+                data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(mid, 4, token).ConfigureAwait(false);
+                var found = BitConverter.ToUInt32(data);
+                if (found == key)
+                    return mid;
+
+                if (found >= key)
+                    end = mid;
+                else start = mid + 48;
             }
-            throw new ArgumentOutOfRangeException("Save block not found in range +- 0x1000. Restart the game and try again.");
+            return start;
         }
 
         public class DataBlock
@@ -163,7 +163,6 @@ namespace PokeViewer.NET.SubForms
                 Name = "Overworld",
                 Key = 0x173304D8,
                 Type = SCTypeCode.Object,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0x4340 },
                 IsEncrypted = true,
                 Size = 2490,
             };

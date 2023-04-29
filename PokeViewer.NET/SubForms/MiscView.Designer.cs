@@ -46,6 +46,7 @@
             this.label9 = new System.Windows.Forms.Label();
             this.OutbreakSearch = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.KOToSixty = new System.Windows.Forms.Button();
             this.CollideButton = new System.Windows.Forms.Button();
             this.EnableWebhook = new System.Windows.Forms.CheckBox();
@@ -74,8 +75,6 @@
             this.HardStopEventScan = new System.Windows.Forms.CheckBox();
             this.OverShootDelay = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.EpochNumeric = new System.Windows.Forms.NumericUpDown();
-            this.EpochLabel = new System.Windows.Forms.Label();
             this.ReadValues = new System.Windows.Forms.Button();
             this.VivForm = new System.Windows.Forms.Label();
             this.ChangeFormButton = new System.Windows.Forms.Button();
@@ -94,7 +93,6 @@
             this.RaidEventScan.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.GuaranteedIVs)).BeginInit();
             this.groupBox2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.EpochNumeric)).BeginInit();
             this.SuspendLayout();
             // 
             // EventRaidScan
@@ -128,7 +126,7 @@
             // 
             // OverShoot
             // 
-            this.OverShoot.Location = new System.Drawing.Point(87, 17);
+            this.OverShoot.Location = new System.Drawing.Point(87, 24);
             this.OverShoot.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -151,7 +149,7 @@
             // 
             // OutbreakScan
             // 
-            this.OutbreakScan.Location = new System.Drawing.Point(14, 18);
+            this.OutbreakScan.Location = new System.Drawing.Point(9, 18);
             this.OutbreakScan.Name = "OutbreakScan";
             this.OutbreakScan.Size = new System.Drawing.Size(95, 23);
             this.OutbreakScan.TabIndex = 6;
@@ -241,15 +239,15 @@
             // 
             // StopOnSpecies
             // 
-            this.StopOnSpecies.Location = new System.Drawing.Point(110, 242);
+            this.StopOnSpecies.Location = new System.Drawing.Point(102, 242);
             this.StopOnSpecies.Name = "StopOnSpecies";
-            this.StopOnSpecies.Size = new System.Drawing.Size(197, 23);
+            this.StopOnSpecies.Size = new System.Drawing.Size(205, 23);
             this.StopOnSpecies.TabIndex = 15;
             // 
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(12, 245);
+            this.label9.Location = new System.Drawing.Point(10, 245);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(92, 15);
             this.label9.TabIndex = 16;
@@ -267,6 +265,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.progressBar1);
             this.groupBox1.Controls.Add(this.KOToSixty);
             this.groupBox1.Controls.Add(this.CollideButton);
             this.groupBox1.Controls.Add(this.EnableWebhook);
@@ -291,7 +290,6 @@
             this.groupBox1.Controls.Add(this.HardStopOutbreak);
             this.groupBox1.Controls.Add(this.OutbreakSearch);
             this.groupBox1.Controls.Add(this.label6);
-            this.groupBox1.Controls.Add(this.label9);
             this.groupBox1.Controls.Add(this.OutbreakScan);
             this.groupBox1.Controls.Add(this.StopOnSpecies);
             this.groupBox1.Controls.Add(this.label1);
@@ -301,12 +299,20 @@
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.label5);
+            this.groupBox1.Controls.Add(this.label9);
             this.groupBox1.Location = new System.Drawing.Point(24, 148);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(435, 280);
+            this.groupBox1.Size = new System.Drawing.Size(435, 288);
             this.groupBox1.TabIndex = 18;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Outbreak Conditions";
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(6, 271);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(423, 11);
+            this.progressBar1.TabIndex = 39;
             // 
             // KOToSixty
             // 
@@ -424,11 +430,11 @@
             // TotalOutbreaks
             // 
             this.TotalOutbreaks.AutoSize = true;
-            this.TotalOutbreaks.Location = new System.Drawing.Point(11, 47);
+            this.TotalOutbreaks.Location = new System.Drawing.Point(7, 47);
             this.TotalOutbreaks.Name = "TotalOutbreaks";
-            this.TotalOutbreaks.Size = new System.Drawing.Size(92, 15);
+            this.TotalOutbreaks.Size = new System.Drawing.Size(100, 15);
             this.TotalOutbreaks.TabIndex = 27;
-            this.TotalOutbreaks.Text = "Total Outbreaks:";
+            this.TotalOutbreaks.Text = "Active Outbreaks:";
             // 
             // Ob8Results
             // 
@@ -567,7 +573,7 @@
             // OverShootDelay
             // 
             this.OverShootDelay.AutoSize = true;
-            this.OverShootDelay.Location = new System.Drawing.Point(6, 19);
+            this.OverShootDelay.Location = new System.Drawing.Point(6, 26);
             this.OverShootDelay.Name = "OverShootDelay";
             this.OverShootDelay.Size = new System.Drawing.Size(80, 15);
             this.OverShootDelay.TabIndex = 5;
@@ -575,8 +581,6 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Controls.Add(this.EpochNumeric);
-            this.groupBox2.Controls.Add(this.EpochLabel);
             this.groupBox2.Controls.Add(this.ReadValues);
             this.groupBox2.Controls.Add(this.OverShoot);
             this.groupBox2.Controls.Add(this.OverShootDelay);
@@ -590,31 +594,9 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Misc";
             // 
-            // EpochNumeric
-            // 
-            this.EpochNumeric.Location = new System.Drawing.Point(123, 72);
-            this.EpochNumeric.Maximum = new decimal(new int[] {
-            3,
-            0,
-            0,
-            0});
-            this.EpochNumeric.Name = "EpochNumeric";
-            this.EpochNumeric.Size = new System.Drawing.Size(59, 23);
-            this.EpochNumeric.TabIndex = 11;
-            this.EpochNumeric.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // EpochLabel
-            // 
-            this.EpochLabel.AutoSize = true;
-            this.EpochLabel.Location = new System.Drawing.Point(6, 75);
-            this.EpochLabel.Name = "EpochLabel";
-            this.EpochLabel.Size = new System.Drawing.Size(109, 15);
-            this.EpochLabel.TabIndex = 10;
-            this.EpochLabel.Text = "KGOLastConnected";
-            // 
             // ReadValues
             // 
-            this.ReadValues.Location = new System.Drawing.Point(6, 98);
+            this.ReadValues.Location = new System.Drawing.Point(6, 87);
             this.ReadValues.Name = "ReadValues";
             this.ReadValues.Size = new System.Drawing.Size(90, 23);
             this.ReadValues.TabIndex = 9;
@@ -625,7 +607,7 @@
             // VivForm
             // 
             this.VivForm.AutoSize = true;
-            this.VivForm.Location = new System.Drawing.Point(6, 48);
+            this.VivForm.Location = new System.Drawing.Point(6, 59);
             this.VivForm.Name = "VivForm";
             this.VivForm.Size = new System.Drawing.Size(77, 15);
             this.VivForm.TabIndex = 7;
@@ -633,7 +615,7 @@
             // 
             // ChangeFormButton
             // 
-            this.ChangeFormButton.Location = new System.Drawing.Point(98, 98);
+            this.ChangeFormButton.Location = new System.Drawing.Point(98, 87);
             this.ChangeFormButton.Name = "ChangeFormButton";
             this.ChangeFormButton.Size = new System.Drawing.Size(86, 23);
             this.ChangeFormButton.TabIndex = 6;
@@ -664,7 +646,7 @@
             "Ocean",
             "Jungle",
             "Fancy"});
-            this.V_ComboBox.Location = new System.Drawing.Point(87, 44);
+            this.V_ComboBox.Location = new System.Drawing.Point(87, 55);
             this.V_ComboBox.Name = "V_ComboBox";
             this.V_ComboBox.Size = new System.Drawing.Size(95, 23);
             this.V_ComboBox.TabIndex = 12;
@@ -699,7 +681,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.GuaranteedIVs)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.EpochNumeric)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -753,9 +734,8 @@
         private Button ChangeFormButton;
         private Label VivForm;
         private Button ReadValues;
-        private NumericUpDown EpochNumeric;
-        private Label EpochLabel;
         private Button KOToSixty;
         private ComboBox V_ComboBox;
+        private ProgressBar progressBar1;
     }
 }

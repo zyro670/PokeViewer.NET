@@ -116,7 +116,7 @@ namespace PokeViewer.NET.SubForms
                                 case 4: val = 0x50; break;
                                 case 5: val = 0x58; break;
                             }
-                            var pointer = new long[] { 0x44CCA58, 0x08, val, 0x30, 0x00 };
+                            var pointer = new long[] { 0x44E2F38, 0x08, val, 0x30, 0x00 };
                             var offset = await Executor.SwitchConnection.PointerAll(pointer, token).ConfigureAwait(false);
                             var data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(offset, 0x158, token).ConfigureAwait(false);
                             var pk = new PK9(data);

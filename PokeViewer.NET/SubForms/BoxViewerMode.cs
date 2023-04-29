@@ -106,7 +106,7 @@ namespace PokeViewer.NET
             textBox1.Enabled = false;
             checkBox1.Enabled = false;
 
-            var ptr = new long[] { 0x44A98C8, 0x130, 0x9B0, 0x0 };
+            var ptr = new long[] { 0x44BFBA8, 0x130, 0x9B0, 0x0 };
             var b1s1 = await Executor.SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false);
             switch (b1s1)
             {

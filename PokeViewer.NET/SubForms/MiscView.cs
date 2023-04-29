@@ -13,19 +13,29 @@ namespace PokeViewer.NET.SubForms
     public partial class MiscView : Form
     {
         private readonly ViewerExecutor Executor;
-        public IReadOnlyList<long> TeraRaidBlockPointer { get; } = new long[] { 0x44A98C8, 0x180, 0x40 };
+        public IReadOnlyList<long> TeraRaidBlockPointer { get; } = new long[] { 0x44BFBA8, 0x180, 0x40 };
         private int[] IVFilters = Array.Empty<int>();
         private byte[]? CenterPOS = Array.Empty<byte>();
         private int V_Form;
         private Image MapSprite = null!;
+        private static ulong BaseBlockKeyPointer = 0;
+        public IReadOnlyList<long> BlockKeyPointer = new List<long>() { 0x44B5158, 0xD8, 0x0, 0x0, 0x30, 0x0 };
+        public List<OutbreakStash> OutbreakCache = new();
+        public ulong CountCache;
         public MiscView(ViewerExecutor executor)
         {
             InitializeComponent();
             Executor = executor;
             StopOnSpecies.Text = Settings.Default.OutbreakSpecies;
             OverShoot.Value = Settings.Default.MiscOvershoot;
+            LoadOutbreakCache();
         }
 
+        public void LoadOutbreakCache()
+        {
+            for (int i = 0; i < 8; i++)
+                OutbreakCache.Add(new());
+        }
         private async void button1_Click(object sender, EventArgs e)
         {
             var token = CancellationToken.None;
@@ -56,13 +66,15 @@ namespace PokeViewer.NET.SubForms
                     MessageBox.Show("HardStop enabled, ending task. Uncheck if you wish to scan until match is found.");
                     break;
                 }
-                await RolloverCorrectionSV(token).ConfigureAwait(false);
+                await DaySkip(token).ConfigureAwait(false);
                 await Task.Delay(2_000, token).ConfigureAwait(false);
             }
         }
 
-        private async Task SearchForOutbreak(CancellationToken token)
+        private async Task SearchForOutbreak(bool zerotosixtyone, CancellationToken token)
         {
+            BaseBlockKeyPointer = await Executor.SwitchConnection.PointerAll(BlockKeyPointer, token).ConfigureAwait(false);
+
             Settings.Default.OutbreakSpecies = StopOnSpecies.Text;
             Settings.Default.MiscOvershoot = OverShoot.Value;
             Settings.Default.Save();
@@ -95,10 +107,15 @@ namespace PokeViewer.NET.SubForms
                 TotalOutbreaks.Text = string.Empty;
 
                 OutbreakScan.Text = "Saving...";
+                UpdateProgress(10, 100);
                 await SVSaveGameOverworld(token).ConfigureAwait(false);
                 OutbreakScan.Text = "Scanning...";
-                var validOutbreaks = await ReadEncryptedBlockByte(Blocks.KMassOutbreakTotalEnabled, token).ConfigureAwait(false);
+                var (validOutbreaks, cache) = await ReadEncryptedBlockByte(Blocks.KMassOutbreakTotalEnabled, CountCache, token).ConfigureAwait(false);
+                UpdateProgress(20, 100);
+                if (CountCache == 0)
+                    CountCache = cache;
                 var Outbreaktotal = Convert.ToInt32(validOutbreaks);
+                TotalOutbreaks.Text = $"Active Outbreaks: {Outbreaktotal}";                
                 var block = Blocks.KOutbreakSpecies1;
                 var koblock = Blocks.KMassOutbreakKO1;
                 var totalblock = Blocks.KMassOutbreak01TotalSpawns;
@@ -106,7 +123,7 @@ namespace PokeViewer.NET.SubForms
                 var pos = Blocks.KMassOutbreak01CenterPos;
                 for (int i = 0; i < 8; i++)
                 {
-                    TotalOutbreaks.Text = $"Total Outbreaks: {12.5 * i + 1}%";
+                    UpdateProgress(20 + (10 * i), 100);
                     switch (i)
                     {
                         case 0: break;
@@ -121,13 +138,20 @@ namespace PokeViewer.NET.SubForms
                     if (i > Outbreaktotal - 1)
                         continue;
 
-                    var kocount = await ReadEncryptedBlockUint(koblock, token).ConfigureAwait(false);
-                    var totalcount = await ReadEncryptedBlockUint(totalblock, token).ConfigureAwait(false);
-                    var form = await ReadEncryptedBlockByte(formblock, token).ConfigureAwait(false);
-                    var obpos = await ReadEncryptedBlockArray(pos, token).ConfigureAwait(false);
+                    var (kocount, lofs) = await ReadEncryptedBlockUint(koblock, OutbreakCache[i].SpeciesKOCountLoaded, token).ConfigureAwait(false);
+                    OutbreakCache[i].SpeciesKOCountLoaded = lofs;
+                    var (totalcount, tofs) = await ReadEncryptedBlockUint(totalblock, OutbreakCache[i].SpeciesTotalCountLoaded, token).ConfigureAwait(false);
+                    OutbreakCache[i].SpeciesTotalCountLoaded = tofs;
+                    var (species, sofs) = await ReadEncryptedBlockUint(block, OutbreakCache[i].SpeciesLoaded, token).ConfigureAwait(false);
+                    OutbreakCache[i].SpeciesLoaded = sofs;
+                    var (form, fofs) = await ReadEncryptedBlockByte(formblock, OutbreakCache[i].SpeciesFormLoaded, token).ConfigureAwait(false);
+                    OutbreakCache[i].SpeciesFormLoaded = fofs;
+                    var (obpos, bofs) = await ReadEncryptedBlockArray(pos, OutbreakCache[i].SpeciesCenterPOSLoaded, token).ConfigureAwait(false);
+                    OutbreakCache[i].SpeciesCenterPOSLoaded = bofs;
+
                     PK9 pk = new()
                     {
-                        Species = SpeciesConverter.GetNational9((ushort)await ReadEncryptedBlockUint(block, token).ConfigureAwait(false)),
+                        Species = SpeciesConverter.GetNational9((ushort)species),
                         Form = form,
                     };
                     CommonEdits.SetIsShiny(pk, false);
@@ -139,7 +163,7 @@ namespace PokeViewer.NET.SubForms
                     POSlist.Add(obpos);
                 }
 
-                TotalOutbreaks.Text = $"Total Outbreaks: {Outbreaktotal}";
+                UpdateProgress(100, 100);
 
                 for (int i = 0; i < imagestrings.Count; i++)
                 {
@@ -159,8 +183,8 @@ namespace PokeViewer.NET.SubForms
                         {
                             MapSprite = Image.FromStream(stream);
                         }
-                        CenterPOS = POSlist[i];
-                        MapViewSV form = new(MapSprite, CenterPOS);                        
+                        CenterPOS = POSlist[i];                        
+                        MapViewSV form = new(MapSprite, CenterPOS);
 
                         string msg = $"{(Species)mons[i].Species} outbreak found!";
                         if (EnableWebhook.Checked)
@@ -173,7 +197,8 @@ namespace PokeViewer.NET.SubForms
 
                         EnableAssets();
 
-                        await Task.Run(() => { form.ShowDialog(); }, token).ConfigureAwait(false);
+                        if (EnableWebhook.Checked)
+                            await Task.Run(() => { form.ShowDialog(); }, token).ConfigureAwait(false);
                         return;
 
                     }
@@ -183,6 +208,15 @@ namespace PokeViewer.NET.SubForms
                 POSlist = new();
                 strings = new();
                 mons = new();
+
+                if (zerotosixtyone is true)
+                {
+                    MessageBox.Show("Outbreak KO Counts changed from 0 -> 61. Stopping routine.");
+                    {
+                        EnableAssets();
+                        return;
+                    }
+                }
 
                 if (HardStopOutbreak.Checked)
                 {
@@ -195,7 +229,7 @@ namespace PokeViewer.NET.SubForms
                 if (OutbreakSearch.Checked)
                 {
                     OutbreakScan.Text = "Skipping...";
-                    await RolloverCorrectionSV(token).ConfigureAwait(false);
+                    await DaySkip(token).ConfigureAwait(false);
                     await Task.Delay(2_000, token).ConfigureAwait(false);
                 }
                 else if (!OutbreakSearch.Checked)
@@ -204,10 +238,20 @@ namespace PokeViewer.NET.SubForms
             EnableAssets();
         }
 
+        private void UpdateProgress(int currProgress, int maxProgress)
+        {
+            var value = (100 * currProgress) / maxProgress;
+            if (progressBar1.InvokeRequired)
+                progressBar1.Invoke(() => progressBar1.Value = value);
+            else
+                progressBar1.Value = value;
+        }
+
         private async void KOToSixty_Click(object sender, EventArgs e)
         {
             var token = CancellationToken.None;
-            var validOutbreaks = await ReadEncryptedBlockByte(Blocks.KMassOutbreakTotalEnabled, token).ConfigureAwait(false);
+            BaseBlockKeyPointer = await Executor.SwitchConnection.PointerAll(BlockKeyPointer, token).ConfigureAwait(false);
+            var (validOutbreaks, vofs) = await ReadEncryptedBlockByte(Blocks.KMassOutbreakTotalEnabled, 0, token).ConfigureAwait(false);
             var Outbreaktotal = Convert.ToInt32(validOutbreaks);
             var koblock = Blocks.KMassOutbreakKO1;
             for (int i = 0; i < 8; i++)
@@ -227,17 +271,20 @@ namespace PokeViewer.NET.SubForms
                 if (i > Outbreaktotal - 1)
                     continue;
 
-                var currentcount = (uint)await ReadEncryptedBlockInt32(koblock, token).ConfigureAwait(false);
+                var (currentcount, cofs) = await ReadEncryptedBlockInt32(koblock, 0, token).ConfigureAwait(false);
                 uint inj = 61;
-                await WriteBlock(inj, koblock, token, currentcount).ConfigureAwait(false);
+                await WriteBlock(inj, koblock, token, (uint)currentcount).ConfigureAwait(false);
             }
             TotalOutbreaks.Text = "Done.";
-            await SearchForOutbreak(token).ConfigureAwait(false);
+            MessageBox.Show("Done. You may enter the game.");
+            OutbreakCache = new();
+            LoadOutbreakCache();
+            await SearchForOutbreak(true, token).ConfigureAwait(false);
         }
 
         private async void button5_Click(object sender, EventArgs e)
         {
-            await SearchForOutbreak(CancellationToken.None).ConfigureAwait(false);
+            await SearchForOutbreak(false, CancellationToken.None).ConfigureAwait(false);
         }
 
         private async void CollideButton_Click(object sender, EventArgs e)
@@ -263,22 +310,22 @@ namespace PokeViewer.NET.SubForms
         private async void button1_Click_1(object sender, EventArgs e)
         {
             var token = CancellationToken.None;
-            var vivform = await ReadEncryptedBlockByte(Blocks.KGOVivillonForm, token).ConfigureAwait(false);
-            var epochtime = await ReadEncryptedBlockUint(Blocks.KGOLastConnected, token).ConfigureAwait(false);
+            BaseBlockKeyPointer = await Executor.SwitchConnection.PointerAll(BlockKeyPointer, token).ConfigureAwait(false);
+            var (vivform, vofs) = await ReadEncryptedBlockByte(Blocks.KGOVivillonForm, 0, token).ConfigureAwait(false);
+            var (epochtime, eofs) = await ReadEncryptedBlockUint(Blocks.KGOLastConnected, 0, token).ConfigureAwait(false);
 
             var inj = (byte)V_Form;
             if (inj != vivform)
                 await WriteBlock(inj, Blocks.KGOVivillonForm, token, vivform).ConfigureAwait(false);
 
-            var newform = await ReadEncryptedBlockByte(Blocks.KGOVivillonForm, token).ConfigureAwait(false);
+            var (newform, nofs) = await ReadEncryptedBlockByte(Blocks.KGOVivillonForm, 0, token).ConfigureAwait(false);
 
             TimeSpan t = DateTime.Now - new DateTime(1970, 1, 1);
-            uint secondsSinceEpoch = (uint)t.TotalSeconds;
+            uint currentEpoch = (uint)t.TotalSeconds;
 
-            var inj2 = (uint)EpochNumeric.Value;
-            await WriteBlock((inj2 * 86400) + secondsSinceEpoch, Blocks.KGOLastConnected, token, epochtime).ConfigureAwait(false);
+            await WriteBlock(currentEpoch, Blocks.KGOLastConnected, token, epochtime).ConfigureAwait(false);
 
-            var newtime = await ReadEncryptedBlockUint(Blocks.KGOLastConnected, token).ConfigureAwait(false);
+            var (newtime, nofs2) = await ReadEncryptedBlockUint(Blocks.KGOLastConnected, 0, token).ConfigureAwait(false);
 
             await WriteBlock(true, Blocks.KGOVivillonFormEnabled, token, false).ConfigureAwait(false);
 
@@ -289,12 +336,22 @@ namespace PokeViewer.NET.SubForms
         private async void ReadValues_Click(object sender, EventArgs e)
         {
             var token = CancellationToken.None;
+            BaseBlockKeyPointer = await Executor.SwitchConnection.PointerAll(BlockKeyPointer, token).ConfigureAwait(false);
             var forcevivform = await ReadEncryptedBlockBool(Blocks.KGOVivillonFormEnabled, token).ConfigureAwait(false);
-            var vivform = await ReadEncryptedBlockByte(Blocks.KGOVivillonForm, token).ConfigureAwait(false);
-            var epochtime = await ReadEncryptedBlockUint(Blocks.KGOLastConnected, token).ConfigureAwait(false);
+            var (vivform, vofs) = await ReadEncryptedBlockByte(Blocks.KGOVivillonForm, 0, token).ConfigureAwait(false);
+            var (epochtime, eofs) = await ReadEncryptedBlockUint(Blocks.KGOLastConnected, 0, token).ConfigureAwait(false);
 
             MessageBox.Show($"KGOVivillonFormEnabled: {forcevivform}{Environment.NewLine}" +
-                $"KGOVivillonForm: {(VivForms)vivform}{Environment.NewLine}KGOVivillon Form TimeStamp on {FromUnixTime(epochtime)}");
+                $"KGOVivillonForm: {(VivForms)vivform}{Environment.NewLine}KGOLastConnected TimeStamp: {FromUnixTime(epochtime)}");
+        }
+
+        public class OutbreakStash
+        {
+            public ulong SpeciesLoaded { get; set; } = 0;
+            public ulong SpeciesFormLoaded { get; set; } = 0;
+            public ulong SpeciesTotalCountLoaded { get; set; } = 0;
+            public ulong SpeciesKOCountLoaded { get; set; } = 0;
+            public ulong SpeciesCenterPOSLoaded { get; set; } = 0;
         }
 
         public class DataBlock
@@ -315,7 +372,6 @@ namespace PokeViewer.NET.SubForms
                 Name = "KMassOutbreakTotalEnabled",
                 Key = 0x6C375C8A,
                 Type = SCTypeCode.Byte,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0x13A80 },
                 IsEncrypted = true,
                 Size = 1,
             };
@@ -325,7 +381,6 @@ namespace PokeViewer.NET.SubForms
                 Name = "KOutbreakSpecies1",
                 Key = 0x76A2F996,
                 Type = SCTypeCode.UInt32,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0x15B80 },
                 IsEncrypted = true,
                 Size = 4,
             };
@@ -334,7 +389,6 @@ namespace PokeViewer.NET.SubForms
                 Name = "KMassOutbreak01Form",
                 Key = 0x29B4615D,
                 Type = SCTypeCode.Byte,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0x7840 },
                 IsEncrypted = true,
                 Size = 1,
             };
@@ -343,7 +397,6 @@ namespace PokeViewer.NET.SubForms
                 Name = "KMassOutbreak01NumKOed",
                 Key = 0x4B16FBC2,
                 Type = SCTypeCode.UInt32,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0xDAE0 },
                 IsEncrypted = true,
                 Size = 4,
             };
@@ -352,14 +405,12 @@ namespace PokeViewer.NET.SubForms
                 Name = "KMassOutbreak01TotalSpawns",
                 Key = 0xB7DC495A,
                 Type = SCTypeCode.Int32,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0x22920 },
             };
             public static DataBlock KMassOutbreak01CenterPos = new()
             {
                 Name = "KMassOutbreak01CenterPos",
                 Key = 0x2ED42F4D,
                 Type = SCTypeCode.Array,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0x8800 },
                 IsEncrypted = true,
                 Size = 12,
             };
@@ -370,7 +421,6 @@ namespace PokeViewer.NET.SubForms
                 Name = "KOutbreakSpecies2",
                 Key = 0x76A0BCF3,
                 Type = SCTypeCode.UInt32,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0x15B60 },
                 IsEncrypted = true,
                 Size = 4,
             };
@@ -379,7 +429,6 @@ namespace PokeViewer.NET.SubForms
                 Name = "KMassOutbreak02Form",
                 Key = 0x29B84368,
                 Type = SCTypeCode.Byte,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0x7880 },
                 IsEncrypted = true,
                 Size = 1,
             };
@@ -388,7 +437,6 @@ namespace PokeViewer.NET.SubForms
                 Name = "KMassOutbreak02NumKOed",
                 Key = 0x4B14BF1F,
                 Type = SCTypeCode.UInt32,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0xDAA0 },
                 IsEncrypted = true,
                 Size = 4,
             };
@@ -397,14 +445,12 @@ namespace PokeViewer.NET.SubForms
                 Name = "KMassOutbreak02TotalSpawns",
                 Key = 0xB7DA0CB7,
                 Type = SCTypeCode.Int32,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0x228E0 },
             };
             public static DataBlock KMassOutbreak02CenterPos = new()
             {
                 Name = "KMassOutbreak02CenterPos",
                 Key = 0x2ED5F198,
                 Type = SCTypeCode.Array,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0x8820 },
                 IsEncrypted = true,
                 Size = 12,
             };
@@ -415,7 +461,6 @@ namespace PokeViewer.NET.SubForms
                 Name = "KOutbreakSpecies3",
                 Key = 0x76A97E38,
                 Type = SCTypeCode.UInt32,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0x15BC0 },
                 IsEncrypted = true,
                 Size = 4,
             };
@@ -424,7 +469,6 @@ namespace PokeViewer.NET.SubForms
                 Name = "KMassOutbreak03Form",
                 Key = 0x29AF8223,
                 Type = SCTypeCode.Byte,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0x7800 },
                 IsEncrypted = true,
                 Size = 1,
             };
@@ -433,7 +477,6 @@ namespace PokeViewer.NET.SubForms
                 Name = "KMassOutbreak03NumKOed",
                 Key = 0x4B1CA6E4,
                 Type = SCTypeCode.UInt32,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0xDB40 },
                 IsEncrypted = true,
                 Size = 4,
             };
@@ -442,14 +485,12 @@ namespace PokeViewer.NET.SubForms
                 Name = "KMassOutbreak03TotalSpawns",
                 Key = 0xB7E1F47C,
                 Type = SCTypeCode.Int32,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0x22960 },
             };
             public static DataBlock KMassOutbreak03CenterPos = new()
             {
                 Name = "KMassOutbreak03CenterPos",
                 Key = 0x2ECE09D3,
                 Type = SCTypeCode.Array,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0x87C0 },
                 IsEncrypted = true,
                 Size = 12,
             };
@@ -460,7 +501,6 @@ namespace PokeViewer.NET.SubForms
                 Name = "KOutbreakSpecies4",
                 Key = 0x76A6E26D,
                 Type = SCTypeCode.UInt32,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0x15BA0 },
                 IsEncrypted = true,
                 Size = 4,
             };
@@ -469,7 +509,6 @@ namespace PokeViewer.NET.SubForms
                 Name = "KMassOutbreak04Form",
                 Key = 0x29B22B86,
                 Type = SCTypeCode.Byte,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0x7820 },
                 IsEncrypted = true,
                 Size = 1,
             };
@@ -478,7 +517,6 @@ namespace PokeViewer.NET.SubForms
                 Name = "KMassOutbreak04NumKOed",
                 Key = 0x4B1A77D9,
                 Type = SCTypeCode.UInt32,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0xDB20 },
                 IsEncrypted = true,
                 Size = 4,
             };
@@ -487,14 +525,12 @@ namespace PokeViewer.NET.SubForms
                 Name = "KMassOutbreak04TotalSpawns",
                 Key = 0xB7DFC571,
                 Type = SCTypeCode.Int32,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0x22940 },
             };
             public static DataBlock KMassOutbreak04CenterPos = new()
             {
                 Name = "KMassOutbreak04CenterPos",
                 Key = 0x2ED04676,
                 Type = SCTypeCode.Array,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0x87E0 },
                 IsEncrypted = true,
                 Size = 12,
             };
@@ -505,7 +541,6 @@ namespace PokeViewer.NET.SubForms
                 Name = "KOutbreakSpecies5",
                 Key = 0x76986F3A,
                 Type = SCTypeCode.UInt32,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0x15B00 },
                 IsEncrypted = true,
                 Size = 4,
             };
@@ -514,7 +549,6 @@ namespace PokeViewer.NET.SubForms
                 Name = "KMassOutbreak05Form",
                 Key = 0x29A9D701,
                 Type = SCTypeCode.Byte,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0x77C0 },
                 IsEncrypted = true,
                 Size = 1,
             };
@@ -523,7 +557,6 @@ namespace PokeViewer.NET.SubForms
                 Name = "KMassOutbreak05NumKOed",
                 Key = 0x4B23391E,
                 Type = SCTypeCode.UInt32,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0xDBA0 },
                 IsEncrypted = true,
                 Size = 4,
             };
@@ -532,14 +565,12 @@ namespace PokeViewer.NET.SubForms
                 Name = "KMassOutbreak05TotalSpawns",
                 Key = 0xB7E886B6,
                 Type = SCTypeCode.Int32,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0x229C0 },
             };
             public static DataBlock KMassOutbreak05CenterPos = new()
             {
                 Name = "KMassOutbreak05CenterPos",
                 Key = 0x2EC78531,
                 Type = SCTypeCode.Array,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0x8780 },
                 IsEncrypted = true,
                 Size = 12,
             };
@@ -550,7 +581,6 @@ namespace PokeViewer.NET.SubForms
                 Name = "KOutbreakSpecies6",
                 Key = 0x76947F97,
                 Type = SCTypeCode.UInt32,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0x15AC0 },
                 IsEncrypted = true,
                 Size = 4,
             };
@@ -559,7 +589,6 @@ namespace PokeViewer.NET.SubForms
                 Name = "KMassOutbreak06Form",
                 Key = 0x29AB994C,
                 Type = SCTypeCode.Byte,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0x77E0 },
                 IsEncrypted = true,
                 Size = 1,
             };
@@ -568,7 +597,6 @@ namespace PokeViewer.NET.SubForms
                 Name = "KMassOutbreak06NumKOed",
                 Key = 0x4B208FBB,
                 Type = SCTypeCode.UInt32,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0xDB60 },
                 IsEncrypted = true,
                 Size = 4,
             };
@@ -577,14 +605,12 @@ namespace PokeViewer.NET.SubForms
                 Name = "KMassOutbreak06TotalSpawns",
                 Key = 0xB7E49713,
                 Type = SCTypeCode.Int32,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0x229A0 },
             };
             public static DataBlock KMassOutbreak06CenterPos = new()
             {
                 Name = "KMassOutbreak06CenterPos",
                 Key = 0x2ECB673C,
                 Type = SCTypeCode.Array,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0x87A0 },
                 IsEncrypted = true,
                 Size = 12,
             };
@@ -595,7 +621,6 @@ namespace PokeViewer.NET.SubForms
                 Name = "KOutbreakSpecies7",
                 Key = 0x769D40DC,
                 Type = SCTypeCode.UInt32,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0x15B40 },
                 IsEncrypted = true,
                 Size = 4,
             };
@@ -604,7 +629,6 @@ namespace PokeViewer.NET.SubForms
                 Name = "KMassOutbreak07Form",
                 Key = 0x29A344C7,
                 Type = SCTypeCode.Byte,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0x7740 },
                 IsEncrypted = true,
                 Size = 1,
             };
@@ -613,7 +637,6 @@ namespace PokeViewer.NET.SubForms
                 Name = "KMassOutbreak07NumKOed",
                 Key = 0x4B28E440,
                 Type = SCTypeCode.UInt32,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0xDBE0 },
                 IsEncrypted = true,
                 Size = 4,
             };
@@ -622,14 +645,12 @@ namespace PokeViewer.NET.SubForms
                 Name = "KMassOutbreak07TotalSpawns",
                 Key = 0xB7EE31D8,
                 Type = SCTypeCode.Int32,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0x22A00 },
             };
             public static DataBlock KMassOutbreak07CenterPos = new()
             {
                 Name = "KMassOutbreak07CenterPos",
                 Key = 0x2EC1CC77,
                 Type = SCTypeCode.Array,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0x8740 },
                 IsEncrypted = true,
                 Size = 12,
             };
@@ -640,7 +661,6 @@ namespace PokeViewer.NET.SubForms
                 Name = "KOutbreakSpecies8",
                 Key = 0x769B11D1,
                 Type = SCTypeCode.UInt32,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0x15B20 },
                 IsEncrypted = true,
                 Size = 4,
             };
@@ -649,7 +669,6 @@ namespace PokeViewer.NET.SubForms
                 Name = "KMassOutbreak08Form",
                 Key = 0x29A5EE2A,
                 Type = SCTypeCode.Byte,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0x77A0 },
                 IsEncrypted = true,
                 Size = 1,
             };
@@ -658,7 +677,6 @@ namespace PokeViewer.NET.SubForms
                 Name = "KMassOutbreak08NumKOed",
                 Key = 0x4B256EF5,
                 Type = SCTypeCode.UInt32,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0xDBC0 },
                 IsEncrypted = true,
                 Size = 4,
             };
@@ -667,14 +685,12 @@ namespace PokeViewer.NET.SubForms
                 Name = "KMassOutbreak08TotalSpawns",
                 Key = 0xB7EABC8D,
                 Type = SCTypeCode.Int32,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0x229E0 },
             };
             public static DataBlock KMassOutbreak08CenterPos = new()
             {
                 Name = "KMassOutbreak08CenterPos",
                 Key = 0x2EC5BC1A,
                 Type = SCTypeCode.Array,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0x8760 },
                 IsEncrypted = true,
                 Size = 12,
             };
@@ -685,7 +701,6 @@ namespace PokeViewer.NET.SubForms
                 Name = "KGOVivillonFormEnabled",
                 Key = 0x0C125D5C,
                 Type = SCTypeCode.Bool1,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0x2020 },
                 IsEncrypted = true,
                 Size = 1,
             };
@@ -694,7 +709,6 @@ namespace PokeViewer.NET.SubForms
                 Name = "KGOTransfer",
                 Key = 0x7EE0A576,
                 Type = SCTypeCode.Object,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0x17320 },
                 IsEncrypted = true,
                 Size = 0x3400,
             };
@@ -703,7 +717,6 @@ namespace PokeViewer.NET.SubForms
                 Name = "FSYS_GO_LINK_ENABLED",
                 Key = 0x3ABC21E3,
                 Type = SCTypeCode.Bool1,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0xAA60 },
                 IsEncrypted = true,
                 Size = 1,
             };
@@ -713,7 +726,6 @@ namespace PokeViewer.NET.SubForms
                 Name = "KGOVivillonForm",
                 Key = 0x22F70BCF,
                 Type = SCTypeCode.Byte,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0x6440 },
                 IsEncrypted = true,
                 Size = 1,
             };
@@ -722,7 +734,6 @@ namespace PokeViewer.NET.SubForms
                 Name = "KGOLastConnected",
                 Key = 0x867F0240,
                 Type = SCTypeCode.UInt64,
-                Pointer = new long[] { 0x449EEE8, 0xD8, 0x0, 0x0, 0x30, 0x8, 0x188E0 },
                 IsEncrypted = true,
                 Size = 8,
             };
@@ -750,9 +761,10 @@ namespace PokeViewer.NET.SubForms
             await Task.Delay(delay, token).ConfigureAwait(false);
         }
 
-        private async Task RolloverCorrectionSV(CancellationToken token)
+        private async Task DaySkip(CancellationToken token)
         {
-            await Task.Delay(0_050, token).ConfigureAwait(false);
+            for (int i = 0; i < 2; i++)
+                await Click(B, 0_150, token).ConfigureAwait(false);
             await Click(HOME, 2_000, token).ConfigureAwait(false); // Back to title screen
 
             for (int i = 0; i < 2; i++)
@@ -764,7 +776,7 @@ namespace PokeViewer.NET.SubForms
             await PressAndHold(DDOWN, 2_000, 0_250, token).ConfigureAwait(false); // Scroll to system settings
             await Click(A, 1_250, token).ConfigureAwait(false);
 
-            await PressAndHold(DDOWN, (int)OverShoot.Value, 1_000, token).ConfigureAwait(false);
+            await PressAndHold(DDOWN, (int)OverShoot.Value, 0_100, token).ConfigureAwait(false);
             await Click(DUP, 0_500, token).ConfigureAwait(false);
 
             await Click(A, 1_250, token).ConfigureAwait(false);
@@ -778,6 +790,14 @@ namespace PokeViewer.NET.SubForms
             await Click(A, 0_200, token).ConfigureAwait(false); // Confirm date/time change
             await Click(HOME, 1_000, token).ConfigureAwait(false);
             await Click(A, 4_000, token).ConfigureAwait(false); // Back to title screen
+        }
+
+        public async Task SetStick(SwitchStick stick, short x, short y, int hold, int delay, CancellationToken token)
+        {
+            await Executor.SwitchConnection.SendAsync(SwitchCommand.SetStick(stick, x, y, true), token).ConfigureAwait(false);
+            await Task.Delay(hold, token).ConfigureAwait(false);
+            await Executor.SwitchConnection.SendAsync(SwitchCommand.SetStick(stick, 0, 0, true), token).ConfigureAwait(false);
+            await Task.Delay(delay, token).ConfigureAwait(false);
         }
 
         // Via Manu's SV Research
@@ -932,73 +952,58 @@ namespace PokeViewer.NET.SubForms
             return block;
         }
 
-        private static IEnumerable<long> PreparePointer(IEnumerable<long> pointer)
+        private async Task<(byte, ulong)> ReadEncryptedBlockByte(DataBlock block, ulong init, CancellationToken token)
         {
-            var count = pointer.Count();
-            var p = new long[count + 1];
-            for (var i = 0; i < pointer.Count(); i++)
-                p[i] = pointer.ElementAt(i);
-            p[count - 1] += 8;
-            p[count] = 0x0;
-            return p;
+            var (header, address) = await ReadEncryptedBlockHeader(block, init, token).ConfigureAwait(false);
+            return (header[1], address);
         }
 
-        private async Task<ulong> GetBlockAddress(DataBlock block, CancellationToken token)
+        private async Task<(byte[], ulong)> ReadEncryptedBlockHeader(DataBlock block, ulong init, CancellationToken token)
         {
-            var read_key = ReadUInt32LittleEndian(await Executor.SwitchConnection.PointerPeek(4, block.Pointer!, token).ConfigureAwait(false));
-            if (read_key == block.Key)
-                return await Executor.SwitchConnection.PointerAll(PreparePointer(block.Pointer!), token).ConfigureAwait(false);
-            var direction = block.Key > read_key ? 1 : -1;
-            var base_offset = block.Pointer![block.Pointer.Count - 1];
-            for (var offset = base_offset; offset < base_offset + 0x1000 && offset > base_offset - 0x1000; offset += direction * 0x20)
+            if (init == 0)
             {
-                var pointer = block.Pointer!.ToArray();
-                pointer[^1] = offset;
-                read_key = ReadUInt32LittleEndian(await Executor.SwitchConnection.PointerPeek(4, pointer, token).ConfigureAwait(false));
-                if (read_key == block.Key)
-                    return await Executor.SwitchConnection.PointerAll(PreparePointer(pointer), token).ConfigureAwait(false);
+                var address = await SearchSaveKey(block.Key, token).ConfigureAwait(false);
+                address = BitConverter.ToUInt64(await Executor.SwitchConnection.ReadBytesAbsoluteAsync(address + 8, 0x8, token).ConfigureAwait(false), 0);
+                init = address;
             }
-            throw new ArgumentOutOfRangeException("Save block not found in range +- 0x1000. Restart the game and try again.");
-        }
 
-        private async Task<byte> ReadEncryptedBlockByte(DataBlock block, CancellationToken token)
-        {
-            var header = await ReadEncryptedBlockHeader(block, token).ConfigureAwait(false);
-            return header[1];
-        }
-
-        private async Task<byte[]> ReadEncryptedBlockHeader(DataBlock block, CancellationToken token)
-        {
-            var address = await GetBlockAddress(block, token).ConfigureAwait(false);
-            var header = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(address, 5, token).ConfigureAwait(false);
+            var header = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(init, 5, token).ConfigureAwait(false);
             header = DecryptBlock(block.Key, header);
-            return header;
+
+            return (header, init);
         }
 
-        private async Task<byte[]?> ReadEncryptedBlockArray(DataBlock block, CancellationToken token)
+        private async Task<(byte[]?, ulong)> ReadEncryptedBlockArray(DataBlock block, ulong init, CancellationToken token)
         {
+            if (init == 0)
+            {
+                var address = await SearchSaveKey(block.Key, token).ConfigureAwait(false);
+                address = BitConverter.ToUInt64(await Executor.SwitchConnection.ReadBytesAbsoluteAsync(address + 8, 0x8, token).ConfigureAwait(false), 0);
+                init = address;
+            }
 
-            var address = await GetBlockAddress(block, token).ConfigureAwait(false);
-            var data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(address, 6 + block.Size, token).ConfigureAwait(false);
+            var data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(init, 6 + block.Size, token).ConfigureAwait(false);
             data = DecryptBlock(block.Key, data);
-            return data[6..];
+
+            return (data[6..], init);
         }
 
-        private async Task<uint> ReadEncryptedBlockUint(DataBlock block, CancellationToken token)
+        private async Task<(uint, ulong)> ReadEncryptedBlockUint(DataBlock block, ulong init, CancellationToken token)
         {
-            var header = await ReadEncryptedBlockHeader(block, token).ConfigureAwait(false);
-            return ReadUInt32LittleEndian(header.AsSpan()[1..]);
+            var (header, address) = await ReadEncryptedBlockHeader(block, init, token).ConfigureAwait(false);
+            return (ReadUInt32LittleEndian(header.AsSpan()[1..]), address);
         }
 
-        private async Task<int> ReadEncryptedBlockInt32(DataBlock block, CancellationToken token)
+        private async Task<(int, ulong)> ReadEncryptedBlockInt32(DataBlock block, ulong init, CancellationToken token)
         {
-            var header = await ReadEncryptedBlockHeader(block, token).ConfigureAwait(false);
-            return ReadInt32LittleEndian(header.AsSpan()[1..]);
+            var (header, address) = await ReadEncryptedBlockHeader(block, init, token).ConfigureAwait(false);
+            return (ReadInt32LittleEndian(header.AsSpan()[1..]), address);
         }
 
         private async Task<bool> ReadEncryptedBlockBool(DataBlock block, CancellationToken token)
         {
-            var address = await GetBlockAddress(block, token).ConfigureAwait(false);
+            var address = await SearchSaveKey(block.Key, token).ConfigureAwait(false);
+            address = BitConverter.ToUInt64(await Executor.SwitchConnection.ReadBytesAbsoluteAsync(address + 8, 0x8, token).ConfigureAwait(false), 0);
             var data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(address, block.Size, token).ConfigureAwait(false);
             var res = DecryptBlock(block.Key, data);
             return res[0] == 2;
@@ -1011,23 +1016,24 @@ namespace PokeViewer.NET.SubForms
 
         private async Task<byte[]> ReadEncryptedBlock(DataBlock block, CancellationToken token)
         {
-            var address = await GetBlockAddress(block, token).ConfigureAwait(false);
-            var header = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(address, 5, token).ConfigureAwait(false);
-            header = DecryptBlock(block.Key, header);
-            var size = ReadUInt32LittleEndian(header.AsSpan()[1..]);
-            var data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(address, 5 + (int)size, token);
-            var res = DecryptBlock(block.Key, data)[5..];
-            return res;
+            var address = await SearchSaveKey(block.Key, token).ConfigureAwait(false);
+            address = BitConverter.ToUInt64(await Executor.SwitchConnection.ReadBytesAbsoluteAsync(address + 8, 0x8, token).ConfigureAwait(false), 0);
+            var data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(address, 6 + block.Size, token).ConfigureAwait(false);
+            data = DecryptBlock(block.Key, data);
+
+            return data[6..];
         }
 
         private async Task<byte[]?> ReadEncryptedBlockObject(DataBlock block, CancellationToken token)
         {
-            var address = await GetBlockAddress(block, token).ConfigureAwait(false);
+            var address = await SearchSaveKey(block.Key, token).ConfigureAwait(false);
+            address = BitConverter.ToUInt64(await Executor.SwitchConnection.ReadBytesAbsoluteAsync(address + 8, 0x8, token).ConfigureAwait(false), 0);
             var header = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(address, 5, token).ConfigureAwait(false);
             header = DecryptBlock(block.Key, header);
             var size = ReadUInt32LittleEndian(header.AsSpan()[1..]);
-            var data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(address, 5 + (int)size, token);
+            var data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(address, 5 + (int)size, token).ConfigureAwait(false);
             var res = DecryptBlock(block.Key, data)[5..];
+
             return res;
         }
 
@@ -1065,7 +1071,11 @@ namespace PokeViewer.NET.SubForms
         private async Task<bool> WriteEncryptedBlockUint(DataBlock block, uint valueToExpect, uint valueToInject, CancellationToken token)
         {
             ulong address;
-            try { address = await GetBlockAddress(block, token).ConfigureAwait(false); }
+            try
+            {
+                address = await SearchSaveKey(block.Key, token).ConfigureAwait(false);
+                address = BitConverter.ToUInt64(await Executor.SwitchConnection.ReadBytesAbsoluteAsync(address + 8, 0x8, token).ConfigureAwait(false), 0);
+            }
             catch (Exception) { return false; }
             //If we get there without exceptions, the block address is valid
             var header = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(address, 5, token).ConfigureAwait(false);
@@ -1077,13 +1087,18 @@ namespace PokeViewer.NET.SubForms
             WriteUInt32LittleEndian(header.AsSpan()[1..], valueToInject);
             header = EncryptBlock(block.Key, header);
             await Executor.SwitchConnection.WriteBytesAbsoluteAsync(header, address, token).ConfigureAwait(false);
+
             return true;
         }
 
         private async Task<bool> WriteEncryptedBlockInt32(DataBlock block, int valueToExpect, int valueToInject, CancellationToken token)
         {
             ulong address;
-            try { address = await GetBlockAddress(block, token).ConfigureAwait(false); }
+            try
+            {
+                address = await SearchSaveKey(block.Key, token).ConfigureAwait(false);
+                address = BitConverter.ToUInt64(await Executor.SwitchConnection.ReadBytesAbsoluteAsync(address + 8, 0x8, token).ConfigureAwait(false), 0);
+            }
             catch (Exception) { return false; }
             //If we get there without exceptions, the block address is valid
             var header = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(address, 5, token).ConfigureAwait(false);
@@ -1095,13 +1110,18 @@ namespace PokeViewer.NET.SubForms
             WriteInt32LittleEndian(header.AsSpan()[1..], valueToInject);
             header = EncryptBlock(block.Key, header);
             await Executor.SwitchConnection.WriteBytesAbsoluteAsync(header, address, token).ConfigureAwait(false);
+
             return true;
         }
 
         private async Task<bool> WriteEncryptedBlockByte(DataBlock block, byte valueToExpect, byte valueToInject, CancellationToken token)
         {
             ulong address;
-            try { address = await GetBlockAddress(block, token).ConfigureAwait(false); }
+            try
+            {
+                address = await SearchSaveKey(block.Key, token).ConfigureAwait(false);
+                address = BitConverter.ToUInt64(await Executor.SwitchConnection.ReadBytesAbsoluteAsync(address + 8, 0x8, token).ConfigureAwait(false), 0);
+            }
             catch (Exception) { return false; }
             //If we get there without exceptions, the block address is valid
             var header = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(address, 5, token).ConfigureAwait(false);
@@ -1113,13 +1133,18 @@ namespace PokeViewer.NET.SubForms
             header[1] = valueToInject;
             header = EncryptBlock(block.Key, header);
             await Executor.SwitchConnection.WriteBytesAbsoluteAsync(header, address, token).ConfigureAwait(false);
+
             return true;
         }
 
         private async Task<bool> WriteEncryptedBlockArray(DataBlock block, byte[] arrayToExpect, byte[] arrayToInject, CancellationToken token)
         {
             ulong address;
-            try { address = await GetBlockAddress(block, token).ConfigureAwait(false); }
+            try
+            {
+                address = await SearchSaveKey(block.Key, token).ConfigureAwait(false);
+                address = BitConverter.ToUInt64(await Executor.SwitchConnection.ReadBytesAbsoluteAsync(address + 8, 0x8, token).ConfigureAwait(false), 0);
+            }
             catch (Exception) { return false; }
             //If we get there without exceptions, the block address is valid
             var data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(address, 6 + block.Size, token).ConfigureAwait(false);
@@ -1131,13 +1156,18 @@ namespace PokeViewer.NET.SubForms
             Array.ConstrainedCopy(arrayToInject, 0, data, 6, block.Size);
             data = EncryptBlock(block.Key, data);
             await Executor.SwitchConnection.WriteBytesAbsoluteAsync(data, address, token).ConfigureAwait(false);
+
             return true;
         }
 
         private async Task<bool> WriteEncryptedBlockBool(DataBlock block, bool valueToExpect, bool valueToInject, CancellationToken token)
         {
             ulong address;
-            try { address = await GetBlockAddress(block, token).ConfigureAwait(false); }
+            try
+            {
+                address = await SearchSaveKey(block.Key, token).ConfigureAwait(false);
+                address = BitConverter.ToUInt64(await Executor.SwitchConnection.ReadBytesAbsoluteAsync(address + 8, 0x8, token).ConfigureAwait(false), 0);
+            }
             catch (Exception) { return false; }
             //If we get there without exceptions, the block address is valid
             var data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(address, block.Size, token).ConfigureAwait(false);
@@ -1149,10 +1179,34 @@ namespace PokeViewer.NET.SubForms
             data[0] = valueToInject ? (byte)2 : (byte)1;
             data = EncryptBlock(block.Key, data);
             await Executor.SwitchConnection.WriteBytesAbsoluteAsync(data, address, token).ConfigureAwait(false);
+
             return true;
         }
 
         public static byte[] EncryptBlock(uint key, byte[] block) => DecryptBlock(key, block);
+
+        public async Task<ulong> SearchSaveKey(uint key, CancellationToken token)
+        {
+            var data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(BaseBlockKeyPointer + 8, 16, token).ConfigureAwait(false);
+            var start = BitConverter.ToUInt64(data.AsSpan()[..8]);
+            var end = BitConverter.ToUInt64(data.AsSpan()[8..]);
+
+            while (start < end)
+            {
+                var block_ct = (end - start) / 48;
+                var mid = start + (block_ct >> 1) * 48;
+
+                data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(mid, 4, token).ConfigureAwait(false);
+                var found = BitConverter.ToUInt32(data);
+                if (found == key)
+                    return mid;
+
+                if (found >= key)
+                    end = mid;
+                else start = mid + 48;
+            }
+            return start;
+        }
         #endregion
 
         private async Task SVSaveGameOverworld(CancellationToken token)
@@ -1160,8 +1214,8 @@ namespace PokeViewer.NET.SubForms
             await Click(X, 2_000, token).ConfigureAwait(false);
             await Click(R, 1_800, token).ConfigureAwait(false);
             await Click(A, 5_000, token).ConfigureAwait(false);
-            await Click(B, 1_000, token).ConfigureAwait(false);
-            await Click(B, 5_000, token).ConfigureAwait(false);
+            for (int i = 0; i < 10; i++) // Mash B
+                await Click(B, 0_500, token).ConfigureAwait(false);
         }
 
         private void EnableAssets()

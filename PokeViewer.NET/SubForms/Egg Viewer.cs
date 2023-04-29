@@ -25,11 +25,11 @@ namespace PokeViewer.NET.SubForms
         private int starcount = 0;
         private int squarecount = 0;
         private PK9 prevShiny = new();
-        private readonly uint EggData = 0x044AAE00;
-        private readonly uint PicnicMenu = 0x0453B020;
+        private readonly uint EggData = 0x044C12D8;
+        private readonly uint PicnicMenu = 0x04551020;
         private readonly byte[] BlankVal = { 0x01 };
         private int[] IVFilters = Array.Empty<int>();
-        private IReadOnlyList<long> OverworldPointer { get; } = new long[] { 0x44CCAE8, 0x348, 0x10, 0xD8, 0x28 };
+        private IReadOnlyList<long> OverworldPointer { get; } = new long[] { 0x44E2FC8, 0x348, 0x10, 0xD8, 0x28 };
         private ulong OverworldOffset;
         private DateTime StartTime;
 
@@ -362,10 +362,9 @@ namespace PokeViewer.NET.SubForms
             sandwichcount++;
             SandwichCount.Text = $"Sandwiches Made: {sandwichcount}";
 
-            while (!await IsInPicnic(token).ConfigureAwait(false)) // Acknowledge the sandwich and return to the picnic
-            {
-                await Click(A, 5_000, token).ConfigureAwait(false); // Wait a long time to give the flag a chance to update and avoid sandwich re-entry
-            }
+            while (!await IsInPicnic(token).ConfigureAwait(false)) // Acknowledge the sandwich and return to the picnic            
+                await Click(A, 5_000, token).ConfigureAwait(false); // Wait a long time to give the flag a chance to update and avoid sandwich re-entry    
+
             await Task.Delay(2_500, token).ConfigureAwait(false);
             await SetStick(LEFT, 0, -10000, 0_500, token).ConfigureAwait(false); // Face down to basket
             await SetStick(LEFT, 0, 0, 0, token).ConfigureAwait(false);
@@ -414,8 +413,8 @@ namespace PokeViewer.NET.SubForms
 
         private async Task<bool> IsInPicnic(CancellationToken token)
         {
-            var data = await Executor.SwitchConnection.ReadBytesMainAsync(PicnicMenu, 1, token).ConfigureAwait(false);
-            return data[0] == 0x01; // 1 when in picnic, 2 in sandwich menu, 3 when eating, 2 when done eating
+            var Data = await Executor.SwitchConnection.ReadBytesMainAsync(PicnicMenu, 1, token).ConfigureAwait(false);
+            return Data[0] == 0x01; // 1 when in picnic, 2 in sandwich menu, 3 when eating, 2 when done eating
         }
 
         private async Task<bool> IsOnOverworld(ulong offset, CancellationToken token)
