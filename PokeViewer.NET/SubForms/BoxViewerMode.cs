@@ -2,6 +2,7 @@
 using PokeViewer.NET.SubForms;
 using static PokeViewer.NET.RoutineExecutor;
 using static PokeViewer.NET.ViewerUtil;
+using ToolTip = System.Windows.Forms.ToolTip;
 
 namespace PokeViewer.NET
 {
@@ -195,6 +196,7 @@ namespace PokeViewer.NET
                     case 1: gender = " (F)"; break;
                     case 2: break;
                 }
+
                 string msg = string.Empty;
                 if (pk is PK8)
                 {
@@ -244,7 +246,6 @@ namespace PokeViewer.NET
             button3.Enabled = true;
             textBox1.Enabled = true;
             checkBox1.Enabled = true;
-
         }
 
         private readonly uint LGPEStart = 0x533675B0;
@@ -529,6 +530,5 @@ namespace PokeViewer.NET
                 }
             }
         }
-
     }
 }

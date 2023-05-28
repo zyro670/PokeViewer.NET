@@ -16,7 +16,7 @@ namespace PokeViewer.NET
     {
         public ViewerExecutor Executor = null!;
         private const string ViewerVersion = "1.5.0";
-        private const int AzureBuildID = 403;
+        private const int AzureBuildID = 420;
         private bool[] FormLoaded = new bool[9];
         private int GameType;
         private readonly string RefreshTime = Settings.Default.RefreshRate;
@@ -885,7 +885,7 @@ namespace PokeViewer.NET
                     {
                         case (int)GameSelected.Scarlet or (int)GameSelected.Violet:
                             {
-                                form = new WideViewSV(Executor) { TopLevel = false };
+                                form = new WideViewerSV(Executor) { TopLevel = false };
                                 ViewerControl.Height = 680;
                                 ViewerControl.Width = 750;
                                 Height = 710;

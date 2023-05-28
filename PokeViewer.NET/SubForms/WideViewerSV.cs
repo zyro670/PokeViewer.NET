@@ -7,13 +7,13 @@ using SysBot.Base;
 
 namespace PokeViewer.NET.SubForms
 {
-    public partial class WideViewSV : Form
+    public partial class WideViewerSV : Form
     {
         private readonly ViewerExecutor Executor;
         private static ulong BaseBlockKeyPointer = 0;
         public IReadOnlyList<long> BlockKeyPointer = new List<long>() { 0x44B5158, 0xD8, 0x0, 0x0, 0x30, 0x0 };
 
-        public WideViewSV(ViewerExecutor executor)
+        public WideViewerSV(ViewerExecutor executor)
         {
             InitializeComponent();
             Executor = executor;

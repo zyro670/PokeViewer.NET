@@ -1,35 +1,41 @@
-﻿using System.Drawing.Drawing2D;
+﻿using PKHeX.Drawing.PokeSprite;
+using PKHeX.Drawing;
 
 namespace PokeViewer.NET.SubForms
 {
     public partial class MapViewSV : Form
     {
-        public MapViewSV(Image img, byte[]? pos)
+        public MapViewSV(List<Image> img, List<byte[]?> pos)
         {
             InitializeComponent();
-            EnableAssets((Bitmap)img, pos);
+            EnableAssets(img, pos);
         }
 
-        public Bitmap Superimpose(Bitmap largeBmp, Bitmap smallBmp, byte[]? pos)
+        public Image? GenerateMapSprite(List<Image> small, List<byte[]?> pos)
         {
-            Graphics g = Graphics.FromImage(largeBmp);
-            g.CompositingMode = CompositingMode.SourceOver;
-            smallBmp.MakeTransparent();
-            float X = BitConverter.ToSingle(pos!, 0);
-            float Y = BitConverter.ToSingle(pos!, 4);
-            int x = largeBmp.Width * (int)X / 5000;
-            int y = largeBmp.Height * (int)Y / 5000;
-            g.DrawImage(smallBmp, new Point(x, y));
-            return largeBmp;
+            Image result = pictureBox1.Image;
+            for (int i = 0; i < small.Count; i++)
+            {
+                var newsmol = (Image)new Bitmap(small[i], new Size(125, 125));
+                SpriteUtil.GetSpriteGlow(newsmol, 0xFF, 0xFF, 0xFF, out var glow, true);
+                newsmol = ImageUtil.LayerImage(newsmol, ImageUtil.GetBitmap(glow, newsmol.Width, newsmol.Height, newsmol.PixelFormat), 0, 0);
+                double x, y;
+                float fltx = BitConverter.ToSingle(pos[i]!, 0);
+                float flty = BitConverter.ToSingle(pos[i]!, 8);
+                try
+                {
+                    x = (fltx + 2.072021484) * 1024 / 5000;
+                    y = (flty + 5255.240018) * 1024 / 5000;
+                    result = ImageUtil.LayerImage(result, newsmol, (int)x - 50, (int)y - 10);
+                }
+                catch { return null; }
+            }
+            return result;
         }
 
-        private void EnableAssets(Bitmap sprite, byte[]? pos)
-        {            
-            var img = Superimpose((Bitmap)pictureBox1.Image!, sprite!, pos);
-            Point point = new(img.Width, img.Height);
-            var map = new Bitmap(pictureBox1.Image!, new Size(pictureBox1.Width, pictureBox1.Height));
-            Graphics.FromImage(map).DrawImage(img, point);
-            pictureBox1.Image = map;
+        private void EnableAssets(List<Image> sprite, List<byte[]?> pos)
+        {
+            pictureBox1.Image = GenerateMapSprite(sprite, pos);
         }
     }
 }

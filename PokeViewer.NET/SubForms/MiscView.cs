@@ -13,22 +13,44 @@ namespace PokeViewer.NET.SubForms
     public partial class MiscView : Form
     {
         private readonly ViewerExecutor Executor;
-        public IReadOnlyList<long> TeraRaidBlockPointer { get; } = new long[] { 0x44BFBA8, 0x180, 0x40 };
-        private int[] IVFilters = Array.Empty<int>();
         private byte[]? CenterPOS = Array.Empty<byte>();
         private int V_Form;
-        private Image MapSprite = null!;
+        private List<Image> MapSprites = new();
+        private List<byte[]?> MapPOS = new();
         private static ulong BaseBlockKeyPointer = 0;
         public IReadOnlyList<long> BlockKeyPointer = new List<long>() { 0x44B5158, 0xD8, 0x0, 0x0, 0x30, 0x0 };
         public List<OutbreakStash> OutbreakCache = new();
         public ulong CountCache;
+        private DateTime StartTime;
+        private System.Timers.Timer timer = new();
+        private List<PK9> pkList = new();
         public MiscView(ViewerExecutor executor)
         {
             InitializeComponent();
             Executor = executor;
-            StopOnSpecies.Text = Settings.Default.OutbreakSpecies;
-            OverShoot.Value = Settings.Default.MiscOvershoot;
+            SpeciesBox.DataSource = Enum.GetValues(typeof(Species)).Cast<Species>().Where(z => z != Species.MAX_COUNT).ToArray();
+            var path = "outbreakfilters.txt";
+            if (File.Exists(path))
+                LoadFilters(path);
+
+            OverShootUpDown.Value = Settings.Default.MiscOvershoot;
             LoadOutbreakCache();
+        }
+
+        private void LoadFilters(string data)
+        {
+            string contents = File.ReadAllText(data);
+            string[] monlist = contents.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (string mons in monlist)
+            {
+                string[] mon = mons.Split(new[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
+                PK9 pk = new()
+                {
+                    Species = Convert.ToUInt16(mon[0]),
+                    Form = (byte)Convert.ToUInt16(mon[1])
+                };
+                pkList.Add(pk);
+            }
         }
 
         public void LoadOutbreakCache()
@@ -36,63 +58,37 @@ namespace PokeViewer.NET.SubForms
             for (int i = 0; i < 8; i++)
                 OutbreakCache.Add(new());
         }
-        private async void button1_Click(object sender, EventArgs e)
-        {
-            var token = CancellationToken.None;
-            IVFilters = GrabIvFilters();
-            while (!token.IsCancellationRequested)
-            {
-                if (HardStopEventScan.Checked)
-                {
-                    MessageBox.Show("HardStop enabled, ending task. Uncheck if you wish to scan until match is found.");
-                    break;
-                }
-                var TeraRaidBlockOffset = await Executor.SwitchConnection.PointerAll(TeraRaidBlockPointer, token).ConfigureAwait(false);
-                var data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(TeraRaidBlockOffset, 36, token).ConfigureAwait(false);
-                var seed = BitConverter.ToUInt32(data.Slice(32, 4));
-                var pk = CalculateFromSeed(seed);
-                var ivList = pk.IVs;
-                (ivList[5], ivList[3], ivList[4]) = (ivList[3], ivList[4], ivList[5]);
-                pk.IVs = ivList;
-                if (pk.IVs.SequenceEqual(IVFilters))
-                {
-                    SendNotifications(textBox1.Text, string.Empty);
-                    await SaveGame(token).ConfigureAwait(false);
-                    MessageBox.Show("Match found!");
-                    return;
-                }
-                if (HardStopEventScan.Checked)
-                {
-                    MessageBox.Show("HardStop enabled, ending task. Uncheck if you wish to scan until match is found.");
-                    break;
-                }
-                await DaySkip(token).ConfigureAwait(false);
-                await Task.Delay(2_000, token).ConfigureAwait(false);
-            }
-        }
 
-        private async Task SearchForOutbreak(bool zerotosixtyone, CancellationToken token)
+        private async Task SearchForOutbreak(CancellationToken token)
         {
             BaseBlockKeyPointer = await Executor.SwitchConnection.PointerAll(BlockKeyPointer, token).ConfigureAwait(false);
 
-            Settings.Default.OutbreakSpecies = StopOnSpecies.Text;
-            Settings.Default.MiscOvershoot = OverShoot.Value;
+            Settings.Default.MiscOvershoot = OverShootUpDown.Value;
             Settings.Default.Save();
 
-            var text = StopOnSpecies.Text.Replace(" ", "");
-            string[] monlist = text.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
             Label[] list = { Ob1Results, Ob2Results, Ob3Results, Ob4Results, Ob5Results, Ob6Results, Ob7Results, Ob8Results };
             PictureBox[] spritelist = { OBSprite1, OBSprite2, OBSprite3, OBSprite4, OBSprite5, OBSprite6, OBSprite7, OBSprite8 };
             List<Image> imagestrings = new();
             List<byte[]?> POSlist = new();
+            List<byte[]?> dummylist = new();
+            List<uint> kolist = new();
+            List<uint> totallist = new();
             List<string> strings = new();
             List<PK9> mons = new();
-            OutbreakScan.Enabled = false;
-            StopOnSpecies.Enabled = false;
-            OutbreakSearch.Enabled = false;
+            List<PK9> prevmons = new();
+            DisableAssets();
             CenterPOS = Array.Empty<byte>();
+            int dayskip = 0;
+            int failskip = 0;
             while (!token.IsCancellationRequested)
             {
+                if (dayskip % 10 == 0)
+                {
+                    OutbreakCache = new();
+                    LoadOutbreakCache();
+                    CountCache = 0;
+                }
+
                 if (HardStopOutbreak.Checked)
                 {
                     MessageBox.Show("HardStop enabled, ending task. Uncheck if you wish to scan until match is found.");
@@ -106,16 +102,23 @@ namespace PokeViewer.NET.SubForms
                 }
                 TotalOutbreaks.Text = string.Empty;
 
-                OutbreakScan.Text = "Saving...";
+                DaySkipStats.Text = "Status: Saving...";
                 UpdateProgress(10, 100);
                 await SVSaveGameOverworld(token).ConfigureAwait(false);
-                OutbreakScan.Text = "Scanning...";
+                DaySkipStats.Text = "Status: Scanning...";
                 var (validOutbreaks, cache) = await ReadEncryptedBlockByte(Blocks.KMassOutbreakTotalEnabled, CountCache, token).ConfigureAwait(false);
                 UpdateProgress(20, 100);
                 if (CountCache == 0)
                     CountCache = cache;
                 var Outbreaktotal = Convert.ToInt32(validOutbreaks);
-                TotalOutbreaks.Text = $"Active Outbreaks: {Outbreaktotal}";                
+                if (Outbreaktotal > 8)
+                {
+                    (_, _) = await ReadEncryptedBlockByte(Blocks.KMassOutbreakTotalEnabled, CountCache, token).ConfigureAwait(false); // Rerun in case of bad pointer
+                    OutbreakCache = new();
+                    LoadOutbreakCache();
+                }
+
+                TotalOutbreaks.Text = $"Active Outbreaks: {Outbreaktotal}";
                 var block = Blocks.KOutbreakSpecies1;
                 var koblock = Blocks.KMassOutbreakKO1;
                 var totalblock = Blocks.KMassOutbreak01TotalSpawns;
@@ -148,6 +151,8 @@ namespace PokeViewer.NET.SubForms
                     OutbreakCache[i].SpeciesFormLoaded = fofs;
                     var (obpos, bofs) = await ReadEncryptedBlockArray(pos, OutbreakCache[i].SpeciesCenterPOSLoaded, token).ConfigureAwait(false);
                     OutbreakCache[i].SpeciesCenterPOSLoaded = bofs;
+                    var (obdos, dofs) = await ReadEncryptedBlockArray(pos, OutbreakCache[i].SpeciesDummyPOSLoaded, token).ConfigureAwait(false);
+                    OutbreakCache[i].SpeciesDummyPOSLoaded = dofs;
 
                     PK9 pk = new()
                     {
@@ -161,9 +166,21 @@ namespace PokeViewer.NET.SubForms
                     imagestrings.Add(img);
                     mons.Add(pk);
                     POSlist.Add(obpos);
+                    dummylist.Add(obdos);
+                    kolist.Add(kocount);
+                    totallist.Add(totalcount);
                 }
 
                 UpdateProgress(100, 100);
+
+                if (prevmons.SequenceEqual(mons))
+                {
+                    DaySkipStats.Text = "Status: Skip fail!";
+                    failskip++;
+                    continue;
+                }
+
+                prevmons = mons;
 
                 for (int i = 0; i < imagestrings.Count; i++)
                 {
@@ -171,20 +188,26 @@ namespace PokeViewer.NET.SubForms
                     list[i].Text = strings[i].ToString();
                 }
 
+                DaySkipStats.Text = "Status:";
+
+                foreach (var ips in imagestrings)
+                    MapSprites.Add(ips);
+                foreach (var pps in POSlist)
+                    MapPOS.Add(pps);
+
                 for (int i = 0; i < mons.Count; i++)
                 {
-                    bool huntedspecies = monlist.Contains($"{(Species)mons[i].Species}");
-                    if (huntedspecies && monlist.Length != 0 && OutbreakSearch.Checked)
+                    bool hunted = false;
+                    foreach (var p in pkList)
+                    {
+                        if (p.Species == mons[i].Species && p.Form == mons[i].Form)
+                            hunted = true;
+                    }
+                    if (hunted is true && OutbreakSearch.Checked)
                     {
                         CollideButton.Enabled = true;
-                        var mapsprite = PokeImg(mons[i], false);
-                        HttpClient client = new();
-                        using (Stream stream = await client.GetStreamAsync(mapsprite, token))
-                        {
-                            MapSprite = Image.FromStream(stream);
-                        }
-                        CenterPOS = POSlist[i];                        
-                        MapViewSV form = new(MapSprite, CenterPOS);
+                        timer.Stop();
+                        CenterPOS = POSlist[i];
 
                         string msg = $"{(Species)mons[i].Species} outbreak found!";
                         if (EnableWebhook.Checked)
@@ -196,11 +219,15 @@ namespace PokeViewer.NET.SubForms
                             MessageBox.Show(msg);
 
                         EnableAssets();
+                        timer.Stop();
 
-                        if (EnableWebhook.Checked)
-                            await Task.Run(() => { form.ShowDialog(); }, token).ConfigureAwait(false);
+                        if (Apply0To61.Checked)
+                        {
+                            DaySkipStats.Text = "Status: 0 -> 61...";
+                            await PrepareZeroToSixtyOne(token).ConfigureAwait(false);
+                            DaySkipStats.Text = "Status:";
+                        }
                         return;
-
                     }
                 }
 
@@ -208,15 +235,13 @@ namespace PokeViewer.NET.SubForms
                 POSlist = new();
                 strings = new();
                 mons = new();
-
-                if (zerotosixtyone is true)
-                {
-                    MessageBox.Show("Outbreak KO Counts changed from 0 -> 61. Stopping routine.");
-                    {
-                        EnableAssets();
-                        return;
-                    }
-                }
+                kolist = new();
+                dummylist = new();
+                totallist = new();
+                MapSprites = new();
+                MapPOS = new();
+                dayskip++;
+                DaySkipTotal.Text = $"Day Skips: {dayskip - failskip}/{dayskip}";
 
                 if (HardStopOutbreak.Checked)
                 {
@@ -228,7 +253,7 @@ namespace PokeViewer.NET.SubForms
                 }
                 if (OutbreakSearch.Checked)
                 {
-                    OutbreakScan.Text = "Skipping...";
+                    DaySkipStats.Text = "Status: Skipping...";
                     await DaySkip(token).ConfigureAwait(false);
                     await Task.Delay(2_000, token).ConfigureAwait(false);
                 }
@@ -236,6 +261,7 @@ namespace PokeViewer.NET.SubForms
                     break;
             }
             EnableAssets();
+            timer.Stop();
         }
 
         private void UpdateProgress(int currProgress, int maxProgress)
@@ -247,16 +273,47 @@ namespace PokeViewer.NET.SubForms
                 progressBar1.Value = value;
         }
 
-        private async void KOToSixty_Click(object sender, EventArgs e)
+        private async Task PrepareZeroToSixtyOne(CancellationToken token)
         {
-            var token = CancellationToken.None;
+            await CloseGame(token).ConfigureAwait(false);
+            await StartGameScreen(token).ConfigureAwait(false);
+            await KOToSixty_Click(token).ConfigureAwait(false);
+            await Click(A, 15_000, token).ConfigureAwait(false);
+        }
+
+        public async Task CloseGame(CancellationToken token)
+        {
+            // Close out of the game
+            await Click(B, 0_500, token).ConfigureAwait(false);
+            await Click(HOME, 2_000, token).ConfigureAwait(false);
+            await Click(X, 1_000, token).ConfigureAwait(false);
+            await Click(A, 5_000, token).ConfigureAwait(false);
+        }
+
+        public async Task StartGameScreen(CancellationToken token)
+        {
+            // Open game.
+            await Click(A, 1_000, token).ConfigureAwait(false);
+
+            await Click(A, 1_000, token).ConfigureAwait(false);
+            // If they have DLC on the system and can't use it, requires an UP + A to start the game.
+            // Should be harmless otherwise since they'll be in loading screen.
+            await Click(DUP, 0_600, token).ConfigureAwait(false);
+            await Click(A, 0_600, token).ConfigureAwait(false);
+
+            // Switch Logo and game load screen
+            await Task.Delay(19_000, token).ConfigureAwait(false);
+        }
+
+        private async Task KOToSixty_Click(CancellationToken token)
+        {
             BaseBlockKeyPointer = await Executor.SwitchConnection.PointerAll(BlockKeyPointer, token).ConfigureAwait(false);
             var (validOutbreaks, vofs) = await ReadEncryptedBlockByte(Blocks.KMassOutbreakTotalEnabled, 0, token).ConfigureAwait(false);
             var Outbreaktotal = Convert.ToInt32(validOutbreaks);
             var koblock = Blocks.KMassOutbreakKO1;
             for (int i = 0; i < 8; i++)
             {
-                TotalOutbreaks.Text = $"Total Outbreaks: {12.5 * i + 1}%";
+                TotalOutbreaks.Text = $"KO-ing...: {12.5 * i + 1}%";
                 switch (i)
                 {
                     case 0: break;
@@ -276,15 +333,23 @@ namespace PokeViewer.NET.SubForms
                 await WriteBlock(inj, koblock, token, (uint)currentcount).ConfigureAwait(false);
             }
             TotalOutbreaks.Text = "Done.";
-            MessageBox.Show("Done. You may enter the game.");
-            OutbreakCache = new();
-            LoadOutbreakCache();
-            await SearchForOutbreak(true, token).ConfigureAwait(false);
         }
 
         private async void button5_Click(object sender, EventArgs e)
         {
-            await SearchForOutbreak(false, CancellationToken.None).ConfigureAwait(false);
+            StartTime = DateTime.Now;
+            UptimeOnLoad(sender, e);
+            await SearchForOutbreak(CancellationToken.None).ConfigureAwait(false);
+        }
+
+        private void UptimeOnLoad(object sender, EventArgs e)
+        {
+            timer = new System.Timers.Timer { Interval = 1000 };
+            timer.Elapsed += (o, args) =>
+            {
+                UptimeLabel.Text = $"Uptime: {StartTime - DateTime.Now:d\\.hh\\:mm\\:ss}";
+            };
+            timer.Start();
         }
 
         private async void CollideButton_Click(object sender, EventArgs e)
@@ -352,6 +417,17 @@ namespace PokeViewer.NET.SubForms
             public ulong SpeciesTotalCountLoaded { get; set; } = 0;
             public ulong SpeciesKOCountLoaded { get; set; } = 0;
             public ulong SpeciesCenterPOSLoaded { get; set; } = 0;
+            public ulong SpeciesDummyPOSLoaded { get; set; } = 0;
+        }
+
+        public class OutbreakData
+        {
+            public byte[]? CenterPOS { get; set; } = Array.Empty<byte>();
+            public byte[]? DummyPOS { get; set; } = Array.Empty<byte>();
+            public ushort Species { get; set; } = 0;
+            public byte Form { get; set; } = (byte)0;
+            public uint KoCount { get; set; } = 0;
+            public uint TotalCount { get; set; } = 0;
         }
 
         public class DataBlock
@@ -414,6 +490,14 @@ namespace PokeViewer.NET.SubForms
                 IsEncrypted = true,
                 Size = 12,
             };
+            public static DataBlock KMassOutbreak01DummyPos = new()
+            {
+                Name = "KMassOutbreak01DummyPos",
+                Key = 0x4A13BE7C,
+                Type = SCTypeCode.Array,
+                IsEncrypted = true,
+                Size = 12,
+            };
             #endregion
             #region Outbreak2
             public static DataBlock KOutbreakSpecies2 = new()
@@ -450,6 +534,14 @@ namespace PokeViewer.NET.SubForms
             {
                 Name = "KMassOutbreak02CenterPos",
                 Key = 0x2ED5F198,
+                Type = SCTypeCode.Array,
+                IsEncrypted = true,
+                Size = 12,
+            };
+            public static DataBlock KMassOutbreak02DummyPos = new()
+            {
+                Name = "KMassOutbreak02DummyPos",
+                Key = 0x4A118F71,
                 Type = SCTypeCode.Array,
                 IsEncrypted = true,
                 Size = 12,
@@ -494,6 +586,14 @@ namespace PokeViewer.NET.SubForms
                 IsEncrypted = true,
                 Size = 12,
             };
+            public static DataBlock KMassOutbreak03DummyPos = new()
+            {
+                Name = "KMassOutbreak03DummyPos",
+                Key = 0x4A0E135A,
+                Type = SCTypeCode.Array,
+                IsEncrypted = true,
+                Size = 12,
+            };
             #endregion
             #region Outbreak4
             public static DataBlock KOutbreakSpecies4 = new()
@@ -530,6 +630,14 @@ namespace PokeViewer.NET.SubForms
             {
                 Name = "KMassOutbreak04CenterPos",
                 Key = 0x2ED04676,
+                Type = SCTypeCode.Array,
+                IsEncrypted = true,
+                Size = 12,
+            };
+            public static DataBlock KMassOutbreak04DummyPos = new()
+            {
+                Name = "KMassOutbreak04DummyPos",
+                Key = 0x4A0BD6B7,
                 Type = SCTypeCode.Array,
                 IsEncrypted = true,
                 Size = 12,
@@ -574,6 +682,14 @@ namespace PokeViewer.NET.SubForms
                 IsEncrypted = true,
                 Size = 12,
             };
+            public static DataBlock KMassOutbreak05DummyPos = new()
+            {
+                Name = "KMassOutbreak05DummyPos",
+                Key = 0x4A1FFBD8,
+                Type = SCTypeCode.Array,
+                IsEncrypted = true,
+                Size = 12,
+            };
             #endregion
             #region Outbreak6
             public static DataBlock KOutbreakSpecies6 = new()
@@ -610,6 +726,14 @@ namespace PokeViewer.NET.SubForms
             {
                 Name = "KMassOutbreak06CenterPos",
                 Key = 0x2ECB673C,
+                Type = SCTypeCode.Array,
+                IsEncrypted = true,
+                Size = 12,
+            };
+            public static DataBlock KMassOutbreak06DummyPos = new()
+            {
+                Name = "KMassOutbreak06DummyPos",
+                Key = 0x4A1C868D,
                 Type = SCTypeCode.Array,
                 IsEncrypted = true,
                 Size = 12,
@@ -654,6 +778,14 @@ namespace PokeViewer.NET.SubForms
                 IsEncrypted = true,
                 Size = 12,
             };
+            public static DataBlock KMassOutbreak07DummyPos = new()
+            {
+                Name = "KMassOutbreak07DummyPos",
+                Key = 0x4A1A50B6,
+                Type = SCTypeCode.Array,
+                IsEncrypted = true,
+                Size = 12,
+            };
             #endregion
             #region Outbreak8
             public static DataBlock KOutbreakSpecies8 = new()
@@ -690,6 +822,14 @@ namespace PokeViewer.NET.SubForms
             {
                 Name = "KMassOutbreak08CenterPos",
                 Key = 0x2EC5BC1A,
+                Type = SCTypeCode.Array,
+                IsEncrypted = true,
+                Size = 12,
+            };
+            public static DataBlock KMassOutbreak08DummyPos = new()
+            {
+                Name = "KMassOutbreak08DummyPos",
+                Key = 0x4A166113,
                 Type = SCTypeCode.Array,
                 IsEncrypted = true,
                 Size = 12,
@@ -740,13 +880,6 @@ namespace PokeViewer.NET.SubForms
             #endregion
         }
 
-        private async Task SaveGame(CancellationToken token)
-        {
-            await Click(X, 3_000, token).ConfigureAwait(false);
-            await Click(R, 1_500, token).ConfigureAwait(false);
-            await Click(A, 3_000, token).ConfigureAwait(false);
-            await Click(A, 2_000, token).ConfigureAwait(false);
-        }
         public new async Task Click(SwitchButton b, int delay, CancellationToken token)
         {
             await Executor.Connection.SendAsync(SwitchCommand.Click(b, true), token).ConfigureAwait(false);
@@ -776,8 +909,16 @@ namespace PokeViewer.NET.SubForms
             await PressAndHold(DDOWN, 2_000, 0_250, token).ConfigureAwait(false); // Scroll to system settings
             await Click(A, 1_250, token).ConfigureAwait(false);
 
-            await PressAndHold(DDOWN, (int)OverShoot.Value, 0_100, token).ConfigureAwait(false);
-            await Click(DUP, 0_500, token).ConfigureAwait(false);
+            if (OverShootButton.Checked)
+            {
+                await PressAndHold(DDOWN, (int)OverShootUpDown.Value, 0_100, token).ConfigureAwait(false);
+                await Click(DUP, 0_500, token).ConfigureAwait(false);
+            }
+            else if (DDOWNButton.Checked)
+            {
+                for (int i = 0; i < DPADUpDown.Value; i++)
+                    await Click(DDOWN, 0_100, token).ConfigureAwait(false);
+            }
 
             await Click(A, 1_250, token).ConfigureAwait(false);
             for (int i = 0; i < 2; i++)
@@ -800,98 +941,6 @@ namespace PokeViewer.NET.SubForms
             await Task.Delay(delay, token).ConfigureAwait(false);
         }
 
-        // Via Manu's SV Research
-        private const ushort UserTID = 12345;
-        private const ushort UserSID = 54321;
-        private const int UNSET = -1;
-
-        private static bool IsShiny(uint PID, ushort TID = UserTID, ushort SID = UserSID) =>
-        (ushort)(SID ^ TID ^ (PID >> 16) ^ PID) < 16;
-
-        private static bool IsShiny(uint PID, uint FTID) =>
-            IsShiny(PID, (ushort)(FTID >> 16), (ushort)(FTID & 0xFFFF));
-
-        private static uint ForceShiny(uint PID, uint TID = UserTID, uint SID = UserSID) =>
-            ((TID ^ SID ^ (PID & 0xFFFF) ^ 1) << 16) | (PID & 0xFFFF);
-
-        private static uint ForceNonShiny(uint PID) => PID ^ 0x10000000;
-
-        private PK9 CalculateFromSeed(uint seed)
-        {
-            PK9 pk = new();
-            int i;
-            var xoro = new Xoroshiro128Plus(seed);
-            pk.EncryptionConstant = (uint)xoro.Next();
-            var fakeTrainer = (uint)xoro.Next();
-
-            pk.PID = 0;
-            var isShiny = false;
-            for (i = 0; i < 1; i++)
-            {
-                pk.PID = (uint)xoro.Next();
-                isShiny = IsShiny(pk.PID, fakeTrainer);
-                if (isShiny)
-                {
-                    if (!IsShiny(pk.PID))
-                        pk.PID = ForceShiny(pk.PID);
-                    break;
-                }
-                else
-                    if (IsShiny(pk.PID))
-                    pk.PID = ForceNonShiny(pk.PID);
-            }
-
-
-            int[] ivs = { UNSET, UNSET, UNSET, UNSET, UNSET, UNSET };
-            var determined = 0;
-            while (determined < 4)
-            {
-                var idx = xoro.NextInt(6);
-                if (ivs[idx] != UNSET)
-                    continue;
-                ivs[idx] = 31;
-                determined++;
-            }
-
-            for (i = 0; i < ivs.Length; i++)
-                if (ivs[i] == UNSET)
-                    ivs[i] = (int)xoro.NextInt(31 + 1);
-
-            pk.IV_HP = ivs[0];
-            pk.IV_ATK = ivs[1];
-            pk.IV_DEF = ivs[2];
-            pk.IV_SPA = ivs[3];
-            pk.IV_SPD = ivs[4];
-            pk.IV_SPE = ivs[5];
-
-            textBox1.Text = $"Seed: 0x{seed:X8}{Environment.NewLine}" +
-                $"EC: {pk.EncryptionConstant:X8}{Environment.NewLine}" +
-                $"PID: {pk.PID:X8}{Environment.NewLine}" +
-                $"IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}";
-            return pk;
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            using StopConditions miniform = new();
-            miniform.ShowDialog();
-        }
-
-        private static int[] GrabIvFilters()
-        {
-            int[] ivsequence = Array.Empty<int>();
-            int filters = Settings.Default.PresetIVS;
-            switch (filters)
-            {
-                case 0: ivsequence = new[] { Settings.Default.HPFilter, Settings.Default.AtkFilter, Settings.Default.DefFilter, Settings.Default.SpaFilter, Settings.Default.SpdFilter, Settings.Default.SpeFilter }; break;
-                case 1: ivsequence = new[] { 31, 31, 31, 31, 31, 31 }; break;
-                case 2: ivsequence = new[] { 31, 0, 31, 31, 31, 0 }; break;
-                case 3: ivsequence = new[] { 31, 0, 31, 31, 31, 31 }; break;
-                case 4: ivsequence = new[] { 31, 31, 31, 31, 31, 0 }; break;
-            }
-            return ivsequence;
-        }
-
         private static HttpClient? _client;
         private static HttpClient Client
         {
@@ -911,6 +960,7 @@ namespace PokeViewer.NET.SubForms
             DiscordWebhooks = Settings.Default.WebHook.Split(',');
             if (DiscordWebhooks == null)
                 return;
+
             var webhook = GenerateWebhook(results, thumbnail);
             var content = new StringContent(JsonConvert.SerializeObject(webhook), Encoding.UTF8, "application/json");
             foreach (var url in DiscordWebhooks)
@@ -1221,9 +1271,18 @@ namespace PokeViewer.NET.SubForms
         private void EnableAssets()
         {
             OutbreakScan.Enabled = true;
-            OutbreakScan.Text = "Outbreak Scan";
+            OutbreakScan.Text = "Scan";
             OutbreakSearch.Enabled = true;
-            StopOnSpecies.Enabled = true;
+            Apply0To61.Enabled = true;
+            OpenMap.Enabled = true;
+        }
+
+        private void DisableAssets()
+        {
+            OutbreakScan.Enabled = false;
+            OutbreakSearch.Enabled = false;
+            Apply0To61.Enabled = false;
+            OpenMap.Enabled = false;
         }
 
         private IReadOnlyList<long> CollisionPointer { get; } = new long[] { 0x44CCA90, 0xAD8, 0x160, 0x60, 0x100 };
@@ -1262,6 +1321,102 @@ namespace PokeViewer.NET.SubForms
             }
         }
 
+        private void OpenMap_Click(object sender, EventArgs e)
+        {
+            MapViewSV form = new(MapSprites, MapPOS);
+            form.ShowDialog();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            string r = string.Empty;
+            foreach (var p in pkList.ToList())
+            {
+                r += $"{(Species)p.Species} - {p.Form}{Environment.NewLine}";
+            }
+            MessageBox.Show(r, "Search List");
+        }
+
+        private void AddSpecies_Click(object sender, EventArgs e)
+        {
+            PK9 pk = new()
+            {
+                Species = (ushort)(Species)SpeciesBox.SelectedIndex,
+                Form = (byte)FormBox.Value,
+            };
+
+            if (pk.Species == 0 )
+            {
+                MessageBox.Show("You can't add a blank species!", "Search List");
+                return;
+            }
+
+            if (pkList.Count == 0)
+            {
+                pkList.Add(pk);
+                MessageBox.Show($"Added {(Species)pk.Species}", "Search List");
+                return;
+            }
+            foreach (var p in pkList.ToList())
+            {
+                if (p.Species == pk.Species && p.Form == pk.Form)
+                {
+                    MessageBox.Show($"List contains {(Species)pk.Species} with Form {pk.Form}", "Search List");
+                    continue;
+                }
+
+                if (p.Species != pk.Species)
+                {
+                    pkList.Add(pk);
+                    MessageBox.Show($"Added {(Species)pk.Species}", "Search List");
+                    return;
+                }
+            }
+        }
+
+        private void RemoveSpecies_Click(object sender, EventArgs e)
+        {
+            if (pkList.Count == 0)
+                return;
+
+            PK9 pk = new()
+            {
+                Species = (ushort)(Species)SpeciesBox.SelectedIndex,
+                Form = (byte)FormBox.Value,
+            };
+            foreach (var p in pkList.ToList())
+            {
+                if (p.Species != pk.Species && p.Form != pk.Form)
+                    continue;
+
+                if (p.Species == pk.Species && p.Form == pk.Form)
+                {
+                    pkList.Remove(p);
+                    MessageBox.Show($"Removed {(Species)p.Species}", "Search List");
+                    return;
+                }
+            }
+        }
+
+        private void SaveList_Click(object sender, EventArgs e)
+        {
+            string output = string.Empty;
+            foreach (var p in pkList.ToList())
+            {
+                output += $"{p.Species}-{p.Form},";
+            }
+            using StreamWriter sw = new(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "outbreakfilters.txt"));
+            sw.Write(output);
+            MessageBox.Show("Done", "Search List");
+        }
+
+        private void ClearList_Click(object sender, EventArgs e)
+        {
+            pkList.Clear();
+            pkList = new();
+            MessageBox.Show("Cleared all filters", "Search List");
+        }
+
         private enum VivForms
         {
             IcySnow = 0,
@@ -1284,6 +1439,5 @@ namespace PokeViewer.NET.SubForms
             Jungle = 17,
             Fancy = 18,
         }
-
     }
 }

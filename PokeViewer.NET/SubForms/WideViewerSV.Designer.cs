@@ -1,6 +1,6 @@
 ﻿namespace PokeViewer.NET.SubForms
 {
-    partial class WideViewSV
+    partial class WideViewerSV
     {
         /// <summary>
         /// Required designer variable.

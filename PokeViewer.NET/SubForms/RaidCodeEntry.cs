@@ -107,10 +107,10 @@ namespace PokeViewer.NET.SubForms
 
         private static Image cropImage(Image img, Rectangle cropArea)
         {
-            Bitmap bmpImage = new Bitmap(img);
+            Bitmap bmpImage = new(img);
             Bitmap bmpCrop = bmpImage.Clone(cropArea,
             bmpImage.PixelFormat);
-            return (Image)(bmpCrop);
+            return (bmpCrop);
         }
 
         private async void button4_Click(object sender, EventArgs e)
@@ -184,7 +184,7 @@ namespace PokeViewer.NET.SubForms
         public static Bitmap MakeGrayscale3(Bitmap original)
         {
             //create a blank bitmap the same size as original
-            Bitmap newBitmap = new Bitmap(original.Width, original.Height);
+            Bitmap newBitmap = new(original.Width, original.Height);
 
             //get a graphics object from the new image
             using (Graphics g = Graphics.FromImage(newBitmap))
@@ -217,7 +217,7 @@ namespace PokeViewer.NET.SubForms
 
         public static Bitmap sharpen(Bitmap image)
         {
-            Bitmap sharpenImage = new Bitmap(image.Width, image.Height);
+            Bitmap sharpenImage = new(image.Width, image.Height);
 
             int filterWidth = 3;
             int filterHeight = 3;
@@ -273,6 +273,6 @@ namespace PokeViewer.NET.SubForms
                 }
             }
             return sharpenImage;
-        }
+        }        
     }
 }
