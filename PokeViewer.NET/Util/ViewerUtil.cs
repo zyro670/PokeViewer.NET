@@ -5,6 +5,7 @@ namespace PokeViewer.NET
 {
     public partial class ViewerUtil
     {
+        public const string HOMEID = "010015F008C54000";
         public const string VioletID = "01008F6008C5E000";
         public const string ScarletID = "0100A3D008C5C000";
         public const string LegendsArceusID = "01001F5010DFA000";

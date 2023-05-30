@@ -16,7 +16,7 @@ namespace PokeViewer.NET
     {
         public ViewerExecutor Executor = null!;
         private const string ViewerVersion = "1.5.0";
-        private const int AzureBuildID = 420;
+        private const int AzureBuildID = 422;
         private bool[] FormLoaded = new bool[9];
         private int GameType;
         private readonly string RefreshTime = Settings.Default.RefreshRate;
@@ -255,14 +255,14 @@ namespace PokeViewer.NET
             if (alpha)
             {
                 var url = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/OriginMarks/icon_alpha.png";
-                var img = DownloadRemoteImageFile(url);
-                Image original;
-                using (var ms = new MemoryStream(img))
+                Image img = null!;
+                using (HttpClient client = new())
                 {
-                    original = Image.FromStream(ms);
+                    using var response = await client.GetStreamAsync(url, token).ConfigureAwait(false);
+                    img = Image.FromStream(response);
                 }
                 Specialty.Visible = true;
-                Specialty.Image = original;
+                Specialty.Image = img;
             }
             if (hasMark)
             {
@@ -292,14 +292,14 @@ namespace PokeViewer.NET
             if (isGmax)
             {
                 var url = $"https://raw.githubusercontent.com/zyro670/PokeTextures/main/OriginMarks/icon_daimax.png";
-                var img = DownloadRemoteImageFile(url);
-                Image original;
-                using (var ms = new MemoryStream(img))
+                Image img = null!;
+                using (HttpClient client = new())
                 {
-                    original = Image.FromStream(ms);
+                    using var response = await client.GetStreamAsync(url, token).ConfigureAwait(false);
+                    img = Image.FromStream(response);
                 }
                 Specialty.Visible = true;
-                Specialty.Image = original;
+                Specialty.Image = img;
             }
             if (RefreshStats.Checked)
             {
@@ -582,6 +582,17 @@ namespace PokeViewer.NET
             string title = await Executor.SwitchConnection.GetTitleID(token).ConfigureAwait(false);
             switch (title)
             {
+                case HOMEID:
+                    {
+                        url += "HOME.png";
+                        type = (int)GameSelected.HOME;
+                        BeginInvoke((MethodInvoker)delegate ()
+                        {
+                            ViewerControl.TabPages.Add(BoxPage);
+                            ViewerControl.TabPages.Add(InGameScreenshotPage);
+                        });
+                        break;
+                    }
                 case ScarletID:
                     {
                         url += "SC.png";

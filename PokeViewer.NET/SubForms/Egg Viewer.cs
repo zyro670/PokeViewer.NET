@@ -1,12 +1,12 @@
-﻿using PKHeX.Core;
-using SysBot.Base;
+﻿using SysBot.Base;
+using PKHeX.Core;
+using PKHeX.Drawing.PokeSprite;
+using System.Text;
+using Newtonsoft.Json;
+using PokeViewer.NET.Properties;
 using static SysBot.Base.SwitchButton;
 using static SysBot.Base.SwitchStick;
 using static PokeViewer.NET.RoutineExecutor;
-using PKHeX.Drawing.PokeSprite;
-using Newtonsoft.Json;
-using System.Text;
-using PokeViewer.NET.Properties;
 
 namespace PokeViewer.NET.SubForms
 {

@@ -10,6 +10,7 @@ namespace PokeViewer.NET
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            Application.SetHighDpiMode(HighDpiMode.DpiUnaware);
             MainViewer? Viewer = new();
             Application.Run(Viewer);
         }

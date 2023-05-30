@@ -1,5 +1,6 @@
 ﻿using PKHeX.Core;
 using PokeViewer.NET.SubForms;
+using System.Drawing.Drawing2D;
 using static PokeViewer.NET.RoutineExecutor;
 using static PokeViewer.NET.ViewerUtil;
 using ToolTip = System.Windows.Forms.ToolTip;
@@ -15,6 +16,7 @@ namespace PokeViewer.NET
         private List<PKM> PKMs = new();
         public string DumpFolder { get; set; } = AppDomain.CurrentDomain.BaseDirectory;
         private readonly ViewerExecutor Executor;
+        private Region? region = new();
         public BoxViewerMode(int gametype, ViewerExecutor executor)
         {
             InitializeComponent();
@@ -23,6 +25,7 @@ namespace PokeViewer.NET
             Text = VersionString(GameType);
             label2.Text = $"{(GameSelected)GameType}";
             button1.Text = "View";
+            region = pictureBox1.Region;
         }
 
         private static string VersionString(int type)
@@ -98,6 +101,7 @@ namespace PokeViewer.NET
                 pictureBox11, pictureBox12, pictureBox13, pictureBox14, pictureBox15, pictureBox16, pictureBox17, pictureBox18, pictureBox19, pictureBox20,
                 pictureBox21, pictureBox22, pictureBox23, pictureBox24, pictureBox25, pictureBox26, pictureBox27, pictureBox28, pictureBox29, pictureBox30
             };
+
             var box = boxnumber - 1;
             PKM pk = new PK9();
             button1.Text = "Reading...";
@@ -114,6 +118,9 @@ namespace PokeViewer.NET
                 case (int)GameSelected.Scarlet or (int)GameSelected.Violet: break;
                 case (int)GameSelected.LegendsArceus: ptr = new long[] { 0x42BA6B0, 0x1F0, 0x68 }; b1s1 = await Executor.SwitchConnection.PointerAll(ptr, token).ConfigureAwait(false); break;
             }
+
+            for (int i = 0; i < boxes.Length; i++)
+                boxes[i].Region = region;
 
             for (int i = 0; i < 30; i++)
             {
@@ -182,6 +189,7 @@ namespace PokeViewer.NET
                 if (pk.Species is 0 or > (int)Species.MAX_COUNT)
                 {
                     boxes[i].Image = null;
+                    boxes[i].BackColor = Color.PowderBlue;
                     CurrentSlotStats.Add($"Box {textBox1.Text} Slot {i} is empty.");
                     continue;
                 }
@@ -229,7 +237,27 @@ namespace PokeViewer.NET
                         pk.Form = 0;
                 }
                 var sprite = PokeImg(pk, isGmax);
-                boxes[i].Load(sprite);
+
+                if (pk.IsEgg)
+                {
+                    using var gp = new GraphicsPath();
+                    gp.AddEllipse(new Rectangle(0, 0, boxes[i].Width - 1, boxes[i].Height - 1));
+                    boxes[i].BorderStyle = BorderStyle.FixedSingle;
+                    boxes[i].Region = new Region(gp);
+                }
+                else if (!pk.IsEgg)
+                    boxes[i].Region = region;
+
+                Image img = null!;
+                using (HttpClient client = new())
+                {
+                    using var response = await client.GetStreamAsync(sprite, token).ConfigureAwait(false);
+                    img = Image.FromStream(response);
+                }
+                var img2 = (Image)new Bitmap(img, new Size(img.Width, img.Height));
+                boxes[i].BackColor = pk.Gender == 0 ? Color.LightBlue : pk.Gender == 1 ? Color.LightPink : Color.LightGray;
+
+                boxes[i].Image = img2;
             }
             if (checkBox1.Checked)
             {

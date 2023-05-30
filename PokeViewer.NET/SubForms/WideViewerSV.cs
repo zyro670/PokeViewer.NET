@@ -1,9 +1,9 @@
 ﻿using PKHeX.Core;
+using SysBot.Base;
 using static PokeViewer.NET.RoutineExecutor;
 using static PokeViewer.NET.ViewerUtil;
 using static System.Buffers.Binary.BinaryPrimitives;
 using static SysBot.Base.SwitchButton;
-using SysBot.Base;
 
 namespace PokeViewer.NET.SubForms
 {

@@ -1,5 +1,5 @@
-﻿using PKHeX.Drawing.PokeSprite;
-using PKHeX.Drawing;
+﻿using PKHeX.Drawing;
+using PKHeX.Drawing.PokeSprite;
 
 namespace PokeViewer.NET.SubForms
 {

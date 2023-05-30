@@ -481,9 +481,9 @@
             HardStopOutbreak.AutoSize = true;
             HardStopOutbreak.Location = new Point(311, 18);
             HardStopOutbreak.Name = "HardStopOutbreak";
-            HardStopOutbreak.Size = new Size(121, 19);
+            HardStopOutbreak.Size = new Size(81, 19);
             HardStopOutbreak.TabIndex = 18;
-            HardStopOutbreak.Text = "Stop After 1 Scan?";
+            HardStopOutbreak.Text = "HardStop?";
             HardStopOutbreak.UseVisualStyleBackColor = true;
             // 
             // progressBar1

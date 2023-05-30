@@ -40,7 +40,7 @@ namespace PokeViewer.NET.WideViewForms
             }
         }
 
-        private void LASanityCheck(PA8 pk, int count)
+        private async void LASanityCheck(PA8 pk, int count)
         {
             PictureBox[] boxes = { pictureBox1, pictureBox2, pictureBox3, pictureBox4, pictureBox5 };
             TextBox[] outputBox = { textBox1, textBox2, textBox3, textBox4, textBox5 };
@@ -73,13 +73,13 @@ namespace PokeViewer.NET.WideViewForms
             if (pk.IsAlpha)
             {
                 var url = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/OriginMarks/icon_alpha.png";
-                var img = DownloadRemoteImageFile(url);
-                Image original;
-                using (var ms = new MemoryStream(img))
+                Image img = null!;
+                using (HttpClient client = new())
                 {
-                    original = Image.FromStream(ms);
+                    using var response = await client.GetStreamAsync(url, CancellationToken.None).ConfigureAwait(false);
+                    img = Image.FromStream(response);
                 }
-                alphaboxes[count].Image = original;
+                alphaboxes[count].Image = img;
             }
             else if (!pk.IsAlpha)
                 alphaboxes[count].Image = null;

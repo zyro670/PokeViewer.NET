@@ -1,11 +1,11 @@
-﻿using Newtonsoft.Json;
-using PKHeX.Core;
+﻿using PKHeX.Core;
+using PKHeX.Drawing.PokeSprite;
 using PokeViewer.NET.Properties;
 using SysBot.Base;
 using System.Text;
+using Newtonsoft.Json;
 using static SysBot.Base.SwitchButton;
 using static System.Buffers.Binary.BinaryPrimitives;
-using PKHeX.Drawing.PokeSprite;
 using static PokeViewer.NET.RoutineExecutor;
 
 namespace PokeViewer.NET.SubForms
@@ -930,6 +930,8 @@ namespace PokeViewer.NET.SubForms
 
             await Click(A, 0_200, token).ConfigureAwait(false); // Confirm date/time change
             await Click(HOME, 1_000, token).ConfigureAwait(false);
+            for (int i = 0; i < 4; i++)
+                await Click(DUP, 0_250, token).ConfigureAwait(false);
             await Click(A, 4_000, token).ConfigureAwait(false); // Back to title screen
         }
 
@@ -1345,7 +1347,7 @@ namespace PokeViewer.NET.SubForms
                 Form = (byte)FormBox.Value,
             };
 
-            if (pk.Species == 0 )
+            if (pk.Species == 0)
             {
                 MessageBox.Show("You can't add a blank species!", "Search List");
                 return;
