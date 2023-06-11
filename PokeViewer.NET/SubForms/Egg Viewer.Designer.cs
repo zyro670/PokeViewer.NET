@@ -30,444 +30,464 @@ namespace PokeViewer.NET.SubForms
         /// </summary>
         private void InitializeComponent()
         {
-            this.PokeSpriteBox = new System.Windows.Forms.PictureBox();
-            this.PokeStats = new System.Windows.Forms.TextBox();
-            this.FetchButton = new System.Windows.Forms.Button();
-            this.BallBox = new System.Windows.Forms.PictureBox();
-            this.HardStopButton = new System.Windows.Forms.Button();
-            this.EatOnStart = new System.Windows.Forms.CheckBox();
-            this.Item1Value = new System.Windows.Forms.TextBox();
-            this.Item1Label = new System.Windows.Forms.Label();
-            this.Item2Label = new System.Windows.Forms.Label();
-            this.Item2Value = new System.Windows.Forms.TextBox();
-            this.EatAgain = new System.Windows.Forms.CheckBox();
-            this.Item3Label = new System.Windows.Forms.Label();
-            this.Item3Value = new System.Windows.Forms.TextBox();
-            this.checkBox5 = new System.Windows.Forms.CheckBox();
-            this.checkBox6 = new System.Windows.Forms.CheckBox();
-            this.checkBox7 = new System.Windows.Forms.CheckBox();
-            this.SandwichCount = new System.Windows.Forms.Label();
-            this.ShinyFoundLabel = new System.Windows.Forms.Label();
-            this.BasketCount = new System.Windows.Forms.Label();
-            this.NextSanwichLabel = new System.Windows.Forms.Label();
-            this.HoldIngredients = new System.Windows.Forms.CheckBox();
-            this.NumberOfFillings = new System.Windows.Forms.NumericUpDown();
-            this.label1 = new System.Windows.Forms.Label();
-            this.HoldTimeToFillings = new System.Windows.Forms.Label();
-            this.FillingHoldTime = new System.Windows.Forms.TextBox();
-            this.WebHookText = new System.Windows.Forms.TextBox();
-            this.SaveHookURL = new System.Windows.Forms.Button();
-            this.UserDiscordIDText = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.StopConditionsButton = new System.Windows.Forms.Button();
-            this.ScreenOffBox = new System.Windows.Forms.CheckBox();
-            this.UptimeLabel = new System.Windows.Forms.Label();
-            this.SquareStarCount = new System.Windows.Forms.Label();
-            this.HidePIDEC = new System.Windows.Forms.CheckBox();
-            ((System.ComponentModel.ISupportInitialize)(this.PokeSpriteBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.BallBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.NumberOfFillings)).BeginInit();
-            this.SuspendLayout();
+            PokeSpriteBox = new PictureBox();
+            PokeStats = new TextBox();
+            FetchButton = new Button();
+            BallBox = new PictureBox();
+            HardStopButton = new Button();
+            EatOnStart = new CheckBox();
+            Item1Value = new TextBox();
+            Item1Label = new Label();
+            Item2Label = new Label();
+            Item2Value = new TextBox();
+            EatAgain = new CheckBox();
+            Item3Label = new Label();
+            Item3Value = new TextBox();
+            checkBox5 = new CheckBox();
+            checkBox6 = new CheckBox();
+            checkBox7 = new CheckBox();
+            SandwichCount = new Label();
+            ShinyFoundLabel = new Label();
+            BasketCount = new Label();
+            NextSanwichLabel = new Label();
+            HoldIngredients = new CheckBox();
+            NumberOfFillings = new NumericUpDown();
+            label1 = new Label();
+            HoldTimeToFillings = new Label();
+            FillingHoldTime = new TextBox();
+            StopConditionsButton = new Button();
+            ScreenOffBox = new CheckBox();
+            UptimeLabel = new Label();
+            SquareStarCount = new Label();
+            HidePIDEC = new CheckBox();
+            ScreenshotButton = new Button();
+            pictureBox1 = new PictureBox();
+            pictureBox2 = new PictureBox();
+            pictureBox3 = new PictureBox();
+            pictureBox4 = new PictureBox();
+            pictureBox5 = new PictureBox();
+            pictureBox6 = new PictureBox();
+            ((System.ComponentModel.ISupportInitialize)PokeSpriteBox).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)BallBox).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)NumberOfFillings).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox5).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox6).BeginInit();
+            SuspendLayout();
             // 
             // PokeSpriteBox
             // 
-            this.PokeSpriteBox.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.PokeSpriteBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.PokeSpriteBox.Location = new System.Drawing.Point(89, 33);
-            this.PokeSpriteBox.Name = "PokeSpriteBox";
-            this.PokeSpriteBox.Size = new System.Drawing.Size(94, 72);
-            this.PokeSpriteBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.PokeSpriteBox.TabIndex = 0;
-            this.PokeSpriteBox.TabStop = false;
+            PokeSpriteBox.BackColor = SystemColors.GradientInactiveCaption;
+            PokeSpriteBox.BorderStyle = BorderStyle.FixedSingle;
+            PokeSpriteBox.Location = new Point(91, 39);
+            PokeSpriteBox.Name = "PokeSpriteBox";
+            PokeSpriteBox.Size = new Size(94, 72);
+            PokeSpriteBox.SizeMode = PictureBoxSizeMode.Zoom;
+            PokeSpriteBox.TabIndex = 0;
+            PokeSpriteBox.TabStop = false;
             // 
             // PokeStats
             // 
-            this.PokeStats.Location = new System.Drawing.Point(89, 111);
-            this.PokeStats.Multiline = true;
-            this.PokeStats.Name = "PokeStats";
-            this.PokeStats.ReadOnly = true;
-            this.PokeStats.Size = new System.Drawing.Size(146, 124);
-            this.PokeStats.TabIndex = 1;
-            this.PokeStats.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            PokeStats.Location = new Point(91, 117);
+            PokeStats.Multiline = true;
+            PokeStats.Name = "PokeStats";
+            PokeStats.ReadOnly = true;
+            PokeStats.Size = new Size(146, 124);
+            PokeStats.TabIndex = 1;
+            PokeStats.TextAlign = HorizontalAlignment.Center;
             // 
             // FetchButton
             // 
-            this.FetchButton.Location = new System.Drawing.Point(89, 244);
-            this.FetchButton.Name = "FetchButton";
-            this.FetchButton.Size = new System.Drawing.Size(75, 23);
-            this.FetchButton.TabIndex = 2;
-            this.FetchButton.Text = "Fetch";
-            this.FetchButton.UseVisualStyleBackColor = true;
-            this.FetchButton.Click += new System.EventHandler(this.button1_Click);
+            FetchButton.Location = new Point(91, 250);
+            FetchButton.Name = "FetchButton";
+            FetchButton.Size = new Size(75, 23);
+            FetchButton.TabIndex = 2;
+            FetchButton.Text = "Fetch";
+            FetchButton.UseVisualStyleBackColor = true;
+            FetchButton.Click += button1_Click;
             // 
             // BallBox
             // 
-            this.BallBox.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.BallBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.BallBox.Location = new System.Drawing.Point(189, 68);
-            this.BallBox.Name = "BallBox";
-            this.BallBox.Size = new System.Drawing.Size(46, 37);
-            this.BallBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.BallBox.TabIndex = 4;
-            this.BallBox.TabStop = false;
+            BallBox.BackColor = SystemColors.GradientInactiveCaption;
+            BallBox.BorderStyle = BorderStyle.FixedSingle;
+            BallBox.Location = new Point(191, 74);
+            BallBox.Name = "BallBox";
+            BallBox.Size = new Size(46, 37);
+            BallBox.SizeMode = PictureBoxSizeMode.CenterImage;
+            BallBox.TabIndex = 4;
+            BallBox.TabStop = false;
             // 
             // HardStopButton
             // 
-            this.HardStopButton.Location = new System.Drawing.Point(170, 244);
-            this.HardStopButton.Name = "HardStopButton";
-            this.HardStopButton.Size = new System.Drawing.Size(65, 23);
-            this.HardStopButton.TabIndex = 5;
-            this.HardStopButton.Text = "HardStop";
-            this.HardStopButton.UseVisualStyleBackColor = true;
-            this.HardStopButton.Click += new System.EventHandler(this.button2_Click);
+            HardStopButton.Location = new Point(172, 250);
+            HardStopButton.Name = "HardStopButton";
+            HardStopButton.Size = new Size(65, 23);
+            HardStopButton.TabIndex = 5;
+            HardStopButton.Text = "HardStop";
+            HardStopButton.UseVisualStyleBackColor = true;
+            HardStopButton.Click += HardStopButton_Click;
             // 
             // EatOnStart
             // 
-            this.EatOnStart.AutoSize = true;
-            this.EatOnStart.Location = new System.Drawing.Point(256, 48);
-            this.EatOnStart.Name = "EatOnStart";
-            this.EatOnStart.Size = new System.Drawing.Size(93, 19);
-            this.EatOnStart.TabIndex = 13;
-            this.EatOnStart.Text = "Eat On Start?";
-            this.EatOnStart.UseVisualStyleBackColor = true;
+            EatOnStart.AutoSize = true;
+            EatOnStart.Location = new Point(258, 54);
+            EatOnStart.Name = "EatOnStart";
+            EatOnStart.Size = new Size(93, 19);
+            EatOnStart.TabIndex = 13;
+            EatOnStart.Text = "Eat On Start?";
+            EatOnStart.UseVisualStyleBackColor = true;
             // 
             // Item1Value
             // 
-            this.Item1Value.BackColor = System.Drawing.SystemColors.Control;
-            this.Item1Value.Location = new System.Drawing.Point(303, 134);
-            this.Item1Value.Name = "Item1Value";
-            this.Item1Value.Size = new System.Drawing.Size(32, 23);
-            this.Item1Value.TabIndex = 14;
-            this.Item1Value.Text = "0";
-            this.Item1Value.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            Item1Value.BackColor = SystemColors.Control;
+            Item1Value.Location = new Point(305, 140);
+            Item1Value.Name = "Item1Value";
+            Item1Value.Size = new Size(32, 23);
+            Item1Value.TabIndex = 14;
+            Item1Value.Text = "0";
+            Item1Value.TextAlign = HorizontalAlignment.Center;
             // 
             // Item1Label
             // 
-            this.Item1Label.AutoSize = true;
-            this.Item1Label.Location = new System.Drawing.Point(253, 139);
-            this.Item1Label.Name = "Item1Label";
-            this.Item1Label.Size = new System.Drawing.Size(40, 15);
-            this.Item1Label.TabIndex = 15;
-            this.Item1Label.Text = "Item 1";
+            Item1Label.AutoSize = true;
+            Item1Label.Location = new Point(255, 145);
+            Item1Label.Name = "Item1Label";
+            Item1Label.Size = new Size(40, 15);
+            Item1Label.TabIndex = 15;
+            Item1Label.Text = "Item 1";
             // 
             // Item2Label
             // 
-            this.Item2Label.AutoSize = true;
-            this.Item2Label.Location = new System.Drawing.Point(253, 164);
-            this.Item2Label.Name = "Item2Label";
-            this.Item2Label.Size = new System.Drawing.Size(40, 15);
-            this.Item2Label.TabIndex = 16;
-            this.Item2Label.Text = "Item 2";
+            Item2Label.AutoSize = true;
+            Item2Label.Location = new Point(255, 170);
+            Item2Label.Name = "Item2Label";
+            Item2Label.Size = new Size(40, 15);
+            Item2Label.TabIndex = 16;
+            Item2Label.Text = "Item 2";
             // 
             // Item2Value
             // 
-            this.Item2Value.BackColor = System.Drawing.SystemColors.Control;
-            this.Item2Value.Location = new System.Drawing.Point(303, 162);
-            this.Item2Value.Name = "Item2Value";
-            this.Item2Value.Size = new System.Drawing.Size(32, 23);
-            this.Item2Value.TabIndex = 17;
-            this.Item2Value.Text = "4";
-            this.Item2Value.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            Item2Value.BackColor = SystemColors.Control;
+            Item2Value.Location = new Point(305, 168);
+            Item2Value.Name = "Item2Value";
+            Item2Value.Size = new Size(32, 23);
+            Item2Value.TabIndex = 17;
+            Item2Value.Text = "4";
+            Item2Value.TextAlign = HorizontalAlignment.Center;
             // 
             // EatAgain
             // 
-            this.EatAgain.AutoSize = true;
-            this.EatAgain.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.EatAgain.Location = new System.Drawing.Point(256, 70);
-            this.EatAgain.Name = "EatAgain";
-            this.EatAgain.Size = new System.Drawing.Size(81, 19);
-            this.EatAgain.TabIndex = 18;
-            this.EatAgain.Text = "Eat Again?";
-            this.EatAgain.UseVisualStyleBackColor = false;
+            EatAgain.AutoSize = true;
+            EatAgain.BackColor = SystemColors.GradientInactiveCaption;
+            EatAgain.Location = new Point(258, 76);
+            EatAgain.Name = "EatAgain";
+            EatAgain.Size = new Size(81, 19);
+            EatAgain.TabIndex = 18;
+            EatAgain.Text = "Eat Again?";
+            EatAgain.UseVisualStyleBackColor = false;
             // 
             // Item3Label
             // 
-            this.Item3Label.AutoSize = true;
-            this.Item3Label.Location = new System.Drawing.Point(253, 191);
-            this.Item3Label.Name = "Item3Label";
-            this.Item3Label.Size = new System.Drawing.Size(40, 15);
-            this.Item3Label.TabIndex = 19;
-            this.Item3Label.Text = "Item 3";
+            Item3Label.AutoSize = true;
+            Item3Label.Location = new Point(255, 197);
+            Item3Label.Name = "Item3Label";
+            Item3Label.Size = new Size(40, 15);
+            Item3Label.TabIndex = 19;
+            Item3Label.Text = "Item 3";
             // 
             // Item3Value
             // 
-            this.Item3Value.BackColor = System.Drawing.SystemColors.Control;
-            this.Item3Value.Location = new System.Drawing.Point(303, 190);
-            this.Item3Value.Name = "Item3Value";
-            this.Item3Value.Size = new System.Drawing.Size(32, 23);
-            this.Item3Value.TabIndex = 20;
-            this.Item3Value.Text = "1";
-            this.Item3Value.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            Item3Value.BackColor = SystemColors.Control;
+            Item3Value.Location = new Point(305, 196);
+            Item3Value.Name = "Item3Value";
+            Item3Value.Size = new Size(32, 23);
+            Item3Value.TabIndex = 20;
+            Item3Value.Text = "1";
+            Item3Value.TextAlign = HorizontalAlignment.Center;
             // 
             // checkBox5
             // 
-            this.checkBox5.AutoSize = true;
-            this.checkBox5.Location = new System.Drawing.Point(350, 138);
-            this.checkBox5.Name = "checkBox5";
-            this.checkBox5.Size = new System.Drawing.Size(49, 19);
-            this.checkBox5.TabIndex = 21;
-            this.checkBox5.Text = "DUP";
-            this.checkBox5.UseVisualStyleBackColor = true;
+            checkBox5.AutoSize = true;
+            checkBox5.Location = new Point(352, 144);
+            checkBox5.Name = "checkBox5";
+            checkBox5.Size = new Size(49, 19);
+            checkBox5.TabIndex = 21;
+            checkBox5.Text = "DUP";
+            checkBox5.UseVisualStyleBackColor = true;
             // 
             // checkBox6
             // 
-            this.checkBox6.AutoSize = true;
-            this.checkBox6.Checked = true;
-            this.checkBox6.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox6.Location = new System.Drawing.Point(350, 164);
-            this.checkBox6.Name = "checkBox6";
-            this.checkBox6.Size = new System.Drawing.Size(49, 19);
-            this.checkBox6.TabIndex = 22;
-            this.checkBox6.Text = "DUP";
-            this.checkBox6.UseVisualStyleBackColor = true;
+            checkBox6.AutoSize = true;
+            checkBox6.Checked = true;
+            checkBox6.CheckState = CheckState.Checked;
+            checkBox6.Location = new Point(352, 170);
+            checkBox6.Name = "checkBox6";
+            checkBox6.Size = new Size(49, 19);
+            checkBox6.TabIndex = 22;
+            checkBox6.Text = "DUP";
+            checkBox6.UseVisualStyleBackColor = true;
             // 
             // checkBox7
             // 
-            this.checkBox7.AutoSize = true;
-            this.checkBox7.Checked = true;
-            this.checkBox7.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox7.Location = new System.Drawing.Point(350, 191);
-            this.checkBox7.Name = "checkBox7";
-            this.checkBox7.Size = new System.Drawing.Size(49, 19);
-            this.checkBox7.TabIndex = 23;
-            this.checkBox7.Text = "DUP";
-            this.checkBox7.UseVisualStyleBackColor = true;
+            checkBox7.AutoSize = true;
+            checkBox7.Checked = true;
+            checkBox7.CheckState = CheckState.Checked;
+            checkBox7.Location = new Point(352, 197);
+            checkBox7.Name = "checkBox7";
+            checkBox7.Size = new Size(49, 19);
+            checkBox7.TabIndex = 23;
+            checkBox7.Text = "DUP";
+            checkBox7.UseVisualStyleBackColor = true;
             // 
             // SandwichCount
             // 
-            this.SandwichCount.AutoSize = true;
-            this.SandwichCount.Location = new System.Drawing.Point(86, 275);
-            this.SandwichCount.Name = "SandwichCount";
-            this.SandwichCount.Size = new System.Drawing.Size(108, 15);
-            this.SandwichCount.TabIndex = 28;
-            this.SandwichCount.Text = "Sandwiches Made: ";
+            SandwichCount.AutoSize = true;
+            SandwichCount.Location = new Point(88, 281);
+            SandwichCount.Name = "SandwichCount";
+            SandwichCount.Size = new Size(108, 15);
+            SandwichCount.TabIndex = 28;
+            SandwichCount.Text = "Sandwiches Made: ";
             // 
             // ShinyFoundLabel
             // 
-            this.ShinyFoundLabel.AutoSize = true;
-            this.ShinyFoundLabel.Location = new System.Drawing.Point(250, 294);
-            this.ShinyFoundLabel.Name = "ShinyFoundLabel";
-            this.ShinyFoundLabel.Size = new System.Drawing.Size(87, 15);
-            this.ShinyFoundLabel.TabIndex = 29;
-            this.ShinyFoundLabel.Text = "Shinies Found: ";
+            ShinyFoundLabel.AutoSize = true;
+            ShinyFoundLabel.Location = new Point(252, 300);
+            ShinyFoundLabel.Name = "ShinyFoundLabel";
+            ShinyFoundLabel.Size = new Size(87, 15);
+            ShinyFoundLabel.TabIndex = 29;
+            ShinyFoundLabel.Text = "Shinies Found: ";
             // 
             // BasketCount
             // 
-            this.BasketCount.AutoSize = true;
-            this.BasketCount.Location = new System.Drawing.Point(250, 275);
-            this.BasketCount.Name = "BasketCount";
-            this.BasketCount.Size = new System.Drawing.Size(83, 15);
-            this.BasketCount.TabIndex = 30;
-            this.BasketCount.Text = "Basket Count: ";
+            BasketCount.AutoSize = true;
+            BasketCount.Location = new Point(252, 281);
+            BasketCount.Name = "BasketCount";
+            BasketCount.Size = new Size(83, 15);
+            BasketCount.TabIndex = 30;
+            BasketCount.Text = "Basket Count: ";
             // 
             // NextSanwichLabel
             // 
-            this.NextSanwichLabel.AutoSize = true;
-            this.NextSanwichLabel.Location = new System.Drawing.Point(86, 294);
-            this.NextSanwichLabel.Name = "NextSanwichLabel";
-            this.NextSanwichLabel.Size = new System.Drawing.Size(89, 15);
-            this.NextSanwichLabel.TabIndex = 31;
-            this.NextSanwichLabel.Text = "Next Sandwich:";
+            NextSanwichLabel.AutoSize = true;
+            NextSanwichLabel.Location = new Point(88, 300);
+            NextSanwichLabel.Name = "NextSanwichLabel";
+            NextSanwichLabel.Size = new Size(89, 15);
+            NextSanwichLabel.TabIndex = 31;
+            NextSanwichLabel.Text = "Next Sandwich:";
             // 
             // HoldIngredients
             // 
-            this.HoldIngredients.AutoSize = true;
-            this.HoldIngredients.Location = new System.Drawing.Point(256, 92);
-            this.HoldIngredients.Name = "HoldIngredients";
-            this.HoldIngredients.Size = new System.Drawing.Size(97, 19);
-            this.HoldIngredients.TabIndex = 32;
-            this.HoldIngredients.Text = "Hold Fillings?";
-            this.HoldIngredients.UseVisualStyleBackColor = true;
+            HoldIngredients.AutoSize = true;
+            HoldIngredients.Location = new Point(258, 98);
+            HoldIngredients.Name = "HoldIngredients";
+            HoldIngredients.Size = new Size(97, 19);
+            HoldIngredients.TabIndex = 32;
+            HoldIngredients.Text = "Hold Fillings?";
+            HoldIngredients.UseVisualStyleBackColor = true;
             // 
             // NumberOfFillings
             // 
-            this.NumberOfFillings.BackColor = System.Drawing.SystemColors.Control;
-            this.NumberOfFillings.Location = new System.Drawing.Point(343, 222);
-            this.NumberOfFillings.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.NumberOfFillings.Name = "NumberOfFillings";
-            this.NumberOfFillings.Size = new System.Drawing.Size(49, 23);
-            this.NumberOfFillings.TabIndex = 33;
-            this.NumberOfFillings.Value = new decimal(new int[] {
-            3,
-            0,
-            0,
-            0});
+            NumberOfFillings.BackColor = SystemColors.Control;
+            NumberOfFillings.Location = new Point(345, 228);
+            NumberOfFillings.Maximum = new decimal(new int[] { 10, 0, 0, 0 });
+            NumberOfFillings.Name = "NumberOfFillings";
+            NumberOfFillings.Size = new Size(49, 23);
+            NumberOfFillings.TabIndex = 33;
+            NumberOfFillings.Value = new decimal(new int[] { 3, 0, 0, 0 });
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(252, 227);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(85, 15);
-            this.label1.TabIndex = 34;
-            this.label1.Text = "Fillings Count?";
+            label1.AutoSize = true;
+            label1.Location = new Point(254, 233);
+            label1.Name = "label1";
+            label1.Size = new Size(85, 15);
+            label1.TabIndex = 34;
+            label1.Text = "Fillings Count?";
             // 
             // HoldTimeToFillings
             // 
-            this.HoldTimeToFillings.AutoSize = true;
-            this.HoldTimeToFillings.Location = new System.Drawing.Point(251, 254);
-            this.HoldTimeToFillings.Name = "HoldTimeToFillings";
-            this.HoldTimeToFillings.Size = new System.Drawing.Size(108, 15);
-            this.HoldTimeToFillings.TabIndex = 35;
-            this.HoldTimeToFillings.Text = "Fillings HOLD Time";
+            HoldTimeToFillings.AutoSize = true;
+            HoldTimeToFillings.Location = new Point(253, 260);
+            HoldTimeToFillings.Name = "HoldTimeToFillings";
+            HoldTimeToFillings.Size = new Size(108, 15);
+            HoldTimeToFillings.TabIndex = 35;
+            HoldTimeToFillings.Text = "Fillings HOLD Time";
             // 
             // FillingHoldTime
             // 
-            this.FillingHoldTime.BackColor = System.Drawing.SystemColors.Control;
-            this.FillingHoldTime.Location = new System.Drawing.Point(359, 252);
-            this.FillingHoldTime.Name = "FillingHoldTime";
-            this.FillingHoldTime.Size = new System.Drawing.Size(33, 23);
-            this.FillingHoldTime.TabIndex = 36;
-            this.FillingHoldTime.Text = "690";
-            // 
-            // WebHookText
-            // 
-            this.WebHookText.BackColor = System.Drawing.SystemColors.Control;
-            this.WebHookText.Location = new System.Drawing.Point(200, 342);
-            this.WebHookText.Name = "WebHookText";
-            this.WebHookText.Size = new System.Drawing.Size(111, 23);
-            this.WebHookText.TabIndex = 37;
-            this.WebHookText.UseSystemPasswordChar = true;
-            // 
-            // SaveHookURL
-            // 
-            this.SaveHookURL.Location = new System.Drawing.Point(85, 373);
-            this.SaveHookURL.Name = "SaveHookURL";
-            this.SaveHookURL.Size = new System.Drawing.Size(105, 23);
-            this.SaveHookURL.TabIndex = 39;
-            this.SaveHookURL.Text = "Save Fields";
-            this.SaveHookURL.UseVisualStyleBackColor = true;
-            this.SaveHookURL.Click += new System.EventHandler(this.SaveHookURL_Click);
-            // 
-            // UserDiscordIDText
-            // 
-            this.UserDiscordIDText.BackColor = System.Drawing.SystemColors.Control;
-            this.UserDiscordIDText.Location = new System.Drawing.Point(200, 373);
-            this.UserDiscordIDText.Name = "UserDiscordIDText";
-            this.UserDiscordIDText.Size = new System.Drawing.Size(111, 23);
-            this.UserDiscordIDText.TabIndex = 40;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(317, 345);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(84, 15);
-            this.label2.TabIndex = 41;
-            this.label2.Text = "WebHook URL";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(317, 375);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(86, 15);
-            this.label3.TabIndex = 42;
-            this.label3.Text = "User ID To Ping";
+            FillingHoldTime.BackColor = SystemColors.Control;
+            FillingHoldTime.Location = new Point(361, 258);
+            FillingHoldTime.Name = "FillingHoldTime";
+            FillingHoldTime.Size = new Size(33, 23);
+            FillingHoldTime.TabIndex = 36;
+            FillingHoldTime.Text = "690";
             // 
             // StopConditionsButton
             // 
-            this.StopConditionsButton.Location = new System.Drawing.Point(85, 344);
-            this.StopConditionsButton.Name = "StopConditionsButton";
-            this.StopConditionsButton.Size = new System.Drawing.Size(105, 23);
-            this.StopConditionsButton.TabIndex = 63;
-            this.StopConditionsButton.Text = "Stop Conditions";
-            this.StopConditionsButton.UseVisualStyleBackColor = true;
-            this.StopConditionsButton.Click += new System.EventHandler(this.StopConditionsButton_Click);
+            StopConditionsButton.Location = new Point(87, 339);
+            StopConditionsButton.Name = "StopConditionsButton";
+            StopConditionsButton.Size = new Size(105, 23);
+            StopConditionsButton.TabIndex = 63;
+            StopConditionsButton.Text = "Stop Conditions";
+            StopConditionsButton.UseVisualStyleBackColor = true;
+            StopConditionsButton.Click += StopConditionsButton_Click;
             // 
             // ScreenOffBox
             // 
-            this.ScreenOffBox.AutoSize = true;
-            this.ScreenOffBox.Location = new System.Drawing.Point(256, 113);
-            this.ScreenOffBox.Name = "ScreenOffBox";
-            this.ScreenOffBox.Size = new System.Drawing.Size(86, 19);
-            this.ScreenOffBox.TabIndex = 64;
-            this.ScreenOffBox.Text = "Screen Off?";
-            this.ScreenOffBox.UseVisualStyleBackColor = true;
+            ScreenOffBox.AutoSize = true;
+            ScreenOffBox.Location = new Point(258, 119);
+            ScreenOffBox.Name = "ScreenOffBox";
+            ScreenOffBox.Size = new Size(86, 19);
+            ScreenOffBox.TabIndex = 64;
+            ScreenOffBox.Text = "Screen Off?";
+            ScreenOffBox.UseVisualStyleBackColor = true;
             // 
             // UptimeLabel
             // 
-            this.UptimeLabel.AutoSize = true;
-            this.UptimeLabel.Location = new System.Drawing.Point(86, 314);
-            this.UptimeLabel.Name = "UptimeLabel";
-            this.UptimeLabel.Size = new System.Drawing.Size(52, 15);
-            this.UptimeLabel.TabIndex = 65;
-            this.UptimeLabel.Text = "Uptime: ";
+            UptimeLabel.AutoSize = true;
+            UptimeLabel.Location = new Point(88, 320);
+            UptimeLabel.Name = "UptimeLabel";
+            UptimeLabel.Size = new Size(52, 15);
+            UptimeLabel.TabIndex = 65;
+            UptimeLabel.Text = "Uptime: ";
             // 
             // SquareStarCount
             // 
-            this.SquareStarCount.AutoSize = true;
-            this.SquareStarCount.Location = new System.Drawing.Point(250, 314);
-            this.SquareStarCount.Name = "SquareStarCount";
-            this.SquareStarCount.Size = new System.Drawing.Size(70, 15);
-            this.SquareStarCount.TabIndex = 66;
-            this.SquareStarCount.Text = "■ - 0 | ★ - 0";
+            SquareStarCount.AutoSize = true;
+            SquareStarCount.Location = new Point(252, 320);
+            SquareStarCount.Name = "SquareStarCount";
+            SquareStarCount.Size = new Size(70, 15);
+            SquareStarCount.TabIndex = 66;
+            SquareStarCount.Text = "■ - 0 | ★ - 0";
             // 
             // HidePIDEC
             // 
-            this.HidePIDEC.AutoSize = true;
-            this.HidePIDEC.Location = new System.Drawing.Point(256, 27);
-            this.HidePIDEC.Name = "HidePIDEC";
-            this.HidePIDEC.Size = new System.Drawing.Size(129, 19);
-            this.HidePIDEC.TabIndex = 67;
-            this.HidePIDEC.Text = "Hide Sensitive Info?";
-            this.HidePIDEC.UseVisualStyleBackColor = true;
+            HidePIDEC.AutoSize = true;
+            HidePIDEC.Location = new Point(258, 33);
+            HidePIDEC.Name = "HidePIDEC";
+            HidePIDEC.Size = new Size(129, 19);
+            HidePIDEC.TabIndex = 67;
+            HidePIDEC.Text = "Hide Sensitive Info?";
+            HidePIDEC.UseVisualStyleBackColor = true;
+            // 
+            // ScreenshotButton
+            // 
+            ScreenshotButton.Location = new Point(254, 339);
+            ScreenshotButton.Name = "ScreenshotButton";
+            ScreenshotButton.Size = new Size(105, 23);
+            ScreenshotButton.TabIndex = 68;
+            ScreenshotButton.Text = "Screenshot";
+            ScreenshotButton.UseVisualStyleBackColor = true;
+            ScreenshotButton.Click += ScreenshotButton_Click;
+            // 
+            // pictureBox1
+            // 
+            pictureBox1.Location = new Point(72, 368);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(50, 50);
+            pictureBox1.TabIndex = 69;
+            pictureBox1.TabStop = false;
+            // 
+            // pictureBox2
+            // 
+            pictureBox2.Location = new Point(126, 368);
+            pictureBox2.Name = "pictureBox2";
+            pictureBox2.Size = new Size(50, 50);
+            pictureBox2.TabIndex = 70;
+            pictureBox2.TabStop = false;
+            // 
+            // pictureBox3
+            // 
+            pictureBox3.Location = new Point(180, 368);
+            pictureBox3.Name = "pictureBox3";
+            pictureBox3.Size = new Size(50, 50);
+            pictureBox3.TabIndex = 71;
+            pictureBox3.TabStop = false;
+            // 
+            // pictureBox4
+            // 
+            pictureBox4.Location = new Point(234, 368);
+            pictureBox4.Name = "pictureBox4";
+            pictureBox4.Size = new Size(50, 50);
+            pictureBox4.TabIndex = 72;
+            pictureBox4.TabStop = false;
+            // 
+            // pictureBox5
+            // 
+            pictureBox5.Location = new Point(288, 368);
+            pictureBox5.Name = "pictureBox5";
+            pictureBox5.Size = new Size(50, 50);
+            pictureBox5.TabIndex = 73;
+            pictureBox5.TabStop = false;
+            // 
+            // pictureBox6
+            // 
+            pictureBox6.Location = new Point(343, 368);
+            pictureBox6.Name = "pictureBox6";
+            pictureBox6.Size = new Size(50, 50);
+            pictureBox6.TabIndex = 74;
+            pictureBox6.TabStop = false;
             // 
             // Egg_Viewer
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.ClientSize = new System.Drawing.Size(426, 404);
-            this.Controls.Add(this.HidePIDEC);
-            this.Controls.Add(this.SquareStarCount);
-            this.Controls.Add(this.UptimeLabel);
-            this.Controls.Add(this.ScreenOffBox);
-            this.Controls.Add(this.StopConditionsButton);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.UserDiscordIDText);
-            this.Controls.Add(this.SaveHookURL);
-            this.Controls.Add(this.WebHookText);
-            this.Controls.Add(this.FillingHoldTime);
-            this.Controls.Add(this.HoldTimeToFillings);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.NumberOfFillings);
-            this.Controls.Add(this.HoldIngredients);
-            this.Controls.Add(this.NextSanwichLabel);
-            this.Controls.Add(this.BasketCount);
-            this.Controls.Add(this.ShinyFoundLabel);
-            this.Controls.Add(this.SandwichCount);
-            this.Controls.Add(this.checkBox7);
-            this.Controls.Add(this.checkBox6);
-            this.Controls.Add(this.checkBox5);
-            this.Controls.Add(this.Item3Value);
-            this.Controls.Add(this.Item3Label);
-            this.Controls.Add(this.EatAgain);
-            this.Controls.Add(this.Item2Value);
-            this.Controls.Add(this.Item2Label);
-            this.Controls.Add(this.Item1Label);
-            this.Controls.Add(this.Item1Value);
-            this.Controls.Add(this.EatOnStart);
-            this.Controls.Add(this.HardStopButton);
-            this.Controls.Add(this.BallBox);
-            this.Controls.Add(this.FetchButton);
-            this.Controls.Add(this.PokeStats);
-            this.Controls.Add(this.PokeSpriteBox);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Name = "Egg_Viewer";
-            this.Text = "Egg Viewer";
-            ((System.ComponentModel.ISupportInitialize)(this.PokeSpriteBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.BallBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.NumberOfFillings)).EndInit();
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            BackColor = SystemColors.GradientInactiveCaption;
+            ClientSize = new Size(426, 404);
+            Controls.Add(pictureBox6);
+            Controls.Add(pictureBox5);
+            Controls.Add(pictureBox4);
+            Controls.Add(pictureBox3);
+            Controls.Add(pictureBox2);
+            Controls.Add(pictureBox1);
+            Controls.Add(ScreenshotButton);
+            Controls.Add(HidePIDEC);
+            Controls.Add(SquareStarCount);
+            Controls.Add(UptimeLabel);
+            Controls.Add(ScreenOffBox);
+            Controls.Add(StopConditionsButton);
+            Controls.Add(FillingHoldTime);
+            Controls.Add(HoldTimeToFillings);
+            Controls.Add(label1);
+            Controls.Add(NumberOfFillings);
+            Controls.Add(HoldIngredients);
+            Controls.Add(NextSanwichLabel);
+            Controls.Add(BasketCount);
+            Controls.Add(ShinyFoundLabel);
+            Controls.Add(SandwichCount);
+            Controls.Add(checkBox7);
+            Controls.Add(checkBox6);
+            Controls.Add(checkBox5);
+            Controls.Add(Item3Value);
+            Controls.Add(Item3Label);
+            Controls.Add(EatAgain);
+            Controls.Add(Item2Value);
+            Controls.Add(Item2Label);
+            Controls.Add(Item1Label);
+            Controls.Add(Item1Value);
+            Controls.Add(EatOnStart);
+            Controls.Add(HardStopButton);
+            Controls.Add(BallBox);
+            Controls.Add(FetchButton);
+            Controls.Add(PokeStats);
+            Controls.Add(PokeSpriteBox);
+            FormBorderStyle = FormBorderStyle.None;
+            Name = "Egg_Viewer";
+            Text = "Egg Viewer";
+            ((System.ComponentModel.ISupportInitialize)PokeSpriteBox).EndInit();
+            ((System.ComponentModel.ISupportInitialize)BallBox).EndInit();
+            ((System.ComponentModel.ISupportInitialize)NumberOfFillings).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox3).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox5).EndInit();
+            ((System.ComponentModel.ISupportInitialize)pictureBox6).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
@@ -497,15 +517,17 @@ namespace PokeViewer.NET.SubForms
         private Label label1;
         private Label HoldTimeToFillings;
         private TextBox FillingHoldTime;
-        private TextBox WebHookText;
-        private Button SaveHookURL;
-        private TextBox UserDiscordIDText;
-        private Label label2;
-        private Label label3;
         private Button StopConditionsButton;
         private CheckBox ScreenOffBox;
         private Label UptimeLabel;
         private Label SquareStarCount;
         private CheckBox HidePIDEC;
+        private Button ScreenshotButton;
+        private PictureBox pictureBox1;
+        private PictureBox pictureBox2;
+        private PictureBox pictureBox3;
+        private PictureBox pictureBox4;
+        private PictureBox pictureBox5;
+        private PictureBox pictureBox6;
     }
 }

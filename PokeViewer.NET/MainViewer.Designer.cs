@@ -29,462 +29,531 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainViewer));
-            this.Connect = new System.Windows.Forms.Button();
-            this.SwitchIP = new System.Windows.Forms.TextBox();
-            this.View = new System.Windows.Forms.Button();
-            this.ViewBox = new System.Windows.Forms.TextBox();
-            this.PokeSprite = new System.Windows.Forms.PictureBox();
-            this.Specialty = new System.Windows.Forms.PictureBox();
-            this.OriginIcon = new System.Windows.Forms.PictureBox();
-            this.Typing1 = new System.Windows.Forms.PictureBox();
-            this.HidePIDEC = new System.Windows.Forms.CheckBox();
-            this.Typing2 = new System.Windows.Forms.PictureBox();
-            this.LiveStats = new System.Windows.Forms.TextBox();
-            this.RefreshStats = new System.Windows.Forms.CheckBox();
-            this.RefreshBox = new System.Windows.Forms.TextBox();
-            this.Refresh = new System.Windows.Forms.Label();
-            this.TodaysDate = new System.Windows.Forms.Label();
-            this.WindowCapture = new System.Windows.Forms.Button();
-            this.HpLabel = new System.Windows.Forms.Label();
-            this.UniqueBox = new System.Windows.Forms.CheckBox();
-            this.UniqueBox2 = new System.Windows.Forms.CheckBox();
-            this.InGameScreenshot = new System.Windows.Forms.Button();
-            this.ToggleSwitchProtocol = new System.Windows.Forms.CheckBox();
-            this.ViewerControl = new System.Windows.Forms.TabControl();
-            this.ConnectionPage = new System.Windows.Forms.TabPage();
-            this.ConnectionGroupBox = new System.Windows.Forms.GroupBox();
-            this.VersionLabel = new System.Windows.Forms.Label();
-            this.ConnectionSpriteBox = new System.Windows.Forms.PictureBox();
-            this.ViewPage = new System.Windows.Forms.TabPage();
-            this.BoxPage = new System.Windows.Forms.TabPage();
-            this.PartyPage = new System.Windows.Forms.TabPage();
-            this.EggPage = new System.Windows.Forms.TabPage();
-            this.WidePage = new System.Windows.Forms.TabPage();
-            this.NPCPage = new System.Windows.Forms.TabPage();
-            this.RaidPage = new System.Windows.Forms.TabPage();
-            this.InGameScreenshotPage = new System.Windows.Forms.TabPage();
-            this.MiscPage = new System.Windows.Forms.TabPage();
-            ((System.ComponentModel.ISupportInitialize)(this.PokeSprite)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.Specialty)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.OriginIcon)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.Typing1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.Typing2)).BeginInit();
-            this.ViewerControl.SuspendLayout();
-            this.ConnectionPage.SuspendLayout();
-            this.ConnectionGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ConnectionSpriteBox)).BeginInit();
-            this.ViewPage.SuspendLayout();
-            this.SuspendLayout();
+            Connect = new Button();
+            SwitchIP = new TextBox();
+            View = new Button();
+            ViewBox = new TextBox();
+            PokeSprite = new PictureBox();
+            Specialty = new PictureBox();
+            OriginIcon = new PictureBox();
+            Typing1 = new PictureBox();
+            HidePIDEC = new CheckBox();
+            Typing2 = new PictureBox();
+            LiveStats = new TextBox();
+            RefreshStats = new CheckBox();
+            RefreshBox = new TextBox();
+            Refresh = new Label();
+            TodaysDate = new Label();
+            WindowCapture = new Button();
+            HpLabel = new Label();
+            UniqueBox = new CheckBox();
+            UniqueBox2 = new CheckBox();
+            InGameScreenshot = new Button();
+            ToggleSwitchProtocol = new CheckBox();
+            ViewerControl = new TabControl();
+            ConnectionPage = new TabPage();
+            SettingsGroupBox = new GroupBox();
+            WideButton = new Button();
+            RaidButton = new Button();
+            DiscordIDText = new TextBox();
+            WebhookURLText = new TextBox();
+            DiscordID = new Label();
+            WebHookURL = new Label();
+            SaveButton = new Button();
+            ConnectionGroupBox = new GroupBox();
+            VersionLabel = new Label();
+            ConnectionSpriteBox = new PictureBox();
+            ViewPage = new TabPage();
+            BoxPage = new TabPage();
+            PartyPage = new TabPage();
+            EggPage = new TabPage();
+            NPCPage = new TabPage();
+            InGameScreenshotPage = new TabPage();
+            MiscPage = new TabPage();
+            ((System.ComponentModel.ISupportInitialize)PokeSprite).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)Specialty).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)OriginIcon).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)Typing1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)Typing2).BeginInit();
+            ViewerControl.SuspendLayout();
+            ConnectionPage.SuspendLayout();
+            SettingsGroupBox.SuspendLayout();
+            ConnectionGroupBox.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)ConnectionSpriteBox).BeginInit();
+            ViewPage.SuspendLayout();
+            SuspendLayout();
             // 
             // Connect
             // 
-            this.Connect.Location = new System.Drawing.Point(37, 57);
-            this.Connect.Name = "Connect";
-            this.Connect.Size = new System.Drawing.Size(75, 25);
-            this.Connect.TabIndex = 0;
-            this.Connect.Text = "Connect";
-            this.Connect.UseVisualStyleBackColor = true;
-            this.Connect.Click += new System.EventHandler(this.Connect_Click);
+            Connect.Location = new Point(66, 57);
+            Connect.Name = "Connect";
+            Connect.Size = new Size(75, 25);
+            Connect.TabIndex = 0;
+            Connect.Text = "Connect";
+            Connect.UseVisualStyleBackColor = true;
+            Connect.Click += Connect_Click;
             // 
             // SwitchIP
             // 
-            this.SwitchIP.Location = new System.Drawing.Point(37, 26);
-            this.SwitchIP.Name = "SwitchIP";
-            this.SwitchIP.Size = new System.Drawing.Size(128, 23);
-            this.SwitchIP.TabIndex = 2;
-            this.SwitchIP.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.SwitchIP.TextChanged += new System.EventHandler(this.CheckForIP);
+            SwitchIP.Location = new Point(37, 26);
+            SwitchIP.Name = "SwitchIP";
+            SwitchIP.Size = new Size(128, 23);
+            SwitchIP.TabIndex = 2;
+            SwitchIP.TextAlign = HorizontalAlignment.Center;
+            SwitchIP.TextChanged += CheckForIP;
             // 
             // View
             // 
-            this.View.Location = new System.Drawing.Point(219, 264);
-            this.View.Name = "View";
-            this.View.Size = new System.Drawing.Size(47, 23);
-            this.View.TabIndex = 3;
-            this.View.Text = "View";
-            this.View.UseVisualStyleBackColor = true;
-            this.View.Click += new System.EventHandler(this.View_Click);
+            View.Location = new Point(219, 264);
+            View.Name = "View";
+            View.Size = new Size(47, 23);
+            View.TabIndex = 3;
+            View.Text = "View";
+            View.UseVisualStyleBackColor = true;
+            View.Click += View_Click;
             // 
             // ViewBox
             // 
-            this.ViewBox.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.ViewBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.ViewBox.ForeColor = System.Drawing.SystemColors.InfoText;
-            this.ViewBox.Location = new System.Drawing.Point(37, 88);
-            this.ViewBox.Multiline = true;
-            this.ViewBox.Name = "ViewBox";
-            this.ViewBox.ReadOnly = true;
-            this.ViewBox.Size = new System.Drawing.Size(182, 169);
-            this.ViewBox.TabIndex = 4;
-            this.ViewBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            ViewBox.BackColor = SystemColors.GradientInactiveCaption;
+            ViewBox.BorderStyle = BorderStyle.FixedSingle;
+            ViewBox.ForeColor = SystemColors.InfoText;
+            ViewBox.Location = new Point(37, 88);
+            ViewBox.Multiline = true;
+            ViewBox.Name = "ViewBox";
+            ViewBox.ReadOnly = true;
+            ViewBox.Size = new Size(182, 169);
+            ViewBox.TabIndex = 4;
+            ViewBox.TextAlign = HorizontalAlignment.Center;
             // 
             // PokeSprite
             // 
-            this.PokeSprite.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.PokeSprite.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.PokeSprite.Location = new System.Drawing.Point(263, 88);
-            this.PokeSprite.Name = "PokeSprite";
-            this.PokeSprite.Size = new System.Drawing.Size(182, 169);
-            this.PokeSprite.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.PokeSprite.TabIndex = 7;
-            this.PokeSprite.TabStop = false;
+            PokeSprite.BackColor = SystemColors.GradientInactiveCaption;
+            PokeSprite.BorderStyle = BorderStyle.FixedSingle;
+            PokeSprite.Location = new Point(263, 88);
+            PokeSprite.Name = "PokeSprite";
+            PokeSprite.Size = new Size(182, 169);
+            PokeSprite.SizeMode = PictureBoxSizeMode.CenterImage;
+            PokeSprite.TabIndex = 7;
+            PokeSprite.TabStop = false;
             // 
             // Specialty
             // 
-            this.Specialty.Location = new System.Drawing.Point(219, 295);
-            this.Specialty.Name = "Specialty";
-            this.Specialty.Size = new System.Drawing.Size(47, 41);
-            this.Specialty.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.Specialty.TabIndex = 8;
-            this.Specialty.TabStop = false;
+            Specialty.Location = new Point(219, 295);
+            Specialty.Name = "Specialty";
+            Specialty.Size = new Size(47, 41);
+            Specialty.SizeMode = PictureBoxSizeMode.Zoom;
+            Specialty.TabIndex = 8;
+            Specialty.TabStop = false;
             // 
             // OriginIcon
             // 
-            this.OriginIcon.ImageLocation = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/OriginMarks/icon_gene" +
-    "ration_00%5Esb.png";
-            this.OriginIcon.Location = new System.Drawing.Point(210, 18);
-            this.OriginIcon.Name = "OriginIcon";
-            this.OriginIcon.Size = new System.Drawing.Size(64, 64);
-            this.OriginIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.OriginIcon.TabIndex = 10;
-            this.OriginIcon.TabStop = false;
+            OriginIcon.ImageLocation = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/OriginMarks/icon_generation_00%5Esb.png";
+            OriginIcon.Location = new Point(210, 18);
+            OriginIcon.Name = "OriginIcon";
+            OriginIcon.Size = new Size(64, 64);
+            OriginIcon.SizeMode = PictureBoxSizeMode.AutoSize;
+            OriginIcon.TabIndex = 10;
+            OriginIcon.TabStop = false;
             // 
             // Typing1
             // 
-            this.Typing1.Location = new System.Drawing.Point(376, 295);
-            this.Typing1.Name = "Typing1";
-            this.Typing1.Size = new System.Drawing.Size(69, 56);
-            this.Typing1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.Typing1.TabIndex = 12;
-            this.Typing1.TabStop = false;
+            Typing1.Location = new Point(376, 295);
+            Typing1.Name = "Typing1";
+            Typing1.Size = new Size(69, 56);
+            Typing1.SizeMode = PictureBoxSizeMode.StretchImage;
+            Typing1.TabIndex = 12;
+            Typing1.TabStop = false;
             // 
             // HidePIDEC
             // 
-            this.HidePIDEC.AutoSize = true;
-            this.HidePIDEC.Location = new System.Drawing.Point(37, 57);
-            this.HidePIDEC.Name = "HidePIDEC";
-            this.HidePIDEC.Size = new System.Drawing.Size(91, 19);
-            this.HidePIDEC.TabIndex = 13;
-            this.HidePIDEC.Text = "Hide PID/EC";
-            this.HidePIDEC.UseVisualStyleBackColor = true;
-            this.HidePIDEC.CheckedChanged += new System.EventHandler(this.CheckForHide);
+            HidePIDEC.AutoSize = true;
+            HidePIDEC.Location = new Point(37, 57);
+            HidePIDEC.Name = "HidePIDEC";
+            HidePIDEC.Size = new Size(91, 19);
+            HidePIDEC.TabIndex = 13;
+            HidePIDEC.Text = "Hide PID/EC";
+            HidePIDEC.UseVisualStyleBackColor = true;
+            HidePIDEC.CheckedChanged += CheckForHide;
             // 
             // Typing2
             // 
-            this.Typing2.Location = new System.Drawing.Point(281, 295);
-            this.Typing2.Name = "Typing2";
-            this.Typing2.Size = new System.Drawing.Size(69, 56);
-            this.Typing2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.Typing2.TabIndex = 14;
-            this.Typing2.TabStop = false;
+            Typing2.Location = new Point(281, 295);
+            Typing2.Name = "Typing2";
+            Typing2.Size = new Size(69, 56);
+            Typing2.SizeMode = PictureBoxSizeMode.StretchImage;
+            Typing2.TabIndex = 14;
+            Typing2.TabStop = false;
             // 
             // LiveStats
             // 
-            this.LiveStats.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.LiveStats.Location = new System.Drawing.Point(37, 294);
-            this.LiveStats.Multiline = true;
-            this.LiveStats.Name = "LiveStats";
-            this.LiveStats.ReadOnly = true;
-            this.LiveStats.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.LiveStats.Size = new System.Drawing.Size(171, 98);
-            this.LiveStats.TabIndex = 15;
-            this.LiveStats.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            LiveStats.BackColor = SystemColors.GradientInactiveCaption;
+            LiveStats.Location = new Point(37, 294);
+            LiveStats.Multiline = true;
+            LiveStats.Name = "LiveStats";
+            LiveStats.ReadOnly = true;
+            LiveStats.ScrollBars = ScrollBars.Vertical;
+            LiveStats.Size = new Size(171, 98);
+            LiveStats.TabIndex = 15;
+            LiveStats.TextAlign = HorizontalAlignment.Center;
             // 
             // RefreshStats
             // 
-            this.RefreshStats.AutoSize = true;
-            this.RefreshStats.Location = new System.Drawing.Point(37, 267);
-            this.RefreshStats.Name = "RefreshStats";
-            this.RefreshStats.Size = new System.Drawing.Size(72, 19);
-            this.RefreshStats.TabIndex = 16;
-            this.RefreshStats.Text = "LiveStats";
-            this.RefreshStats.UseVisualStyleBackColor = true;
-            this.RefreshStats.CheckedChanged += new System.EventHandler(this.RefreshStats_CheckedChanged);
+            RefreshStats.AutoSize = true;
+            RefreshStats.Location = new Point(37, 267);
+            RefreshStats.Name = "RefreshStats";
+            RefreshStats.Size = new Size(72, 19);
+            RefreshStats.TabIndex = 16;
+            RefreshStats.Text = "LiveStats";
+            RefreshStats.UseVisualStyleBackColor = true;
+            RefreshStats.CheckedChanged += RefreshStats_CheckedChanged;
             // 
             // RefreshBox
             // 
-            this.RefreshBox.Location = new System.Drawing.Point(120, 403);
-            this.RefreshBox.Name = "RefreshBox";
-            this.RefreshBox.Size = new System.Drawing.Size(71, 23);
-            this.RefreshBox.TabIndex = 17;
-            this.RefreshBox.Text = "2000";
-            this.RefreshBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            RefreshBox.Location = new Point(120, 403);
+            RefreshBox.Name = "RefreshBox";
+            RefreshBox.Size = new Size(71, 23);
+            RefreshBox.TabIndex = 17;
+            RefreshBox.Text = "2000";
+            RefreshBox.TextAlign = HorizontalAlignment.Center;
             // 
             // Refresh
             // 
-            this.Refresh.AutoSize = true;
-            this.Refresh.Location = new System.Drawing.Point(42, 407);
-            this.Refresh.Name = "Refresh";
-            this.Refresh.Size = new System.Drawing.Size(75, 15);
-            this.Refresh.TabIndex = 18;
-            this.Refresh.Text = "Refresh Rate:";
+            Refresh.AutoSize = true;
+            Refresh.Location = new Point(42, 407);
+            Refresh.Name = "Refresh";
+            Refresh.Size = new Size(75, 15);
+            Refresh.TabIndex = 18;
+            Refresh.Text = "Refresh Rate:";
             // 
             // TodaysDate
             // 
-            this.TodaysDate.AutoSize = true;
-            this.TodaysDate.Location = new System.Drawing.Point(281, 407);
-            this.TodaysDate.Name = "TodaysDate";
-            this.TodaysDate.Size = new System.Drawing.Size(57, 15);
-            this.TodaysDate.TabIndex = 19;
-            this.TodaysDate.Text = "DateTime";
+            TodaysDate.AutoSize = true;
+            TodaysDate.Location = new Point(281, 407);
+            TodaysDate.Name = "TodaysDate";
+            TodaysDate.Size = new Size(57, 15);
+            TodaysDate.TabIndex = 19;
+            TodaysDate.Text = "DateTime";
             // 
             // WindowCapture
             // 
-            this.WindowCapture.Image = ((System.Drawing.Image)(resources.GetObject("WindowCapture.Image")));
-            this.WindowCapture.Location = new System.Drawing.Point(167, 57);
-            this.WindowCapture.Name = "WindowCapture";
-            this.WindowCapture.Size = new System.Drawing.Size(37, 25);
-            this.WindowCapture.TabIndex = 20;
-            this.WindowCapture.UseVisualStyleBackColor = true;
-            this.WindowCapture.Click += new System.EventHandler(this.CaptureWindow_Click);
+            WindowCapture.Image = (Image)resources.GetObject("WindowCapture.Image");
+            WindowCapture.Location = new Point(167, 57);
+            WindowCapture.Name = "WindowCapture";
+            WindowCapture.Size = new Size(37, 25);
+            WindowCapture.TabIndex = 20;
+            WindowCapture.UseVisualStyleBackColor = true;
+            WindowCapture.Click += CaptureWindow_Click;
             // 
             // HpLabel
             // 
-            this.HpLabel.AutoSize = true;
-            this.HpLabel.Location = new System.Drawing.Point(124, 268);
-            this.HpLabel.Name = "HpLabel";
-            this.HpLabel.Size = new System.Drawing.Size(63, 15);
-            this.HpLabel.TabIndex = 21;
-            this.HpLabel.Text = "          HP%";
+            HpLabel.AutoSize = true;
+            HpLabel.Location = new Point(124, 268);
+            HpLabel.Name = "HpLabel";
+            HpLabel.Size = new Size(63, 15);
+            HpLabel.TabIndex = 21;
+            HpLabel.Text = "          HP%";
             // 
             // UniqueBox
             // 
-            this.UniqueBox.AutoSize = true;
-            this.UniqueBox.Location = new System.Drawing.Point(281, 264);
-            this.UniqueBox.Name = "UniqueBox";
-            this.UniqueBox.Size = new System.Drawing.Size(15, 14);
-            this.UniqueBox.TabIndex = 22;
-            this.UniqueBox.UseVisualStyleBackColor = true;
-            this.UniqueBox.Visible = false;
+            UniqueBox.AutoSize = true;
+            UniqueBox.Location = new Point(281, 264);
+            UniqueBox.Name = "UniqueBox";
+            UniqueBox.Size = new Size(15, 14);
+            UniqueBox.TabIndex = 22;
+            UniqueBox.UseVisualStyleBackColor = true;
+            UniqueBox.Visible = false;
             // 
             // UniqueBox2
             // 
-            this.UniqueBox2.AutoSize = true;
-            this.UniqueBox2.Location = new System.Drawing.Point(355, 264);
-            this.UniqueBox2.Name = "UniqueBox2";
-            this.UniqueBox2.Size = new System.Drawing.Size(15, 14);
-            this.UniqueBox2.TabIndex = 23;
-            this.UniqueBox2.UseVisualStyleBackColor = true;
-            this.UniqueBox2.Visible = false;
+            UniqueBox2.AutoSize = true;
+            UniqueBox2.Location = new Point(355, 264);
+            UniqueBox2.Name = "UniqueBox2";
+            UniqueBox2.Size = new Size(15, 14);
+            UniqueBox2.TabIndex = 23;
+            UniqueBox2.UseVisualStyleBackColor = true;
+            UniqueBox2.Visible = false;
             // 
             // InGameScreenshot
             // 
-            this.InGameScreenshot.Image = ((System.Drawing.Image)(resources.GetObject("InGameScreenshot.Image")));
-            this.InGameScreenshot.Location = new System.Drawing.Point(280, 57);
-            this.InGameScreenshot.Name = "InGameScreenshot";
-            this.InGameScreenshot.Size = new System.Drawing.Size(37, 25);
-            this.InGameScreenshot.TabIndex = 30;
-            this.InGameScreenshot.UseVisualStyleBackColor = true;
-            this.InGameScreenshot.Click += new System.EventHandler(this.InGameScreenshot_Click);
+            InGameScreenshot.Image = (Image)resources.GetObject("InGameScreenshot.Image");
+            InGameScreenshot.Location = new Point(280, 57);
+            InGameScreenshot.Name = "InGameScreenshot";
+            InGameScreenshot.Size = new Size(37, 25);
+            InGameScreenshot.TabIndex = 30;
+            InGameScreenshot.UseVisualStyleBackColor = true;
+            InGameScreenshot.Click += InGameScreenshot_Click;
             // 
             // ToggleSwitchProtocol
             // 
-            this.ToggleSwitchProtocol.AutoSize = true;
-            this.ToggleSwitchProtocol.Location = new System.Drawing.Point(118, 61);
-            this.ToggleSwitchProtocol.Name = "ToggleSwitchProtocol";
-            this.ToggleSwitchProtocol.Size = new System.Drawing.Size(52, 19);
-            this.ToggleSwitchProtocol.TabIndex = 32;
-            this.ToggleSwitchProtocol.Text = "USB?";
-            this.ToggleSwitchProtocol.UseVisualStyleBackColor = true;
-            this.ToggleSwitchProtocol.CheckedChanged += new System.EventHandler(this.CheckForUSBChecked);
+            ToggleSwitchProtocol.AutoSize = true;
+            ToggleSwitchProtocol.Location = new Point(20, 23);
+            ToggleSwitchProtocol.Name = "ToggleSwitchProtocol";
+            ToggleSwitchProtocol.Size = new Size(52, 19);
+            ToggleSwitchProtocol.TabIndex = 32;
+            ToggleSwitchProtocol.Text = "USB?";
+            ToggleSwitchProtocol.UseVisualStyleBackColor = true;
+            ToggleSwitchProtocol.CheckedChanged += CheckForUSBChecked;
             // 
             // ViewerControl
             // 
-            this.ViewerControl.Controls.Add(this.ConnectionPage);
-            this.ViewerControl.Controls.Add(this.ViewPage);
-            this.ViewerControl.Controls.Add(this.BoxPage);
-            this.ViewerControl.Controls.Add(this.PartyPage);
-            this.ViewerControl.Controls.Add(this.EggPage);
-            this.ViewerControl.Controls.Add(this.WidePage);
-            this.ViewerControl.Controls.Add(this.NPCPage);
-            this.ViewerControl.Controls.Add(this.RaidPage);
-            this.ViewerControl.Controls.Add(this.InGameScreenshotPage);
-            this.ViewerControl.Controls.Add(this.MiscPage);
-            this.ViewerControl.Location = new System.Drawing.Point(0, 2);
-            this.ViewerControl.Name = "ViewerControl";
-            this.ViewerControl.SelectedIndex = 0;
-            this.ViewerControl.Size = new System.Drawing.Size(511, 510);
-            this.ViewerControl.TabIndex = 33;
-            this.ViewerControl.SelectedIndexChanged += new System.EventHandler(this.ViewerControl_SelectedIndexChanged);
+            ViewerControl.Controls.Add(ConnectionPage);
+            ViewerControl.Controls.Add(ViewPage);
+            ViewerControl.Controls.Add(BoxPage);
+            ViewerControl.Controls.Add(PartyPage);
+            ViewerControl.Controls.Add(EggPage);
+            ViewerControl.Controls.Add(NPCPage);
+            ViewerControl.Controls.Add(InGameScreenshotPage);
+            ViewerControl.Controls.Add(MiscPage);
+            ViewerControl.Location = new Point(0, 2);
+            ViewerControl.Name = "ViewerControl";
+            ViewerControl.SelectedIndex = 0;
+            ViewerControl.Size = new Size(511, 510);
+            ViewerControl.TabIndex = 33;
+            ViewerControl.SelectedIndexChanged += ViewerControl_SelectedIndexChanged;
             // 
             // ConnectionPage
             // 
-            this.ConnectionPage.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.ConnectionPage.Controls.Add(this.ConnectionGroupBox);
-            this.ConnectionPage.Location = new System.Drawing.Point(4, 24);
-            this.ConnectionPage.Name = "ConnectionPage";
-            this.ConnectionPage.Padding = new System.Windows.Forms.Padding(3);
-            this.ConnectionPage.Size = new System.Drawing.Size(503, 482);
-            this.ConnectionPage.TabIndex = 0;
-            this.ConnectionPage.Text = "Connection 🔌";
+            ConnectionPage.BackColor = SystemColors.ControlLightLight;
+            ConnectionPage.Controls.Add(SettingsGroupBox);
+            ConnectionPage.Controls.Add(ConnectionGroupBox);
+            ConnectionPage.Location = new Point(4, 24);
+            ConnectionPage.Name = "ConnectionPage";
+            ConnectionPage.Padding = new Padding(3);
+            ConnectionPage.Size = new Size(503, 482);
+            ConnectionPage.TabIndex = 0;
+            ConnectionPage.Text = "Connection 🔌";
+            // 
+            // SettingsGroupBox
+            // 
+            SettingsGroupBox.Controls.Add(WideButton);
+            SettingsGroupBox.Controls.Add(RaidButton);
+            SettingsGroupBox.Controls.Add(DiscordIDText);
+            SettingsGroupBox.Controls.Add(WebhookURLText);
+            SettingsGroupBox.Controls.Add(DiscordID);
+            SettingsGroupBox.Controls.Add(ToggleSwitchProtocol);
+            SettingsGroupBox.Controls.Add(WebHookURL);
+            SettingsGroupBox.Controls.Add(SaveButton);
+            SettingsGroupBox.Location = new Point(105, 244);
+            SettingsGroupBox.Name = "SettingsGroupBox";
+            SettingsGroupBox.Size = new Size(264, 110);
+            SettingsGroupBox.TabIndex = 35;
+            SettingsGroupBox.TabStop = false;
+            SettingsGroupBox.Text = "Extras";
+            // 
+            // WideButton
+            // 
+            WideButton.Enabled = false;
+            WideButton.Location = new Point(136, 19);
+            WideButton.Name = "WideButton";
+            WideButton.Size = new Size(59, 23);
+            WideButton.TabIndex = 37;
+            WideButton.Text = "Wide";
+            WideButton.UseVisualStyleBackColor = true;
+            WideButton.Click += WideButton_Click;
+            // 
+            // RaidButton
+            // 
+            RaidButton.Enabled = false;
+            RaidButton.Location = new Point(200, 19);
+            RaidButton.Name = "RaidButton";
+            RaidButton.Size = new Size(58, 23);
+            RaidButton.TabIndex = 38;
+            RaidButton.Text = "Raid";
+            RaidButton.UseVisualStyleBackColor = true;
+            RaidButton.Click += RaidButton_Click;
+            // 
+            // DiscordIDText
+            // 
+            DiscordIDText.Location = new Point(73, 80);
+            DiscordIDText.Name = "DiscordIDText";
+            DiscordIDText.Size = new Size(185, 23);
+            DiscordIDText.TabIndex = 4;
+            DiscordIDText.TextAlign = HorizontalAlignment.Center;
+            // 
+            // WebhookURLText
+            // 
+            WebhookURLText.Location = new Point(73, 51);
+            WebhookURLText.Name = "WebhookURLText";
+            WebhookURLText.Size = new Size(185, 23);
+            WebhookURLText.TabIndex = 3;
+            WebhookURLText.TextAlign = HorizontalAlignment.Center;
+            WebhookURLText.UseSystemPasswordChar = true;
+            // 
+            // DiscordID
+            // 
+            DiscordID.AutoSize = true;
+            DiscordID.Location = new Point(6, 83);
+            DiscordID.Name = "DiscordID";
+            DiscordID.Size = new Size(61, 15);
+            DiscordID.TabIndex = 2;
+            DiscordID.Text = "Discord ID";
+            // 
+            // WebHookURL
+            // 
+            WebHookURL.AutoSize = true;
+            WebHookURL.Location = new Point(6, 54);
+            WebHookURL.Name = "WebHookURL";
+            WebHookURL.Size = new Size(58, 15);
+            WebHookURL.TabIndex = 1;
+            WebHookURL.Text = "Webhook";
+            // 
+            // SaveButton
+            // 
+            SaveButton.Location = new Point(72, 19);
+            SaveButton.Name = "SaveButton";
+            SaveButton.Size = new Size(59, 23);
+            SaveButton.TabIndex = 0;
+            SaveButton.Text = "Save";
+            SaveButton.UseVisualStyleBackColor = true;
+            SaveButton.Click += SaveButton_Click;
             // 
             // ConnectionGroupBox
             // 
-            this.ConnectionGroupBox.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.ConnectionGroupBox.Controls.Add(this.VersionLabel);
-            this.ConnectionGroupBox.Controls.Add(this.ConnectionSpriteBox);
-            this.ConnectionGroupBox.Controls.Add(this.Connect);
-            this.ConnectionGroupBox.Controls.Add(this.ToggleSwitchProtocol);
-            this.ConnectionGroupBox.Controls.Add(this.SwitchIP);
-            this.ConnectionGroupBox.Location = new System.Drawing.Point(40, 21);
-            this.ConnectionGroupBox.Name = "ConnectionGroupBox";
-            this.ConnectionGroupBox.Size = new System.Drawing.Size(200, 173);
-            this.ConnectionGroupBox.TabIndex = 34;
-            this.ConnectionGroupBox.TabStop = false;
-            this.ConnectionGroupBox.Text = "Switch IP";
+            ConnectionGroupBox.BackColor = SystemColors.ControlLightLight;
+            ConnectionGroupBox.Controls.Add(VersionLabel);
+            ConnectionGroupBox.Controls.Add(ConnectionSpriteBox);
+            ConnectionGroupBox.Controls.Add(Connect);
+            ConnectionGroupBox.Controls.Add(SwitchIP);
+            ConnectionGroupBox.Location = new Point(135, 74);
+            ConnectionGroupBox.Name = "ConnectionGroupBox";
+            ConnectionGroupBox.Size = new Size(200, 166);
+            ConnectionGroupBox.TabIndex = 34;
+            ConnectionGroupBox.TabStop = false;
+            ConnectionGroupBox.Text = "Switch IP";
             // 
             // VersionLabel
             // 
-            this.VersionLabel.AutoSize = true;
-            this.VersionLabel.Location = new System.Drawing.Point(159, 10);
-            this.VersionLabel.Name = "VersionLabel";
-            this.VersionLabel.Size = new System.Drawing.Size(37, 15);
-            this.VersionLabel.TabIndex = 36;
-            this.VersionLabel.Text = "v1.0.0";
+            VersionLabel.AutoSize = true;
+            VersionLabel.Location = new Point(159, 10);
+            VersionLabel.Name = "VersionLabel";
+            VersionLabel.Size = new Size(37, 15);
+            VersionLabel.TabIndex = 36;
+            VersionLabel.Text = "v1.0.0";
             // 
             // ConnectionSpriteBox
             // 
-            this.ConnectionSpriteBox.Location = new System.Drawing.Point(70, 90);
-            this.ConnectionSpriteBox.Name = "ConnectionSpriteBox";
-            this.ConnectionSpriteBox.Size = new System.Drawing.Size(64, 64);
-            this.ConnectionSpriteBox.TabIndex = 35;
-            this.ConnectionSpriteBox.TabStop = false;
+            ConnectionSpriteBox.Location = new Point(70, 90);
+            ConnectionSpriteBox.Name = "ConnectionSpriteBox";
+            ConnectionSpriteBox.Size = new Size(64, 64);
+            ConnectionSpriteBox.TabIndex = 35;
+            ConnectionSpriteBox.TabStop = false;
             // 
             // ViewPage
             // 
-            this.ViewPage.Controls.Add(this.OriginIcon);
-            this.ViewPage.Controls.Add(this.InGameScreenshot);
-            this.ViewPage.Controls.Add(this.Typing1);
-            this.ViewPage.Controls.Add(this.Typing2);
-            this.ViewPage.Controls.Add(this.View);
-            this.ViewPage.Controls.Add(this.ViewBox);
-            this.ViewPage.Controls.Add(this.PokeSprite);
-            this.ViewPage.Controls.Add(this.Specialty);
-            this.ViewPage.Controls.Add(this.UniqueBox2);
-            this.ViewPage.Controls.Add(this.HidePIDEC);
-            this.ViewPage.Controls.Add(this.UniqueBox);
-            this.ViewPage.Controls.Add(this.LiveStats);
-            this.ViewPage.Controls.Add(this.HpLabel);
-            this.ViewPage.Controls.Add(this.RefreshStats);
-            this.ViewPage.Controls.Add(this.WindowCapture);
-            this.ViewPage.Controls.Add(this.RefreshBox);
-            this.ViewPage.Controls.Add(this.TodaysDate);
-            this.ViewPage.Controls.Add(this.Refresh);
-            this.ViewPage.Location = new System.Drawing.Point(4, 24);
-            this.ViewPage.Name = "ViewPage";
-            this.ViewPage.Padding = new System.Windows.Forms.Padding(3);
-            this.ViewPage.Size = new System.Drawing.Size(503, 482);
-            this.ViewPage.TabIndex = 1;
-            this.ViewPage.Text = "View 🔎";
-            this.ViewPage.UseVisualStyleBackColor = true;
+            ViewPage.Controls.Add(OriginIcon);
+            ViewPage.Controls.Add(InGameScreenshot);
+            ViewPage.Controls.Add(Typing1);
+            ViewPage.Controls.Add(Typing2);
+            ViewPage.Controls.Add(View);
+            ViewPage.Controls.Add(ViewBox);
+            ViewPage.Controls.Add(PokeSprite);
+            ViewPage.Controls.Add(Specialty);
+            ViewPage.Controls.Add(UniqueBox2);
+            ViewPage.Controls.Add(HidePIDEC);
+            ViewPage.Controls.Add(UniqueBox);
+            ViewPage.Controls.Add(LiveStats);
+            ViewPage.Controls.Add(HpLabel);
+            ViewPage.Controls.Add(RefreshStats);
+            ViewPage.Controls.Add(WindowCapture);
+            ViewPage.Controls.Add(RefreshBox);
+            ViewPage.Controls.Add(TodaysDate);
+            ViewPage.Controls.Add(Refresh);
+            ViewPage.Location = new Point(4, 24);
+            ViewPage.Name = "ViewPage";
+            ViewPage.Padding = new Padding(3);
+            ViewPage.Size = new Size(503, 482);
+            ViewPage.TabIndex = 1;
+            ViewPage.Text = "View 🔎";
+            ViewPage.UseVisualStyleBackColor = true;
             // 
             // BoxPage
             // 
-            this.BoxPage.Location = new System.Drawing.Point(4, 24);
-            this.BoxPage.Name = "BoxPage";
-            this.BoxPage.Padding = new System.Windows.Forms.Padding(3);
-            this.BoxPage.Size = new System.Drawing.Size(503, 482);
-            this.BoxPage.TabIndex = 2;
-            this.BoxPage.Text = "Box 📦";
-            this.BoxPage.UseVisualStyleBackColor = true;
+            BoxPage.Location = new Point(4, 24);
+            BoxPage.Name = "BoxPage";
+            BoxPage.Padding = new Padding(3);
+            BoxPage.Size = new Size(503, 482);
+            BoxPage.TabIndex = 2;
+            BoxPage.Text = "Box 📦";
+            BoxPage.UseVisualStyleBackColor = true;
             // 
             // PartyPage
             // 
-            this.PartyPage.Location = new System.Drawing.Point(4, 24);
-            this.PartyPage.Name = "PartyPage";
-            this.PartyPage.Size = new System.Drawing.Size(503, 482);
-            this.PartyPage.TabIndex = 8;
-            this.PartyPage.Text = "Party 👨‍👩‍👦‍👦";
-            this.PartyPage.UseVisualStyleBackColor = true;
+            PartyPage.Location = new Point(4, 24);
+            PartyPage.Name = "PartyPage";
+            PartyPage.Size = new Size(503, 482);
+            PartyPage.TabIndex = 8;
+            PartyPage.Text = "Party 👨‍👩‍👦‍👦";
+            PartyPage.UseVisualStyleBackColor = true;
             // 
             // EggPage
             // 
-            this.EggPage.Location = new System.Drawing.Point(4, 24);
-            this.EggPage.Name = "EggPage";
-            this.EggPage.Padding = new System.Windows.Forms.Padding(3);
-            this.EggPage.Size = new System.Drawing.Size(503, 482);
-            this.EggPage.TabIndex = 3;
-            this.EggPage.Text = "Egg 🥚";
-            this.EggPage.UseVisualStyleBackColor = true;
-            // 
-            // WidePage
-            // 
-            this.WidePage.Location = new System.Drawing.Point(4, 24);
-            this.WidePage.Name = "WidePage";
-            this.WidePage.Padding = new System.Windows.Forms.Padding(3);
-            this.WidePage.Size = new System.Drawing.Size(503, 482);
-            this.WidePage.TabIndex = 4;
-            this.WidePage.Text = "Wide 🔭";
-            this.WidePage.UseVisualStyleBackColor = true;
+            EggPage.Location = new Point(4, 24);
+            EggPage.Name = "EggPage";
+            EggPage.Padding = new Padding(3);
+            EggPage.Size = new Size(503, 482);
+            EggPage.TabIndex = 3;
+            EggPage.Text = "Egg \U0001f95a";
+            EggPage.UseVisualStyleBackColor = true;
             // 
             // NPCPage
             // 
-            this.NPCPage.Location = new System.Drawing.Point(4, 24);
-            this.NPCPage.Name = "NPCPage";
-            this.NPCPage.Padding = new System.Windows.Forms.Padding(3);
-            this.NPCPage.Size = new System.Drawing.Size(503, 482);
-            this.NPCPage.TabIndex = 5;
-            this.NPCPage.Text = "NPC 🤖";
-            this.NPCPage.UseVisualStyleBackColor = true;
-            // 
-            // RaidPage
-            // 
-            this.RaidPage.Location = new System.Drawing.Point(4, 24);
-            this.RaidPage.Name = "RaidPage";
-            this.RaidPage.Padding = new System.Windows.Forms.Padding(3);
-            this.RaidPage.Size = new System.Drawing.Size(503, 482);
-            this.RaidPage.TabIndex = 6;
-            this.RaidPage.Text = "Raid 🎉";
-            this.RaidPage.UseVisualStyleBackColor = true;
+            NPCPage.Location = new Point(4, 24);
+            NPCPage.Name = "NPCPage";
+            NPCPage.Padding = new Padding(3);
+            NPCPage.Size = new Size(503, 482);
+            NPCPage.TabIndex = 5;
+            NPCPage.Text = "NPC 🤖";
+            NPCPage.UseVisualStyleBackColor = true;
             // 
             // InGameScreenshotPage
             // 
-            this.InGameScreenshotPage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.InGameScreenshotPage.Location = new System.Drawing.Point(4, 24);
-            this.InGameScreenshotPage.Name = "InGameScreenshotPage";
-            this.InGameScreenshotPage.Size = new System.Drawing.Size(503, 482);
-            this.InGameScreenshotPage.TabIndex = 7;
-            this.InGameScreenshotPage.Text = "Screenshot 📷";
-            this.InGameScreenshotPage.UseVisualStyleBackColor = true;
+            InGameScreenshotPage.BorderStyle = BorderStyle.FixedSingle;
+            InGameScreenshotPage.Location = new Point(4, 24);
+            InGameScreenshotPage.Name = "InGameScreenshotPage";
+            InGameScreenshotPage.Size = new Size(503, 482);
+            InGameScreenshotPage.TabIndex = 7;
+            InGameScreenshotPage.Text = "Screenshot 📷";
+            InGameScreenshotPage.UseVisualStyleBackColor = true;
             // 
             // MiscPage
             // 
-            this.MiscPage.Location = new System.Drawing.Point(4, 24);
-            this.MiscPage.Name = "MiscPage";
-            this.MiscPage.Size = new System.Drawing.Size(503, 482);
-            this.MiscPage.TabIndex = 9;
-            this.MiscPage.Text = "Misc 📓";
-            this.MiscPage.UseVisualStyleBackColor = true;
+            MiscPage.Location = new Point(4, 24);
+            MiscPage.Name = "MiscPage";
+            MiscPage.Size = new Size(503, 482);
+            MiscPage.TabIndex = 9;
+            MiscPage.Text = "Misc 📓";
+            MiscPage.UseVisualStyleBackColor = true;
             // 
             // MainViewer
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.ClientSize = new System.Drawing.Size(290, 240);
-            this.Controls.Add(this.ViewerControl);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MaximizeBox = false;
-            this.Name = "MainViewer";
-            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "PokeViewer.NET";
-            this.Load += new System.EventHandler(this.PokeViewerForm_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.PokeSprite)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.Specialty)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.OriginIcon)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.Typing1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.Typing2)).EndInit();
-            this.ViewerControl.ResumeLayout(false);
-            this.ConnectionPage.ResumeLayout(false);
-            this.ConnectionGroupBox.ResumeLayout(false);
-            this.ConnectionGroupBox.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.ConnectionSpriteBox)).EndInit();
-            this.ViewPage.ResumeLayout(false);
-            this.ViewPage.PerformLayout();
-            this.ResumeLayout(false);
-
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            BackColor = SystemColors.ControlLight;
+            ClientSize = new Size(495, 468);
+            Controls.Add(ViewerControl);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
+            Icon = (Icon)resources.GetObject("$this.Icon");
+            MaximizeBox = false;
+            Name = "MainViewer";
+            SizeGripStyle = SizeGripStyle.Hide;
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "PokeViewer.NET";
+            Load += PokeViewerForm_Load;
+            ((System.ComponentModel.ISupportInitialize)PokeSprite).EndInit();
+            ((System.ComponentModel.ISupportInitialize)Specialty).EndInit();
+            ((System.ComponentModel.ISupportInitialize)OriginIcon).EndInit();
+            ((System.ComponentModel.ISupportInitialize)Typing1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)Typing2).EndInit();
+            ViewerControl.ResumeLayout(false);
+            ConnectionPage.ResumeLayout(false);
+            SettingsGroupBox.ResumeLayout(false);
+            SettingsGroupBox.PerformLayout();
+            ConnectionGroupBox.ResumeLayout(false);
+            ConnectionGroupBox.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)ConnectionSpriteBox).EndInit();
+            ViewPage.ResumeLayout(false);
+            ViewPage.PerformLayout();
+            ResumeLayout(false);
         }
 
         #endregion
@@ -515,14 +584,20 @@
         private TabPage ViewPage;
         private TabPage BoxPage;
         private TabPage EggPage;
-        private TabPage WidePage;
         private TabPage NPCPage;
-        private TabPage RaidPage;
         private GroupBox ConnectionGroupBox;
         private PictureBox ConnectionSpriteBox;
         private Label VersionLabel;
         private TabPage InGameScreenshotPage;
         private TabPage PartyPage;
         private TabPage MiscPage;
+        private GroupBox SettingsGroupBox;
+        private Button SaveButton;
+        private TextBox WebhookURLText;
+        private Label DiscordID;
+        private Label WebHookURL;
+        private TextBox DiscordIDText;
+        private Button RaidButton;
+        private Button WideButton;
     }
 }

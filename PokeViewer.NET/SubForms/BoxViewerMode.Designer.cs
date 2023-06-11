@@ -28,9 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            textBox1 = new TextBox();
-            label1 = new Label();
-            button1 = new Button();
+            ViewButton = new Button();
             pictureBox1 = new PictureBox();
             pictureBox2 = new PictureBox();
             pictureBox3 = new PictureBox();
@@ -63,8 +61,10 @@
             pictureBox30 = new PictureBox();
             button2 = new Button();
             button3 = new Button();
-            label2 = new Label();
             checkBox1 = new CheckBox();
+            progressBar1 = new ProgressBar();
+            FlexButton = new Button();
+            comboBox1 = new ComboBox();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
@@ -97,37 +97,19 @@
             ((System.ComponentModel.ISupportInitialize)pictureBox30).BeginInit();
             SuspendLayout();
             // 
-            // textBox1
+            // ViewButton
             // 
-            textBox1.Location = new Point(231, 400);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(30, 23);
-            textBox1.TabIndex = 0;
-            textBox1.Text = "1";
-            textBox1.TextAlign = HorizontalAlignment.Center;
-            // 
-            // label1
-            // 
-            label1.AutoSize = true;
-            label1.Location = new Point(188, 403);
-            label1.Name = "label1";
-            label1.Size = new Size(37, 15);
-            label1.TabIndex = 1;
-            label1.Text = "Box #";
-            // 
-            // button1
-            // 
-            button1.Location = new Point(210, 372);
-            button1.Name = "button1";
-            button1.Size = new Size(75, 23);
-            button1.TabIndex = 2;
-            button1.Text = "View";
-            button1.UseVisualStyleBackColor = true;
-            button1.Click += button1_ClickAsync;
+            ViewButton.Location = new Point(210, 372);
+            ViewButton.Name = "ViewButton";
+            ViewButton.Size = new Size(75, 23);
+            ViewButton.TabIndex = 2;
+            ViewButton.Text = "View";
+            ViewButton.UseVisualStyleBackColor = true;
+            ViewButton.Click += button1_ClickAsync;
             // 
             // pictureBox1
             // 
-            pictureBox1.BackColor = SystemColors.GradientInactiveCaption;
+            pictureBox1.BackColor = SystemColors.ButtonHighlight;
             pictureBox1.BorderStyle = BorderStyle.FixedSingle;
             pictureBox1.Location = new Point(12, 12);
             pictureBox1.Name = "pictureBox1";
@@ -140,7 +122,7 @@
             // 
             // pictureBox2
             // 
-            pictureBox2.BackColor = SystemColors.GradientInactiveCaption;
+            pictureBox2.BackColor = SystemColors.ButtonHighlight;
             pictureBox2.BorderStyle = BorderStyle.FixedSingle;
             pictureBox2.Location = new Point(91, 12);
             pictureBox2.Name = "pictureBox2";
@@ -153,7 +135,7 @@
             // 
             // pictureBox3
             // 
-            pictureBox3.BackColor = SystemColors.GradientInactiveCaption;
+            pictureBox3.BackColor = SystemColors.ButtonHighlight;
             pictureBox3.BorderStyle = BorderStyle.FixedSingle;
             pictureBox3.Location = new Point(170, 12);
             pictureBox3.Name = "pictureBox3";
@@ -166,7 +148,7 @@
             // 
             // pictureBox4
             // 
-            pictureBox4.BackColor = SystemColors.GradientInactiveCaption;
+            pictureBox4.BackColor = SystemColors.ButtonHighlight;
             pictureBox4.BorderStyle = BorderStyle.FixedSingle;
             pictureBox4.Location = new Point(249, 12);
             pictureBox4.Name = "pictureBox4";
@@ -179,7 +161,7 @@
             // 
             // pictureBox5
             // 
-            pictureBox5.BackColor = SystemColors.GradientInactiveCaption;
+            pictureBox5.BackColor = SystemColors.ButtonHighlight;
             pictureBox5.BorderStyle = BorderStyle.FixedSingle;
             pictureBox5.Location = new Point(328, 12);
             pictureBox5.Name = "pictureBox5";
@@ -192,7 +174,7 @@
             // 
             // pictureBox6
             // 
-            pictureBox6.BackColor = SystemColors.GradientInactiveCaption;
+            pictureBox6.BackColor = SystemColors.ButtonHighlight;
             pictureBox6.BorderStyle = BorderStyle.FixedSingle;
             pictureBox6.Location = new Point(407, 12);
             pictureBox6.Name = "pictureBox6";
@@ -205,7 +187,7 @@
             // 
             // pictureBox7
             // 
-            pictureBox7.BackColor = SystemColors.GradientInactiveCaption;
+            pictureBox7.BackColor = SystemColors.ButtonHighlight;
             pictureBox7.BorderStyle = BorderStyle.FixedSingle;
             pictureBox7.Location = new Point(12, 84);
             pictureBox7.Name = "pictureBox7";
@@ -218,7 +200,7 @@
             // 
             // pictureBox8
             // 
-            pictureBox8.BackColor = SystemColors.GradientInactiveCaption;
+            pictureBox8.BackColor = SystemColors.ButtonHighlight;
             pictureBox8.BorderStyle = BorderStyle.FixedSingle;
             pictureBox8.Location = new Point(91, 84);
             pictureBox8.Name = "pictureBox8";
@@ -231,7 +213,7 @@
             // 
             // pictureBox9
             // 
-            pictureBox9.BackColor = SystemColors.GradientInactiveCaption;
+            pictureBox9.BackColor = SystemColors.ButtonHighlight;
             pictureBox9.BorderStyle = BorderStyle.FixedSingle;
             pictureBox9.Location = new Point(170, 84);
             pictureBox9.Name = "pictureBox9";
@@ -244,7 +226,7 @@
             // 
             // pictureBox10
             // 
-            pictureBox10.BackColor = SystemColors.GradientInactiveCaption;
+            pictureBox10.BackColor = SystemColors.ButtonHighlight;
             pictureBox10.BorderStyle = BorderStyle.FixedSingle;
             pictureBox10.Location = new Point(249, 84);
             pictureBox10.Name = "pictureBox10";
@@ -257,7 +239,7 @@
             // 
             // pictureBox11
             // 
-            pictureBox11.BackColor = SystemColors.GradientInactiveCaption;
+            pictureBox11.BackColor = SystemColors.ButtonHighlight;
             pictureBox11.BorderStyle = BorderStyle.FixedSingle;
             pictureBox11.Location = new Point(328, 84);
             pictureBox11.Name = "pictureBox11";
@@ -270,7 +252,7 @@
             // 
             // pictureBox12
             // 
-            pictureBox12.BackColor = SystemColors.GradientInactiveCaption;
+            pictureBox12.BackColor = SystemColors.ButtonHighlight;
             pictureBox12.BorderStyle = BorderStyle.FixedSingle;
             pictureBox12.Location = new Point(407, 84);
             pictureBox12.Name = "pictureBox12";
@@ -283,7 +265,7 @@
             // 
             // pictureBox13
             // 
-            pictureBox13.BackColor = SystemColors.GradientInactiveCaption;
+            pictureBox13.BackColor = SystemColors.ButtonHighlight;
             pictureBox13.BorderStyle = BorderStyle.FixedSingle;
             pictureBox13.Location = new Point(12, 156);
             pictureBox13.Name = "pictureBox13";
@@ -296,7 +278,7 @@
             // 
             // pictureBox14
             // 
-            pictureBox14.BackColor = SystemColors.GradientInactiveCaption;
+            pictureBox14.BackColor = SystemColors.ButtonHighlight;
             pictureBox14.BorderStyle = BorderStyle.FixedSingle;
             pictureBox14.Location = new Point(91, 156);
             pictureBox14.Name = "pictureBox14";
@@ -309,7 +291,7 @@
             // 
             // pictureBox15
             // 
-            pictureBox15.BackColor = SystemColors.GradientInactiveCaption;
+            pictureBox15.BackColor = SystemColors.ButtonHighlight;
             pictureBox15.BorderStyle = BorderStyle.FixedSingle;
             pictureBox15.Location = new Point(170, 156);
             pictureBox15.Name = "pictureBox15";
@@ -322,7 +304,7 @@
             // 
             // pictureBox16
             // 
-            pictureBox16.BackColor = SystemColors.GradientInactiveCaption;
+            pictureBox16.BackColor = SystemColors.ButtonHighlight;
             pictureBox16.BorderStyle = BorderStyle.FixedSingle;
             pictureBox16.Location = new Point(249, 156);
             pictureBox16.Name = "pictureBox16";
@@ -335,7 +317,7 @@
             // 
             // pictureBox17
             // 
-            pictureBox17.BackColor = SystemColors.GradientInactiveCaption;
+            pictureBox17.BackColor = SystemColors.ButtonHighlight;
             pictureBox17.BorderStyle = BorderStyle.FixedSingle;
             pictureBox17.Location = new Point(328, 156);
             pictureBox17.Name = "pictureBox17";
@@ -348,7 +330,7 @@
             // 
             // pictureBox18
             // 
-            pictureBox18.BackColor = SystemColors.GradientInactiveCaption;
+            pictureBox18.BackColor = SystemColors.ButtonHighlight;
             pictureBox18.BorderStyle = BorderStyle.FixedSingle;
             pictureBox18.Location = new Point(407, 156);
             pictureBox18.Name = "pictureBox18";
@@ -361,7 +343,7 @@
             // 
             // pictureBox19
             // 
-            pictureBox19.BackColor = SystemColors.GradientInactiveCaption;
+            pictureBox19.BackColor = SystemColors.ButtonHighlight;
             pictureBox19.BorderStyle = BorderStyle.FixedSingle;
             pictureBox19.Location = new Point(12, 228);
             pictureBox19.Name = "pictureBox19";
@@ -374,7 +356,7 @@
             // 
             // pictureBox20
             // 
-            pictureBox20.BackColor = SystemColors.GradientInactiveCaption;
+            pictureBox20.BackColor = SystemColors.ButtonHighlight;
             pictureBox20.BorderStyle = BorderStyle.FixedSingle;
             pictureBox20.Location = new Point(91, 228);
             pictureBox20.Name = "pictureBox20";
@@ -387,7 +369,7 @@
             // 
             // pictureBox21
             // 
-            pictureBox21.BackColor = SystemColors.GradientInactiveCaption;
+            pictureBox21.BackColor = SystemColors.ButtonHighlight;
             pictureBox21.BorderStyle = BorderStyle.FixedSingle;
             pictureBox21.Location = new Point(170, 228);
             pictureBox21.Name = "pictureBox21";
@@ -400,7 +382,7 @@
             // 
             // pictureBox22
             // 
-            pictureBox22.BackColor = SystemColors.GradientInactiveCaption;
+            pictureBox22.BackColor = SystemColors.ButtonHighlight;
             pictureBox22.BorderStyle = BorderStyle.FixedSingle;
             pictureBox22.Location = new Point(249, 228);
             pictureBox22.Name = "pictureBox22";
@@ -413,7 +395,7 @@
             // 
             // pictureBox23
             // 
-            pictureBox23.BackColor = SystemColors.GradientInactiveCaption;
+            pictureBox23.BackColor = SystemColors.ButtonHighlight;
             pictureBox23.BorderStyle = BorderStyle.FixedSingle;
             pictureBox23.Location = new Point(328, 228);
             pictureBox23.Name = "pictureBox23";
@@ -426,7 +408,7 @@
             // 
             // pictureBox24
             // 
-            pictureBox24.BackColor = SystemColors.GradientInactiveCaption;
+            pictureBox24.BackColor = SystemColors.ButtonHighlight;
             pictureBox24.BorderStyle = BorderStyle.FixedSingle;
             pictureBox24.Location = new Point(407, 228);
             pictureBox24.Name = "pictureBox24";
@@ -439,7 +421,7 @@
             // 
             // pictureBox25
             // 
-            pictureBox25.BackColor = SystemColors.GradientInactiveCaption;
+            pictureBox25.BackColor = SystemColors.ButtonHighlight;
             pictureBox25.BorderStyle = BorderStyle.FixedSingle;
             pictureBox25.Location = new Point(12, 300);
             pictureBox25.Name = "pictureBox25";
@@ -452,7 +434,7 @@
             // 
             // pictureBox26
             // 
-            pictureBox26.BackColor = SystemColors.GradientInactiveCaption;
+            pictureBox26.BackColor = SystemColors.ButtonHighlight;
             pictureBox26.BorderStyle = BorderStyle.FixedSingle;
             pictureBox26.Location = new Point(91, 300);
             pictureBox26.Name = "pictureBox26";
@@ -465,7 +447,7 @@
             // 
             // pictureBox27
             // 
-            pictureBox27.BackColor = SystemColors.GradientInactiveCaption;
+            pictureBox27.BackColor = SystemColors.ButtonHighlight;
             pictureBox27.BorderStyle = BorderStyle.FixedSingle;
             pictureBox27.Location = new Point(170, 300);
             pictureBox27.Name = "pictureBox27";
@@ -478,7 +460,7 @@
             // 
             // pictureBox28
             // 
-            pictureBox28.BackColor = SystemColors.GradientInactiveCaption;
+            pictureBox28.BackColor = SystemColors.ButtonHighlight;
             pictureBox28.BorderStyle = BorderStyle.FixedSingle;
             pictureBox28.Location = new Point(249, 300);
             pictureBox28.Name = "pictureBox28";
@@ -491,7 +473,7 @@
             // 
             // pictureBox29
             // 
-            pictureBox29.BackColor = SystemColors.GradientInactiveCaption;
+            pictureBox29.BackColor = SystemColors.ButtonHighlight;
             pictureBox29.BorderStyle = BorderStyle.FixedSingle;
             pictureBox29.Location = new Point(328, 300);
             pictureBox29.Name = "pictureBox29";
@@ -504,7 +486,7 @@
             // 
             // pictureBox30
             // 
-            pictureBox30.BackColor = SystemColors.GradientInactiveCaption;
+            pictureBox30.BackColor = SystemColors.ButtonHighlight;
             pictureBox30.BorderStyle = BorderStyle.FixedSingle;
             pictureBox30.Location = new Point(407, 300);
             pictureBox30.Name = "pictureBox30";
@@ -519,7 +501,7 @@
             // 
             button2.Location = new Point(287, 372);
             button2.Name = "button2";
-            button2.Size = new Size(35, 23);
+            button2.Size = new Size(44, 23);
             button2.TabIndex = 33;
             button2.Text = "=>";
             button2.UseVisualStyleBackColor = true;
@@ -535,32 +517,54 @@
             button3.UseVisualStyleBackColor = true;
             button3.Click += button3_Click;
             // 
-            // label2
-            // 
-            label2.AutoSize = true;
-            label2.Location = new Point(267, 403);
-            label2.Name = "label2";
-            label2.Size = new Size(0, 15);
-            label2.TabIndex = 35;
-            // 
             // checkBox1
             // 
             checkBox1.AutoSize = true;
-            checkBox1.Location = new Point(126, 402);
+            checkBox1.Font = new Font("Segoe UI", 9F, FontStyle.Italic, GraphicsUnit.Point);
+            checkBox1.Location = new Point(143, 399);
             checkBox1.Name = "checkBox1";
             checkBox1.Size = new Size(64, 19);
             checkBox1.TabIndex = 36;
             checkBox1.Text = "Dump?";
             checkBox1.UseVisualStyleBackColor = true;
             // 
+            // progressBar1
+            // 
+            progressBar1.Location = new Point(12, 424);
+            progressBar1.Name = "progressBar1";
+            progressBar1.Size = new Size(468, 12);
+            progressBar1.TabIndex = 37;
+            // 
+            // FlexButton
+            // 
+            FlexButton.Font = new Font("Segoe UI", 9F, FontStyle.Italic, GraphicsUnit.Point);
+            FlexButton.Location = new Point(287, 397);
+            FlexButton.Name = "FlexButton";
+            FlexButton.Size = new Size(44, 23);
+            FlexButton.TabIndex = 38;
+            FlexButton.Text = "Flex?";
+            FlexButton.UseVisualStyleBackColor = true;
+            FlexButton.Click += FlexButton_Click;
+            // 
+            // comboBox1
+            // 
+            comboBox1.FormattingEnabled = true;
+            comboBox1.Location = new Point(210, 397);
+            comboBox1.Name = "comboBox1";
+            comboBox1.Size = new Size(75, 23);
+            comboBox1.TabIndex = 39;
+            comboBox1.Text = "Box 1";
+            // 
             // BoxViewerMode
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             AutoSizeMode = AutoSizeMode.GrowAndShrink;
+            BackColor = SystemColors.ButtonHighlight;
             ClientSize = new Size(492, 453);
-            Controls.Add(checkBox1);
-            Controls.Add(label2);
+            Controls.Add(comboBox1);
+            Controls.Add(FlexButton);
+            Controls.Add(progressBar1);
             Controls.Add(button3);
             Controls.Add(button2);
             Controls.Add(pictureBox30);
@@ -593,9 +597,8 @@
             Controls.Add(pictureBox3);
             Controls.Add(pictureBox2);
             Controls.Add(pictureBox1);
-            Controls.Add(button1);
-            Controls.Add(label1);
-            Controls.Add(textBox1);
+            Controls.Add(ViewButton);
+            Controls.Add(checkBox1);
             FormBorderStyle = FormBorderStyle.None;
             MaximizeBox = false;
             Name = "BoxViewerMode";
@@ -635,10 +638,7 @@
         }
 
         #endregion
-
-        private TextBox textBox1;
-        private Label label1;
-        private Button button1;
+        private Button ViewButton;
         private PictureBox pictureBox1;
         private PictureBox pictureBox2;
         private PictureBox pictureBox3;
@@ -671,7 +671,9 @@
         private PictureBox pictureBox30;
         private Button button2;
         private Button button3;
-        private Label label2;
         private CheckBox checkBox1;
+        private ProgressBar progressBar1;
+        private Button FlexButton;
+        private ComboBox comboBox1;
     }
 }

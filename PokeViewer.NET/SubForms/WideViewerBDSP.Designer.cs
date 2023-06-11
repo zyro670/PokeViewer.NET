@@ -300,9 +300,8 @@
             this.Controls.Add(this.WideImage3);
             this.Controls.Add(this.WideImage2);
             this.Controls.Add(this.WideImage1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.MaximizeBox = false;
-            this.Name = "WideViewerBDSP";
+            this.Name = "PokeViewer.NET - WideViewBDSP - Underground Spawns";
             this.Text = "PokeViewer.NET - WideViewBDSP - Underground Spawns";
             ((System.ComponentModel.ISupportInitialize)(this.WideImage1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.WideImage2)).EndInit();

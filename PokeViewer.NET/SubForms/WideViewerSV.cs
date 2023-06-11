@@ -11,7 +11,7 @@ namespace PokeViewer.NET.SubForms
     {
         private readonly ViewerExecutor Executor;
         private static ulong BaseBlockKeyPointer = 0;
-        public IReadOnlyList<long> BlockKeyPointer = new List<long>() { 0x44B5158, 0xD8, 0x0, 0x0, 0x30, 0x0 };
+        protected ViewerOffsets Offsets { get; } = new();
 
         public WideViewerSV(ViewerExecutor executor)
         {
@@ -22,7 +22,7 @@ namespace PokeViewer.NET.SubForms
         private async void button1_Click(object sender, EventArgs e)
         {
             var token = CancellationToken.None;
-            BaseBlockKeyPointer = await Executor.SwitchConnection.PointerAll(BlockKeyPointer, token).ConfigureAwait(false);
+            BaseBlockKeyPointer = await Executor.SwitchConnection.PointerAll(Offsets.BlockKeyPointer, token).ConfigureAwait(false);
             await ScanOverworld(CancellationToken.None).ConfigureAwait(false);
         }
 

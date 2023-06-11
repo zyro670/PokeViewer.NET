@@ -14,16 +14,16 @@ namespace PokeViewer.NET.SubForms
     {
         private readonly ViewerExecutor Executor;
         private byte[]? CenterPOS = Array.Empty<byte>();
-        private int V_Form;
-        private List<Image> MapSprites = new();
-        private List<byte[]?> MapPOS = new();
-        private static ulong BaseBlockKeyPointer = 0;
-        public IReadOnlyList<long> BlockKeyPointer = new List<long>() { 0x44B5158, 0xD8, 0x0, 0x0, 0x30, 0x0 };
-        public List<OutbreakStash> OutbreakCache = new();
+        private int V_Form;       
+        private static ulong BaseBlockKeyPointer = 0;             
         public ulong CountCache;
         private DateTime StartTime;
         private System.Timers.Timer timer = new();
+        public List<OutbreakStash> OutbreakCache = new();
+        private List<Image> MapSprites = new();
+        private List<byte[]?> MapPOS = new();
         private List<PK9> pkList = new();
+        protected ViewerOffsets Offsets { get; } = new();
         public MiscView(ViewerExecutor executor)
         {
             InitializeComponent();
@@ -61,7 +61,7 @@ namespace PokeViewer.NET.SubForms
 
         private async Task SearchForOutbreak(CancellationToken token)
         {
-            BaseBlockKeyPointer = await Executor.SwitchConnection.PointerAll(BlockKeyPointer, token).ConfigureAwait(false);
+            BaseBlockKeyPointer = await Executor.SwitchConnection.PointerAll(Offsets.BlockKeyPointer, token).ConfigureAwait(false);
 
             Settings.Default.MiscOvershoot = OverShootUpDown.Value;
             Settings.Default.Save();
@@ -307,8 +307,8 @@ namespace PokeViewer.NET.SubForms
 
         private async Task KOToSixty_Click(CancellationToken token)
         {
-            BaseBlockKeyPointer = await Executor.SwitchConnection.PointerAll(BlockKeyPointer, token).ConfigureAwait(false);
-            var (validOutbreaks, vofs) = await ReadEncryptedBlockByte(Blocks.KMassOutbreakTotalEnabled, 0, token).ConfigureAwait(false);
+            BaseBlockKeyPointer = await Executor.SwitchConnection.PointerAll(Offsets.BlockKeyPointer, token).ConfigureAwait(false);
+            var (validOutbreaks, _) = await ReadEncryptedBlockByte(Blocks.KMassOutbreakTotalEnabled, 0, token).ConfigureAwait(false);
             var Outbreaktotal = Convert.ToInt32(validOutbreaks);
             var koblock = Blocks.KMassOutbreakKO1;
             for (int i = 0; i < 8; i++)
@@ -327,8 +327,7 @@ namespace PokeViewer.NET.SubForms
                 }
                 if (i > Outbreaktotal - 1)
                     continue;
-
-                var (currentcount, cofs) = await ReadEncryptedBlockInt32(koblock, 0, token).ConfigureAwait(false);
+                var (currentcount, _) = await ReadEncryptedBlockInt32(koblock, 0, token).ConfigureAwait(false);
                 uint inj = 61;
                 await WriteBlock(inj, koblock, token, (uint)currentcount).ConfigureAwait(false);
             }
@@ -375,22 +374,20 @@ namespace PokeViewer.NET.SubForms
         private async void button1_Click_1(object sender, EventArgs e)
         {
             var token = CancellationToken.None;
-            BaseBlockKeyPointer = await Executor.SwitchConnection.PointerAll(BlockKeyPointer, token).ConfigureAwait(false);
-            var (vivform, vofs) = await ReadEncryptedBlockByte(Blocks.KGOVivillonForm, 0, token).ConfigureAwait(false);
-            var (epochtime, eofs) = await ReadEncryptedBlockUint(Blocks.KGOLastConnected, 0, token).ConfigureAwait(false);
+            BaseBlockKeyPointer = await Executor.SwitchConnection.PointerAll(Offsets.BlockKeyPointer, token).ConfigureAwait(false);
+            var (vivform, _) = await ReadEncryptedBlockByte(Blocks.KGOVivillonForm, 0, token).ConfigureAwait(false);
+            var (epochtime, _) = await ReadEncryptedBlockUint(Blocks.KGOLastConnected, 0, token).ConfigureAwait(false);
 
             var inj = (byte)V_Form;
             if (inj != vivform)
                 await WriteBlock(inj, Blocks.KGOVivillonForm, token, vivform).ConfigureAwait(false);
-
-            var (newform, nofs) = await ReadEncryptedBlockByte(Blocks.KGOVivillonForm, 0, token).ConfigureAwait(false);
+            var (newform, _) = await ReadEncryptedBlockByte(Blocks.KGOVivillonForm, 0, token).ConfigureAwait(false);
 
             TimeSpan t = DateTime.Now - new DateTime(1970, 1, 1);
             uint currentEpoch = (uint)t.TotalSeconds;
 
             await WriteBlock(currentEpoch, Blocks.KGOLastConnected, token, epochtime).ConfigureAwait(false);
-
-            var (newtime, nofs2) = await ReadEncryptedBlockUint(Blocks.KGOLastConnected, 0, token).ConfigureAwait(false);
+            var (newtime, _) = await ReadEncryptedBlockUint(Blocks.KGOLastConnected, 0, token).ConfigureAwait(false);
 
             await WriteBlock(true, Blocks.KGOVivillonFormEnabled, token, false).ConfigureAwait(false);
 
@@ -401,10 +398,10 @@ namespace PokeViewer.NET.SubForms
         private async void ReadValues_Click(object sender, EventArgs e)
         {
             var token = CancellationToken.None;
-            BaseBlockKeyPointer = await Executor.SwitchConnection.PointerAll(BlockKeyPointer, token).ConfigureAwait(false);
+            BaseBlockKeyPointer = await Executor.SwitchConnection.PointerAll(Offsets.BlockKeyPointer, token).ConfigureAwait(false);
             var forcevivform = await ReadEncryptedBlockBool(Blocks.KGOVivillonFormEnabled, token).ConfigureAwait(false);
-            var (vivform, vofs) = await ReadEncryptedBlockByte(Blocks.KGOVivillonForm, 0, token).ConfigureAwait(false);
-            var (epochtime, eofs) = await ReadEncryptedBlockUint(Blocks.KGOLastConnected, 0, token).ConfigureAwait(false);
+            var (vivform, _) = await ReadEncryptedBlockByte(Blocks.KGOVivillonForm, 0, token).ConfigureAwait(false);
+            var (epochtime, _) = await ReadEncryptedBlockUint(Blocks.KGOLastConnected, 0, token).ConfigureAwait(false);
 
             MessageBox.Show($"KGOVivillonFormEnabled: {forcevivform}{Environment.NewLine}" +
                 $"KGOVivillonForm: {(VivForms)vivform}{Environment.NewLine}KGOLastConnected TimeStamp: {FromUnixTime(epochtime)}");

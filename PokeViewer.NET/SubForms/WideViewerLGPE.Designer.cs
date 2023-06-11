@@ -28,60 +28,58 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.flagbox = new System.Windows.Forms.TextBox();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            this.SuspendLayout();
+            pictureBox1 = new PictureBox();
+            WaitButton = new Button();
+            flagbox = new TextBox();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            SuspendLayout();
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(47, 12);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(156, 128);
-            this.pictureBox1.TabIndex = 1;
-            this.pictureBox1.TabStop = false;
+            pictureBox1.Location = new Point(47, 12);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(156, 128);
+            pictureBox1.TabIndex = 1;
+            pictureBox1.TabStop = false;
             // 
-            // button1
+            // WaitButton
             // 
-            this.button1.Location = new System.Drawing.Point(65, 146);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(123, 23);
-            this.button1.TabIndex = 3;
-            this.button1.Text = "Wait For Shiny";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            WaitButton.Location = new Point(65, 146);
+            WaitButton.Name = "WaitButton";
+            WaitButton.Size = new Size(123, 23);
+            WaitButton.TabIndex = 3;
+            WaitButton.Text = "Wait For Shiny";
+            WaitButton.UseVisualStyleBackColor = true;
+            WaitButton.Click += WaitButton_Click;
             // 
             // flagbox
             // 
-            this.flagbox.Location = new System.Drawing.Point(111, 175);
-            this.flagbox.Name = "flagbox";
-            this.flagbox.ReadOnly = true;
-            this.flagbox.Size = new System.Drawing.Size(27, 23);
-            this.flagbox.TabIndex = 4;
+            flagbox.Location = new Point(111, 175);
+            flagbox.Name = "flagbox";
+            flagbox.ReadOnly = true;
+            flagbox.Size = new Size(27, 23);
+            flagbox.TabIndex = 4;
             // 
             // WideViewerLGPE
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.ClientSize = new System.Drawing.Size(246, 210);
-            this.Controls.Add(this.flagbox);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.pictureBox1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.MaximizeBox = false;
-            this.Name = "WideViewerLGPE";
-            this.Text = "PokeViewer.NET - WideViewLGPE - Last Spawn";
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            BackColor = SystemColors.GradientInactiveCaption;
+            ClientSize = new Size(246, 210);
+            Controls.Add(flagbox);
+            Controls.Add(WaitButton);
+            Controls.Add(pictureBox1);
+            MaximizeBox = false;
+            Name = "PokeViewer.NET - WideViewLGPE";
+            Text = "PokeViewer.NET - WideViewLGPE";
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
         private PictureBox pictureBox1;
-        private Button button1;
+        private Button WaitButton;
         private TextBox flagbox;
     }
 }

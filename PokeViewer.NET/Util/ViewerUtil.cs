@@ -75,9 +75,23 @@ namespace PokeViewer.NET
         public static bool HasMark(IRibbonIndex pk, out RibbonIndex result)
         {
             result = default;
-            for (var mark = RibbonIndex.MarkLunchtime; mark <= RibbonIndex.MarkSlump; mark++)
+            for (var mark = RibbonIndex.MarkLunchtime; mark <= RibbonIndex.MarkTitan; mark++)
             {
                 if (pk.GetRibbon((int)mark))
+                {
+                    result = mark;
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static bool HasAffixedRibbon(IRibbonSetAffixed pk, out RibbonIndex result)
+        {
+            result = default;
+            for (var mark = RibbonIndex.ChampionKalos; mark <= RibbonIndex.MarkTitan; mark++)
+            {
+                if (pk.AffixedRibbon == ((int)mark))
                 {
                     result = mark;
                     return true;
@@ -91,5 +105,18 @@ namespace PokeViewer.NET
             None,
             Read,
         }
+    }
+
+    public class ViewerOffsets
+    {
+        public IReadOnlyList<long> BlockKeyPointer = new List<long>() { 0x44B5158, 0xD8, 0x0, 0x0, 0x30, 0x0 };
+        public IReadOnlyList<long> OverworldPointer { get; } = new long[] { 0x44E2FC8, 0x348, 0x10, 0xD8, 0x28 };
+        public readonly uint EggData = 0x044C12D8;
+        public readonly uint PicnicMenu = 0x04551020;
+        public readonly uint StartingOffset = 0x4505B880;
+        public readonly uint KCoordIncrement = 192;
+        public readonly uint FishingOffset = 0x4505B640; // Not in any wild area
+        public readonly uint LastSpawnOffset = 0x419BB180;
+        public readonly uint LastSpawnSprite = 0x419BB184;
     }
 }

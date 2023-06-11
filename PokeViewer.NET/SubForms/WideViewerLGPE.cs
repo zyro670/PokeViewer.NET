@@ -7,6 +7,7 @@ namespace PokeViewer.NET.WideViewForms
     public partial class WideViewerLGPE : Form
     {
         private readonly ViewerExecutor Executor;
+        protected ViewerOffsets Offsets { get; } = new();
         public WideViewerLGPE(ViewerExecutor executor)
         {
             InitializeComponent();
@@ -14,24 +15,22 @@ namespace PokeViewer.NET.WideViewForms
             Executor.SwitchConnection.SendAsync(SwitchCommand.Configure(SwitchConfigureParameter.controllerType, 1, true), CancellationToken.None);
         }
 
-        public const uint LastSpawnOffset = 0x419BB180;
-        public const uint LastSpawnSprite = 0x419BB184;
         private async Task ViewOverworldLGPE(CancellationToken token)
         {
             PB8 pk = new();
-            var species = (Species)BitConverter.ToUInt16(await Executor.SwitchConnection.ReadBytesAsync(LastSpawnOffset, 2, token).ConfigureAwait(false), 0);
-            var flag = BitConverter.ToUInt16(await Executor.SwitchConnection.ReadBytesAsync(LastSpawnSprite, 2, token).ConfigureAwait(false), 0);
+            var species = (Species)BitConverter.ToUInt16(await Executor.SwitchConnection.ReadBytesAsync(Offsets.LastSpawnOffset, 2, token).ConfigureAwait(false), 0);
+            var flag = BitConverter.ToUInt16(await Executor.SwitchConnection.ReadBytesAsync(Offsets.LastSpawnSprite, 2, token).ConfigureAwait(false), 0);
             flagbox.Text = $"{flag}";
             pk.Species = (ushort)species;
             var sprite = PokeImg(pk, pk.CanGigantamax);
             pictureBox1.Load(sprite);
             while (!token.IsCancellationRequested)
             {
-                species = (Species)BitConverter.ToUInt16(await Executor.SwitchConnection.ReadBytesAsync(LastSpawnOffset, 2, token).ConfigureAwait(false), 0);
+                species = (Species)BitConverter.ToUInt16(await Executor.SwitchConnection.ReadBytesAsync(Offsets.LastSpawnOffset, 2, token).ConfigureAwait(false), 0);
                 if (species != 0)
-                    await Executor.SwitchConnection.WriteBytesAsync(new byte[] { 0x0, 0x0 }, LastSpawnOffset, token).ConfigureAwait(false);
+                    await Executor.SwitchConnection.WriteBytesAsync(new byte[] { 0x0, 0x0 }, Offsets.LastSpawnOffset, token).ConfigureAwait(false);
 
-                flag = BitConverter.ToUInt16(await Executor.SwitchConnection.ReadBytesAsync(LastSpawnSprite, 2, token).ConfigureAwait(false), 0);
+                flag = BitConverter.ToUInt16(await Executor.SwitchConnection.ReadBytesAsync(Offsets.LastSpawnSprite, 2, token).ConfigureAwait(false), 0);
                 if (flag >= 2 && flag < 4)
                     break;
 
@@ -47,15 +46,15 @@ namespace PokeViewer.NET.WideViewForms
                     pictureBox1.Load(sprite);
                 }
             }
-            button1.Text = "Shiny found!";
+            WaitButton.Text = "Shiny found!";
             await Click(SwitchButton.HOME, 1_000, token).ConfigureAwait(false);
         }
 
-        private async void button1_Click(object sender, EventArgs e)
+        private async void WaitButton_Click(object sender, EventArgs e)
         {
-            var token = CancellationToken.None;            
-            button1.Text = "Waiting...";
-            button1.Enabled = false;
+            var token = CancellationToken.None;
+            WaitButton.Text = "Waiting...";
+            WaitButton.Enabled = false;
             await ViewOverworldLGPE(token).ConfigureAwait(false);
         }
 

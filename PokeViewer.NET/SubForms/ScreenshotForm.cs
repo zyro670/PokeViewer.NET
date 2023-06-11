@@ -13,12 +13,6 @@
         {
             var token = CancellationToken.None;
             var fn = "screenshot.jpg";
-            if (!Executor.SwitchConnection.Connected)
-            {
-                System.Media.SystemSounds.Beep.Play();
-                MessageBox.Show($"No device connected! In-Game Screenshot not possible!");
-                return;
-            }
             var bytes = Executor.SwitchConnection.Screengrab(token).Result;
             File.WriteAllBytes(fn, bytes);
             FileStream stream = new(fn, FileMode.Open);

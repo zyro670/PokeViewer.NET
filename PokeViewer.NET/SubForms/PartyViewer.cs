@@ -22,6 +22,7 @@ namespace PokeViewer.NET.SubForms
             string vers = string.Empty;
             switch (type)
             {
+                case (int)GameSelected.Scarlet or (int)GameSelected.Violet: vers = "PokeViewer.NET - Party View (SV)"; break;
                 case (int)GameSelected.Sword or (int)GameSelected.Shield: vers = "PokeViewer.NET - Party View (SWSH)"; break;
                 case (int)GameSelected.BrilliantDiamond or (int)GameSelected.ShiningPearl: vers = "PokeViewer.NET - Party View (BDSP)"; break;
                 case (int)GameSelected.LegendsArceus: vers = "PokeViewer.NET - Party View (LA)"; break;
@@ -91,15 +92,24 @@ namespace PokeViewer.NET.SubForms
             return pk;
         }
 
-        private async void button1_ClickAsync(object sender, EventArgs e)
+        private async void ViewButton_ClickAsync(object sender, EventArgs e)
+        {
+            await GatherParty(CancellationToken.None).ConfigureAwait(false);
+        }
+
+        private void PrepareParty()
         {
             textBox1.Text = "";
-            CurrentSlotStats = new();
-            uint ofs = 0x886BC348;
-            var token = CancellationToken.None;
+            CurrentSlotStats = new();            
             tt.RemoveAll();
             tt.Dispose();
             tt = new();
+        }
+
+        private async Task GatherParty(CancellationToken token)
+        {
+            PrepareParty();
+            uint ofs = 0x886BC348;
             for (int i = 0; i < 6; i++)
             {
                 switch (GameType)

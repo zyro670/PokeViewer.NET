@@ -3,6 +3,7 @@
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
 		<TargetFramework>net7.0-windows</TargetFramework>
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
 		<UseWindowsForms>true</UseWindowsForms>
 		<LangVersion>11</LangVersion>
 		<Company>Project Zyro</Company>
@@ -10,7 +11,6 @@
 		<Description>Nintendo Switch Pokémon Game Viewer</Description>
 		<AssemblyName>PokeViewer</AssemblyName>
 		<Version>1.0.0</Version>
-		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Platform>Windows</Platform>
 		<PlatformTarget>x64</PlatformTarget>
@@ -19,7 +19,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <Content Include="icon.ico" />
+		<Content Include="icon.ico" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -30,6 +30,9 @@
 		<Reference Include="SysBot.Base">
 			<HintPath>deps\SysBot.Base.dll</HintPath>
 		</Reference>
+		<Reference Include="PKHeX.Core">
+			<HintPath>deps\PKHeX.Core.dll</HintPath>
+		</Reference>
 		<Reference Include="PKHeX.Drawing">
 			<HintPath>deps\PKHeX.Drawing.dll</HintPath>
 		</Reference>
@@ -39,13 +42,14 @@
 		<Reference Include="PKHeX.Drawing.PokeSprite">
 			<HintPath>deps\PKHeX.Drawing.PokeSprite.dll</HintPath>
 		</Reference>
+		<Reference Include="HomeLive.Core">
+			<HintPath>deps\HomeLive.Core.dll</HintPath>
+		</Reference>
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="PKHeX.Core" Version="23.4.6" />
 		<PackageReference Include="LibUsbDotNet" Version="2.2.29" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
 		<PackageReference Include="NLog" Version="5.1.1" />
-		<PackageReference Include="Tesseract.Net.SDK" Version="4.5.411" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Compile Update="Properties\Resources.Designer.cs">
@@ -58,9 +62,7 @@
 	    <AutoGen>True</AutoGen>
 	    <DependentUpon>Settings.settings</DependentUpon>
 	  </Compile>
-	  <Compile Update="SubForms\PartyViewer.cs">
-	    <SubType>Form</SubType>
-	  </Compile>
+	  <Compile Update="SubForms\PartyViewer.cs" />
 	</ItemGroup>
 	<ItemGroup>
 	  <EmbeddedResource Update="Properties\Resources.resx">
@@ -69,9 +71,18 @@
 	  </EmbeddedResource>
 	</ItemGroup>
 	<ItemGroup>
+	  <None Update="App.config">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </None>
 	  <None Update="Properties\Settings.settings">
 	    <Generator>SettingsSingleFileGenerator</Generator>
 	    <LastGenOutput>Settings.Designer.cs</LastGenOutput>
 	  </None>
+	</ItemGroup>
+	<ItemGroup>
+	  <NativeLibs Remove="deps\PKHeX.Core.dll" />
+	</ItemGroup>
+	<ItemGroup>
+	  <NativeLibs Remove="deps\HomeLive.Core.dll" />
 	</ItemGroup>
 </Project>

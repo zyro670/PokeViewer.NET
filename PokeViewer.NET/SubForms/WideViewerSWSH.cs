@@ -10,15 +10,12 @@ namespace PokeViewer.NET.WideViewForms
     {
         private readonly ViewerExecutor Executor;
         public int GameType;
+        protected ViewerOffsets Offsets { get; } = new();
         public WideViewerSWSH(ViewerExecutor executor)
         {
             InitializeComponent();
             Executor = executor;
         }
-
-        private readonly uint StartingOffset = 0x4505B880;
-        private readonly uint KCoordIncrement = 192;
-        private readonly uint FishingOffset = 0x4505B640; // Not in any wild area
         private uint DefaultOffset;
 
         public new async Task Click(SwitchButton b, int delay, CancellationToken token)
@@ -42,7 +39,7 @@ namespace PokeViewer.NET.WideViewForms
                 List<uint> offset = new();
                 for (uint i = 0; i < 10; i++)
                 {
-                    uint fishing = 0x4505B640 + i * KCoordIncrement;
+                    uint fishing = 0x4505B640 + i * Offsets.KCoordIncrement;
                     byte[] check = await Executor.SwitchConnection.ReadBytesAsync(fishing, 4, token).ConfigureAwait(false);
                     Species species = (Species)BitConverter.ToUInt16(check.Slice(0, 2), 0);
                     var form = (byte)BitConverter.ToUInt16(check.Slice(0x2, 2), 0);
@@ -62,7 +59,7 @@ namespace PokeViewer.NET.WideViewForms
                         if (offset.Count == 12)
                             break;                        
 
-                        uint startingoffset = StartingOffset + i * KCoordIncrement;
+                        uint startingoffset = Offsets.StartingOffset + i * Offsets.KCoordIncrement;
                         byte[] check = await Executor.SwitchConnection.ReadBytesAsync(startingoffset, 4, token).ConfigureAwait(false);
                         Species species = (Species)BitConverter.ToUInt16(check.Slice(0, 2), 0);
                         var form = (byte)BitConverter.ToUInt16(check.Slice(0x2, 2), 0);
@@ -116,7 +113,7 @@ namespace PokeViewer.NET.WideViewForms
                 uint offset = DefaultOffset;
                 if (checkBox1.Checked)
                 {
-                    offset = FishingOffset;
+                    offset = Offsets.FishingOffset;
                     max = 3;
                 }
                 List<string> spriteBox = new();
@@ -124,7 +121,7 @@ namespace PokeViewer.NET.WideViewForms
                 List<string> markBox = new();
                 for (uint i = 0; i < max; i++)
                 {
-                    var newoffset = offset + i * KCoordIncrement;
+                    var newoffset = offset + i * Offsets.KCoordIncrement;
                     var data = await Executor.SwitchConnection.ReadBytesAsync(newoffset, 56, token).ConfigureAwait(false);
 
                     species = (Species)BitConverter.ToUInt16(data.Slice(0, 2), 0);

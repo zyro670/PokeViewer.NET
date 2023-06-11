@@ -112,7 +112,7 @@
             this.button1.TabIndex = 12;
             this.button1.Text = "View";
             this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_ClickAsync);
+            this.button1.Click += new System.EventHandler(this.ViewButton_ClickAsync);
             // 
             // textBox1
             // 
