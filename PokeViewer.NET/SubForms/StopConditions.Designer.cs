@@ -28,382 +28,321 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.StopConditionsGroup = new System.Windows.Forms.GroupBox();
-            this.ScaleBox = new System.Windows.Forms.CheckBox();
-            this.ShinyBox = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.PresetIVs = new System.Windows.Forms.Label();
-            this.PresetIVBox = new System.Windows.Forms.ComboBox();
-            this.GenderBox = new System.Windows.Forms.ComboBox();
-            this.IgnoreIVFilter = new System.Windows.Forms.CheckBox();
-            this.CheckBoxOf3 = new System.Windows.Forms.CheckBox();
-            this.TargetSPE = new System.Windows.Forms.Label();
-            this.TargetSPD = new System.Windows.Forms.Label();
-            this.GenderFilter = new System.Windows.Forms.Label();
-            this.TargetSPA = new System.Windows.Forms.Label();
-            this.TargetIVs = new System.Windows.Forms.Label();
-            this.TargetDEF = new System.Windows.Forms.Label();
-            this.TargetHP = new System.Windows.Forms.Label();
-            this.TargetATK = new System.Windows.Forms.Label();
-            this.HPFilter = new System.Windows.Forms.NumericUpDown();
-            this.AtkFilter = new System.Windows.Forms.NumericUpDown();
-            this.SpeFilter = new System.Windows.Forms.NumericUpDown();
-            this.DefFilter = new System.Windows.Forms.NumericUpDown();
-            this.SpdFilter = new System.Windows.Forms.NumericUpDown();
-            this.SpaFilter = new System.Windows.Forms.NumericUpDown();
-            this.SaveButton = new System.Windows.Forms.Button();
-            this.ResetButton = new System.Windows.Forms.Button();
-            this.StopConditionsGroup.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.HPFilter)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.AtkFilter)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.SpeFilter)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.DefFilter)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.SpdFilter)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.SpaFilter)).BeginInit();
-            this.SuspendLayout();
+            StopConditionsGroup = new GroupBox();
+            ScaleBox = new CheckBox();
+            ShinyBox = new ComboBox();
+            label1 = new Label();
+            PresetIVs = new Label();
+            PresetIVBox = new ComboBox();
+            GenderBox = new ComboBox();
+            IgnoreIVFilter = new CheckBox();
+            CheckBoxOf3 = new CheckBox();
+            TargetSPE = new Label();
+            TargetSPD = new Label();
+            GenderFilter = new Label();
+            TargetSPA = new Label();
+            TargetIVs = new Label();
+            TargetDEF = new Label();
+            TargetHP = new Label();
+            TargetATK = new Label();
+            HPFilter = new NumericUpDown();
+            AtkFilter = new NumericUpDown();
+            SpeFilter = new NumericUpDown();
+            DefFilter = new NumericUpDown();
+            SpdFilter = new NumericUpDown();
+            SpaFilter = new NumericUpDown();
+            SaveButton = new Button();
+            ResetButton = new Button();
+            StopConditionsGroup.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)HPFilter).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)AtkFilter).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)SpeFilter).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)DefFilter).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)SpdFilter).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)SpaFilter).BeginInit();
+            SuspendLayout();
             // 
             // StopConditionsGroup
             // 
-            this.StopConditionsGroup.Controls.Add(this.ScaleBox);
-            this.StopConditionsGroup.Controls.Add(this.ShinyBox);
-            this.StopConditionsGroup.Controls.Add(this.label1);
-            this.StopConditionsGroup.Controls.Add(this.PresetIVs);
-            this.StopConditionsGroup.Controls.Add(this.PresetIVBox);
-            this.StopConditionsGroup.Controls.Add(this.GenderBox);
-            this.StopConditionsGroup.Controls.Add(this.IgnoreIVFilter);
-            this.StopConditionsGroup.Controls.Add(this.CheckBoxOf3);
-            this.StopConditionsGroup.Controls.Add(this.TargetSPE);
-            this.StopConditionsGroup.Controls.Add(this.TargetSPD);
-            this.StopConditionsGroup.Controls.Add(this.GenderFilter);
-            this.StopConditionsGroup.Controls.Add(this.TargetSPA);
-            this.StopConditionsGroup.Controls.Add(this.TargetIVs);
-            this.StopConditionsGroup.Controls.Add(this.TargetDEF);
-            this.StopConditionsGroup.Controls.Add(this.TargetHP);
-            this.StopConditionsGroup.Controls.Add(this.TargetATK);
-            this.StopConditionsGroup.Controls.Add(this.HPFilter);
-            this.StopConditionsGroup.Controls.Add(this.AtkFilter);
-            this.StopConditionsGroup.Controls.Add(this.SpeFilter);
-            this.StopConditionsGroup.Controls.Add(this.DefFilter);
-            this.StopConditionsGroup.Controls.Add(this.SpdFilter);
-            this.StopConditionsGroup.Controls.Add(this.SpaFilter);
-            this.StopConditionsGroup.Location = new System.Drawing.Point(35, 12);
-            this.StopConditionsGroup.Name = "StopConditionsGroup";
-            this.StopConditionsGroup.Size = new System.Drawing.Size(346, 244);
-            this.StopConditionsGroup.TabIndex = 63;
-            this.StopConditionsGroup.TabStop = false;
-            this.StopConditionsGroup.Text = "Stop Conditions";
+            StopConditionsGroup.Controls.Add(ScaleBox);
+            StopConditionsGroup.Controls.Add(ShinyBox);
+            StopConditionsGroup.Controls.Add(label1);
+            StopConditionsGroup.Controls.Add(PresetIVs);
+            StopConditionsGroup.Controls.Add(PresetIVBox);
+            StopConditionsGroup.Controls.Add(GenderBox);
+            StopConditionsGroup.Controls.Add(IgnoreIVFilter);
+            StopConditionsGroup.Controls.Add(CheckBoxOf3);
+            StopConditionsGroup.Controls.Add(TargetSPE);
+            StopConditionsGroup.Controls.Add(TargetSPD);
+            StopConditionsGroup.Controls.Add(GenderFilter);
+            StopConditionsGroup.Controls.Add(TargetSPA);
+            StopConditionsGroup.Controls.Add(TargetIVs);
+            StopConditionsGroup.Controls.Add(TargetDEF);
+            StopConditionsGroup.Controls.Add(TargetHP);
+            StopConditionsGroup.Controls.Add(TargetATK);
+            StopConditionsGroup.Controls.Add(HPFilter);
+            StopConditionsGroup.Controls.Add(AtkFilter);
+            StopConditionsGroup.Controls.Add(SpeFilter);
+            StopConditionsGroup.Controls.Add(DefFilter);
+            StopConditionsGroup.Controls.Add(SpdFilter);
+            StopConditionsGroup.Controls.Add(SpaFilter);
+            StopConditionsGroup.Location = new Point(35, 12);
+            StopConditionsGroup.Name = "StopConditionsGroup";
+            StopConditionsGroup.Size = new Size(346, 244);
+            StopConditionsGroup.TabIndex = 63;
+            StopConditionsGroup.TabStop = false;
+            StopConditionsGroup.Text = "Stop Conditions";
             // 
             // ScaleBox
             // 
-            this.ScaleBox.AutoSize = true;
-            this.ScaleBox.Location = new System.Drawing.Point(23, 48);
-            this.ScaleBox.Name = "ScaleBox";
-            this.ScaleBox.Size = new System.Drawing.Size(124, 19);
-            this.ScaleBox.TabIndex = 66;
-            this.ScaleBox.Text = "Mini/Jumbo Only?";
-            this.ScaleBox.UseVisualStyleBackColor = true;
+            ScaleBox.AutoSize = true;
+            ScaleBox.Location = new Point(23, 48);
+            ScaleBox.Name = "ScaleBox";
+            ScaleBox.Size = new Size(124, 19);
+            ScaleBox.TabIndex = 66;
+            ScaleBox.Text = "Mini/Jumbo Only?";
+            ScaleBox.UseVisualStyleBackColor = true;
             // 
             // ShinyBox
             // 
-            this.ShinyBox.FormattingEnabled = true;
-            this.ShinyBox.Items.AddRange(new object[] {
-            "DisableOption",
-            "NonShiny",
-            "AnyShiny",
-            "StarOnly",
-            "SquareOnly"});
-            this.ShinyBox.Location = new System.Drawing.Point(150, 18);
-            this.ShinyBox.MaxDropDownItems = 5;
-            this.ShinyBox.Name = "ShinyBox";
-            this.ShinyBox.Size = new System.Drawing.Size(121, 23);
-            this.ShinyBox.TabIndex = 65;
-            this.ShinyBox.Text = "DisableOption";
-            this.ShinyBox.SelectedIndexChanged += new System.EventHandler(this.ShinyBox_SelectedIndexChanged);
+            ShinyBox.FormattingEnabled = true;
+            ShinyBox.Items.AddRange(new object[] { "DisableOption", "NonShiny", "AnyShiny", "StarOnly", "SquareOnly" });
+            ShinyBox.Location = new Point(150, 18);
+            ShinyBox.MaxDropDownItems = 5;
+            ShinyBox.Name = "ShinyBox";
+            ShinyBox.Size = new Size(121, 23);
+            ShinyBox.TabIndex = 65;
+            ShinyBox.Text = "DisableOption";
+            ShinyBox.SelectedIndexChanged += ShinyBox_SelectedIndexChanged;
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(75, 21);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(71, 15);
-            this.label1.TabIndex = 64;
-            this.label1.Text = "Shiny Target";
+            label1.AutoSize = true;
+            label1.Location = new Point(75, 21);
+            label1.Name = "label1";
+            label1.Size = new Size(71, 15);
+            label1.TabIndex = 64;
+            label1.Text = "Shiny Target";
             // 
             // PresetIVs
             // 
-            this.PresetIVs.AutoSize = true;
-            this.PresetIVs.Location = new System.Drawing.Point(66, 186);
-            this.PresetIVs.Name = "PresetIVs";
-            this.PresetIVs.Size = new System.Drawing.Size(60, 15);
-            this.PresetIVs.TabIndex = 63;
-            this.PresetIVs.Text = "Preset IVs:";
+            PresetIVs.AutoSize = true;
+            PresetIVs.Location = new Point(66, 186);
+            PresetIVs.Name = "PresetIVs";
+            PresetIVs.Size = new Size(60, 15);
+            PresetIVs.TabIndex = 63;
+            PresetIVs.Text = "Preset IVs:";
             // 
             // PresetIVBox
             // 
-            this.PresetIVBox.FormattingEnabled = true;
-            this.PresetIVBox.Items.AddRange(new object[] {
-            "None Selected",
-            "6 IV",
-            "0 ATK 0 SPE",
-            "0 ATK 5 IV",
-            "0 SPE 5 IV"});
-            this.PresetIVBox.Location = new System.Drawing.Point(130, 183);
-            this.PresetIVBox.Name = "PresetIVBox";
-            this.PresetIVBox.Size = new System.Drawing.Size(141, 23);
-            this.PresetIVBox.TabIndex = 62;
-            this.PresetIVBox.Text = "None Selected";
-            this.PresetIVBox.SelectedIndexChanged += new System.EventHandler(this.PresetIVBox_SelectedIndexChanged);
+            PresetIVBox.FormattingEnabled = true;
+            PresetIVBox.Items.AddRange(new object[] { "None Selected", "6 IV", "0 ATK 0 SPE", "0 ATK 5 IV", "0 SPE 5 IV" });
+            PresetIVBox.Location = new Point(130, 183);
+            PresetIVBox.Name = "PresetIVBox";
+            PresetIVBox.Size = new Size(141, 23);
+            PresetIVBox.TabIndex = 62;
+            PresetIVBox.Text = "None Selected";
+            PresetIVBox.SelectedIndexChanged += PresetIVBox_SelectedIndexChanged;
             // 
             // GenderBox
             // 
-            this.GenderBox.FormattingEnabled = true;
-            this.GenderBox.Items.AddRange(new object[] {
-            "Male",
-            "Female",
-            "Genderless",
-            "Any"});
-            this.GenderBox.Location = new System.Drawing.Point(219, 47);
-            this.GenderBox.MaxDropDownItems = 4;
-            this.GenderBox.Name = "GenderBox";
-            this.GenderBox.Size = new System.Drawing.Size(106, 23);
-            this.GenderBox.TabIndex = 61;
-            this.GenderBox.Text = "Male";
+            GenderBox.FormattingEnabled = true;
+            GenderBox.Items.AddRange(new object[] { "Male", "Female", "Genderless", "Any" });
+            GenderBox.Location = new Point(219, 47);
+            GenderBox.MaxDropDownItems = 4;
+            GenderBox.Name = "GenderBox";
+            GenderBox.Size = new Size(106, 23);
+            GenderBox.TabIndex = 61;
+            GenderBox.Text = "Male";
             // 
             // IgnoreIVFilter
             // 
-            this.IgnoreIVFilter.AutoSize = true;
-            this.IgnoreIVFilter.Location = new System.Drawing.Point(112, 215);
-            this.IgnoreIVFilter.Name = "IgnoreIVFilter";
-            this.IgnoreIVFilter.Size = new System.Drawing.Size(107, 19);
-            this.IgnoreIVFilter.TabIndex = 60;
-            this.IgnoreIVFilter.Text = "Ignore IV Filter?";
-            this.IgnoreIVFilter.UseVisualStyleBackColor = true;
+            IgnoreIVFilter.AutoSize = true;
+            IgnoreIVFilter.Location = new Point(112, 215);
+            IgnoreIVFilter.Name = "IgnoreIVFilter";
+            IgnoreIVFilter.Size = new Size(107, 19);
+            IgnoreIVFilter.TabIndex = 60;
+            IgnoreIVFilter.Text = "Ignore IV Filter?";
+            IgnoreIVFilter.UseVisualStyleBackColor = true;
             // 
             // CheckBoxOf3
             // 
-            this.CheckBoxOf3.AutoSize = true;
-            this.CheckBoxOf3.Location = new System.Drawing.Point(88, 76);
-            this.CheckBoxOf3.Name = "CheckBoxOf3";
-            this.CheckBoxOf3.Size = new System.Drawing.Size(150, 19);
-            this.CheckBoxOf3.TabIndex = 12;
-            this.CheckBoxOf3.Text = "3 Segment/Family of 3?";
-            this.CheckBoxOf3.UseVisualStyleBackColor = true;
+            CheckBoxOf3.AutoSize = true;
+            CheckBoxOf3.Location = new Point(88, 76);
+            CheckBoxOf3.Name = "CheckBoxOf3";
+            CheckBoxOf3.Size = new Size(150, 19);
+            CheckBoxOf3.TabIndex = 12;
+            CheckBoxOf3.Text = "3 Segment/Family of 3?";
+            CheckBoxOf3.UseVisualStyleBackColor = true;
             // 
             // TargetSPE
             // 
-            this.TargetSPE.AutoSize = true;
-            this.TargetSPE.Location = new System.Drawing.Point(203, 154);
-            this.TargetSPE.Name = "TargetSPE";
-            this.TargetSPE.Size = new System.Drawing.Size(26, 15);
-            this.TargetSPE.TabIndex = 59;
-            this.TargetSPE.Text = "SPE";
+            TargetSPE.AutoSize = true;
+            TargetSPE.Location = new Point(203, 154);
+            TargetSPE.Name = "TargetSPE";
+            TargetSPE.Size = new Size(26, 15);
+            TargetSPE.TabIndex = 59;
+            TargetSPE.Text = "SPE";
             // 
             // TargetSPD
             // 
-            this.TargetSPD.AutoSize = true;
-            this.TargetSPD.Location = new System.Drawing.Point(130, 154);
-            this.TargetSPD.Name = "TargetSPD";
-            this.TargetSPD.Size = new System.Drawing.Size(28, 15);
-            this.TargetSPD.TabIndex = 58;
-            this.TargetSPD.Text = "SPD";
+            TargetSPD.AutoSize = true;
+            TargetSPD.Location = new Point(130, 154);
+            TargetSPD.Name = "TargetSPD";
+            TargetSPD.Size = new Size(28, 15);
+            TargetSPD.TabIndex = 58;
+            TargetSPD.Text = "SPD";
             // 
             // GenderFilter
             // 
-            this.GenderFilter.AutoSize = true;
-            this.GenderFilter.Location = new System.Drawing.Point(168, 49);
-            this.GenderFilter.Name = "GenderFilter";
-            this.GenderFilter.Size = new System.Drawing.Size(45, 15);
-            this.GenderFilter.TabIndex = 45;
-            this.GenderFilter.Text = "Gender";
+            GenderFilter.AutoSize = true;
+            GenderFilter.Location = new Point(168, 49);
+            GenderFilter.Name = "GenderFilter";
+            GenderFilter.Size = new Size(45, 15);
+            GenderFilter.TabIndex = 45;
+            GenderFilter.Text = "Gender";
             // 
             // TargetSPA
             // 
-            this.TargetSPA.AutoSize = true;
-            this.TargetSPA.Location = new System.Drawing.Point(57, 154);
-            this.TargetSPA.Name = "TargetSPA";
-            this.TargetSPA.Size = new System.Drawing.Size(27, 15);
-            this.TargetSPA.TabIndex = 57;
-            this.TargetSPA.Text = "SPA";
+            TargetSPA.AutoSize = true;
+            TargetSPA.Location = new Point(57, 154);
+            TargetSPA.Name = "TargetSPA";
+            TargetSPA.Size = new Size(27, 15);
+            TargetSPA.TabIndex = 57;
+            TargetSPA.Text = "SPA";
             // 
             // TargetIVs
             // 
-            this.TargetIVs.AutoSize = true;
-            this.TargetIVs.Location = new System.Drawing.Point(140, 102);
-            this.TargetIVs.Name = "TargetIVs";
-            this.TargetIVs.Size = new System.Drawing.Size(46, 15);
-            this.TargetIVs.TabIndex = 53;
-            this.TargetIVs.Text = "IV Filter";
+            TargetIVs.AutoSize = true;
+            TargetIVs.Location = new Point(140, 102);
+            TargetIVs.Name = "TargetIVs";
+            TargetIVs.Size = new Size(46, 15);
+            TargetIVs.TabIndex = 53;
+            TargetIVs.Text = "IV Filter";
             // 
             // TargetDEF
             // 
-            this.TargetDEF.AutoSize = true;
-            this.TargetDEF.Location = new System.Drawing.Point(202, 125);
-            this.TargetDEF.Name = "TargetDEF";
-            this.TargetDEF.Size = new System.Drawing.Size(27, 15);
-            this.TargetDEF.TabIndex = 56;
-            this.TargetDEF.Text = "DEF";
+            TargetDEF.AutoSize = true;
+            TargetDEF.Location = new Point(202, 125);
+            TargetDEF.Name = "TargetDEF";
+            TargetDEF.Size = new Size(27, 15);
+            TargetDEF.TabIndex = 56;
+            TargetDEF.Text = "DEF";
             // 
             // TargetHP
             // 
-            this.TargetHP.AutoSize = true;
-            this.TargetHP.Location = new System.Drawing.Point(59, 125);
-            this.TargetHP.Name = "TargetHP";
-            this.TargetHP.Size = new System.Drawing.Size(23, 15);
-            this.TargetHP.TabIndex = 54;
-            this.TargetHP.Text = "HP";
+            TargetHP.AutoSize = true;
+            TargetHP.Location = new Point(59, 125);
+            TargetHP.Name = "TargetHP";
+            TargetHP.Size = new Size(23, 15);
+            TargetHP.TabIndex = 54;
+            TargetHP.Text = "HP";
             // 
             // TargetATK
             // 
-            this.TargetATK.AutoSize = true;
-            this.TargetATK.Location = new System.Drawing.Point(130, 125);
-            this.TargetATK.Name = "TargetATK";
-            this.TargetATK.Size = new System.Drawing.Size(27, 15);
-            this.TargetATK.TabIndex = 55;
-            this.TargetATK.Text = "ATK";
+            TargetATK.AutoSize = true;
+            TargetATK.Location = new Point(130, 125);
+            TargetATK.Name = "TargetATK";
+            TargetATK.Size = new Size(27, 15);
+            TargetATK.TabIndex = 55;
+            TargetATK.Text = "ATK";
             // 
             // HPFilter
             // 
-            this.HPFilter.Location = new System.Drawing.Point(85, 123);
-            this.HPFilter.Maximum = new decimal(new int[] {
-            31,
-            0,
-            0,
-            0});
-            this.HPFilter.Name = "HPFilter";
-            this.HPFilter.Size = new System.Drawing.Size(42, 23);
-            this.HPFilter.TabIndex = 47;
-            this.HPFilter.Value = new decimal(new int[] {
-            31,
-            0,
-            0,
-            0});
+            HPFilter.Location = new Point(85, 123);
+            HPFilter.Maximum = new decimal(new int[] { 31, 0, 0, 0 });
+            HPFilter.Name = "HPFilter";
+            HPFilter.Size = new Size(42, 23);
+            HPFilter.TabIndex = 47;
+            HPFilter.Value = new decimal(new int[] { 31, 0, 0, 0 });
             // 
             // AtkFilter
             // 
-            this.AtkFilter.Location = new System.Drawing.Point(158, 122);
-            this.AtkFilter.Maximum = new decimal(new int[] {
-            31,
-            0,
-            0,
-            0});
-            this.AtkFilter.Name = "AtkFilter";
-            this.AtkFilter.Size = new System.Drawing.Size(41, 23);
-            this.AtkFilter.TabIndex = 48;
-            this.AtkFilter.Value = new decimal(new int[] {
-            31,
-            0,
-            0,
-            0});
+            AtkFilter.Location = new Point(158, 122);
+            AtkFilter.Maximum = new decimal(new int[] { 31, 0, 0, 0 });
+            AtkFilter.Name = "AtkFilter";
+            AtkFilter.Size = new Size(41, 23);
+            AtkFilter.TabIndex = 48;
+            AtkFilter.Value = new decimal(new int[] { 31, 0, 0, 0 });
             // 
             // SpeFilter
             // 
-            this.SpeFilter.Location = new System.Drawing.Point(232, 151);
-            this.SpeFilter.Maximum = new decimal(new int[] {
-            31,
-            0,
-            0,
-            0});
-            this.SpeFilter.Name = "SpeFilter";
-            this.SpeFilter.Size = new System.Drawing.Size(40, 23);
-            this.SpeFilter.TabIndex = 52;
-            this.SpeFilter.Value = new decimal(new int[] {
-            31,
-            0,
-            0,
-            0});
+            SpeFilter.Location = new Point(232, 151);
+            SpeFilter.Maximum = new decimal(new int[] { 31, 0, 0, 0 });
+            SpeFilter.Name = "SpeFilter";
+            SpeFilter.Size = new Size(40, 23);
+            SpeFilter.TabIndex = 52;
+            SpeFilter.Value = new decimal(new int[] { 31, 0, 0, 0 });
             // 
             // DefFilter
             // 
-            this.DefFilter.Location = new System.Drawing.Point(232, 122);
-            this.DefFilter.Maximum = new decimal(new int[] {
-            31,
-            0,
-            0,
-            0});
-            this.DefFilter.Name = "DefFilter";
-            this.DefFilter.Size = new System.Drawing.Size(40, 23);
-            this.DefFilter.TabIndex = 49;
-            this.DefFilter.Value = new decimal(new int[] {
-            31,
-            0,
-            0,
-            0});
+            DefFilter.Location = new Point(232, 122);
+            DefFilter.Maximum = new decimal(new int[] { 31, 0, 0, 0 });
+            DefFilter.Name = "DefFilter";
+            DefFilter.Size = new Size(40, 23);
+            DefFilter.TabIndex = 49;
+            DefFilter.Value = new decimal(new int[] { 31, 0, 0, 0 });
             // 
             // SpdFilter
             // 
-            this.SpdFilter.Location = new System.Drawing.Point(158, 151);
-            this.SpdFilter.Maximum = new decimal(new int[] {
-            31,
-            0,
-            0,
-            0});
-            this.SpdFilter.Name = "SpdFilter";
-            this.SpdFilter.Size = new System.Drawing.Size(41, 23);
-            this.SpdFilter.TabIndex = 51;
-            this.SpdFilter.Value = new decimal(new int[] {
-            31,
-            0,
-            0,
-            0});
+            SpdFilter.Location = new Point(158, 151);
+            SpdFilter.Maximum = new decimal(new int[] { 31, 0, 0, 0 });
+            SpdFilter.Name = "SpdFilter";
+            SpdFilter.Size = new Size(41, 23);
+            SpdFilter.TabIndex = 51;
+            SpdFilter.Value = new decimal(new int[] { 31, 0, 0, 0 });
             // 
             // SpaFilter
             // 
-            this.SpaFilter.Location = new System.Drawing.Point(85, 152);
-            this.SpaFilter.Maximum = new decimal(new int[] {
-            31,
-            0,
-            0,
-            0});
-            this.SpaFilter.Name = "SpaFilter";
-            this.SpaFilter.Size = new System.Drawing.Size(42, 23);
-            this.SpaFilter.TabIndex = 50;
-            this.SpaFilter.Value = new decimal(new int[] {
-            31,
-            0,
-            0,
-            0});
+            SpaFilter.Location = new Point(85, 152);
+            SpaFilter.Maximum = new decimal(new int[] { 31, 0, 0, 0 });
+            SpaFilter.Name = "SpaFilter";
+            SpaFilter.Size = new Size(42, 23);
+            SpaFilter.TabIndex = 50;
+            SpaFilter.Value = new decimal(new int[] { 31, 0, 0, 0 });
             // 
             // SaveButton
             // 
-            this.SaveButton.Location = new System.Drawing.Point(122, 270);
-            this.SaveButton.Name = "SaveButton";
-            this.SaveButton.Size = new System.Drawing.Size(75, 23);
-            this.SaveButton.TabIndex = 64;
-            this.SaveButton.Text = "Save";
-            this.SaveButton.UseVisualStyleBackColor = true;
-            this.SaveButton.Click += new System.EventHandler(this.SaveButton_Click);
+            SaveButton.BackColor = Color.Transparent;
+            SaveButton.Location = new Point(122, 270);
+            SaveButton.Name = "SaveButton";
+            SaveButton.Size = new Size(75, 23);
+            SaveButton.TabIndex = 64;
+            SaveButton.Text = "Save";
+            SaveButton.UseVisualStyleBackColor = false;
+            SaveButton.Click += SaveButton_Click;
             // 
             // ResetButton
             // 
-            this.ResetButton.Location = new System.Drawing.Point(203, 270);
-            this.ResetButton.Name = "ResetButton";
-            this.ResetButton.Size = new System.Drawing.Size(75, 23);
-            this.ResetButton.TabIndex = 65;
-            this.ResetButton.Text = "Reset";
-            this.ResetButton.UseVisualStyleBackColor = true;
-            this.ResetButton.Click += new System.EventHandler(this.ResetButton_Click);
+            ResetButton.BackColor = Color.Transparent;
+            ResetButton.Location = new Point(203, 270);
+            ResetButton.Name = "ResetButton";
+            ResetButton.Size = new Size(75, 23);
+            ResetButton.TabIndex = 65;
+            ResetButton.Text = "Reset";
+            ResetButton.UseVisualStyleBackColor = false;
+            ResetButton.Click += ResetButton_Click;
             // 
-            // EggViewerConditions
+            // StopConditions
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(422, 310);
-            this.ControlBox = false;
-            this.Controls.Add(this.ResetButton);
-            this.Controls.Add(this.SaveButton);
-            this.Controls.Add(this.StopConditionsGroup);
-            this.Name = "Stop Conditions";
-            this.Text = "Stop Conditions";
-            this.StopConditionsGroup.ResumeLayout(false);
-            this.StopConditionsGroup.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.HPFilter)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.AtkFilter)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.SpeFilter)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.DefFilter)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.SpdFilter)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.SpaFilter)).EndInit();
-            this.ResumeLayout(false);
-
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(422, 310);
+            ControlBox = false;
+            Controls.Add(ResetButton);
+            Controls.Add(SaveButton);
+            Controls.Add(StopConditionsGroup);
+            Name = "StopConditions";
+            Text = "Stop Conditions";
+            StopConditionsGroup.ResumeLayout(false);
+            StopConditionsGroup.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)HPFilter).EndInit();
+            ((System.ComponentModel.ISupportInitialize)AtkFilter).EndInit();
+            ((System.ComponentModel.ISupportInitialize)SpeFilter).EndInit();
+            ((System.ComponentModel.ISupportInitialize)DefFilter).EndInit();
+            ((System.ComponentModel.ISupportInitialize)SpdFilter).EndInit();
+            ((System.ComponentModel.ISupportInitialize)SpaFilter).EndInit();
+            ResumeLayout(false);
         }
 
         #endregion

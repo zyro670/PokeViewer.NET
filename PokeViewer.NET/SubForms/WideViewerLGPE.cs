@@ -8,11 +8,24 @@ namespace PokeViewer.NET.WideViewForms
     {
         private readonly ViewerExecutor Executor;
         protected ViewerOffsets Offsets { get; } = new();
-        public WideViewerLGPE(ViewerExecutor executor)
+        public WideViewerLGPE(ViewerExecutor executor, (Color, Color) color)
         {
             InitializeComponent();
             Executor = executor;
+            SetColors(color);
             Executor.SwitchConnection.SendAsync(SwitchCommand.Configure(SwitchConfigureParameter.controllerType, 1, true), CancellationToken.None);
+        }
+
+        private void SetColors((Color, Color) color)
+        {
+            BackColor = color.Item1;
+            ForeColor = color.Item2;
+            WaitButton.BackColor = color.Item1;
+            WaitButton.ForeColor = color.Item2;
+            pictureBox1.BackColor = color.Item1;
+            pictureBox1.ForeColor = color.Item2;
+            flagbox.BackColor = color.Item1;
+            flagbox.ForeColor = color.Item2;
         }
 
         private async Task ViewOverworldLGPE(CancellationToken token)

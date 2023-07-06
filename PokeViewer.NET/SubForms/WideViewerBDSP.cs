@@ -6,16 +6,44 @@ namespace PokeViewer.NET.WideViewForms
     public partial class WideViewerBDSP : Form
     {
         private readonly ViewerExecutor Executor;
-        public WideViewerBDSP(ViewerExecutor executor)
+        public WideViewerBDSP(ViewerExecutor executor, (Color, Color) color)
         {
             InitializeComponent();
             Executor = executor;
+            SetColors(color);
             Window_Loaded();
         }
 
         private const string ShiningPearlID = "010018E011D92000";
         private const string BrilliantDiamondID = "0100000011D90000";
         private int GameType;
+
+        private void SetColors((Color, Color) color)
+        {
+            BackColor = color.Item1;
+            ForeColor = color.Item2;
+            WideView10Button.BackColor = color.Item1;
+            WideView10Button.ForeColor = color.Item2;
+
+            TextBox[] textboxes =
+            {
+                textBox1, textBox2, textBox3, textBox4, textBox5, textBox6, textBox7, textBox8, textBox9, textBox10,
+            };
+
+            PictureBox[] boxes =
+            {
+                WideImage1, WideImage2, WideImage3, WideImage4, WideImage5, WideImage6, WideImage7, WideImage8, WideImage9, WideImage10
+            };
+
+            for (int i = 0; i < boxes.Length; i++)
+            {
+                boxes[i].BackColor = color.Item1;
+            }
+            for (int i = 0; i < textboxes.Length; i++)
+            {
+                textboxes[i].BackColor = color.Item1;
+            }
+        }
 
         private async void Window_Loaded()
         {
@@ -29,12 +57,10 @@ namespace PokeViewer.NET.WideViewForms
             }
             GameType = type;
         }
-
         private async void WideView10Button_Click(object sender, EventArgs e)
         {
             await UndergroundScanning(CancellationToken.None).ConfigureAwait(false);
         }
-
         private async Task UndergroundScanning(CancellationToken token)
         {
             WideView10Button.Enabled = false;

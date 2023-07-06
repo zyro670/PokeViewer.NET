@@ -61,10 +61,13 @@
             pictureBox30 = new PictureBox();
             button2 = new Button();
             button3 = new Button();
-            checkBox1 = new CheckBox();
+            DumpCheck = new CheckBox();
             progressBar1 = new ProgressBar();
             FlexButton = new Button();
             comboBox1 = new ComboBox();
+            CSVCheck = new CheckBox();
+            ViewAllCheck = new CheckBox();
+            CurrentBox = new Label();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
@@ -99,12 +102,13 @@
             // 
             // ViewButton
             // 
+            ViewButton.BackColor = Color.Transparent;
             ViewButton.Location = new Point(210, 372);
             ViewButton.Name = "ViewButton";
             ViewButton.Size = new Size(75, 23);
             ViewButton.TabIndex = 2;
             ViewButton.Text = "View";
-            ViewButton.UseVisualStyleBackColor = true;
+            ViewButton.UseVisualStyleBackColor = false;
             ViewButton.Click += button1_ClickAsync;
             // 
             // pictureBox1
@@ -499,34 +503,36 @@
             // 
             // button2
             // 
+            button2.BackColor = Color.Transparent;
             button2.Location = new Point(287, 372);
             button2.Name = "button2";
             button2.Size = new Size(44, 23);
             button2.TabIndex = 33;
             button2.Text = "=>";
-            button2.UseVisualStyleBackColor = true;
+            button2.UseVisualStyleBackColor = false;
             button2.Click += button2_Click;
             // 
             // button3
             // 
+            button3.BackColor = Color.Transparent;
             button3.Location = new Point(171, 372);
             button3.Name = "button3";
             button3.Size = new Size(35, 23);
             button3.TabIndex = 34;
             button3.Text = "<=";
-            button3.UseVisualStyleBackColor = true;
+            button3.UseVisualStyleBackColor = false;
             button3.Click += button3_Click;
             // 
-            // checkBox1
+            // DumpCheck
             // 
-            checkBox1.AutoSize = true;
-            checkBox1.Font = new Font("Segoe UI", 9F, FontStyle.Italic, GraphicsUnit.Point);
-            checkBox1.Location = new Point(143, 399);
-            checkBox1.Name = "checkBox1";
-            checkBox1.Size = new Size(64, 19);
-            checkBox1.TabIndex = 36;
-            checkBox1.Text = "Dump?";
-            checkBox1.UseVisualStyleBackColor = true;
+            DumpCheck.AutoSize = true;
+            DumpCheck.Font = new Font("Segoe UI", 9F, FontStyle.Italic, GraphicsUnit.Point);
+            DumpCheck.Location = new Point(339, 397);
+            DumpCheck.Name = "DumpCheck";
+            DumpCheck.Size = new Size(64, 19);
+            DumpCheck.TabIndex = 36;
+            DumpCheck.Text = "Dump?";
+            DumpCheck.UseVisualStyleBackColor = true;
             // 
             // progressBar1
             // 
@@ -537,13 +543,14 @@
             // 
             // FlexButton
             // 
+            FlexButton.BackColor = Color.Transparent;
             FlexButton.Font = new Font("Segoe UI", 9F, FontStyle.Italic, GraphicsUnit.Point);
-            FlexButton.Location = new Point(287, 397);
+            FlexButton.Location = new Point(338, 372);
             FlexButton.Name = "FlexButton";
             FlexButton.Size = new Size(44, 23);
             FlexButton.TabIndex = 38;
             FlexButton.Text = "Flex?";
-            FlexButton.UseVisualStyleBackColor = true;
+            FlexButton.UseVisualStyleBackColor = false;
             FlexButton.Click += FlexButton_Click;
             // 
             // comboBox1
@@ -555,13 +562,48 @@
             comboBox1.TabIndex = 39;
             comboBox1.Text = "Box 1";
             // 
+            // CSVCheck
+            // 
+            CSVCheck.AutoSize = true;
+            CSVCheck.Font = new Font("Segoe UI", 9F, FontStyle.Italic, GraphicsUnit.Point);
+            CSVCheck.Location = new Point(31, 376);
+            CSVCheck.Name = "CSVCheck";
+            CSVCheck.Size = new Size(117, 19);
+            CSVCheck.TabIndex = 40;
+            CSVCheck.Text = "CSV Current Box?";
+            CSVCheck.UseVisualStyleBackColor = true;
+            // 
+            // ViewAllCheck
+            // 
+            ViewAllCheck.AutoSize = true;
+            ViewAllCheck.Font = new Font("Segoe UI", 9F, FontStyle.Italic, GraphicsUnit.Point);
+            ViewAllCheck.Location = new Point(31, 397);
+            ViewAllCheck.Name = "ViewAllCheck";
+            ViewAllCheck.Size = new Size(163, 19);
+            ViewAllCheck.TabIndex = 41;
+            ViewAllCheck.Text = "CSV And Dump All Boxes?";
+            ViewAllCheck.UseVisualStyleBackColor = true;
+            // 
+            // CurrentBox
+            // 
+            CurrentBox.AutoSize = true;
+            CurrentBox.Font = new Font("Segoe UI", 27.75F, FontStyle.Regular, GraphicsUnit.Point);
+            CurrentBox.Location = new Point(409, 368);
+            CurrentBox.Name = "CurrentBox";
+            CurrentBox.Size = new Size(42, 50);
+            CurrentBox.TabIndex = 42;
+            CurrentBox.Text = "1";
+            CurrentBox.Visible = false;
+            // 
             // BoxViewerMode
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             AutoSizeMode = AutoSizeMode.GrowAndShrink;
-            BackColor = SystemColors.ButtonHighlight;
+            BackColor = SystemColors.ControlLightLight;
             ClientSize = new Size(492, 453);
+            Controls.Add(ViewAllCheck);
+            Controls.Add(CSVCheck);
             Controls.Add(comboBox1);
             Controls.Add(FlexButton);
             Controls.Add(progressBar1);
@@ -598,7 +640,8 @@
             Controls.Add(pictureBox2);
             Controls.Add(pictureBox1);
             Controls.Add(ViewButton);
-            Controls.Add(checkBox1);
+            Controls.Add(DumpCheck);
+            Controls.Add(CurrentBox);
             FormBorderStyle = FormBorderStyle.None;
             MaximizeBox = false;
             Name = "BoxViewerMode";
@@ -671,9 +714,12 @@
         private PictureBox pictureBox30;
         private Button button2;
         private Button button3;
-        private CheckBox checkBox1;
+        private CheckBox DumpCheck;
         private ProgressBar progressBar1;
         private Button FlexButton;
         private ComboBox comboBox1;
+        private CheckBox CSVCheck;
+        private CheckBox ViewAllCheck;
+        private Label CurrentBox;
     }
 }

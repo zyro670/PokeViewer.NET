@@ -16,19 +16,31 @@ namespace PokeViewer.NET
     {
         public ViewerExecutor Executor = null!;
         private const string ViewerVersion = "2.0.0";
-        private const int AzureBuildID = 424;
+        private const int AzureBuildID = 425;
         private readonly bool[] FormLoaded = new bool[8];
         private int GameType;
+        private SimpleTrainerInfo TrainerInfo = new();
         private readonly string RefreshTime = Settings.Default.RefreshRate;
+        private readonly List<Color> UIColors = new();
         protected ViewerOffsets Offsets { get; } = new();
         public MainViewer()
         {
             InitializeComponent();
+            GetAllColors();
+            LoadComboBox();
+            MoodChecker();
             WebhookURLText.Text = Settings.Default.WebHook;
             DiscordIDText.Text = Settings.Default.UserDiscordID;
             DisableTabsOnStart();
             VersionLabel.Text = $"v{ViewerVersion}";
             CheckReleaseLabel();
+        }
+
+        private void MoodChecker()
+        {
+            SetMoodOnStart();
+            var colors = CheckForColors(Settings.Default.DarkMode);
+            SetColorsConnection(colors.Item1, colors.Item2);
         }
 
         private void PokeViewerForm_Load(object sender, EventArgs e)
@@ -546,6 +558,13 @@ namespace PokeViewer.NET
                             WideButton.Enabled = true;
                             RaidButton.Enabled = true;
                         });
+                        var sav = new SAV9SV();
+                        var info = sav.MyStatus;
+                        var read = await Executor.SwitchConnection.PointerPeek(info.Data.Length, Offsets.MyStatusPointerSV, token).ConfigureAwait(false);
+                        read.CopyTo(info.Data, 0);
+                        TrainerInfo.OT = sav.OT;
+                        TrainerInfo.TID16 = sav.TID16;
+                        TrainerInfo.SID16 = sav.SID16;
                         break;
                     }
                 case VioletID:
@@ -562,6 +581,7 @@ namespace PokeViewer.NET
                             WideButton.Enabled = true;
                             RaidButton.Enabled = true;
                         });
+                        TrainerInfo = await GetFakeTrainerSAVSV(token).ConfigureAwait(false);
                         break;
                     }
                 case LegendsArceusID:
@@ -575,6 +595,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
                             WideButton.Enabled = true;
                         });
+                        TrainerInfo = await GetFakeTrainerSAVLA(token).ConfigureAwait(false);
                         break;
                     }
                 case ShiningPearlID:
@@ -589,6 +610,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
                             WideButton.Enabled = true;
                         });
+                        TrainerInfo = await GetFakeTrainerSAVBDSP(token).ConfigureAwait(false);
                         break;
                     }
                 case BrilliantDiamondID:
@@ -603,6 +625,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
                             WideButton.Enabled = true;
                         });
+                        TrainerInfo = await GetFakeTrainerSAVBDSP(token).ConfigureAwait(false);
                         break;
                     }
                 case SwordID:
@@ -619,6 +642,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
                             WideButton.Enabled = true;
                         });
+                        TrainerInfo = await GetFakeTrainerSAVSWSH(token).ConfigureAwait(false);
                         break;
                     }
                 case ShieldID:
@@ -635,6 +659,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
                             WideButton.Enabled = true;
                         });
+                        TrainerInfo = await GetFakeTrainerSAVSWSH(token).ConfigureAwait(false);
                         break;
                     }
                 case EeveeID:
@@ -648,6 +673,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
                             WideButton.Enabled = true;
                         });
+                        TrainerInfo = await GetFakeTrainerSAVLGPE(token).ConfigureAwait(false);
                         break;
                     }
                 case PikachuID:
@@ -661,6 +687,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
                             WideButton.Enabled = true;
                         });
+                        TrainerInfo = await GetFakeTrainerSAVLGPE(token).ConfigureAwait(false);
                         break;
                     }
             }
@@ -668,6 +695,8 @@ namespace PokeViewer.NET
             ConnectionSpriteBox.ImageLocation = url;
             GameType = type;
             ViewBox.Text = "Click View!";
+            TrainerLabel.Text = $"Name: {TrainerInfo.OT}";
+            TIDSID.Text = $"TID | SID: {TrainerInfo.TID16} | {TrainerInfo.SID16}";
             ToggleSwitchProtocol.Enabled = false;
             SwitchIP.Enabled = false;
             var bg = "https://raw.githubusercontent.com/kwsch/PKHeX/master/PKHeX.Drawing.PokeSprite/Resources/img/Pokemon%20Sprite%20Overlays/starter.png";
@@ -735,6 +764,8 @@ namespace PokeViewer.NET
             Form form = new();
             string currentTab = ViewerControl.SelectedTab.Text;
             int selectedInt = 0;
+            bool mode = CheckForMood();
+            var colors = CheckForColors(mode);
             switch (currentTab)
             {
                 case "Connection 🔌": selectedInt = 0; break;
@@ -748,20 +779,22 @@ namespace PokeViewer.NET
             }
 
             if (FormLoaded[selectedInt] is true)
+            {
                 return;
-
+            }
 
             switch (currentTab)
             {
                 case "Connection 🔌": FormLoaded[0] = true; return;
                 case "View 🔎": FormLoaded[1] = true; return;
-                case "Box 📦": form = new BoxViewerMode(GameType, Executor) { TopLevel = false }; FormLoaded[2] = true; break;
-                case "Party 👨‍👩‍👦‍👦": form = new PartyViewer(GameType, Executor) { TopLevel = false }; FormLoaded[3] = true; break;
-                case "Egg 🥚": form = new Egg_Viewer(GameType, Executor) { TopLevel = false }; FormLoaded[4] = true; break;
-                case "NPC 🤖": form = new NPCViewer(GameType, Executor) { TopLevel = false }; FormLoaded[5] = true; break;
-                case "Screenshot 📷": form = new ScreenshotForm(Executor) { TopLevel = false }; FormLoaded[6] = true; break;
-                case "Misc 📓": form = new MiscView(Executor) { TopLevel = false }; FormLoaded[7] = true; break;
+                case "Box 📦": form = new BoxViewerMode(GameType, Executor, colors, TrainerInfo) { TopLevel = false }; FormLoaded[2] = true; break;
+                case "Party 👨‍👩‍👦‍👦": form = new PartyViewer(GameType, Executor, colors) { TopLevel = false }; FormLoaded[3] = true; break;
+                case "Egg 🥚": form = new Egg_Viewer(GameType, Executor, colors) { TopLevel = false }; FormLoaded[4] = true; break;
+                case "NPC 🤖": form = new NPCViewer(GameType, Executor, colors) { TopLevel = false }; FormLoaded[5] = true; break;
+                case "Screenshot 📷": form = new ScreenshotForm(Executor, colors) { TopLevel = false }; FormLoaded[6] = true; break;
+                case "Misc 📓": form = new MiscView(Executor, colors) { TopLevel = false }; FormLoaded[7] = true; break;
             }
+
             int curr = ViewerControl.SelectedIndex;
             TabPage tbp = ViewerControl.TabPages[curr];
             ViewerControl.TabPages.Contains(tbp);
@@ -771,6 +804,64 @@ namespace PokeViewer.NET
             form.ControlBox = false;
             form.Show();
             Refresh();
+        }
+
+        private void SetColorsConnection(Color back, Color fore)
+        {
+            this.BackColor = back;
+            this.ForeColor = fore;
+            ConnectionGroupBox.BackColor = back;
+            ConnectionGroupBox.ForeColor = fore;
+            ScreenTrackBar.BackColor = back;
+            ScreenTrackBar.ForeColor = fore;
+            SaveButton.BackColor = back;
+            SaveButton.ForeColor = fore;
+            WideButton.BackColor = back;
+            WideButton.ForeColor = fore;
+            RaidButton.BackColor = back;
+            RaidButton.ForeColor = fore;
+            Connect.BackColor = back;
+            Connect.ForeColor = fore;
+            ConnectionPage.BackColor = back;
+            ConnectionPage.ForeColor = fore;
+            View.BackColor = back;
+            View.ForeColor = fore;
+            WindowCapture.BackColor = back;
+            WindowCapture.ForeColor = fore;
+            InGameScreenshot.BackColor = back;
+            InGameScreenshot.ForeColor = fore;
+            SetMoodButton.BackColor = back;
+            SetMoodButton.ForeColor = fore;
+            TrainerPassportGroup.BackColor = back;
+            TrainerPassportGroup.ForeColor = fore;
+            MoodGroup.BackColor = back;
+            MoodGroup.ForeColor = fore;
+            ExtrasGroup.BackColor = back;
+            ExtrasGroup.ForeColor = fore;
+            ToggleSwitchProtocol.BackColor = back;
+            ToggleSwitchProtocol.ForeColor = fore;
+            SwitchIP.BackColor = back;
+            SwitchIP.ForeColor = fore;
+            AltForeCombo.BackColor = back;
+            AltForeCombo.ForeColor = fore;
+            AltBackCombo.BackColor = back;
+            AltBackCombo.ForeColor = fore;
+        }
+
+        private static bool CheckForMood()
+        {
+            if (Settings.Default.DarkMode == true)
+                return true;
+            else
+                return false;
+        }
+
+        private static (Color, Color) CheckForColors(bool mode)
+        {
+            if (mode is true)
+                return (Settings.Default.DefaultBackColor, Settings.Default.DefaultForeColor);
+            else
+                return (Color.White, Color.Navy);
         }
 
         private void DisableTabsOnStart()
@@ -808,31 +899,32 @@ namespace PokeViewer.NET
         private void WideButton_Click(object sender, EventArgs e)
         {
             Form form = new();
+            var colors = CheckForColors(Settings.Default.DarkMode);
             switch (GameType)
             {
                 case (int)GameSelected.Scarlet or (int)GameSelected.Violet:
                     {
-                        form = new WideViewerSV(Executor);
+                        form = new WideViewerSV(Executor, colors);
                         break;
                     }
                 case (int)GameSelected.LegendsArceus:
                     {
-                        form = new WideViewerLA(Executor);
+                        form = new WideViewerLA(Executor, colors);
                         break;
                     }
                 case (int)GameSelected.BrilliantDiamond or (int)GameSelected.ShiningPearl:
                     {
-                        form = new WideViewerBDSP(Executor);
+                        form = new WideViewerBDSP(Executor, colors);
                         break;
                     }
                 case (int)GameSelected.Sword or (int)GameSelected.Shield:
                     {
-                        form = new WideViewerSWSH(Executor);
+                        form = new WideViewerSWSH(Executor, colors);
                         break;
                     }
                 case (int)GameSelected.LetsGoPikachu or (int)GameSelected.LetsGoEevee:
                     {
-                        form = new WideViewerLGPE(Executor);
+                        form = new WideViewerLGPE(Executor, colors);
                         break;
                     }
             }
@@ -841,8 +933,195 @@ namespace PokeViewer.NET
 
         private void RaidButton_Click(object sender, EventArgs e)
         {
-            RaidCodeEntry RaidForm = new(Executor);
+            var colors = CheckForColors(Settings.Default.DarkMode);
+            RaidCodeEntry RaidForm = new(Executor, colors);
             RaidForm.ShowDialog();
+        }
+
+        private async void ScreenTrackBar_Scroll(object sender, EventArgs e)
+        {
+            if (ScreenTrackBar.Value != 1)
+                await SetScreen(ScreenState.Off, CancellationToken.None).ConfigureAwait(false);
+            else
+                await SetScreen(ScreenState.On, CancellationToken.None).ConfigureAwait(false);
+        }
+
+        private async Task SetScreen(ScreenState state, CancellationToken token)
+        {
+            await Executor.SwitchConnection.SendAsync(SwitchCommand.SetScreen(state, true), token).ConfigureAwait(false);
+        }
+
+        private async void SetMoodButton_Click(object sender, EventArgs e)
+        {
+            bool darkmode = false;
+            if (AltMoodRadio.Checked)
+                darkmode = true;
+
+            else if (!AltMoodRadio.Checked)
+                darkmode = false;
+
+            Settings.Default.DarkMode = darkmode;            
+            Settings.Default.DefaultForeVal = AltForeCombo.SelectedIndex;
+            Settings.Default.DefaultBackVal = AltBackCombo.SelectedIndex;
+            Settings.Default.Save();
+
+            var owner = new Form { Visible = false };
+            var handle = owner.Handle;
+            owner.BeginInvoke((MethodInvoker)delegate
+            {
+                MessageBox.Show(owner, text: "Mood has been set! Application restarting...", "Timed Message");
+            });
+            await Task.Delay(TimeSpan.FromSeconds(2));
+            owner.Dispose();
+
+            System.Windows.Forms.Application.Restart();
+        }
+
+        private void SetMoodOnStart()
+        {
+            if (Settings.Default.DarkMode == true)
+            {
+                AltMoodRadio.Checked = true;
+            }
+            else
+            {
+                DefaultMoodRadio.Checked = true;
+                Settings.Default.DefaultForeColor = Color.Navy;
+                Settings.Default.DefaultBackColor = Color.White;
+            }
+        }
+
+        #region TrainerSav
+        // via SysBot.NET
+        public async Task<SimpleTrainerInfo> GetFakeTrainerSAVSWSH(CancellationToken token)
+        {
+            var simplesav = new SimpleTrainerInfo();
+            var sav = new SAV8SWSH();
+            var info = sav.MyStatus;
+            var read = await Executor.Connection.ReadBytesAsync(Offsets.TrainerDataOffsetSWSH, Offsets.TrainerDataLengthSWSH, token).ConfigureAwait(false);
+            read.CopyTo(info.Data, 0);
+            simplesav.OT = sav.OT;
+            simplesav.TID16 = sav.TID16;
+            simplesav.SID16 = sav.SID16;
+            return simplesav;
+        }
+        public async Task<SimpleTrainerInfo> GetFakeTrainerSAVSV(CancellationToken token)
+        {
+            var simplesav = new SimpleTrainerInfo();
+            var sav = new SAV9SV();
+            var info = sav.MyStatus;
+            var read = await Executor.SwitchConnection.PointerPeek(info.Data.Length, Offsets.MyStatusPointerSV, token).ConfigureAwait(false);
+            read.CopyTo(info.Data, 0);
+            simplesav.OT = sav.OT;
+            simplesav.TID16 = sav.TID16;
+            simplesav.SID16 = sav.SID16;
+            return simplesav;
+        }
+        public async Task<SimpleTrainerInfo> GetFakeTrainerSAVLA(CancellationToken token)
+        {
+            var simplesav = new SimpleTrainerInfo();
+            var sav = new SAV8LA();
+            var info = sav.MyStatus;
+            var read = await Executor.SwitchConnection.PointerPeek(info.Data.Length, Offsets.MyStatusPointerLA, token).ConfigureAwait(false);
+            read.CopyTo(info.Data, 0);
+            simplesav.OT = sav.OT;
+            simplesav.TID16 = sav.TID16;
+            simplesav.SID16 = sav.SID16;
+            return simplesav;
+        }
+        public async Task<SimpleTrainerInfo> GetFakeTrainerSAVBDSP(CancellationToken token)
+        {
+            var simplesav = new SimpleTrainerInfo();
+            var sav = new SAV8BS();
+            var info = sav.MyStatus;
+            var name = await Executor.SwitchConnection.PointerPeek(0x14 + 0x1A, GameType == (int)GameSelected.BrilliantDiamond ? Offsets.MyStatusTrainerPointerBD : Offsets.MyStatusTrainerPointerSP, token).ConfigureAwait(false);
+            info.OT = ReadStringFromRAMObject(name);
+            var offset = await Executor.SwitchConnection.PointerAll(GameType == (int)GameSelected.BrilliantDiamond ? Offsets.MyStatusTIDPointerBD : Offsets.MyStatusTIDPointerSP, token).ConfigureAwait(false);
+            var tid = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(offset, 2, token).ConfigureAwait(false);
+            var sid = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(offset + 2, 2, token).ConfigureAwait(false);
+            info.TID16 = System.Buffers.Binary.BinaryPrimitives.ReadUInt16LittleEndian(tid);
+            info.SID16 = System.Buffers.Binary.BinaryPrimitives.ReadUInt16LittleEndian(sid);
+            simplesav.OT = sav.OT;
+            simplesav.TID16 = sav.TID16;
+            simplesav.SID16 = sav.SID16;
+            return simplesav;
+        }
+        public async Task<SimpleTrainerInfo> GetFakeTrainerSAVLGPE(CancellationToken token)
+        {
+            var simplesav = new SimpleTrainerInfo();
+            var sav = new SAV7b();
+            byte[] bytes = sav.Blocks.Status.Data;
+            int startofs = sav.Blocks.Status.Offset;
+            byte[]? data = await Executor.Connection.ReadBytesAsync(Offsets.TrainerDataLGPE, Offsets.TrainerSizeLGPE, token).ConfigureAwait(false);
+            data.CopyTo(bytes, startofs);
+            simplesav.OT = sav.OT;
+            simplesav.TID16 = sav.TID16;
+            simplesav.SID16 = sav.SID16;
+            return simplesav;
+        }
+        public static string ReadStringFromRAMObject(byte[] obj)
+        {
+            const int ofs_len = 0x10;
+            const int ofs_chars = 0x14;
+            Debug.Assert(obj.Length >= ofs_chars);
+            int maxCharCount = (obj.Length - ofs_chars) / 2;
+            int length = BitConverter.ToInt32(obj, ofs_len);
+            if (length < 0 || length > maxCharCount)
+                length = maxCharCount;
+            return StringConverter8.GetString(obj.AsSpan(ofs_chars, length * 2));
+        }
+        #endregion
+
+        private void LoadComboBox()
+        {
+            AltForeCombo.Items.Clear();
+            AltBackCombo.Items.Clear();
+            for (var i = 0; i < UIColors.Count; i++)
+            {
+                AltForeCombo.Items.Add($"{UIColors[i].ToString().Replace("Color", "").Replace("[","").Replace("]","").Trim()}");
+                AltBackCombo.Items.Add($"{UIColors[i].ToString().Replace("Color", "").Replace("[", "").Replace("]", "").Trim()}");
+            }
+            AltForeCombo.SelectedIndex = Settings.Default.DefaultForeVal;
+            AltBackCombo.SelectedIndex = Settings.Default.DefaultBackVal;
+        }
+
+        private void GetAllColors()
+        {
+            KnownColor[] colors = (KnownColor[])Enum.GetValues(typeof(KnownColor));
+            for (int i = 28; i < 97; i++)
+            {
+                UIColors.Add(Color.FromKnownColor((KnownColor)colors[i]));
+            }
+        }
+
+        private void DefaultMoodRadio_CheckedChanged(object sender, EventArgs e)
+        {
+            if (DefaultMoodRadio.Checked)
+            {
+                AltForeCombo.Enabled = false;
+                AltBackCombo.Enabled = false;
+            }
+        }
+
+        private void AltMoodRadio_CheckedChanged(object sender, EventArgs e)
+        {
+            if (AltMoodRadio.Checked)
+            {
+                AltForeCombo.Enabled = true;
+                AltBackCombo.Enabled = true;
+            }
+        }
+
+        private void ColorComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var selection = AltForeCombo.SelectedIndex;
+            Settings.Default.DefaultForeColor = UIColors[selection];
+        }
+
+        private void AltBackCombo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var selection = AltBackCombo.SelectedIndex;
+            Settings.Default.DefaultBackColor = UIColors[selection];
         }
     }
 }

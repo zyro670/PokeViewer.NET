@@ -104,12 +104,13 @@
             // 
             // OutbreakScan
             // 
+            OutbreakScan.BackColor = Color.Transparent;
             OutbreakScan.Location = new Point(9, 19);
             OutbreakScan.Name = "OutbreakScan";
             OutbreakScan.Size = new Size(73, 23);
             OutbreakScan.TabIndex = 6;
             OutbreakScan.Text = "Scan";
-            OutbreakScan.UseVisualStyleBackColor = true;
+            OutbreakScan.UseVisualStyleBackColor = false;
             OutbreakScan.Click += button5_Click;
             // 
             // label1
@@ -269,12 +270,13 @@
             // 
             // RemoveSpecies
             // 
+            RemoveSpecies.BackColor = Color.Transparent;
             RemoveSpecies.Location = new Point(349, 236);
             RemoveSpecies.Name = "RemoveSpecies";
             RemoveSpecies.Size = new Size(80, 23);
             RemoveSpecies.TabIndex = 46;
             RemoveSpecies.Text = "Remove";
-            RemoveSpecies.UseVisualStyleBackColor = true;
+            RemoveSpecies.UseVisualStyleBackColor = false;
             RemoveSpecies.Click += RemoveSpecies_Click;
             // 
             // SpeciesBox
@@ -287,12 +289,13 @@
             // 
             // AddSpecies
             // 
+            AddSpecies.BackColor = Color.Transparent;
             AddSpecies.Location = new Point(263, 236);
             AddSpecies.Name = "AddSpecies";
             AddSpecies.Size = new Size(80, 23);
             AddSpecies.TabIndex = 44;
             AddSpecies.Text = "Add";
-            AddSpecies.UseVisualStyleBackColor = true;
+            AddSpecies.UseVisualStyleBackColor = false;
             AddSpecies.Click += AddSpecies_Click;
             // 
             // FormBox
@@ -495,43 +498,47 @@
             // 
             // OpenMap
             // 
+            OpenMap.BackColor = Color.Transparent;
             OpenMap.Location = new Point(90, 19);
             OpenMap.Name = "OpenMap";
             OpenMap.Size = new Size(72, 23);
             OpenMap.TabIndex = 41;
             OpenMap.Text = "Open Map";
-            OpenMap.UseVisualStyleBackColor = true;
+            OpenMap.UseVisualStyleBackColor = false;
             OpenMap.Click += OpenMap_Click;
             // 
             // SaveList
             // 
+            SaveList.BackColor = Color.Transparent;
             SaveList.Location = new Point(78, 20);
             SaveList.Name = "SaveList";
             SaveList.Size = new Size(63, 23);
             SaveList.TabIndex = 47;
             SaveList.Text = "Save";
-            SaveList.UseVisualStyleBackColor = true;
+            SaveList.UseVisualStyleBackColor = false;
             SaveList.Click += SaveList_Click;
             // 
             // ViewList
             // 
+            ViewList.BackColor = Color.Transparent;
             ViewList.Location = new Point(6, 20);
             ViewList.Name = "ViewList";
             ViewList.Size = new Size(66, 23);
             ViewList.TabIndex = 42;
             ViewList.Text = "View";
-            ViewList.UseVisualStyleBackColor = true;
+            ViewList.UseVisualStyleBackColor = false;
             ViewList.Click += button1_Click;
             // 
             // CollideButton
             // 
+            CollideButton.BackColor = Color.Transparent;
             CollideButton.Enabled = false;
             CollideButton.Location = new Point(129, 98);
             CollideButton.Name = "CollideButton";
             CollideButton.Size = new Size(73, 23);
             CollideButton.TabIndex = 0;
             CollideButton.Text = "Collide";
-            CollideButton.UseVisualStyleBackColor = true;
+            CollideButton.UseVisualStyleBackColor = false;
             CollideButton.Click += CollideButton_Click;
             // 
             // groupBox2
@@ -549,12 +556,13 @@
             // 
             // ReadValues
             // 
+            ReadValues.BackColor = Color.Transparent;
             ReadValues.Location = new Point(21, 46);
             ReadValues.Name = "ReadValues";
             ReadValues.Size = new Size(90, 23);
             ReadValues.TabIndex = 9;
             ReadValues.Text = "Read Values";
-            ReadValues.UseVisualStyleBackColor = true;
+            ReadValues.UseVisualStyleBackColor = false;
             ReadValues.Click += ReadValues_Click;
             // 
             // VivForm
@@ -568,12 +576,13 @@
             // 
             // ChangeFormButton
             // 
+            ChangeFormButton.BackColor = Color.Transparent;
             ChangeFormButton.Location = new Point(113, 46);
             ChangeFormButton.Name = "ChangeFormButton";
             ChangeFormButton.Size = new Size(86, 23);
             ChangeFormButton.TabIndex = 6;
             ChangeFormButton.Text = "Modify";
-            ChangeFormButton.UseVisualStyleBackColor = true;
+            ChangeFormButton.UseVisualStyleBackColor = false;
             ChangeFormButton.Click += button1_Click_1;
             // 
             // V_ComboBox
@@ -687,18 +696,20 @@
             // 
             // ClearList
             // 
+            ClearList.BackColor = Color.Transparent;
             ClearList.Location = new Point(146, 20);
             ClearList.Name = "ClearList";
             ClearList.Size = new Size(66, 23);
             ClearList.TabIndex = 48;
             ClearList.Text = "Clear All";
-            ClearList.UseVisualStyleBackColor = true;
+            ClearList.UseVisualStyleBackColor = false;
             ClearList.Click += ClearList_Click;
             // 
             // MiscView
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
+            BackColor = SystemColors.ControlLightLight;
             ClientSize = new Size(482, 442);
             Controls.Add(groupBox4);
             Controls.Add(groupBox3);

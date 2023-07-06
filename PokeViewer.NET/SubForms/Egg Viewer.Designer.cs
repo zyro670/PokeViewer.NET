@@ -80,7 +80,7 @@ namespace PokeViewer.NET.SubForms
             // 
             // PokeSpriteBox
             // 
-            PokeSpriteBox.BackColor = SystemColors.GradientInactiveCaption;
+            PokeSpriteBox.BackColor = Color.WhiteSmoke;
             PokeSpriteBox.BorderStyle = BorderStyle.FixedSingle;
             PokeSpriteBox.Location = new Point(91, 39);
             PokeSpriteBox.Name = "PokeSpriteBox";
@@ -101,17 +101,18 @@ namespace PokeViewer.NET.SubForms
             // 
             // FetchButton
             // 
+            FetchButton.BackColor = Color.Transparent;
             FetchButton.Location = new Point(91, 250);
             FetchButton.Name = "FetchButton";
             FetchButton.Size = new Size(75, 23);
             FetchButton.TabIndex = 2;
             FetchButton.Text = "Fetch";
-            FetchButton.UseVisualStyleBackColor = true;
+            FetchButton.UseVisualStyleBackColor = false;
             FetchButton.Click += button1_Click;
             // 
             // BallBox
             // 
-            BallBox.BackColor = SystemColors.GradientInactiveCaption;
+            BallBox.BackColor = Color.WhiteSmoke;
             BallBox.BorderStyle = BorderStyle.FixedSingle;
             BallBox.Location = new Point(191, 74);
             BallBox.Name = "BallBox";
@@ -122,12 +123,13 @@ namespace PokeViewer.NET.SubForms
             // 
             // HardStopButton
             // 
+            HardStopButton.BackColor = Color.Transparent;
             HardStopButton.Location = new Point(172, 250);
             HardStopButton.Name = "HardStopButton";
             HardStopButton.Size = new Size(65, 23);
             HardStopButton.TabIndex = 5;
             HardStopButton.Text = "HardStop";
-            HardStopButton.UseVisualStyleBackColor = true;
+            HardStopButton.UseVisualStyleBackColor = false;
             HardStopButton.Click += HardStopButton_Click;
             // 
             // EatOnStart
@@ -181,7 +183,7 @@ namespace PokeViewer.NET.SubForms
             // EatAgain
             // 
             EatAgain.AutoSize = true;
-            EatAgain.BackColor = SystemColors.GradientInactiveCaption;
+            EatAgain.BackColor = Color.Transparent;
             EatAgain.Location = new Point(258, 76);
             EatAgain.Name = "EatAgain";
             EatAgain.Size = new Size(81, 19);
@@ -327,12 +329,13 @@ namespace PokeViewer.NET.SubForms
             // 
             // StopConditionsButton
             // 
+            StopConditionsButton.BackColor = Color.Transparent;
             StopConditionsButton.Location = new Point(87, 339);
             StopConditionsButton.Name = "StopConditionsButton";
             StopConditionsButton.Size = new Size(105, 23);
             StopConditionsButton.TabIndex = 63;
             StopConditionsButton.Text = "Stop Conditions";
-            StopConditionsButton.UseVisualStyleBackColor = true;
+            StopConditionsButton.UseVisualStyleBackColor = false;
             StopConditionsButton.Click += StopConditionsButton_Click;
             // 
             // ScreenOffBox
@@ -375,12 +378,13 @@ namespace PokeViewer.NET.SubForms
             // 
             // ScreenshotButton
             // 
+            ScreenshotButton.BackColor = Color.Transparent;
             ScreenshotButton.Location = new Point(254, 339);
             ScreenshotButton.Name = "ScreenshotButton";
             ScreenshotButton.Size = new Size(105, 23);
             ScreenshotButton.TabIndex = 68;
             ScreenshotButton.Text = "Screenshot";
-            ScreenshotButton.UseVisualStyleBackColor = true;
+            ScreenshotButton.UseVisualStyleBackColor = false;
             ScreenshotButton.Click += ScreenshotButton_Click;
             // 
             // pictureBox1
@@ -435,7 +439,7 @@ namespace PokeViewer.NET.SubForms
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            BackColor = SystemColors.GradientInactiveCaption;
+            BackColor = SystemColors.Control;
             ClientSize = new Size(426, 404);
             Controls.Add(pictureBox6);
             Controls.Add(pictureBox5);

@@ -109,14 +109,24 @@ namespace PokeViewer.NET
 
     public class ViewerOffsets
     {
-        public IReadOnlyList<long> BlockKeyPointer = new List<long>() { 0x44B5158, 0xD8, 0x0, 0x0, 0x30, 0x0 };
-        public IReadOnlyList<long> OverworldPointer { get; } = new long[] { 0x44E2FC8, 0x348, 0x10, 0xD8, 0x28 };
-        public readonly uint EggData = 0x044C12D8;
-        public readonly uint PicnicMenu = 0x04551020;
+        public IReadOnlyList<long> BlockKeyPointer = new List<long>() { 0x44B71A8, 0xD8, 0x0, 0x0, 0x30, 0x0 };
+        public IReadOnlyList<long> OverworldPointer { get; } = new long[] { 0x44E5068, 0x348, 0x10, 0xD8, 0x28 };
+        public IReadOnlyList<long> MyStatusPointerSV { get; } = new long[] { 0x44C1C18, 0x100, 0x40 };
+        public IReadOnlyList<long> MyStatusPointerLA { get; } = new long[] { 0x42BA6B0, 0x218, 0x68 };
+        public IReadOnlyList<long> MyStatusTrainerPointerBD { get; } = new long[] { 0x4E36C58, 0xB8, 0x10, 0xE0, 0x0 };
+        public IReadOnlyList<long> MyStatusTIDPointerBD { get; } = new long[] { 0x4E36C58, 0xB8, 0x10, 0xE8 };
+        public IReadOnlyList<long> MyStatusTrainerPointerSP { get; } = new long[] { 0x4E36C58, 0xB8, 0x10, 0xE0, 0x0 };
+        public IReadOnlyList<long> MyStatusTIDPointerSP { get; } = new long[] { 0x4E36C58, 0xB8, 0x10, 0xE8 };
+        public readonly uint EggData = 0x044C3348;
+        public readonly uint PicnicMenu = 0x04553020;
         public readonly uint StartingOffset = 0x4505B880;
         public readonly uint KCoordIncrement = 192;
         public readonly uint FishingOffset = 0x4505B640; // Not in any wild area
         public readonly uint LastSpawnOffset = 0x419BB180;
         public readonly uint LastSpawnSprite = 0x419BB184;
+        public readonly uint TrainerDataOffsetSWSH = 0x45068F18;
+        public readonly int TrainerDataLengthSWSH = 0x110;
+        public readonly uint TrainerDataLGPE = 0x53582030;
+        public readonly int TrainerSizeLGPE = 0x168;
     }
 }

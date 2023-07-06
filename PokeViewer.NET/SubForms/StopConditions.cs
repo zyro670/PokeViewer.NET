@@ -4,10 +4,63 @@ namespace PokeViewer.NET.SubForms
 {
     public partial class StopConditions : Form
     {
-        public StopConditions()
+        public StopConditions((Color, Color) color)
         {
             InitializeComponent();
+            SetColors(color);
             LoadDefaults();
+        }
+
+        private void SetColors((Color, Color) color)
+        {
+            BackColor = color.Item1;
+            ForeColor = color.Item2;
+            SaveButton.BackColor = color.Item1;
+            SaveButton.ForeColor = color.Item2;
+            ResetButton.BackColor = color.Item1;
+            ResetButton.ForeColor = color.Item2;
+            ShinyBox.BackColor = color.Item1;
+            ShinyBox.ForeColor = color.Item1;
+            GenderBox.BackColor = color.Item1;
+            GenderBox.ForeColor = color.Item2;
+            CheckBoxOf3.BackColor = color.Item1;
+            CheckBoxOf3.ForeColor = color.Item2;
+            ScaleBox.BackColor = color.Item1;
+            ScaleBox.ForeColor = color.Item2;
+            GenderFilter.BackColor = color.Item1;
+            GenderFilter.ForeColor = color.Item2;
+            IgnoreIVFilter.BackColor = color.Item1;
+            IgnoreIVFilter.ForeColor = color.Item2;
+            PresetIVBox.BackColor = color.Item1;
+            PresetIVBox.ForeColor = color.Item2;
+            PresetIVs.BackColor = color.Item1;
+            PresetIVs.ForeColor = color.Item2;
+            HPFilter.BackColor = color.Item1;
+            HPFilter.ForeColor = color.Item2;
+            AtkFilter.BackColor = color.Item1;
+            AtkFilter.ForeColor = color.Item2;
+            DefFilter.BackColor = color.Item1;
+            DefFilter.ForeColor = color.Item2;
+            SpaFilter.BackColor = color.Item1;
+            SpaFilter.ForeColor = color.Item2;
+            SpdFilter.BackColor = color.Item1;
+            SpdFilter.ForeColor = color.Item2;
+            SpeFilter.BackColor = color.Item1;
+            SpeFilter.ForeColor = color.Item2;
+            TargetATK.BackColor = color.Item1;
+            TargetATK.ForeColor = color.Item2;
+            TargetHP.BackColor = color.Item1;
+            TargetHP.ForeColor = color.Item2;
+            TargetDEF.BackColor = color.Item1;
+            TargetDEF.ForeColor = color.Item2;
+            TargetSPA.BackColor = color.Item1;
+            TargetSPA.ForeColor = color.Item2;
+            TargetSPD.BackColor = color.Item1;
+            TargetSPD.ForeColor = color.Item2;
+            TargetSPE.BackColor = color.Item1;
+            TargetSPE.ForeColor = color.Item2;
+            StopConditionsGroup.BackColor = color.Item1;
+            StopConditionsGroup.ForeColor = color.Item2;
         }
 
         private void SaveButton_Click(object sender, EventArgs e)

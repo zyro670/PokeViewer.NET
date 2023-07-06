@@ -28,44 +28,44 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.button1 = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            this.SuspendLayout();
+            pictureBox1 = new PictureBox();
+            button1 = new Button();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            SuspendLayout();
             // 
             // pictureBox1
             // 
-            this.pictureBox1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureBox1.Location = new System.Drawing.Point(20, 23);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(447, 267);
-            this.pictureBox1.TabIndex = 0;
-            this.pictureBox1.TabStop = false;
+            pictureBox1.BorderStyle = BorderStyle.FixedSingle;
+            pictureBox1.Location = new Point(20, 23);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(447, 267);
+            pictureBox1.TabIndex = 0;
+            pictureBox1.TabStop = false;
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(187, 307);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(110, 23);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "Take Screenshot";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            button1.BackColor = Color.Transparent;
+            button1.Location = new Point(187, 307);
+            button1.Name = "button1";
+            button1.Size = new Size(110, 23);
+            button1.TabIndex = 1;
+            button1.Text = "Take Screenshot";
+            button1.UseVisualStyleBackColor = false;
+            button1.Click += button1_Click;
             // 
             // ScreenshotForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.ClientSize = new System.Drawing.Size(473, 332);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.pictureBox1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
-            this.Name = "ScreenshotForm";
-            this.Text = "ScreenshotForm";
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            this.ResumeLayout(false);
-
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            BackColor = SystemColors.GradientInactiveCaption;
+            ClientSize = new Size(473, 332);
+            Controls.Add(button1);
+            Controls.Add(pictureBox1);
+            FormBorderStyle = FormBorderStyle.None;
+            Name = "ScreenshotForm";
+            Text = "ScreenshotForm";
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            ResumeLayout(false);
         }
 
         #endregion

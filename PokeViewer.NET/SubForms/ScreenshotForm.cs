@@ -3,10 +3,19 @@
     public partial class ScreenshotForm : Form
     {
         private readonly ViewerExecutor Executor;
-        public ScreenshotForm(ViewerExecutor executor)
+        public ScreenshotForm(ViewerExecutor executor, (Color, Color) color)
         {
-            InitializeComponent();            
+            InitializeComponent();
             Executor = executor;
+            SetColors(color);
+        }
+
+        private void SetColors((Color, Color) color)
+        {
+            BackColor = color.Item1;
+            ForeColor = color.Item2;
+            button1.BackColor = color.Item1;
+            button1.ForeColor = color.Item2;
         }
 
         private void button1_Click(object sender, EventArgs e)

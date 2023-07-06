@@ -44,12 +44,13 @@
             // 
             // WaitButton
             // 
+            WaitButton.BackColor = Color.Transparent;
             WaitButton.Location = new Point(65, 146);
             WaitButton.Name = "WaitButton";
             WaitButton.Size = new Size(123, 23);
             WaitButton.TabIndex = 3;
             WaitButton.Text = "Wait For Shiny";
-            WaitButton.UseVisualStyleBackColor = true;
+            WaitButton.UseVisualStyleBackColor = false;
             WaitButton.Click += WaitButton_Click;
             // 
             // flagbox
@@ -70,7 +71,7 @@
             Controls.Add(WaitButton);
             Controls.Add(pictureBox1);
             MaximizeBox = false;
-            Name = "PokeViewer.NET - WideViewLGPE";
+            Name = "WideViewerLGPE";
             Text = "PokeViewer.NET - WideViewLGPE";
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);

@@ -14,8 +14,8 @@ namespace PokeViewer.NET.SubForms
     {
         private readonly ViewerExecutor Executor;
         private byte[]? CenterPOS = Array.Empty<byte>();
-        private int V_Form;       
-        private static ulong BaseBlockKeyPointer = 0;             
+        private int V_Form;
+        private static ulong BaseBlockKeyPointer = 0;
         public ulong CountCache;
         private DateTime StartTime;
         private System.Timers.Timer timer = new();
@@ -24,10 +24,11 @@ namespace PokeViewer.NET.SubForms
         private List<byte[]?> MapPOS = new();
         private List<PK9> pkList = new();
         protected ViewerOffsets Offsets { get; } = new();
-        public MiscView(ViewerExecutor executor)
+        public MiscView(ViewerExecutor executor, (Color, Color) color)
         {
             InitializeComponent();
             Executor = executor;
+            SetColors(color);
             SpeciesBox.DataSource = Enum.GetValues(typeof(Species)).Cast<Species>().Where(z => z != Species.MAX_COUNT).ToArray();
             var path = "outbreakfilters.txt";
             if (File.Exists(path))
@@ -51,6 +52,48 @@ namespace PokeViewer.NET.SubForms
                 };
                 pkList.Add(pk);
             }
+        }
+
+        private void SetColors((Color, Color) color)
+        {
+            BackColor = color.Item1;
+            ForeColor = color.Item2;
+            OutbreakScan.BackColor = color.Item1;
+            OutbreakScan.ForeColor = color.Item2;
+            OpenMap.BackColor = color.Item1;
+            OpenMap.ForeColor = color.Item2;
+            ViewList.BackColor = color.Item1;
+            ViewList.ForeColor = color.Item2;
+            SaveList.BackColor = color.Item1;
+            SaveList.ForeColor = color.Item2;
+            ClearList.BackColor = color.Item1;
+            ClearList.ForeColor = color.Item2;
+            ChangeFormButton.BackColor = color.Item1;
+            ChangeFormButton.ForeColor = color.Item2;
+            ReadValues.BackColor = color.Item1;
+            ReadValues.ForeColor = color.Item2;
+            AddSpecies.BackColor = color.Item1;
+            AddSpecies.ForeColor = color.Item2;
+            RemoveSpecies.BackColor = color.Item1;
+            RemoveSpecies.ForeColor = color.Item2;
+            groupBox1.BackColor = color.Item1;
+            groupBox1.ForeColor = color.Item2;
+            groupBox2.BackColor = color.Item1;
+            groupBox2.ForeColor = color.Item2;
+            groupBox3.BackColor = color.Item1;
+            groupBox3.ForeColor = color.Item2;
+            groupBox4.BackColor = color.Item1;
+            groupBox4.ForeColor = color.Item2;            
+            DPADUpDown.BackColor = color.Item1;
+            DPADUpDown.ForeColor = color.Item2;
+            OverShootUpDown.BackColor = color.Item1;
+            OverShootUpDown.ForeColor = color.Item2;
+            SpeciesBox.BackColor = color.Item1;
+            SpeciesBox.ForeColor = color.Item2;
+            FormBox.BackColor = color.Item1;
+            FormBox.ForeColor = color.Item2;
+            V_ComboBox.BackColor = color.Item1;
+            V_ComboBox.ForeColor = color.Item2;
         }
 
         public void LoadOutbreakCache()
@@ -106,16 +149,19 @@ namespace PokeViewer.NET.SubForms
                 UpdateProgress(10, 100);
                 await SVSaveGameOverworld(token).ConfigureAwait(false);
                 DaySkipStats.Text = "Status: Scanning...";
-                var (validOutbreaks, cache) = await ReadEncryptedBlockByte(Blocks.KMassOutbreakTotalEnabled, CountCache, token).ConfigureAwait(false);
+                var data = await ReadEncryptedBlockByte(Blocks.KMassOutbreakTotalEnabled, CountCache, token).ConfigureAwait(false);
                 UpdateProgress(20, 100);
                 if (CountCache == 0)
-                    CountCache = cache;
-                var Outbreaktotal = Convert.ToInt32(validOutbreaks);
+                    CountCache = data.Item2;
+                var Outbreaktotal = Convert.ToInt32(data.Item1);
                 if (Outbreaktotal > 8)
                 {
-                    (_, _) = await ReadEncryptedBlockByte(Blocks.KMassOutbreakTotalEnabled, CountCache, token).ConfigureAwait(false); // Rerun in case of bad pointer
+                    BaseBlockKeyPointer = await Executor.SwitchConnection.PointerAll(Offsets.BlockKeyPointer, token).ConfigureAwait(false);
+                    // Rerun in case of bad pointer
                     OutbreakCache = new();
                     LoadOutbreakCache();
+                    CountCache = 0;
+                    continue;
                 }
 
                 TotalOutbreaks.Text = $"Active Outbreaks: {Outbreaktotal}";
@@ -173,7 +219,7 @@ namespace PokeViewer.NET.SubForms
 
                 UpdateProgress(100, 100);
 
-                if (prevmons.SequenceEqual(mons))
+                if (prevmons.ToList().SequenceEqual(mons.ToList()))
                 {
                     DaySkipStats.Text = "Status: Skip fail!";
                     failskip++;
@@ -927,9 +973,11 @@ namespace PokeViewer.NET.SubForms
 
             await Click(A, 0_200, token).ConfigureAwait(false); // Confirm date/time change
             await Click(HOME, 1_000, token).ConfigureAwait(false);
-            for (int i = 0; i < 4; i++)
+            await Click(A, 2_000, token).ConfigureAwait(false); // Back to title screen
+            /*for (int i = 0; i < 4; i++)
                 await Click(DUP, 0_250, token).ConfigureAwait(false);
-            await Click(A, 4_000, token).ConfigureAwait(false); // Back to title screen
+            await Click(A, 1_000, token).ConfigureAwait(false); // Back to title screen
+            await Click(B, 1_000, token).ConfigureAwait(false);*/
         }
 
         public async Task SetStick(SwitchStick stick, short x, short y, int hold, int delay, CancellationToken token)

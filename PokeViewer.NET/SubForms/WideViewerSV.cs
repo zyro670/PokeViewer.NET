@@ -13,10 +13,40 @@ namespace PokeViewer.NET.SubForms
         private static ulong BaseBlockKeyPointer = 0;
         protected ViewerOffsets Offsets { get; } = new();
 
-        public WideViewerSV(ViewerExecutor executor)
+        public WideViewerSV(ViewerExecutor executor, (Color, Color) color)
         {
             InitializeComponent();
             Executor = executor;
+            SetColors(color);
+        }
+
+        private void SetColors((Color, Color) color)
+        {
+            BackColor = color.Item1;
+            ForeColor = color.Item2;
+            button1.BackColor = color.Item1;
+            button1.ForeColor = color.Item2;
+
+            TextBox[] textboxes =
+            {
+                textBox1, textBox2, textBox3, textBox4, textBox5, textBox6, textBox7, textBox8, textBox9, textBox10, textBox11, textBox12, textBox13, textBox14, textBox15
+            };
+
+            PictureBox[] boxes =
+            {
+                pictureBox1, pictureBox2, pictureBox3, pictureBox4, pictureBox5, pictureBox6, pictureBox7, pictureBox8, pictureBox9, pictureBox10, pictureBox11, pictureBox12, pictureBox13, pictureBox14, pictureBox15,
+                pictureBox16, pictureBox17, pictureBox18, pictureBox19, pictureBox20, pictureBox21, pictureBox22, pictureBox23, pictureBox24, pictureBox25, pictureBox26, pictureBox27, pictureBox28, pictureBox29, pictureBox30
+            };
+
+            for (int i = 0; i < boxes.Length; i++)
+            {
+                boxes[i].BackColor = color.Item1;
+            }
+
+            for (int i = 0; i < textboxes.Length; i++)
+            {
+                textboxes[i].BackColor = color.Item1;
+            }
         }
 
         private async void button1_Click(object sender, EventArgs e)
@@ -31,7 +61,7 @@ namespace PokeViewer.NET.SubForms
             await Click(X, 2_000, token).ConfigureAwait(false);
             await Click(R, 1_800, token).ConfigureAwait(false);
             await Click(A, 5_000, token).ConfigureAwait(false);
-            await Click(B, 1_000, token).ConfigureAwait(false);            
+            await Click(B, 1_000, token).ConfigureAwait(false);
         }
 
         private new async Task Click(SwitchButton b, int delay, CancellationToken token)
@@ -96,7 +126,7 @@ namespace PokeViewer.NET.SubForms
                 }
                 if (pk.IsShiny)
                 {
-                    MessageBox.Show($"Shiny {(Species)pk.Species} is in the overworld!");                    
+                    MessageBox.Show($"Shiny {(Species)pk.Species} is in the overworld!");
                 }
             }
             await Click(B, 1_000, token).ConfigureAwait(false);

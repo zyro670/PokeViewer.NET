@@ -148,12 +148,13 @@
             // 
             // ViewButton
             // 
+            ViewButton.BackColor = Color.Transparent;
             ViewButton.Location = new Point(348, 334);
             ViewButton.Name = "ViewButton";
             ViewButton.Size = new Size(79, 23);
             ViewButton.TabIndex = 10;
             ViewButton.Text = "View";
-            ViewButton.UseVisualStyleBackColor = true;
+            ViewButton.UseVisualStyleBackColor = false;
             ViewButton.Click += button1_Click;
             // 
             // pictureBox6
@@ -225,7 +226,7 @@
             Controls.Add(pictureBox1);
             MaximizeBox = false;
             MinimizeBox = false;
-            Name = "PokeViewer.NET - WideViewLA";
+            Name = "WideViewerLA";
             Text = "PokeViewer.NET - WideViewLA";
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();

@@ -6,10 +6,39 @@ namespace PokeViewer.NET.WideViewForms
     public partial class WideViewerLA : Form
     {
         private readonly ViewerExecutor Executor;
-        public WideViewerLA(ViewerExecutor executor)
+        public WideViewerLA(ViewerExecutor executor, (Color, Color) color)
         {
             InitializeComponent();
             Executor = executor;
+            SetColors(color);
+        }
+
+        private void SetColors((Color, Color) color)
+        {
+            BackColor = color.Item1;
+            ForeColor = color.Item2;
+            ViewButton.BackColor = color.Item1;
+            ViewButton.ForeColor = color.Item2;
+
+            TextBox[] textboxes =
+            {
+                textBox1, textBox2, textBox3, textBox4, textBox5
+            };
+
+            PictureBox[] boxes =
+            {
+                pictureBox1, pictureBox2, pictureBox3, pictureBox4, pictureBox5, pictureBox6, pictureBox7, pictureBox8, pictureBox9, pictureBox10,
+            };
+
+            for (int i = 0; i < boxes.Length; i++)
+            {
+                boxes[i].BackColor = color.Item1;
+            }
+
+            for (int i = 0; i < textboxes.Length; i++)
+            {
+                textboxes[i].BackColor = color.Item1;
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)

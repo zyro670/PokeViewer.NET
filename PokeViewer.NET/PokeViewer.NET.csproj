@@ -26,6 +26,7 @@
 		<PackageReference Include="Costura.Fody" Version="5.7.0">
 			<PrivateAssets>all</PrivateAssets>
 		</PackageReference>
+		<PackageReference Include="FlatSharp.Runtime" Version="7.1.0" />
 		<PackageReference Include="Octokit" Version="5.0.0" />
 		<Reference Include="SysBot.Base">
 			<HintPath>deps\SysBot.Base.dll</HintPath>
@@ -44,6 +45,9 @@
 		</Reference>
 		<Reference Include="HomeLive.Core">
 			<HintPath>deps\HomeLive.Core.dll</HintPath>
+		</Reference>
+		<Reference Include="RaidCrawler.Core">
+			<HintPath>deps\RaidCrawler.Core.dll</HintPath>
 		</Reference>
 	</ItemGroup>
 	<ItemGroup>

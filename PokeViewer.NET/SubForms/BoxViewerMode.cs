@@ -24,17 +24,47 @@ namespace PokeViewer.NET
         private Image? EggDefault = null!;
         private Image? ShinySquare = null!;
         private Image? ShinyStar = null!;
+        private SimpleTrainerInfo TrainerInfo = new();
+
         private string DumpFolder { get; set; } = AppDomain.CurrentDomain.BaseDirectory;
-        public BoxViewerMode(int gametype, ViewerExecutor executor)
+        public BoxViewerMode(int gametype, ViewerExecutor executor, (Color, Color) color, SimpleTrainerInfo trainer)
         {
             InitializeComponent();
             GameType = gametype;
-            Executor = executor;            
+            Executor = executor;
             ViewButton.Text = "View";
             if (GameType == (int)GameSelected.HOME)
-                checkBox1.Visible = false;
+                DumpCheck.Visible = false;
+            TrainerInfo = trainer;
+            SetColors(color);
             LoadComboBox();
             LoadResponses();
+        }
+
+        private void SetColors((Color, Color) color)
+        {
+            BackColor = color.Item1;
+            ForeColor = color.Item2;
+            ViewButton.BackColor = color.Item1;
+            ViewButton.ForeColor = color.Item2;
+            FlexButton.BackColor = color.Item1;
+            FlexButton.ForeColor = color.Item2;
+            button3.BackColor = color.Item1;
+            button3.ForeColor = color.Item2;
+            button2.BackColor = color.Item1;
+            button2.ForeColor = color.Item2;
+
+            PictureBox[] boxes =
+            {
+                pictureBox1, pictureBox2, pictureBox3, pictureBox4, pictureBox5, pictureBox6, pictureBox7, pictureBox8, pictureBox9, pictureBox10,
+                pictureBox11, pictureBox12, pictureBox13, pictureBox14, pictureBox15, pictureBox16, pictureBox17, pictureBox18, pictureBox19, pictureBox20,
+                pictureBox21, pictureBox22, pictureBox23, pictureBox24, pictureBox25, pictureBox26, pictureBox27, pictureBox28, pictureBox29, pictureBox30
+            };
+
+            for (int i = 0; i < boxes.Length; i++)
+            {
+                boxes[i].BackColor = color.Item1;
+            }
         }
 
         private async void LoadResponses()
@@ -78,7 +108,7 @@ namespace PokeViewer.NET
             button2.Enabled = false;
             button3.Enabled = false;
             comboBox1.Enabled = false;
-            checkBox1.Enabled = false;
+            DumpCheck.Enabled = false;
             FlexButton.Enabled = false;
         }
 
@@ -88,7 +118,7 @@ namespace PokeViewer.NET
             button2.Enabled = true;
             button3.Enabled = true;
             comboBox1.Enabled = true;
-            checkBox1.Enabled = true;
+            DumpCheck.Enabled = true;
             FlexButton.Enabled = true;
         }
 
@@ -107,10 +137,82 @@ namespace PokeViewer.NET
             List<Image> images = new();
             List<Color> colors = new();
             PKM pk = new PK9();
+            var folder = $"BoxViewer";
+            if (!Directory.Exists(folder))
+                Directory.CreateDirectory(folder);
+            var subfolder = $"BoxViewer\\{(GameSelected)GameType}";
+            if (!Directory.Exists(subfolder))
+                Directory.CreateDirectory(subfolder);
+            var trainersubfolder = $"BoxViewer\\{(GameSelected)GameType}\\{TrainerInfo.OT}-{TrainerInfo.TID16}";
+            if (!Directory.Exists(trainersubfolder))
+                Directory.CreateDirectory(trainersubfolder);
+            if (Directory.Exists(trainersubfolder))
+                NewFolder(trainersubfolder);
 
+            try
+            {
+                if (ViewAllCheck.Checked)
+                {
+                    CSVCheck.Checked = true;
+                    CSVCheck.Enabled = false;
+                    ViewAllCheck.Enabled = false;
+                    CurrentBox.Visible = true;
+                    if (GameType != (int)GameSelected.HOME)
+                        DumpCheck.Checked = true;
+                    bool allboxes = true;
+                    while (allboxes == true && box != TotalBoxes)
+                    {
+                        try
+                        {
+                            CurrentBox.Text = $"{box + 1}";
+                            await BoxRoutine(box, boxes, images, colors, pk, true, token).ConfigureAwait(false);
+                            box++;
+                        }
+                        catch (Exception ex) { MessageBox.Show($"{ex}"); }
+                    }
+                    if (allboxes == true)
+                        allboxes = false;
+                    CurrentBox.Visible = false;
+                    var owner = new Form { Visible = false };
+                    var handle = owner.Handle;
+                    owner.BeginInvoke((MethodInvoker)delegate
+                    {
+                        MessageBox.Show(owner, text: "All boxes have been dumped to CSV files!", "Timed Message");
+                    });
+                    await Task.Delay(TimeSpan.FromSeconds(2), token).ConfigureAwait(false);
+                    owner.Dispose();
+                }
+                else
+                    await BoxRoutine(box, boxes, images, colors, pk, false, token).ConfigureAwait(false);
+            }
+            catch (Exception ex) { MessageBox.Show($"{ex}"); }
+
+            PKMs = new();
+            ViewButton.Text = "View";
+            EnableAssets();
+            CSVCheck.Enabled = true;
+            ViewAllCheck.Enabled = true;
+        }
+
+        private static void NewFolder(string path)
+        {
+            string name = @"\New Folder";
+            string current = name;
+            int i = 0;
+            while (Directory.Exists(path + current))
+            {
+                i++;
+                current = String.Format("{0} {1}", name, i);
+            }
+            Directory.CreateDirectory(path + current);
+        }
+
+        private async Task BoxRoutine(int box, PictureBox[] boxes, List<Image> images, List<Color> colors, PKM pk, bool dumpall, CancellationToken token)
+        {
+            CurrentSlotStats = new();
             if (GameType is (int)GameSelected.Scarlet or (int)GameSelected.Violet && AbsoluteBoxOffset == 0)
             {
-                var SVptr = new long[] { 0x44BFBA8, 0x130, 0x9B0, 0x0 };
+                var SVptr = new long[] { 0x44C1C18, 0x130, 0x9B0, 0x0 };
                 AbsoluteBoxOffset = await Executor.SwitchConnection.PointerAll(SVptr, CancellationToken.None).ConfigureAwait(false);
             }
             if (GameType is (int)GameSelected.LegendsArceus && AbsoluteBoxOffset == 0)
@@ -181,38 +283,56 @@ namespace PokeViewer.NET
                             break;
                         }
                 }
+
                 if (PKMs[i].Species is 0 or > (int)Species.MAX_COUNT)
                 {
                     Image blank = null!;
                     Color ic = Color.WhiteSmoke;
-                    images.Add(blank);
-                    colors.Add(ic);
-                    CurrentSlotStats.Add($"Box {comboBox1.SelectedIndex} Slot {i} is empty.");
+                    if (!dumpall)
+                    {
+                        images.Add(blank);
+                        colors.Add(ic);
+                    }
+                    CurrentSlotStats.Add($"Box {box + 1} Slot {i} is empty.");
                     continue;
                 }
                 var img = await Sanitize(pk, token).ConfigureAwait(false);
                 Color c = PKMs[i].Gender == 0 ? Color.LightBlue : PKMs[i].Gender == 1 ? Color.LightPink : Color.LightGray;
-                images.Add(img);
-                colors.Add(c);
+                if (!dumpall)
+                {
+                    images.Add(img);
+                    colors.Add(c);
+                }
             }
             UpdateProgress(100, 100);
-            for (int p = 0; p < images.Count; p++)
+
+            if (!dumpall)
             {
-                boxes[p].Image = images[p];
-                boxes[p].BackColor = colors[p];
+                for (int p = 0; p < images.Count; p++)
+                {
+                    boxes[p].Image = images[p];
+                    boxes[p].BackColor = colors[p];
+                }
             }
 
-            if (checkBox1.Checked)
+            if (DumpCheck.Checked && GameType != (int)GameSelected.HOME)
             {
                 foreach (var pkm in PKMs)
                 {
                     if ((Species)pkm.Species is not Species.None)
-                        DumpPokemon(DumpFolder, "boxdump", pkm);
+                        DumpPokemon(DumpFolder, $"BoxViewer\\{(GameSelected)GameType}\\{TrainerInfo.OT}-{TrainerInfo.TID16}\\Box{box + 1}", pkm);
                 }
             }
-            PKMs = new();
-            ViewButton.Text = "View";
-            EnableAssets();
+
+            if (CSVCheck.Checked)
+            {
+                var filePath = $"BoxViewer\\{(GameSelected)GameType}\\{TrainerInfo.OT}-{TrainerInfo.TID16}\\Box{box + 1}.csv";
+                string res = string.Empty;
+                for (int s = 0; s < CurrentSlotStats.Count; s++)
+                    res += Environment.NewLine + CurrentSlotStats[s].ToString();
+                using StreamWriter writer = new(new FileStream(filePath, FileMode.Create, FileAccess.Write));
+                writer.WriteLine(res);
+            }
         }
 
         private async Task<Image> Sanitize(PKM pk, CancellationToken token)
@@ -243,6 +363,9 @@ namespace PokeViewer.NET
                     var mimg = RibbonSpriteUtil.GetRibbonSprite(rib.Name);
                     if (mimg is not null)
                         m = new Bitmap(mimg, new Size(mimg.Width + 100, mimg.Height + 100));
+
+                    bool hasMark = HasMark((PK9)pk, out RibbonIndex mark);
+                    msg = hasMark ? $"{Environment.NewLine}Mark: {mark.ToString().Replace("Mark", "")}" : "";
                 }
             }
 
@@ -288,7 +411,12 @@ namespace PokeViewer.NET
             }
             bool isGmax = pk is PK8 pk8 && pk8.CanGigantamax;
             string gMax = isGmax ? "Gigantamax - " : "";
-            CurrentSlotStats.Add($"{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{gMax}{alpha}{(Species)pk.Species}{form}{gender}{pid}{ec}{Environment.NewLine}Nature: {(Nature)pk.Nature}{Environment.NewLine}Ability: {(Ability)pk.Ability}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}{msg}");
+
+            string scale = string.Empty;
+            if (pk is PK9 pk9)
+                scale = $"{Environment.NewLine}Scale: {PokeSizeDetailedUtil.GetSizeRating(pk9.Scale)} ({pk9.Scale})";
+
+            CurrentSlotStats.Add($"{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{gMax}{alpha}{(Species)pk.Species}{form}{gender}{pid}{ec}{Environment.NewLine}Nature: {(Nature)pk.Nature}{Environment.NewLine}Ability: {(Ability)pk.Ability}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}{scale}{msg}");
             if (pk is PK8 && isGmax)
             {
                 if (pk.Species == (int)Species.Charmander || pk.Species == (int)Species.Charmeleon || pk.Species == (int)Species.Hattrem)
@@ -599,7 +727,7 @@ namespace PokeViewer.NET
                 var currentslot = int.Parse(pbox.Name.Replace("pictureBox", "")) - 1;
                 if (pbox.Image is not null)
                 {
-                    using BoxViewerMini form = new(pbox, CurrentSlotStats[currentslot].ToString());
+                    using BoxViewerMini form = new(pbox, CurrentSlotStats[currentslot].ToString(), this.BackColor, this.ForeColor);
                     form.ShowDialog();
                 }
             }
@@ -617,14 +745,14 @@ namespace PokeViewer.NET
         private void FlexButton_Click(object sender, EventArgs e)
         {
             FlexButton.Visible = false;
-            checkBox1.Visible = false;
+            DumpCheck.Visible = false;
             Rectangle bounds = Bounds;
             Bitmap bmp = new(Width, Height - 60);
             DrawToBitmap(bmp, bounds);
             Clipboard.SetImage(bmp);
             MessageBox.Show("Copied to clipboard!");
             FlexButton.Visible = true;
-            checkBox1.Visible = true;
+            DumpCheck.Visible = true;
         }
     }
 }

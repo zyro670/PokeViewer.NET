@@ -65,5 +65,20 @@
     <Setting Name="MiscOvershoot" Type="System.Decimal" Scope="User">
       <Value Profile="(Default)">920</Value>
     </Setting>
+    <Setting Name="DarkMode" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="DefaultForeColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">DarkBlue</Value>
+    </Setting>
+    <Setting Name="DefaultBackColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">White</Value>
+    </Setting>
+    <Setting Name="DefaultForeVal" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">20</Value>
+    </Setting>
+    <Setting Name="DefaultBackVal" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">46</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

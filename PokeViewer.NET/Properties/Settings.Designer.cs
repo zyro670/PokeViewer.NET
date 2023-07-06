@@ -274,5 +274,65 @@ namespace PokeViewer.NET.Properties {
                 this["MiscOvershoot"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool DarkMode {
+            get {
+                return ((bool)(this["DarkMode"]));
+            }
+            set {
+                this["DarkMode"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("DarkBlue")]
+        public global::System.Drawing.Color DefaultForeColor {
+            get {
+                return ((global::System.Drawing.Color)(this["DefaultForeColor"]));
+            }
+            set {
+                this["DefaultForeColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("White")]
+        public global::System.Drawing.Color DefaultBackColor {
+            get {
+                return ((global::System.Drawing.Color)(this["DefaultBackColor"]));
+            }
+            set {
+                this["DefaultBackColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("20")]
+        public int DefaultForeVal {
+            get {
+                return ((int)(this["DefaultForeVal"]));
+            }
+            set {
+                this["DefaultForeVal"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("46")]
+        public int DefaultBackVal {
+            get {
+                return ((int)(this["DefaultBackVal"]));
+            }
+            set {
+                this["DefaultBackVal"] = value;
+            }
+        }
     }
 }

@@ -2,19 +2,30 @@
 using static PokeViewer.NET.RoutineExecutor;
 
 namespace PokeViewer.NET.WideViewForms
-{    
+{
     public partial class NPCViewer : Form
     {
         private readonly ViewerExecutor Executor;
         public int GameType;
         public ToolTip tt = new();
         public List<string> CurrentSlotStats = new();
-        public NPCViewer(int gametype, ViewerExecutor executor)
+        public NPCViewer(int gametype, ViewerExecutor executor, (Color, Color) color)
         {
             InitializeComponent();
             Executor = executor;
             GameType = gametype;
             Text = VersionString(GameType);
+            SetColors(color);
+        }
+
+        private void SetColors((Color, Color) color)
+        {
+            BackColor = color.Item1;
+            ForeColor = color.Item2;
+            button1.BackColor = color.Item1;
+            button1.ForeColor = color.Item2;
+            textBox1.BackColor = color.Item1;
+            textBox1.ForeColor = color.Item2;
         }
 
         private static string VersionString(int type)

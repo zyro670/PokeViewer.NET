@@ -15,12 +15,15 @@ namespace PokeViewer.NET.SubForms
         private readonly ViewerExecutor Executor;
         public int GameType;
         protected ViewerOffsets Offsets { get; } = new();
-        public Egg_Viewer(int gametype, ViewerExecutor executor)
+        public Egg_Viewer(int gametype, ViewerExecutor executor, (Color, Color) color)
         {
             InitializeComponent();
             GameType = gametype;
-            Executor = executor;            
+            Executor = executor;
+            SetColors(color);
         }
+
+        private (Color, Color) setcolors;
         private int eggcount = 0;
         private int sandwichcount = 0;
         private int starcount = 0;
@@ -30,6 +33,23 @@ namespace PokeViewer.NET.SubForms
         private int[] IVFilters = Array.Empty<int>();
         private ulong OverworldOffset;
         private DateTime StartTime;
+
+        private void SetColors((Color, Color) color)
+        {
+            BackColor = color.Item1;
+            ForeColor = color.Item2;
+            FetchButton.BackColor = color.Item1;
+            FetchButton.ForeColor = color.Item2;
+            HardStopButton.BackColor = color.Item1;
+            HardStopButton.ForeColor = color.Item2;
+            StopConditionsButton.BackColor = color.Item1;
+            StopConditionsButton.ForeColor = color.Item2;
+            ScreenshotButton.BackColor = color.Item1;
+            ScreenshotButton.ForeColor = color.Item2;
+            PokeStats.BackColor = color.Item1;
+            PokeStats.ForeColor = color.Item2;
+            setcolors = color;
+        }
 
         private void SanityCheck(PKM pk, int count)
         {
@@ -116,9 +136,9 @@ namespace PokeViewer.NET.SubForms
                 var endTime = DateTime.Now + wait;
                 var ctr = 0;
                 var waiting = 0;
+                NextSanwichLabel.Text = $"Next Sandwich: {endTime:hh\\:mm\\:ss}";
                 while (DateTime.Now < endTime)
                 {
-                    NextSanwichLabel.Text = $"Next Sandwich: {endTime:hh\\:mm\\:ss}";
                     var pk = await ReadPokemonSV(Offsets.EggData, 344, token).ConfigureAwait(false);
                     while (pk == prevShiny || pk == null || pkprev.EncryptionConstant == pk.EncryptionConstant || (Species)pk.Species == Species.None)
                     {
@@ -132,6 +152,7 @@ namespace PokeViewer.NET.SubForms
                             await ReopenPicnic(token).ConfigureAwait(false);
                             wait = TimeSpan.FromMinutes(30);
                             endTime = DateTime.Now + wait;
+                            NextSanwichLabel.Text = $"Next Sandwich: {endTime:hh\\:mm\\:ss}";
                             waiting = 0;
                             ctr = 0;
                         }
@@ -478,7 +499,6 @@ namespace PokeViewer.NET.SubForms
             checkBox7.Enabled = false;
             FillingHoldTime.Enabled = false;
             NumberOfFillings.Enabled = false;
-            StopConditionsButton.Enabled = false;
             EatOnStart.Enabled = false;
             EatAgain.Enabled = false;
             HoldIngredients.Enabled = false;
@@ -496,7 +516,6 @@ namespace PokeViewer.NET.SubForms
             checkBox7.Enabled = true;
             FillingHoldTime.Enabled = true;
             NumberOfFillings.Enabled = true;
-            StopConditionsButton.Enabled = true;
             EatOnStart.Enabled = true;
             EatAgain.Enabled = true;
             HoldIngredients.Enabled = true;
@@ -556,7 +575,7 @@ namespace PokeViewer.NET.SubForms
 
         private void StopConditionsButton_Click(object sender, EventArgs e)
         {
-            using StopConditions miniform = new();
+            using StopConditions miniform = new(setcolors);
             miniform.ShowDialog();
         }
 
@@ -603,7 +622,7 @@ namespace PokeViewer.NET.SubForms
                     case 4: val = 0x50; break;
                     case 5: val = 0x58; break;
                 }
-                var pointer = new long[] { 0x44E2F38, 0x08, val, 0x30, 0x00 };
+                var pointer = new long[] { 0x44E4FD8, 0x08, val, 0x30, 0x00 };
                 var offset = await Executor.SwitchConnection.PointerAll(pointer, token).ConfigureAwait(false);
                 var pk = await ReadBoxPokemonSV(offset, 0x158, token).ConfigureAwait(false);
                 SanityCheck(pk, i);
