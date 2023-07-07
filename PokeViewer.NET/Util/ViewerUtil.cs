@@ -110,6 +110,7 @@ namespace PokeViewer.NET
     public class ViewerOffsets
     {
         public IReadOnlyList<long> BlockKeyPointer = new List<long>() { 0x44B71A8, 0xD8, 0x0, 0x0, 0x30, 0x0 };
+        public IReadOnlyList<long> TeraRaidBlockPointer { get; } = new long[] { 0x44C1C18, 0x180, 0x40 };
         public IReadOnlyList<long> OverworldPointer { get; } = new long[] { 0x44E5068, 0x348, 0x10, 0xD8, 0x28 };
         public IReadOnlyList<long> MyStatusPointerSV { get; } = new long[] { 0x44C1C18, 0x100, 0x40 };
         public IReadOnlyList<long> MyStatusPointerLA { get; } = new long[] { 0x42BA6B0, 0x218, 0x68 };

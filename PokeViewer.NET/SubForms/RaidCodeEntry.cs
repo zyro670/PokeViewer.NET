@@ -3,12 +3,14 @@ using PKHeX.Drawing.Misc;
 using SysBot.Base;
 using RaidCrawler.Core.Structures;
 using static SysBot.Base.SwitchButton;
+using static PokeViewer.NET.ViewerUtil;
 
 namespace PokeViewer.NET.SubForms
 {
     public partial class RaidCodeEntry : Form
     {
         private readonly ViewerExecutor Executor;
+        protected ViewerOffsets ViewerOffsets { get; } = new();
         public RaidCodeEntry(ViewerExecutor executor, (Color, Color) color)
         {
             InitializeComponent();
@@ -125,7 +127,11 @@ namespace PokeViewer.NET.SubForms
             GoButton.Enabled = false;
             numericUpDown1.Enabled = false;
             checkBox1.Enabled = false;
-            await ReadRaids(CancellationToken.None).ConfigureAwait(false);
+            try
+            {
+                await ReadRaids(CancellationToken.None).ConfigureAwait(false);
+            }
+            catch (Exception ex) { MessageBox.Show(ex.ToString()); }
             GoButton.Enabled = true;
             numericUpDown1.Enabled = true;
             checkBox1.Enabled = true;
@@ -152,8 +158,6 @@ namespace PokeViewer.NET.SubForms
         private int StoryProgress;
         private int EventProgress;
         private readonly IReadOnlyList<uint> DifficultyFlags = new List<uint>() { 0xEC95D8EF, 0xA9428DFE, 0x9535F471, 0x6E7F8220 };
-        public IReadOnlyList<long> BlockKeyPointer = new long[] { 0x44B71A8, 0xD8, 0x0, 0x0, 0x30, 0x0 };
-        public IReadOnlyList<long> TeraRaidBlockPointer { get; } = new long[] { 0x44BFBA8, 0x180, 0x40 };
 
         public async Task<ulong> SearchSaveKeyRaid(ulong BaseBlockKeyPointer, uint key, CancellationToken token)
         {
@@ -224,7 +228,7 @@ namespace PokeViewer.NET.SubForms
         private async Task ReadRaids(CancellationToken token)
         {
             if (TeraRaidBlockOffset == 0)
-                TeraRaidBlockOffset = await Executor.SwitchConnection.PointerAll(TeraRaidBlockPointer, token).ConfigureAwait(false);
+                TeraRaidBlockOffset = await Executor.SwitchConnection.PointerAll(ViewerOffsets.TeraRaidBlockPointer, token).ConfigureAwait(false);
 
             var data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(TeraRaidBlockOffset + RaidBlock.HEADER_SIZE, (int)(RaidBlock.SIZE - RaidBlock.HEADER_SIZE), token).ConfigureAwait(false);
 
@@ -238,7 +242,7 @@ namespace PokeViewer.NET.SubForms
             container = new(game);
             container.SetGame(game);
 
-            var BaseBlockKeyPointer = await Executor.SwitchConnection.PointerAll(BlockKeyPointer, token).ConfigureAwait(false);
+            var BaseBlockKeyPointer = await Executor.SwitchConnection.PointerAll(ViewerOffsets.BlockKeyPointer, token).ConfigureAwait(false);
 
             StoryProgress = await GetStoryProgress(BaseBlockKeyPointer, token).ConfigureAwait(false);
             EventProgress = Math.Min(StoryProgress, 3);
