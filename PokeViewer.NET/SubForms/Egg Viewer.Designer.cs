@@ -56,7 +56,7 @@ namespace PokeViewer.NET.SubForms
             HoldTimeToFillings = new Label();
             FillingHoldTime = new TextBox();
             StopConditionsButton = new Button();
-            ScreenOffBox = new CheckBox();
+            DisplayPartyCheck = new CheckBox();
             UptimeLabel = new Label();
             SquareStarCount = new Label();
             HidePIDEC = new CheckBox();
@@ -338,15 +338,15 @@ namespace PokeViewer.NET.SubForms
             StopConditionsButton.UseVisualStyleBackColor = false;
             StopConditionsButton.Click += StopConditionsButton_Click;
             // 
-            // ScreenOffBox
+            // DisplayPartyCheck
             // 
-            ScreenOffBox.AutoSize = true;
-            ScreenOffBox.Location = new Point(258, 119);
-            ScreenOffBox.Name = "ScreenOffBox";
-            ScreenOffBox.Size = new Size(86, 19);
-            ScreenOffBox.TabIndex = 64;
-            ScreenOffBox.Text = "Screen Off?";
-            ScreenOffBox.UseVisualStyleBackColor = true;
+            DisplayPartyCheck.AutoSize = true;
+            DisplayPartyCheck.Location = new Point(258, 119);
+            DisplayPartyCheck.Name = "DisplayPartyCheck";
+            DisplayPartyCheck.Size = new Size(99, 19);
+            DisplayPartyCheck.TabIndex = 64;
+            DisplayPartyCheck.Text = "Display Party?";
+            DisplayPartyCheck.UseVisualStyleBackColor = true;
             // 
             // UptimeLabel
             // 
@@ -451,7 +451,7 @@ namespace PokeViewer.NET.SubForms
             Controls.Add(HidePIDEC);
             Controls.Add(SquareStarCount);
             Controls.Add(UptimeLabel);
-            Controls.Add(ScreenOffBox);
+            Controls.Add(DisplayPartyCheck);
             Controls.Add(StopConditionsButton);
             Controls.Add(FillingHoldTime);
             Controls.Add(HoldTimeToFillings);
@@ -522,7 +522,7 @@ namespace PokeViewer.NET.SubForms
         private Label HoldTimeToFillings;
         private TextBox FillingHoldTime;
         private Button StopConditionsButton;
-        private CheckBox ScreenOffBox;
+        private CheckBox DisplayPartyCheck;
         private Label UptimeLabel;
         private Label SquareStarCount;
         private CheckBox HidePIDEC;

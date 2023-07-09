@@ -20,7 +20,7 @@ namespace PokeViewer.NET.SubForms
             ResetButton.BackColor = color.Item1;
             ResetButton.ForeColor = color.Item2;
             ShinyBox.BackColor = color.Item1;
-            ShinyBox.ForeColor = color.Item1;
+            ShinyBox.ForeColor = color.Item2;
             GenderBox.BackColor = color.Item1;
             GenderBox.ForeColor = color.Item2;
             CheckBoxOf3.BackColor = color.Item1;
@@ -148,7 +148,10 @@ namespace PokeViewer.NET.SubForms
             var selection = ShinyBox.SelectedIndex;
             switch (selection)
             {
-                case 0: break; // Disablecheck
+                case 0:
+                    {
+                        Settings.Default.ShinyFilter = 0; break;
+                    }
                 case 1:
                     {
                         Settings.Default.ShinyFilter = 1; break;

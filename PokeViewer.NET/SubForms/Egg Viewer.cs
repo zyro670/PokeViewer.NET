@@ -79,7 +79,8 @@ namespace PokeViewer.NET.SubForms
         private async void button1_Click(object sender, EventArgs e)
         {
             var token = CancellationToken.None;
-            GatherPokeParty();
+            if (DisplayPartyCheck.Checked)
+                await GatherPokeParty(token).ConfigureAwait(false);
             StartTime = DateTime.Now;
             UptimeOnLoad(sender, e);
             await PerformEggRoutine(token).ConfigureAwait(false);
@@ -97,21 +98,14 @@ namespace PokeViewer.NET.SubForms
 
         private async Task PerformEggRoutine(CancellationToken token)
         {
-            if (ScreenOffBox.Checked)
-                await SetScreen(ScreenState.Off, token).ConfigureAwait(false);
-
             IVFilters = GrabIvFilters();
-
             if (FetchButton.Enabled == true)
                 DisableOptions();
 
             eggcount = 0;
             await Executor.SwitchConnection.WriteBytesMainAsync(BlankVal, Offsets.PicnicMenu, token).ConfigureAwait(false);
-
             try
             {
-
-
                 if (EatOnStart.Checked)
                 {
                     await MakeSandwich(token).ConfigureAwait(false);
@@ -119,12 +113,15 @@ namespace PokeViewer.NET.SubForms
                 }
                 else
                     await WaitForEggs(token).ConfigureAwait(false);
+
+                return;
             }
             catch (Exception ex)
             {
                 EnableOptions();
                 MessageBox.Show($"{ex}");
             }
+            return;
         }
 
         private async Task WaitForEggs(CancellationToken token)
@@ -205,8 +202,6 @@ namespace PokeViewer.NET.SubForms
                             EnableOptions();
                             Activate();
                             MessageBox.Show("Match found! Claim your egg before closing the picnic!");
-                            if (ScreenOffBox.Checked)
-                                await SetScreen(ScreenState.On, token).ConfigureAwait(false);
                             return;
                         }
 
@@ -246,8 +241,11 @@ namespace PokeViewer.NET.SubForms
             if (Settings.Default.MinMaxOnly && pk.Scale > 0 && pk.Scale < 255) // Mini/Jumbo Only
                 return false;
 
-            if (!pk.IsShiny && Settings.Default.ShinyFilter is not 0 or 1)
+            if (!pk.IsShiny && Settings.Default.ShinyFilter != 0 && Settings.Default.ShinyFilter != 1)
                 return false;
+
+            if (!pk.IsShiny && Settings.Default.ShinyFilter == 0 || !pk.IsShiny && Settings.Default.ShinyFilter == 1)
+                return true;
 
             if (pk.IsShiny && Settings.Default.ShinyFilter is not 0 or 1)
             {
@@ -483,11 +481,6 @@ namespace PokeViewer.NET.SubForms
             return data[0] == 0x11;
         }
 
-        private async Task SetScreen(ScreenState state, CancellationToken token)
-        {
-            await Executor.SwitchConnection.SendAsync(SwitchCommand.SetScreen(state, true), token).ConfigureAwait(false);
-        }
-
         private void DisableOptions()
         {
             FetchButton.Enabled = false;
@@ -502,7 +495,7 @@ namespace PokeViewer.NET.SubForms
             EatOnStart.Enabled = false;
             EatAgain.Enabled = false;
             HoldIngredients.Enabled = false;
-            ScreenOffBox.Enabled = false;
+            DisplayPartyCheck.Enabled = false;
         }
 
         private void EnableOptions()
@@ -519,7 +512,7 @@ namespace PokeViewer.NET.SubForms
             EatOnStart.Enabled = true;
             EatAgain.Enabled = true;
             HoldIngredients.Enabled = true;
-            ScreenOffBox.Enabled = true;
+            DisplayPartyCheck.Enabled = true;
         }
 
         private static HttpClient? _client;
@@ -603,9 +596,9 @@ namespace PokeViewer.NET.SubForms
             MessageBox.Show("Copied to clipboard!");
         }
 
-        private async void GatherPokeParty()
+        private async Task GatherPokeParty(CancellationToken token)
         {
-            await GatherParty(CancellationToken.None).ConfigureAwait(false);
+            await GatherParty(token).ConfigureAwait(false);
         }
 
         private async Task GatherParty(CancellationToken token)

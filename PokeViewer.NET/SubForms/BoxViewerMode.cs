@@ -173,20 +173,12 @@ namespace PokeViewer.NET
                     if (allboxes == true)
                         allboxes = false;
                     CurrentBox.Visible = false;
-                    var owner = new Form { Visible = false };
-                    var handle = owner.Handle;
-                    owner.BeginInvoke((MethodInvoker)delegate
-                    {
-                        MessageBox.Show(owner, text: "All boxes have been dumped to CSV files!", "Timed Message");
-                    });
-                    await Task.Delay(TimeSpan.FromSeconds(2), token).ConfigureAwait(false);
-                    owner.Dispose();
+                    MessageBox.Show("All boxes have been dumped to PK & CSV files!");
                 }
                 else
                     await BoxRoutine(box, boxes, images, colors, pk, false, token).ConfigureAwait(false);
             }
             catch (Exception ex) { MessageBox.Show($"{ex}"); }
-
             PKMs = new();
             ViewButton.Text = "View";
             EnableAssets();
