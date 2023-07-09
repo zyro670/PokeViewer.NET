@@ -16,7 +16,7 @@ namespace PokeViewer.NET
     {
         public ViewerExecutor Executor = null!;
         private const string ViewerVersion = "2.0.0";
-        private const int AzureBuildID = 426;
+        private const int AzureBuildID = 428;
         private readonly bool[] FormLoaded = new bool[8];
         private int GameType;
         private SimpleTrainerInfo TrainerInfo = new();
