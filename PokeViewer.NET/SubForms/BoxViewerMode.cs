@@ -332,7 +332,7 @@ namespace PokeViewer.NET
             using HttpClient client = new();
             string pid = $"{Environment.NewLine}PID: {pk.PID:X8}";
             string ec = $"{Environment.NewLine}EC: {pk.EncryptionConstant:X8}";
-            var form = FormOutput(pk.Species, pk.Form, out _);
+            string form = FormOutput(pk.Species, pk.Form, out _);
             string gender = string.Empty;
             switch (pk.Gender)
             {
@@ -344,7 +344,7 @@ namespace PokeViewer.NET
             string msg = string.Empty;
             Image? m = null;
             Image? o = null;
-            if (pk is PK8 or PA8 or PK9)
+            if (pk is PK8 or PK9)
             {
                 var info = RibbonInfo.GetRibbonInfo(pk);
                 foreach (var rib in info)
@@ -356,8 +356,16 @@ namespace PokeViewer.NET
                     if (mimg is not null)
                         m = new Bitmap(mimg, new Size(mimg.Width + 100, mimg.Height + 100));
 
-                    bool hasMark = HasMark((PK9)pk, out RibbonIndex mark);
-                    msg = hasMark ? $"{Environment.NewLine}Mark: {mark.ToString().Replace("Mark", "")}" : "";
+                    if (pk is PK9)
+                    {
+                        bool hasMark = HasMark((PK9)pk, out RibbonIndex mark);
+                        msg = hasMark ? $"{Environment.NewLine}Mark: {mark.ToString().Replace("Mark", "")}" : "";
+                    }
+                    else
+                    {
+                        bool hasMark = HasMark((PK8)pk, out RibbonIndex mark);
+                        msg = hasMark ? $"{Environment.NewLine}Mark: {mark.ToString().Replace("Mark", "")}" : "";
+                    }
                 }
             }
 

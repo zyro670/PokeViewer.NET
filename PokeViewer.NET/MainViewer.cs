@@ -1,4 +1,5 @@
 ﻿using SysBot.Base;
+using Octokit;
 using PKHeX.Core;
 using PKHeX.Drawing.Misc;
 using System.Net.Sockets;
@@ -6,7 +7,6 @@ using System.Diagnostics;
 using PokeViewer.NET.Properties;
 using PokeViewer.NET.SubForms;
 using PokeViewer.NET.WideViewForms;
-using Octokit;
 using static PokeViewer.NET.RoutineExecutor;
 using static PokeViewer.NET.ViewerUtil;
 
@@ -197,7 +197,7 @@ namespace PokeViewer.NET
                 case (int)GameSelected.Sword or (int)GameSelected.Shield: isValid = PersonalTable.SWSH.IsPresentInGame(pk.Species, pk.Form); break;
                 case (int)GameSelected.BrilliantDiamond or (int)GameSelected.ShiningPearl: isValid = PersonalTable.BDSP.IsPresentInGame(pk.Species, pk.Form); break;
                 case (int)GameSelected.LegendsArceus: isValid = PersonalTable.LA.IsPresentInGame(pk.Species, pk.Form); break;
-                case (int)GameSelected.LetsGoPikachu or (int)GameSelected.LetsGoEevee: isValid = pk.Species < (int)Species.Mewtwo && pk.Species != (int)Species.Meltan && pk.Species != (int)Species.Melmetal; break;
+                case (int)GameSelected.LetsGoPikachu or (int)GameSelected.LetsGoEevee: isValid = pk.Species < (int)Species.Mew && pk.Species != (int)Species.Meltan && pk.Species != (int)Species.Melmetal; break;
             }
             string? sprite;
             if (!isValid || pk.Species < 0 || pk.Species > (int)Species.MAX_COUNT)
@@ -237,17 +237,17 @@ namespace PokeViewer.NET
                 case 1: gender = " (F)"; break;
                 case 2: break;
             }
-            string output = $"{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{isAlpha}{(Species)pk.Species}{form}{gender}{ec}{pid}{Environment.NewLine}Nature: {(Nature)pk.Nature}{Environment.NewLine}Ability: {(Ability)pk.Ability}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}{msg}";
-            LiveStats.Text = $"{(Move)pk.Move1} - {pk.Move1_PP}PP{Environment.NewLine}{(Move)pk.Move2} - {pk.Move2_PP}PP{Environment.NewLine}{(Move)pk.Move3} - {pk.Move3_PP}PP{Environment.NewLine}{(Move)pk.Move4} - {pk.Move4_PP}PP";
+            string output = $"{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{isAlpha}{(Species)pk.Species}{form}{gender}{ec}{pid}{Environment.NewLine}Nature: {(Nature)pk.Nature}{Environment.NewLine}Ability: {GameInfo.GetStrings(1).Ability[pk.Ability]}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}{msg}";
+            LiveStats.Text = $"{GameInfo.GetStrings(1).Move[pk.Move1]} - {pk.Move1_PP}PP{Environment.NewLine}{GameInfo.GetStrings(1).Move[pk.Move2]} - {pk.Move2_PP}PP{Environment.NewLine}{GameInfo.GetStrings(1).Move[pk.Move3]} - {pk.Move3_PP}PP{Environment.NewLine}{GameInfo.GetStrings(1).Move[pk.Move4]} - {pk.Move4_PP}PP";
             ViewBox.Text = output;
             sprite = PokeImg(pk, isGmax);
             PokeSprite.Load(sprite);
-            var imgt1 = TypeSpriteUtil.GetTypeSpriteGem(pk.PersonalInfo.Type1);
-            Typing1.Image = imgt1;
+            var type1spr = $"https://raw.githubusercontent.com/zyro670/PokeTextures/844a15d0f5ac62bebb265d015537e94fc7b8738c/Typings/grptxt_icon_type_gem_text_" + $"{pk.PersonalInfo.Type1}" + ".png";
+            Typing1.Load(type1spr);
             if (pk.PersonalInfo.Type1 != pk.PersonalInfo.Type2)
             {
-                var imgt2 = TypeSpriteUtil.GetTypeSpriteGem(pk.PersonalInfo.Type2);
-                Typing2.Image = imgt2;
+                var type2spr = $"https://raw.githubusercontent.com/zyro670/PokeTextures/844a15d0f5ac62bebb265d015537e94fc7b8738c/Typings/grptxt_icon_type_gem_text_" + $"{pk.PersonalInfo.Type1}" + ".png";
+                Typing2.Load(type2spr);
             }
             if (alpha)
             {
@@ -705,10 +705,11 @@ namespace PokeViewer.NET
 
         private void CaptureWindow_Click(object sender, EventArgs e)
         {
-            Rectangle bounds = Bounds;
-            Bitmap bmp = new(Width, Height);
+            Rectangle bounds = ViewPage.Bounds;
+            Bitmap bmp = new(ViewPage.Width, ViewPage.Height - 60);
             DrawToBitmap(bmp, bounds);
             Clipboard.SetImage(bmp);
+            MessageBox.Show("Copied to clipboard!");
         }
 
         private void RefreshStats_CheckedChanged(object sender, EventArgs e)
@@ -960,7 +961,7 @@ namespace PokeViewer.NET
             else if (!AltMoodRadio.Checked)
                 darkmode = false;
 
-            Settings.Default.DarkMode = darkmode;            
+            Settings.Default.DarkMode = darkmode;
             Settings.Default.DefaultForeVal = AltForeCombo.SelectedIndex;
             Settings.Default.DefaultBackVal = AltBackCombo.SelectedIndex;
             Settings.Default.Save();
@@ -1078,7 +1079,7 @@ namespace PokeViewer.NET
             AltBackCombo.Items.Clear();
             for (var i = 0; i < UIColors.Count; i++)
             {
-                AltForeCombo.Items.Add($"{UIColors[i].ToString().Replace("Color", "").Replace("[","").Replace("]","").Trim()}");
+                AltForeCombo.Items.Add($"{UIColors[i].ToString().Replace("Color", "").Replace("[", "").Replace("]", "").Trim()}");
                 AltBackCombo.Items.Add($"{UIColors[i].ToString().Replace("Color", "").Replace("[", "").Replace("]", "").Trim()}");
             }
             AltForeCombo.SelectedIndex = Settings.Default.DefaultForeVal;

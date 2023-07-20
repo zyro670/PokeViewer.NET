@@ -9,15 +9,14 @@ namespace PokeViewer.NET
         public static string FormOutput(ushort species, byte form, out string[] formString)
         {
             var strings = GameInfo.GetStrings("en");
-            formString = FormConverter.GetFormList(species, strings.Types, strings.forms, GameInfo.GenderSymbolASCII, typeof(EntityContext) == typeof(PKM) ? EntityContext.Gen9 : EntityContext.Gen4);
+            formString = FormConverter.GetFormList(species, strings.Types, strings.forms, GameInfo.GenderSymbolASCII, typeof(PKM) == typeof(PKM) ? EntityContext.Gen9 : EntityContext.Gen4);
             if (formString.Length is 0)
                 return string.Empty;
 
             formString[0] = "";
             if (form >= formString.Length)
                 form = (byte)(formString.Length - 1);
-
-            return formString[form].Contains("-") ? formString[form] : formString[form] == "" ? "" : $"-{formString[form]}";
+            return formString[form].Contains('-') ? formString[form] : formString[form] == "" ? "" : $"-{formString[form]}";
         }
 
         public static string PokeImg(PKM pkm, bool canGmax)

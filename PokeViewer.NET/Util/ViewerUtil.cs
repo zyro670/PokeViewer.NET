@@ -1,5 +1,6 @@
 ﻿using PKHeX.Core;
 using SysBot.Base;
+using System.Text.RegularExpressions;
 
 namespace PokeViewer.NET
 {
@@ -45,10 +46,18 @@ namespace PokeViewer.NET
                 speciesName += "-Gmax";
 
             string OTInfo = string.IsNullOrEmpty(pk.OT_Name) ? "" : $" - {pk.OT_Name} - {TIDFormatted}{ballFormatted}";
+            OTInfo = string.Concat(OTInfo.Split(Path.GetInvalidFileNameChars())).Trim();
 
             if (pk is PK8)
             {
                 bool hasMark = HasMark((PK8)pk, out RibbonIndex mark);
+                if (hasMark)
+                    marktype = hasMark ? $"{mark.ToString().Replace("Mark", "")}Mark - " : "";
+            }
+
+            if (pk is PK9)
+            {
+                bool hasMark = HasMark((PK9)pk, out RibbonIndex mark);
                 if (hasMark)
                     marktype = hasMark ? $"{mark.ToString().Replace("Mark", "")}Mark - " : "";
             }

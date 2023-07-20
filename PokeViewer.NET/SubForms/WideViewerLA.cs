@@ -50,6 +50,7 @@ namespace PokeViewer.NET.WideViewForms
         {
             int size = 0x168;
             uint value = 0x00;
+            PA8 pkprev = new();
             for (int i = 0; i < 5; i++)
             {
                 switch (i)
@@ -63,18 +64,22 @@ namespace PokeViewer.NET.WideViewForms
                 var ptr = new long[] { 0x42A6F00, 0x98, value, 0x10, 0x58, 0x00 };
                 var ofs = await Executor.SwitchConnection.PointerAll(ptr, CancellationToken.None).ConfigureAwait(false);
                 PA8? pk = await ReadInBattlePokemonLA(ofs, size).ConfigureAwait(false);
-                LASanityCheck(pk, i);
+                if (pk.EncryptionConstant == pkprev.EncryptionConstant)
+                    LASanityCheck(pk, i, true);
+                else
+                    LASanityCheck(pk, i, false);
+                pkprev = pk;
             }
         }
 
-        private async void LASanityCheck(PA8 pk, int count)
+        private async void LASanityCheck(PA8 pk, int count, bool dupe)
         {
             PictureBox[] boxes = { pictureBox1, pictureBox2, pictureBox3, pictureBox4, pictureBox5 };
             TextBox[] outputBox = { textBox1, textBox2, textBox3, textBox4, textBox5 };
             PictureBox[] alphaboxes = { pictureBox6, pictureBox7, pictureBox8, pictureBox9, pictureBox10 };
             bool isValid = PersonalTable.LA.IsPresentInGame(pk.Species, pk.Form);
             string? sprite;
-            if (!isValid || pk.Species < 0 || pk.Species > (int)Species.MAX_COUNT)
+            if (dupe == true || !isValid || pk.Species < 0 || pk.Species > (int)Species.MAX_COUNT)
             {
                 outputBox[count].Text = "No Pokémon present.";
                 sprite = "https://raw.githubusercontent.com/kwsch/PKHeX/master/PKHeX.Drawing.PokeSprite/Resources/img/Pokemon%20Sprite%20Overlays/starter.png";

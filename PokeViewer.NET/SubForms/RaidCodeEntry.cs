@@ -3,7 +3,6 @@ using PKHeX.Drawing.Misc;
 using SysBot.Base;
 using RaidCrawler.Core.Structures;
 using static SysBot.Base.SwitchButton;
-using static PokeViewer.NET.ViewerUtil;
 
 namespace PokeViewer.NET.SubForms
 {

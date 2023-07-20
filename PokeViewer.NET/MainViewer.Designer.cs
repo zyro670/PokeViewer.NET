@@ -124,7 +124,7 @@
             // 
             // View
             // 
-            View.Location = new Point(224, 264);
+            View.Location = new Point(221, 264);
             View.Name = "View";
             View.Size = new Size(47, 23);
             View.TabIndex = 3;
@@ -137,7 +137,7 @@
             ViewBox.BackColor = SystemColors.GradientInactiveCaption;
             ViewBox.BorderStyle = BorderStyle.FixedSingle;
             ViewBox.ForeColor = SystemColors.InfoText;
-            ViewBox.Location = new Point(42, 88);
+            ViewBox.Location = new Point(34, 88);
             ViewBox.Multiline = true;
             ViewBox.Name = "ViewBox";
             ViewBox.ReadOnly = true;
@@ -149,7 +149,7 @@
             // 
             PokeSprite.BackColor = SystemColors.GradientInactiveCaption;
             PokeSprite.BorderStyle = BorderStyle.FixedSingle;
-            PokeSprite.Location = new Point(268, 88);
+            PokeSprite.Location = new Point(274, 88);
             PokeSprite.Name = "PokeSprite";
             PokeSprite.Size = new Size(182, 169);
             PokeSprite.SizeMode = PictureBoxSizeMode.CenterImage;
@@ -158,7 +158,7 @@
             // 
             // Specialty
             // 
-            Specialty.Location = new Point(224, 295);
+            Specialty.Location = new Point(221, 295);
             Specialty.Name = "Specialty";
             Specialty.Size = new Size(47, 41);
             Specialty.SizeMode = PictureBoxSizeMode.Zoom;
@@ -177,9 +177,9 @@
             // 
             // Typing1
             // 
-            Typing1.Location = new Point(381, 295);
+            Typing1.Location = new Point(274, 294);
             Typing1.Name = "Typing1";
-            Typing1.Size = new Size(69, 56);
+            Typing1.Size = new Size(182, 42);
             Typing1.SizeMode = PictureBoxSizeMode.StretchImage;
             Typing1.TabIndex = 12;
             Typing1.TabStop = false;
@@ -187,7 +187,7 @@
             // HidePIDEC
             // 
             HidePIDEC.AutoSize = true;
-            HidePIDEC.Location = new Point(42, 57);
+            HidePIDEC.Location = new Point(39, 57);
             HidePIDEC.Name = "HidePIDEC";
             HidePIDEC.Size = new Size(91, 19);
             HidePIDEC.TabIndex = 13;
@@ -197,9 +197,9 @@
             // 
             // Typing2
             // 
-            Typing2.Location = new Point(286, 295);
+            Typing2.Location = new Point(274, 351);
             Typing2.Name = "Typing2";
-            Typing2.Size = new Size(69, 56);
+            Typing2.Size = new Size(182, 41);
             Typing2.SizeMode = PictureBoxSizeMode.StretchImage;
             Typing2.TabIndex = 14;
             Typing2.TabStop = false;
@@ -207,19 +207,19 @@
             // LiveStats
             // 
             LiveStats.BackColor = SystemColors.GradientInactiveCaption;
-            LiveStats.Location = new Point(42, 294);
+            LiveStats.Location = new Point(34, 294);
             LiveStats.Multiline = true;
             LiveStats.Name = "LiveStats";
             LiveStats.ReadOnly = true;
             LiveStats.ScrollBars = ScrollBars.Vertical;
-            LiveStats.Size = new Size(171, 98);
+            LiveStats.Size = new Size(182, 98);
             LiveStats.TabIndex = 15;
             LiveStats.TextAlign = HorizontalAlignment.Center;
             // 
             // RefreshStats
             // 
             RefreshStats.AutoSize = true;
-            RefreshStats.Location = new Point(42, 267);
+            RefreshStats.Location = new Point(39, 267);
             RefreshStats.Name = "RefreshStats";
             RefreshStats.Size = new Size(72, 19);
             RefreshStats.TabIndex = 16;
@@ -229,7 +229,7 @@
             // 
             // RefreshBox
             // 
-            RefreshBox.Location = new Point(125, 403);
+            RefreshBox.Location = new Point(112, 403);
             RefreshBox.Name = "RefreshBox";
             RefreshBox.Size = new Size(71, 23);
             RefreshBox.TabIndex = 17;
@@ -239,7 +239,7 @@
             // Refresh
             // 
             Refresh.AutoSize = true;
-            Refresh.Location = new Point(47, 407);
+            Refresh.Location = new Point(34, 407);
             Refresh.Name = "Refresh";
             Refresh.Size = new Size(75, 15);
             Refresh.TabIndex = 18;
@@ -248,7 +248,7 @@
             // TodaysDate
             // 
             TodaysDate.AutoSize = true;
-            TodaysDate.Location = new Point(286, 407);
+            TodaysDate.Location = new Point(274, 407);
             TodaysDate.Name = "TodaysDate";
             TodaysDate.Size = new Size(57, 15);
             TodaysDate.TabIndex = 19;
@@ -257,7 +257,7 @@
             // WindowCapture
             // 
             WindowCapture.Image = (Image)resources.GetObject("WindowCapture.Image");
-            WindowCapture.Location = new Point(172, 57);
+            WindowCapture.Location = new Point(169, 57);
             WindowCapture.Name = "WindowCapture";
             WindowCapture.Size = new Size(37, 25);
             WindowCapture.TabIndex = 20;
@@ -267,7 +267,7 @@
             // HpLabel
             // 
             HpLabel.AutoSize = true;
-            HpLabel.Location = new Point(129, 268);
+            HpLabel.Location = new Point(126, 268);
             HpLabel.Name = "HpLabel";
             HpLabel.Size = new Size(63, 15);
             HpLabel.TabIndex = 21;
@@ -276,7 +276,7 @@
             // UniqueBox
             // 
             UniqueBox.AutoSize = true;
-            UniqueBox.Location = new Point(286, 264);
+            UniqueBox.Location = new Point(283, 267);
             UniqueBox.Name = "UniqueBox";
             UniqueBox.Size = new Size(15, 14);
             UniqueBox.TabIndex = 22;
@@ -286,7 +286,7 @@
             // UniqueBox2
             // 
             UniqueBox2.AutoSize = true;
-            UniqueBox2.Location = new Point(360, 264);
+            UniqueBox2.Location = new Point(356, 267);
             UniqueBox2.Name = "UniqueBox2";
             UniqueBox2.Size = new Size(15, 14);
             UniqueBox2.TabIndex = 23;
