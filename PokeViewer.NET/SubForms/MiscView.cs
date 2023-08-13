@@ -83,7 +83,7 @@ namespace PokeViewer.NET.SubForms
             groupBox3.BackColor = color.Item1;
             groupBox3.ForeColor = color.Item2;
             groupBox4.BackColor = color.Item1;
-            groupBox4.ForeColor = color.Item2;            
+            groupBox4.ForeColor = color.Item2;
             DPADUpDown.BackColor = color.Item1;
             DPADUpDown.ForeColor = color.Item2;
             OverShootUpDown.BackColor = color.Item1;

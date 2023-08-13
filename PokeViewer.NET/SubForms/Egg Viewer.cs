@@ -48,6 +48,10 @@ namespace PokeViewer.NET.SubForms
             ScreenshotButton.ForeColor = color.Item2;
             PokeStats.BackColor = color.Item1;
             PokeStats.ForeColor = color.Item2;
+            WaitTime.BackColor = color.Item1;
+            WaitTime.ForeColor = color.Item2;
+            NumericWaitTime.BackColor = color.Item1;
+            NumericWaitTime.ForeColor = color.Item2;
             setcolors = color;
         }
 
@@ -142,7 +146,7 @@ namespace PokeViewer.NET.SubForms
                         waiting++;
                         await Task.Delay(1_500, token).ConfigureAwait(false);
                         pk = await ReadPokemonSV(Offsets.EggData, 344, token).ConfigureAwait(false);
-                        if (waiting == 120)
+                        if (waiting == (int)NumericWaitTime.Value)
                         {
                             await ReopenPicnic(token).ConfigureAwait(false);
                             await MakeSandwich(token).ConfigureAwait(false);
@@ -173,7 +177,7 @@ namespace PokeViewer.NET.SubForms
                             case 2: break;
                         }
                         string sensitiveinfo = HidePIDEC.Checked ? "" : $"{pid}{ec}";
-                        string output = $"{$"Egg #{eggcount}"}{Environment.NewLine}{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{(Species)pk.Species}{form}{gender}{sensitiveinfo}{Environment.NewLine}Nature: {(Nature)pk.Nature}{Environment.NewLine}Ability: {(Ability)pk.Ability}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}{Environment.NewLine}Scale: {PokeSizeDetailedUtil.GetSizeRating(pk.Scale)}";
+                        string output = $"{$"Egg #{eggcount}"}{Environment.NewLine}{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{(Species)pk.Species}{form}{gender}{sensitiveinfo}{Environment.NewLine}Nature: {(Nature)pk.Nature}{Environment.NewLine}Ability: {(Ability)pk.Ability}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}{Environment.NewLine}Scale: {PokeSizeDetailedUtil.GetSizeRating(pk.Scale)} ({pk.Scale})";
                         PokeStats.Text = output;
                         LogUtil.LogText(output);
                         string? sprite;
@@ -230,6 +234,9 @@ namespace PokeViewer.NET.SubForms
                     starcount++;
                 ShinyFoundLabel.Text = $"Shinies Found: {squarecount + starcount}";
                 SquareStarCount.Text = $"■ - {squarecount} | ★ - {starcount}";
+
+                if (ForceDumpCheck.Checked)
+                    ForcifyEgg(pk);
             }
 
             if (!pk.IVs.SequenceEqual(IVFilters) && !Settings.Default.IgnoreIVFilter)
@@ -269,6 +276,37 @@ namespace PokeViewer.NET.SubForms
             var data = await Executor.SwitchConnection.ReadBytesMainAsync(offset, size, token).ConfigureAwait(false);
             var pk = new PK9(data);
             return pk;
+        }
+
+        private static void ForcifyEgg(PK9 pk)
+        {
+            pk.IsEgg = true;
+            pk.Nickname = "Egg";
+            pk.Met_Location = 0;
+            pk.Egg_Location = 30023;
+            pk.MetDate = DateOnly.Parse("2023/02/17");
+            pk.EggMetDate = pk.MetDate;
+            pk.OT_Name = "ZYZYZYZY";
+            pk.HeldItem = 0;
+            pk.CurrentLevel = 1;
+            pk.EXP = 0;
+            pk.Met_Level = 1;
+            pk.CurrentHandler = 0;
+            pk.OT_Friendship = 1;
+            pk.HT_Name = "";
+            pk.HT_Friendship = 0;
+            pk.ClearMemories();
+            pk.StatNature = pk.Nature;
+            pk.SetEVs(new int[] { 0, 0, 0, 0, 0, 0 });
+            pk.SetMarking(0, 0);
+            pk.SetMarking(1, 0);
+            pk.SetMarking(2, 0);
+            pk.SetMarking(3, 0);
+            pk.SetMarking(4, 0);
+            pk.SetMarking(5, 0);
+            pk.ClearInvalidMoves();
+
+            ViewerUtil.DumpPokemon(AppDomain.CurrentDomain.BaseDirectory, "forced-eggs", pk);
         }
 
         private async Task SetStick(SwitchStick stick, short x, short y, int delay, CancellationToken token)
@@ -627,6 +665,12 @@ namespace PokeViewer.NET.SubForms
             var data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(offset, size, token).ConfigureAwait(false);
             var pk = new PK9(data);
             return pk;
+        }
+
+        private void ForceEgg_CheckedChanged(object sender, EventArgs e)
+        {
+            if (ForceDumpCheck.Checked)
+                MessageBox.Show("You have enabled force dump eggs. These should not be considered legitimate and are only a backup for ghost eggs. Please do not pass these off as legitimate eggs.");
         }
     }
 }

@@ -129,11 +129,24 @@ namespace PokeViewer.NET.SubForms
             try
             {
                 await ReadRaids(CancellationToken.None).ConfigureAwait(false);
+                MessageBox.Show("Done. Use the arrows to scroll through your results!");
             }
             catch (Exception ex) { MessageBox.Show(ex.ToString()); }
             GoButton.Enabled = true;
             numericUpDown1.Enabled = true;
             checkBox1.Enabled = true;
+        }
+
+        private void NumericValue_Changed(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(raidimages[(int)numericUpDown1.Value]))
+            {
+                pictureBox1.Load(raidimages[(int)numericUpDown1.Value]);
+                Results.Text = results[(int)numericUpDown1.Value];
+                pictureBox2.Image = teratype[(int)numericUpDown1.Value];
+            }
+            else
+                MessageBox.Show("No results saved, please hit GO again.");
         }
 
         private (string, string) CalculateFromSeed(uint seed, PK9 pk)
@@ -152,6 +165,9 @@ namespace PokeViewer.NET.SubForms
             return (sprite, results);
         }
 
+        private List<string> raidimages = new();
+        private List<string> results = new();
+        private List<Image> teratype = new();
         private ulong TeraRaidBlockOffset;
         private RaidContainer? container;
         private int StoryProgress;
@@ -255,22 +271,26 @@ namespace PokeViewer.NET.SubForms
             if (delivery > 0)
                 MessageBox.Show($"Invalid delivery group ID for {delivery} raid(s). Try deleting the \"cache\" folder.");
 
-            var raids = container.Raids;
-            int index = (int)numericUpDown1.Value;
-            Raid raid = raids[index];
-            var encounter = container.Encounters[index];
-            var param = encounter.GetParam();
-            var blank = new PK9
+            for (int i = 0; i < 69; i++)
             {
-                Species = encounter.Species,
-                Form = encounter.Form
-            };
-            Encounter9RNG.GenerateData(blank, param, EncounterCriteria.Unrestricted, raid.Seed);
-            var (spr, txt) = CalculateFromSeed(raid.Seed, blank);
-            Results.Text = txt;
-            pictureBox1.Load(spr);
-            var tera = blank.TeraType;
-            pictureBox2.Image = TypeSpriteUtil.GetTypeSpriteGem((byte)tera);
+                var raids = container.Raids;
+                int index = i;
+                Raid raid = raids[index];
+                var encounter = container.Encounters[index];
+                var param = encounter.GetParam();
+                var blank = new PK9
+                {
+                    Species = encounter.Species,
+                    Form = encounter.Form
+                };
+                Encounter9RNG.GenerateData(blank, param, EncounterCriteria.Unrestricted, raid.Seed);
+                var (spr, txt) = CalculateFromSeed(raid.Seed, blank);
+                results.Add(txt);
+                raidimages.Add(spr);
+                var tera = blank.TeraType;
+                var type = TypeSpriteUtil.GetTypeSpriteGem((byte)tera);
+                teratype.Add(type!);
+            }
         }
 
         public async Task ReadEventRaids(ulong BaseBlockKeyPointer, RaidContainer container, CancellationToken token, bool force = false)

@@ -67,6 +67,9 @@ namespace PokeViewer.NET.SubForms
             pictureBox4 = new PictureBox();
             pictureBox5 = new PictureBox();
             pictureBox6 = new PictureBox();
+            ForceDumpCheck = new CheckBox();
+            NumericWaitTime = new NumericUpDown();
+            WaitTime = new Label();
             ((System.ComponentModel.ISupportInitialize)PokeSpriteBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)BallBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)NumberOfFillings).BeginInit();
@@ -76,6 +79,7 @@ namespace PokeViewer.NET.SubForms
             ((System.ComponentModel.ISupportInitialize)pictureBox4).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox5).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox6).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)NumericWaitTime).BeginInit();
             SuspendLayout();
             // 
             // PokeSpriteBox
@@ -135,7 +139,7 @@ namespace PokeViewer.NET.SubForms
             // EatOnStart
             // 
             EatOnStart.AutoSize = true;
-            EatOnStart.Location = new Point(263, 43);
+            EatOnStart.Location = new Point(263, 28);
             EatOnStart.Name = "EatOnStart";
             EatOnStart.Size = new Size(93, 19);
             EatOnStart.TabIndex = 13;
@@ -145,7 +149,7 @@ namespace PokeViewer.NET.SubForms
             // Item1Value
             // 
             Item1Value.BackColor = SystemColors.Control;
-            Item1Value.Location = new Point(310, 144);
+            Item1Value.Location = new Point(313, 119);
             Item1Value.Name = "Item1Value";
             Item1Value.Size = new Size(32, 23);
             Item1Value.TabIndex = 14;
@@ -155,7 +159,7 @@ namespace PokeViewer.NET.SubForms
             // Item1Label
             // 
             Item1Label.AutoSize = true;
-            Item1Label.Location = new Point(260, 149);
+            Item1Label.Location = new Point(260, 122);
             Item1Label.Name = "Item1Label";
             Item1Label.Size = new Size(40, 15);
             Item1Label.TabIndex = 15;
@@ -164,7 +168,7 @@ namespace PokeViewer.NET.SubForms
             // Item2Label
             // 
             Item2Label.AutoSize = true;
-            Item2Label.Location = new Point(260, 174);
+            Item2Label.Location = new Point(260, 150);
             Item2Label.Name = "Item2Label";
             Item2Label.Size = new Size(40, 15);
             Item2Label.TabIndex = 16;
@@ -173,7 +177,7 @@ namespace PokeViewer.NET.SubForms
             // Item2Value
             // 
             Item2Value.BackColor = SystemColors.Control;
-            Item2Value.Location = new Point(310, 172);
+            Item2Value.Location = new Point(313, 147);
             Item2Value.Name = "Item2Value";
             Item2Value.Size = new Size(32, 23);
             Item2Value.TabIndex = 17;
@@ -184,7 +188,7 @@ namespace PokeViewer.NET.SubForms
             // 
             EatAgain.AutoSize = true;
             EatAgain.BackColor = Color.Transparent;
-            EatAgain.Location = new Point(263, 65);
+            EatAgain.Location = new Point(263, 50);
             EatAgain.Name = "EatAgain";
             EatAgain.Size = new Size(81, 19);
             EatAgain.TabIndex = 18;
@@ -194,7 +198,7 @@ namespace PokeViewer.NET.SubForms
             // Item3Label
             // 
             Item3Label.AutoSize = true;
-            Item3Label.Location = new Point(260, 201);
+            Item3Label.Location = new Point(260, 178);
             Item3Label.Name = "Item3Label";
             Item3Label.Size = new Size(40, 15);
             Item3Label.TabIndex = 19;
@@ -203,7 +207,7 @@ namespace PokeViewer.NET.SubForms
             // Item3Value
             // 
             Item3Value.BackColor = SystemColors.Control;
-            Item3Value.Location = new Point(310, 200);
+            Item3Value.Location = new Point(313, 175);
             Item3Value.Name = "Item3Value";
             Item3Value.Size = new Size(32, 23);
             Item3Value.TabIndex = 20;
@@ -213,7 +217,7 @@ namespace PokeViewer.NET.SubForms
             // checkBox5
             // 
             checkBox5.AutoSize = true;
-            checkBox5.Location = new Point(357, 148);
+            checkBox5.Location = new Point(362, 121);
             checkBox5.Name = "checkBox5";
             checkBox5.Size = new Size(49, 19);
             checkBox5.TabIndex = 21;
@@ -225,7 +229,7 @@ namespace PokeViewer.NET.SubForms
             checkBox6.AutoSize = true;
             checkBox6.Checked = true;
             checkBox6.CheckState = CheckState.Checked;
-            checkBox6.Location = new Point(357, 174);
+            checkBox6.Location = new Point(362, 149);
             checkBox6.Name = "checkBox6";
             checkBox6.Size = new Size(49, 19);
             checkBox6.TabIndex = 22;
@@ -237,7 +241,7 @@ namespace PokeViewer.NET.SubForms
             checkBox7.AutoSize = true;
             checkBox7.Checked = true;
             checkBox7.CheckState = CheckState.Checked;
-            checkBox7.Location = new Point(357, 201);
+            checkBox7.Location = new Point(362, 177);
             checkBox7.Name = "checkBox7";
             checkBox7.Size = new Size(49, 19);
             checkBox7.TabIndex = 23;
@@ -283,7 +287,7 @@ namespace PokeViewer.NET.SubForms
             // HoldIngredients
             // 
             HoldIngredients.AutoSize = true;
-            HoldIngredients.Location = new Point(263, 87);
+            HoldIngredients.Location = new Point(263, 72);
             HoldIngredients.Name = "HoldIngredients";
             HoldIngredients.Size = new Size(97, 19);
             HoldIngredients.TabIndex = 32;
@@ -293,7 +297,7 @@ namespace PokeViewer.NET.SubForms
             // NumberOfFillings
             // 
             NumberOfFillings.BackColor = SystemColors.Control;
-            NumberOfFillings.Location = new Point(350, 232);
+            NumberOfFillings.Location = new Point(355, 232);
             NumberOfFillings.Maximum = new decimal(new int[] { 10, 0, 0, 0 });
             NumberOfFillings.Name = "NumberOfFillings";
             NumberOfFillings.Size = new Size(49, 23);
@@ -303,7 +307,7 @@ namespace PokeViewer.NET.SubForms
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(259, 237);
+            label1.Location = new Point(259, 235);
             label1.Name = "label1";
             label1.Size = new Size(85, 15);
             label1.TabIndex = 34;
@@ -321,7 +325,7 @@ namespace PokeViewer.NET.SubForms
             // FillingHoldTime
             // 
             FillingHoldTime.BackColor = SystemColors.Control;
-            FillingHoldTime.Location = new Point(366, 262);
+            FillingHoldTime.Location = new Point(369, 262);
             FillingHoldTime.Name = "FillingHoldTime";
             FillingHoldTime.Size = new Size(33, 23);
             FillingHoldTime.TabIndex = 36;
@@ -341,7 +345,7 @@ namespace PokeViewer.NET.SubForms
             // DisplayPartyCheck
             // 
             DisplayPartyCheck.AutoSize = true;
-            DisplayPartyCheck.Location = new Point(263, 108);
+            DisplayPartyCheck.Location = new Point(263, 93);
             DisplayPartyCheck.Name = "DisplayPartyCheck";
             DisplayPartyCheck.Size = new Size(99, 19);
             DisplayPartyCheck.TabIndex = 64;
@@ -369,7 +373,7 @@ namespace PokeViewer.NET.SubForms
             // HidePIDEC
             // 
             HidePIDEC.AutoSize = true;
-            HidePIDEC.Location = new Point(263, 22);
+            HidePIDEC.Location = new Point(263, 7);
             HidePIDEC.Name = "HidePIDEC";
             HidePIDEC.Size = new Size(129, 19);
             HidePIDEC.TabIndex = 67;
@@ -435,12 +439,47 @@ namespace PokeViewer.NET.SubForms
             pictureBox6.TabIndex = 74;
             pictureBox6.TabStop = false;
             // 
+            // ForceDumpCheck
+            // 
+            ForceDumpCheck.AutoSize = true;
+            ForceDumpCheck.Font = new Font("Segoe UI", 9.75F, FontStyle.Regular, GraphicsUnit.Point);
+            ForceDumpCheck.Location = new Point(362, 93);
+            ForceDumpCheck.Name = "ForceDumpCheck";
+            ForceDumpCheck.Size = new Size(45, 21);
+            ForceDumpCheck.TabIndex = 75;
+            ForceDumpCheck.Text = "👻";
+            ForceDumpCheck.UseVisualStyleBackColor = true;
+            ForceDumpCheck.CheckedChanged += ForceEgg_CheckedChanged;
+            // 
+            // NumericWaitTime
+            // 
+            NumericWaitTime.BackColor = SystemColors.Control;
+            NumericWaitTime.Location = new Point(355, 204);
+            NumericWaitTime.Maximum = new decimal(new int[] { 600, 0, 0, 0 });
+            NumericWaitTime.Minimum = new decimal(new int[] { 120, 0, 0, 0 });
+            NumericWaitTime.Name = "NumericWaitTime";
+            NumericWaitTime.Size = new Size(48, 23);
+            NumericWaitTime.TabIndex = 76;
+            NumericWaitTime.Value = new decimal(new int[] { 180, 0, 0, 0 });
+            // 
+            // WaitTime
+            // 
+            WaitTime.AutoSize = true;
+            WaitTime.Location = new Point(259, 207);
+            WaitTime.Name = "WaitTime";
+            WaitTime.Size = new Size(95, 15);
+            WaitTime.TabIndex = 77;
+            WaitTime.Text = "Picnic Wait Time";
+            // 
             // Egg_Viewer
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.Control;
             ClientSize = new Size(426, 404);
+            Controls.Add(WaitTime);
+            Controls.Add(NumericWaitTime);
+            Controls.Add(ForceDumpCheck);
             Controls.Add(pictureBox6);
             Controls.Add(pictureBox5);
             Controls.Add(pictureBox4);
@@ -490,6 +529,7 @@ namespace PokeViewer.NET.SubForms
             ((System.ComponentModel.ISupportInitialize)pictureBox4).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox5).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox6).EndInit();
+            ((System.ComponentModel.ISupportInitialize)NumericWaitTime).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -533,5 +573,8 @@ namespace PokeViewer.NET.SubForms
         private PictureBox pictureBox4;
         private PictureBox pictureBox5;
         private PictureBox pictureBox6;
+        private CheckBox ForceDumpCheck;
+        private NumericUpDown NumericWaitTime;
+        private Label WaitTime;
     }
 }

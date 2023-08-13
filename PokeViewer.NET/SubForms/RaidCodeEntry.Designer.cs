@@ -167,6 +167,7 @@
             numericUpDown1.Size = new Size(104, 23);
             numericUpDown1.TabIndex = 9;
             numericUpDown1.TextAlign = HorizontalAlignment.Right;
+            numericUpDown1.ValueChanged += NumericValue_Changed;
             // 
             // GoButton
             // 

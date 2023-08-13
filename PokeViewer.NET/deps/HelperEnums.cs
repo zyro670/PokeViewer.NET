@@ -1,4 +1,4 @@
-﻿namespace SysBot.Pokemon
+﻿namespace PokeViewer.NET
 {
     public enum GenderDependent : ushort
     {

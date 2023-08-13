@@ -52,6 +52,7 @@
             ToggleSwitchProtocol = new CheckBox();
             ViewerControl = new TabControl();
             ConnectionPage = new TabPage();
+            EventRedeemButton = new Button();
             MoodGroup = new GroupBox();
             BackColorLabel = new Label();
             ForeColorLabel = new Label();
@@ -168,7 +169,7 @@
             // OriginIcon
             // 
             OriginIcon.ImageLocation = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/OriginMarks/icon_generation_00%5Esb.png";
-            OriginIcon.Location = new Point(215, 18);
+            OriginIcon.Location = new Point(213, 18);
             OriginIcon.Name = "OriginIcon";
             OriginIcon.Size = new Size(64, 64);
             OriginIcon.SizeMode = PictureBoxSizeMode.AutoSize;
@@ -334,6 +335,7 @@
             // ConnectionPage
             // 
             ConnectionPage.BackColor = SystemColors.ControlLightLight;
+            ConnectionPage.Controls.Add(EventRedeemButton);
             ConnectionPage.Controls.Add(MoodGroup);
             ConnectionPage.Controls.Add(ScreenLabel);
             ConnectionPage.Controls.Add(TrainerPassportGroup);
@@ -349,6 +351,17 @@
             ConnectionPage.TabIndex = 0;
             ConnectionPage.Text = "Connection 🔌";
             // 
+            // EventRedeemButton
+            // 
+            EventRedeemButton.Location = new Point(404, 6);
+            EventRedeemButton.Name = "EventRedeemButton";
+            EventRedeemButton.Size = new Size(75, 23);
+            EventRedeemButton.TabIndex = 49;
+            EventRedeemButton.Text = "Event";
+            EventRedeemButton.UseVisualStyleBackColor = true;
+            EventRedeemButton.Visible = false;
+            EventRedeemButton.Click += button1_Click;
+            // 
             // MoodGroup
             // 
             MoodGroup.Controls.Add(BackColorLabel);
@@ -358,9 +371,9 @@
             MoodGroup.Controls.Add(SetMoodButton);
             MoodGroup.Controls.Add(DefaultMoodRadio);
             MoodGroup.Controls.Add(AltMoodRadio);
-            MoodGroup.Location = new Point(276, 291);
+            MoodGroup.Location = new Point(276, 288);
             MoodGroup.Name = "MoodGroup";
-            MoodGroup.Size = new Size(212, 129);
+            MoodGroup.Size = new Size(212, 132);
             MoodGroup.TabIndex = 48;
             MoodGroup.TabStop = false;
             MoodGroup.Text = "Mood";
@@ -814,5 +827,6 @@
         private ComboBox AltBackCombo;
         private Label BackColorLabel;
         private Label ForeColorLabel;
+        private Button EventRedeemButton;
     }
 }
