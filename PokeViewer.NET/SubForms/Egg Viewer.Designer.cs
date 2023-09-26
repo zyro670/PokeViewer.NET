@@ -1,6 +1,4 @@
-﻿using PokeViewer.NET.Properties;
-
-namespace PokeViewer.NET.SubForms
+﻿namespace PokeViewer.NET.SubForms
 {
     partial class Egg_Viewer
     {

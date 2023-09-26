@@ -80,5 +80,8 @@
     <Setting Name="DefaultBackVal" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">46</Value>
     </Setting>
+    <Setting Name="MapSetting" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

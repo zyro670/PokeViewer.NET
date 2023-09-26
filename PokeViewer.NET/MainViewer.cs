@@ -15,8 +15,8 @@ namespace PokeViewer.NET
     public partial class MainViewer : Form
     {
         public ViewerExecutor Executor = null!;
-        private const string ViewerVersion = "2.1.0";
-        private const int AzureBuildID = 432;
+        private const string ViewerVersion = "2.5.0";
+        private const int AzureBuildID = 433;
         private readonly bool[] FormLoaded = new bool[8];
         private int GameType;
         private SimpleTrainerInfo TrainerInfo = new();
@@ -29,6 +29,7 @@ namespace PokeViewer.NET
             GetAllColors();
             LoadComboBox();
             MoodChecker();
+            CheckTrainerIcon();
             WebhookURLText.Text = Settings.Default.WebHook;
             DiscordIDText.Text = Settings.Default.UserDiscordID;
             DisableTabsOnStart();
@@ -94,6 +95,20 @@ namespace PokeViewer.NET
             string url = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/OriginMarks/icon_generation_00%5Esb.png";
             OriginIcon.ImageLocation = url;
             ConnectionSpriteBox.ImageLocation = url;
+        }
+
+        private void CheckTrainerIcon()
+        {
+            var folder = "refs";
+            if (!Directory.Exists(folder))
+                Directory.CreateDirectory(folder);
+
+            var icon = "refs\\icon.png";
+            if (File.Exists(icon))
+                TrainerPhoto.Image = new Bitmap(icon);
+            else
+                TrainerPhoto.ImageLocation = "https://i.imgur.com/rNSKg5n.png";
+
         }
 
         private void CheckForIP(object sender, EventArgs e)
@@ -164,8 +179,10 @@ namespace PokeViewer.NET
                     await Invoke(async () =>
                     {
                         Connect.Text = "Disconnect";
+                        ToggleSwitchProtocol.Enabled = false;
+                        SwitchIP.Enabled = false;
                         await Executor.Connect(token).ConfigureAwait(false);
-                        Window_Loaded();
+                        Window_Loaded(token);                        
                     });
                 }
                 catch (SocketException err)
@@ -255,11 +272,11 @@ namespace PokeViewer.NET
             if (alpha)
             {
                 var url = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/OriginMarks/icon_alpha.png";
-                Image img = null!;
+                System.Drawing.Image img = null!;
                 using (HttpClient client = new())
                 {
                     using var response = await client.GetStreamAsync(url, token).ConfigureAwait(false);
-                    img = Image.FromStream(response);
+                    img = System.Drawing.Image.FromStream(response);
                 }
                 Specialty.Visible = true;
                 Specialty.Image = img;
@@ -292,11 +309,11 @@ namespace PokeViewer.NET
             if (isGmax)
             {
                 var url = $"https://raw.githubusercontent.com/zyro670/PokeTextures/main/OriginMarks/icon_daimax.png";
-                Image img = null!;
+                System.Drawing.Image img = null!;
                 using (HttpClient client = new())
                 {
                     using var response = await client.GetStreamAsync(url, token).ConfigureAwait(false);
-                    img = Image.FromStream(response);
+                    img = System.Drawing.Image.FromStream(response);
                 }
                 Specialty.Visible = true;
                 Specialty.Image = img;
@@ -528,12 +545,12 @@ namespace PokeViewer.NET
             }
         }
 
-        private async void Window_Loaded()
+        private async void Window_Loaded(CancellationToken token)
         {
-            var token = CancellationToken.None;
             int type = 0;
             string url = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/icon_version/64x64/icon_version_";
             string title = await Executor.SwitchConnection.GetTitleID(token).ConfigureAwait(false);
+            (string, string) strings = (string.Empty, string.Empty);
             switch (title)
             {
                 case HOMEID:
@@ -562,9 +579,7 @@ namespace PokeViewer.NET
                             RaidButton.Enabled = true;
                             EventRedeemButton.Visible = true;
                         });
-                        var strings = await GetFakeTrainerSAVSV(token).ConfigureAwait(false);
-                        TrainerLabel.Text = strings.Item1;
-                        TIDSID.Text = strings.Item2;
+                        strings = await GetFakeTrainerSAVSV(token).ConfigureAwait(false);                        
                         break;
                     }
                 case VioletID:
@@ -580,11 +595,9 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(MiscPage);
                             WideButton.Enabled = true;
                             RaidButton.Enabled = true;
-                            EventRedeemButton.Visible = true;
+                            EventRedeemButton.Visible = true;                            
                         });
-                        var strings = await GetFakeTrainerSAVSV(token).ConfigureAwait(false);
-                        TrainerLabel.Text = strings.Item1;
-                        TIDSID.Text = strings.Item2;
+                        strings = await GetFakeTrainerSAVSV(token).ConfigureAwait(false);
                         break;
                     }
                 case LegendsArceusID:
@@ -596,11 +609,9 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(ViewPage);
                             ViewerControl.TabPages.Add(BoxPage);
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
-                            WideButton.Enabled = true;
+                            WideButton.Enabled = true;                            
                         });
-                        var strings = await GetFakeTrainerSAVLA(token).ConfigureAwait(false);
-                        TrainerLabel.Text = strings.Item1;
-                        TIDSID.Text = strings.Item2;
+                        strings = await GetFakeTrainerSAVLA(token).ConfigureAwait(false);
                         break;
                     }
                 case ShiningPearlID:
@@ -613,11 +624,9 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(BoxPage);
                             ViewerControl.TabPages.Add(NPCPage);
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
-                            WideButton.Enabled = true;
+                            WideButton.Enabled = true;                            
                         });
-                        var strings = await GetFakeTrainerSAVBDSP(type, token).ConfigureAwait(false);
-                        TrainerLabel.Text = strings.Item1;
-                        TIDSID.Text = strings.Item2;
+                        strings = await GetFakeTrainerSAVBDSP(type, token).ConfigureAwait(false);
                         break;
                     }
                 case BrilliantDiamondID:
@@ -630,11 +639,9 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(BoxPage);
                             ViewerControl.TabPages.Add(NPCPage);
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
-                            WideButton.Enabled = true;
+                            WideButton.Enabled = true;                            
                         });
-                        var strings = await GetFakeTrainerSAVBDSP(type, token).ConfigureAwait(false);
-                        TrainerLabel.Text = strings.Item1;
-                        TIDSID.Text = strings.Item2;
+                        strings = await GetFakeTrainerSAVBDSP(type, token).ConfigureAwait(false);
                         break;
                     }
                 case SwordID:
@@ -649,11 +656,9 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(BoxPage);
                             ViewerControl.TabPages.Add(NPCPage);
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
-                            WideButton.Enabled = true;
+                            WideButton.Enabled = true;                            
                         });
-                        var strings = await GetFakeTrainerSAVSWSH(token).ConfigureAwait(false);
-                        TrainerLabel.Text = strings.Item1;
-                        TIDSID.Text = strings.Item2;
+                        strings = await GetFakeTrainerSAVSWSH(token).ConfigureAwait(false);
                         break;
                     }
                 case ShieldID:
@@ -668,11 +673,9 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(BoxPage);
                             ViewerControl.TabPages.Add(NPCPage);
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
-                            WideButton.Enabled = true;
+                            WideButton.Enabled = true;                            
                         });
-                        var strings = await GetFakeTrainerSAVSWSH(token).ConfigureAwait(false);
-                        TrainerLabel.Text = strings.Item1;
-                        TIDSID.Text = strings.Item2;
+                        strings = await GetFakeTrainerSAVSWSH(token).ConfigureAwait(false);
                         break;
                     }
                 case EeveeID:
@@ -684,11 +687,9 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(BoxPage);
                             ViewerControl.TabPages.Add(NPCPage);
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
-                            WideButton.Enabled = true;
+                            WideButton.Enabled = true;                            
                         });
-                        var strings = await GetFakeTrainerSAVLGPE(token).ConfigureAwait(false);
-                        TrainerLabel.Text = strings.Item1;
-                        TIDSID.Text = strings.Item2;
+                        strings = await GetFakeTrainerSAVLGPE(token).ConfigureAwait(false);
                         break;
                     }
                 case PikachuID:
@@ -702,9 +703,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
                             WideButton.Enabled = true;
                         });
-                        var strings = await GetFakeTrainerSAVLGPE(token).ConfigureAwait(false);
-                        TrainerLabel.Text = strings.Item1;
-                        TIDSID.Text = strings.Item2;
+                        strings = await GetFakeTrainerSAVLGPE(token).ConfigureAwait(false);
                         break;
                     }
             }
@@ -712,10 +711,10 @@ namespace PokeViewer.NET
             ConnectionSpriteBox.ImageLocation = url;
             GameType = type;
             ViewBox.Text = "Click View!";
-            ToggleSwitchProtocol.Enabled = false;
-            SwitchIP.Enabled = false;
             var bg = "https://raw.githubusercontent.com/kwsch/PKHeX/master/PKHeX.Drawing.PokeSprite/Resources/img/Pokemon%20Sprite%20Overlays/starter.png";
             PokeSprite.ImageLocation = bg;
+            TrainerLabel.Text = strings.Item1;
+            TIDSID.Text = strings.Item2;
         }
 
         private void CaptureWindow_Click(object sender, EventArgs e)
@@ -1147,6 +1146,26 @@ namespace PokeViewer.NET
             var colors = CheckForColors(Settings.Default.DarkMode);
             EventCodeEntry form = new(Executor, colors);
             form.ShowDialog();
+        }
+
+        private new async Task Click(SwitchButton b, int delay, CancellationToken token)
+        {
+            await Executor.Connection.SendAsync(SwitchCommand.Click(b, true), token).ConfigureAwait(false);
+            await Task.Delay(delay, token).ConfigureAwait(false);
+        }
+
+        private async void TurboButton_ClickAsync(object sender, EventArgs e)
+        {
+            var token = CancellationToken.None;
+            if (!checkBox1.Checked)
+                TurboButton.Enabled = false;
+            while (!checkBox1.Checked)
+            {
+                await Click((SwitchButton)comboBox1.SelectedIndex, 0_100, token).ConfigureAwait(false);
+            }
+            MessageBox.Show("Turbo has been stopped!");
+            TurboButton.Enabled = true;
+            checkBox1.Checked = false;
         }
     }
 }

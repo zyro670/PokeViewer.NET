@@ -3,6 +3,7 @@ using PKHeX.Drawing.Misc;
 using SysBot.Base;
 using RaidCrawler.Core.Structures;
 using static SysBot.Base.SwitchButton;
+using pkNX.Structures.FlatBuffers.Gen9;
 
 namespace PokeViewer.NET.SubForms
 {
@@ -168,7 +169,8 @@ namespace PokeViewer.NET.SubForms
         private List<string> raidimages = new();
         private List<string> results = new();
         private List<Image> teratype = new();
-        private ulong TeraRaidBlockOffset;
+        private ulong RaidBlockOffsetP;
+        private ulong RaidBlockOffsetK;
         private RaidContainer? container;
         private int StoryProgress;
         private int EventProgress;
@@ -242,10 +244,11 @@ namespace PokeViewer.NET.SubForms
 
         private async Task ReadRaids(CancellationToken token)
         {
-            if (TeraRaidBlockOffset == 0)
-                TeraRaidBlockOffset = await Executor.SwitchConnection.PointerAll(ViewerOffsets.TeraRaidBlockPointer, token).ConfigureAwait(false);
+            if (RaidBlockOffsetP == 0)
+                RaidBlockOffsetP = await Executor.SwitchConnection.PointerAll(ViewerOffsets.RaidBlockPointerP, token).ConfigureAwait(false);
 
-            var data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(TeraRaidBlockOffset + RaidBlock.HEADER_SIZE, (int)(RaidBlock.SIZE - RaidBlock.HEADER_SIZE), token).ConfigureAwait(false);
+            if (RaidBlockOffsetK == 0)
+                RaidBlockOffsetK = await Executor.SwitchConnection.PointerAll(ViewerOffsets.RaidBlockPointerK, token).ConfigureAwait(false);
 
             string id = await Executor.SwitchConnection.GetTitleID(token).ConfigureAwait(false);
             var game = id switch
@@ -264,18 +267,42 @@ namespace PokeViewer.NET.SubForms
 
             await ReadEventRaids(BaseBlockKeyPointer, container, token).ConfigureAwait(false);
 
-            (int delivery, int enc) = container.ReadAllRaids(data, StoryProgress, EventProgress, 0);
+            var data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(RaidBlockOffsetP + RaidBlock.HEADER_SIZE, (int)(RaidBlock.SIZE_BASE - RaidBlock.HEADER_SIZE), token).ConfigureAwait(false);
+
+            (int delivery, int enc) = container.ReadAllRaids(data, StoryProgress, EventProgress, 0, RaidSerializationFormat.BaseROM);
             if (enc > 0)
                 MessageBox.Show($"Failed to find encounters for {enc} raid(s).");
 
             if (delivery > 0)
                 MessageBox.Show($"Invalid delivery group ID for {delivery} raid(s). Try deleting the \"cache\" folder.");
 
-            for (int i = 0; i < 69; i++)
+            var raids = container.Raids;
+            var encounters = container.Encounters;
+            var rewards = container.Rewards;
+
+            data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(RaidBlockOffsetK, 0xC80, token).ConfigureAwait(false);
+
+            (delivery, enc) = container.ReadAllRaids(data, StoryProgress, EventProgress, 0, RaidSerializationFormat.KitakamiROM);
+
+            if (enc > 0)
+                MessageBox.Show($"Failed to find encounters for {enc} raid(s).");
+
+            if (delivery > 0)
+                MessageBox.Show($"Invalid delivery group ID for {delivery} raid(s). Try deleting the \"cache\" folder.");
+
+            var allRaids = raids.Concat(container.Raids).ToList().AsReadOnly();
+            var allEncounters = encounters.Concat(container.Encounters).ToList().AsReadOnly();
+            var allRewards = rewards.Concat(container.Rewards).ToList().AsReadOnly();
+
+            container.SetRaids(allRaids);
+            container.SetEncounters(allEncounters);
+            container.SetRewards(allRewards);
+
+            for (int i = 0; i < container.Raids.Count; i++)
             {
-                var raids = container.Raids;
+                var raidz = container.Raids;
                 int index = i;
-                Raid raid = raids[index];
+                Raid raid = raidz[index];
                 var encounter = container.Encounters[index];
                 var param = encounter.GetParam();
                 var blank = new PK9
