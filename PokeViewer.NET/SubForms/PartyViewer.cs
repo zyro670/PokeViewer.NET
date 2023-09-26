@@ -72,7 +72,7 @@ namespace PokeViewer.NET.SubForms
                 case 1: gender = " (F)"; break;
                 case 2: break;
             }
-            string output = $"{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{(Species)pk.Species}{form}{gender}{Environment.NewLine}{(Nature)pk.Nature} Nature | Ability: {(Ability)pk.Ability} | IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}{Environment.NewLine}{GameInfo.GetStrings(1).Move[pk.Move1]} - {pk.Move1_PP} | {GameInfo.GetStrings(1).Move[pk.Move2]} - {pk.Move2_PP}{Environment.NewLine}{GameInfo.GetStrings(1).Move[pk.Move3]} - {pk.Move3_PP} | {GameInfo.GetStrings(1).Move[pk.Move4]} - {pk.Move4_PP}";
+            string output = $"{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{(Species)pk.Species}{form}{gender}{Environment.NewLine}{(Nature)pk.Nature} Nature | Ability: {GameInfo.GetStrings(1).Ability[pk.Ability]} | IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}{Environment.NewLine}{GameInfo.GetStrings(1).Move[pk.Move1]} - {pk.Move1_PP} | {GameInfo.GetStrings(1).Move[pk.Move2]} - {pk.Move2_PP}{Environment.NewLine}{GameInfo.GetStrings(1).Move[pk.Move3]} - {pk.Move3_PP} | {GameInfo.GetStrings(1).Move[pk.Move4]} - {pk.Move4_PP}{Environment.NewLine}Friendship: {pk.CurrentFriendship}";
             CurrentSlotStats.Add(output);
             sprite = PokeImg(pk, isGmax);
             boxes[count].Load(sprite);
@@ -117,9 +117,10 @@ namespace PokeViewer.NET.SubForms
             tt = new();
         }
 
-        private async Task GatherParty(CancellationToken token)
+        private async Task<List<PK9>> GatherParty(CancellationToken token)
         {
             PrepareParty();
+            List<PK9> list = new();
             uint ofs = 0x886BC348;
             for (int i = 0; i < 6; i++)
             {
@@ -137,11 +138,12 @@ namespace PokeViewer.NET.SubForms
                                 case 4: val = 0x50; break;
                                 case 5: val = 0x58; break;
                             }
-                            var pointer = new long[] { 0x44E4FD8, 0x08, val, 0x30, 0x00 };
+                            var pointer = new long[] { 0x46447D8, 0x08, val, 0x30, 0x00 };
                             var offset = await Executor.SwitchConnection.PointerAll(pointer, token).ConfigureAwait(false);
                             var data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(offset, 0x158, token).ConfigureAwait(false);
                             var pk = new PK9(data);
                             SanityCheck(pk, i);
+                            list.Add(pk);
 
                         }
                         break;
@@ -193,6 +195,7 @@ namespace PokeViewer.NET.SubForms
                 textBox1.Text += res;
 
             }
+            return list;
         }
 
         private void pictureBox_MouseHover(object sender, EventArgs e)

@@ -68,6 +68,9 @@
             TrainerLabel = new Label();
             ScreenOnLabel = new Label();
             ExtrasGroup = new GroupBox();
+            checkBox1 = new CheckBox();
+            TurboButton = new Button();
+            comboBox1 = new ComboBox();
             WideButton = new Button();
             RaidButton = new Button();
             DiscordIDText = new TextBox();
@@ -307,7 +310,7 @@
             // ToggleSwitchProtocol
             // 
             ToggleSwitchProtocol.AutoSize = true;
-            ToggleSwitchProtocol.Location = new Point(15, 41);
+            ToggleSwitchProtocol.Location = new Point(15, 19);
             ToggleSwitchProtocol.Name = "ToggleSwitchProtocol";
             ToggleSwitchProtocol.Size = new Size(52, 19);
             ToggleSwitchProtocol.TabIndex = 32;
@@ -472,7 +475,7 @@
             // 
             // TrainerPhoto
             // 
-            TrainerPhoto.Location = new Point(188, 14);
+            TrainerPhoto.Location = new Point(190, 16);
             TrainerPhoto.Name = "TrainerPhoto";
             TrainerPhoto.Size = new Size(69, 57);
             TrainerPhoto.SizeMode = PictureBoxSizeMode.Zoom;
@@ -482,7 +485,7 @@
             // TIDSID
             // 
             TIDSID.AutoSize = true;
-            TIDSID.Location = new Point(6, 44);
+            TIDSID.Location = new Point(6, 49);
             TIDSID.Name = "TIDSID";
             TIDSID.Size = new Size(53, 15);
             TIDSID.TabIndex = 38;
@@ -491,7 +494,7 @@
             // TrainerLabel
             // 
             TrainerLabel.AutoSize = true;
-            TrainerLabel.Location = new Point(6, 19);
+            TrainerLabel.Location = new Point(6, 24);
             TrainerLabel.Name = "TrainerLabel";
             TrainerLabel.Size = new Size(42, 15);
             TrainerLabel.TabIndex = 37;
@@ -509,6 +512,9 @@
             // ExtrasGroup
             // 
             ExtrasGroup.BackColor = Color.Transparent;
+            ExtrasGroup.Controls.Add(checkBox1);
+            ExtrasGroup.Controls.Add(TurboButton);
+            ExtrasGroup.Controls.Add(comboBox1);
             ExtrasGroup.Controls.Add(WideButton);
             ExtrasGroup.Controls.Add(RaidButton);
             ExtrasGroup.Controls.Add(DiscordIDText);
@@ -524,10 +530,40 @@
             ExtrasGroup.TabStop = false;
             ExtrasGroup.Text = "Extras";
             // 
+            // checkBox1
+            // 
+            checkBox1.AutoSize = true;
+            checkBox1.Location = new Point(176, 102);
+            checkBox1.Name = "checkBox1";
+            checkBox1.Size = new Size(84, 19);
+            checkBox1.TabIndex = 50;
+            checkBox1.Text = "Stop Turbo";
+            checkBox1.UseVisualStyleBackColor = true;
+            // 
+            // TurboButton
+            // 
+            TurboButton.Location = new Point(80, 101);
+            TurboButton.Name = "TurboButton";
+            TurboButton.Size = new Size(90, 23);
+            TurboButton.TabIndex = 40;
+            TurboButton.Text = "Turbo";
+            TurboButton.UseVisualStyleBackColor = true;
+            TurboButton.Click += TurboButton_ClickAsync;
+            // 
+            // comboBox1
+            // 
+            comboBox1.FormattingEnabled = true;
+            comboBox1.Items.AddRange(new object[] { "A", "B", "X", "Y", "RSTICK", "LSTICK", "L", "R", "ZL", "ZR", "PLUS", "MINUS", "DUP", "DDOWN", "DLEFT", "DRIGHT", "HOME", "CAPTURE" });
+            comboBox1.Location = new Point(6, 102);
+            comboBox1.Name = "comboBox1";
+            comboBox1.Size = new Size(68, 23);
+            comboBox1.TabIndex = 39;
+            comboBox1.Text = "A";
+            // 
             // WideButton
             // 
             WideButton.Enabled = false;
-            WideButton.Location = new Point(131, 37);
+            WideButton.Location = new Point(131, 15);
             WideButton.Name = "WideButton";
             WideButton.Size = new Size(59, 23);
             WideButton.TabIndex = 37;
@@ -538,7 +574,7 @@
             // RaidButton
             // 
             RaidButton.Enabled = false;
-            RaidButton.Location = new Point(195, 37);
+            RaidButton.Location = new Point(195, 15);
             RaidButton.Name = "RaidButton";
             RaidButton.Size = new Size(58, 23);
             RaidButton.TabIndex = 38;
@@ -548,7 +584,7 @@
             // 
             // DiscordIDText
             // 
-            DiscordIDText.Location = new Point(68, 98);
+            DiscordIDText.Location = new Point(68, 70);
             DiscordIDText.Name = "DiscordIDText";
             DiscordIDText.Size = new Size(185, 23);
             DiscordIDText.TabIndex = 4;
@@ -556,7 +592,7 @@
             // 
             // WebhookURLText
             // 
-            WebhookURLText.Location = new Point(68, 69);
+            WebhookURLText.Location = new Point(68, 41);
             WebhookURLText.Name = "WebhookURLText";
             WebhookURLText.Size = new Size(185, 23);
             WebhookURLText.TabIndex = 3;
@@ -566,7 +602,7 @@
             // DiscordID
             // 
             DiscordID.AutoSize = true;
-            DiscordID.Location = new Point(1, 101);
+            DiscordID.Location = new Point(1, 73);
             DiscordID.Name = "DiscordID";
             DiscordID.Size = new Size(61, 15);
             DiscordID.TabIndex = 2;
@@ -575,7 +611,7 @@
             // WebHookURL
             // 
             WebHookURL.AutoSize = true;
-            WebHookURL.Location = new Point(1, 72);
+            WebHookURL.Location = new Point(1, 44);
             WebHookURL.Name = "WebHookURL";
             WebHookURL.Size = new Size(58, 15);
             WebHookURL.TabIndex = 1;
@@ -583,7 +619,7 @@
             // 
             // SaveButton
             // 
-            SaveButton.Location = new Point(67, 37);
+            SaveButton.Location = new Point(67, 15);
             SaveButton.Name = "SaveButton";
             SaveButton.Size = new Size(59, 23);
             SaveButton.TabIndex = 0;
@@ -828,5 +864,8 @@
         private Label BackColorLabel;
         private Label ForeColorLabel;
         private Button EventRedeemButton;
+        private Button TurboButton;
+        private ComboBox comboBox1;
+        private CheckBox checkBox1;
     }
 }

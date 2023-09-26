@@ -204,7 +204,7 @@ namespace PokeViewer.NET
             CurrentSlotStats = new();
             if (GameType is (int)GameSelected.Scarlet or (int)GameSelected.Violet && AbsoluteBoxOffset == 0)
             {
-                var SVptr = new long[] { 0x44C1C18, 0x130, 0x9B0, 0x0 };
+                var SVptr = new long[] { 0x4616648, 0x1C0, 0x30, 0x9D0, 0x0 };
                 AbsoluteBoxOffset = await Executor.SwitchConnection.PointerAll(SVptr, CancellationToken.None).ConfigureAwait(false);
             }
             if (GameType is (int)GameSelected.LegendsArceus && AbsoluteBoxOffset == 0)
@@ -416,7 +416,7 @@ namespace PokeViewer.NET
             if (pk is PK9 pk9)
                 scale = $"{Environment.NewLine}Scale: {PokeSizeDetailedUtil.GetSizeRating(pk9.Scale)} ({pk9.Scale})";
 
-            CurrentSlotStats.Add($"{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{gMax}{alpha}{(Species)pk.Species}{form}{gender}{pid}{ec}{Environment.NewLine}Nature: {(Nature)pk.Nature}{Environment.NewLine}Ability: {(Ability)pk.Ability}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}{scale}{msg}");
+            CurrentSlotStats.Add($"{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{gMax}{alpha}{(Species)pk.Species}{form}{gender}{pid}{ec}{Environment.NewLine}Nature: {(Nature)pk.Nature}{Environment.NewLine}Ability: {GameInfo.GetStrings(1).Ability[pk.Ability]}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}{scale}{msg}");
             if (pk is PK8 && isGmax)
             {
                 if (pk.Species == (int)Species.Charmander || pk.Species == (int)Species.Charmeleon || pk.Species == (int)Species.Hattrem)
