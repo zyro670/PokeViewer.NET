@@ -957,10 +957,19 @@ namespace PokeViewer.NET
 
         private async void ScreenTrackBar_Scroll(object sender, EventArgs e)
         {
-            if (ScreenTrackBar.Value != 1)
-                await SetScreen(ScreenState.Off, CancellationToken.None).ConfigureAwait(false);
+            if (Executor is null || !Executor.Connection.Connected)
+            {
+                var owner = new Form { Visible = false };
+                MessageBox.Show(owner, text: "You are not connected to a console!", "Not Connected");
+
+            }
             else
-                await SetScreen(ScreenState.On, CancellationToken.None).ConfigureAwait(false);
+            {
+                if (ScreenTrackBar.Value != 1)
+                    await SetScreen(ScreenState.Off, CancellationToken.None).ConfigureAwait(false);
+                else
+                    await SetScreen(ScreenState.On, CancellationToken.None).ConfigureAwait(false);
+            }
         }
 
         private async Task SetScreen(ScreenState state, CancellationToken token)
