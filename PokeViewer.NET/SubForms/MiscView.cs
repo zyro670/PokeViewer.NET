@@ -13,8 +13,6 @@ namespace PokeViewer.NET.SubForms
     public partial class MiscView : Form
     {
         private readonly ViewerExecutor Executor;
-        private byte[]? CenterPOSP = Array.Empty<byte>();
-        private byte[]? CenterPOSK = Array.Empty<byte>();
         private static ulong BaseBlockKeyPointer = 0;
         public ulong CountCacheP;
         public ulong CountCacheK;
@@ -150,8 +148,6 @@ namespace PokeViewer.NET.SubForms
             List<PK9> monsK = new();
 
             DisableAssets();
-            CenterPOSP = Array.Empty<byte>();
-            CenterPOSK = Array.Empty<byte>();
             int dayskip = 0;
             int OutbreaktotalP = 0;
             int OutbreaktotalK = 0;
@@ -363,10 +359,7 @@ namespace PokeViewer.NET.SubForms
                     }
                     if (hunted is true && OutbreakSearch.Checked)
                     {
-                        CollideButton.Enabled = true;
                         timer.Stop();
-                        CenterPOSP = POSlistP[i];
-
                         string msg = $"{(Species)monsP[i].Species} outbreak found!";
                         EnableAssets();
                         timer.Stop();
@@ -400,10 +393,7 @@ namespace PokeViewer.NET.SubForms
                     }
                     if (hunted is true && OutbreakSearch.Checked)
                     {
-                        CollideButton.Enabled = true;
                         timer.Stop();
-                        CenterPOSK = POSlistK[i];
-
                         string msg = $"{(Species)monsK[i].Species} outbreak found!";
                         if (EnableWebhook.Checked)
                         {
@@ -573,36 +563,6 @@ namespace PokeViewer.NET.SubForms
                 UptimeLabel.Text = $"Uptime: {StartTime - DateTime.Now:d\\.hh\\:mm\\:ss}";
             };
             timer.Start();
-        }
-
-        private async void CollideButton_Click(object sender, EventArgs e)
-        {
-            if (CenterPOSP is not null)
-            {
-                float Y = BitConverter.ToSingle(CenterPOSP, 4);
-                Y += 40;
-                WriteSingleLittleEndian(CenterPOSP.AsSpan()[4..], Y);
-
-                for (int i = 0; i < 15; i++)
-                    await Executor.SwitchConnection.PointerPoke(CenterPOSP, CollisionPointer, CancellationToken.None).ConfigureAwait(false);
-            }
-
-            if (CenterPOSK is not null)
-            {
-                float Y = BitConverter.ToSingle(CenterPOSK, 4);
-                Y += 40;
-                WriteSingleLittleEndian(CenterPOSK.AsSpan()[4..], Y);
-
-                for (int i = 0; i < 15; i++)
-                    await Executor.SwitchConnection.PointerPoke(CenterPOSK, CollisionPointer, CancellationToken.None).ConfigureAwait(false);
-            }
-
-            if (CenterPOSP is null && CenterPOSK is null)
-            {
-                MessageBox.Show("No valid coordinates present. Try again after finding a desired outbreak.");
-                CollideButton.Enabled = false;
-            }
-
         }
 
         public class OutbreakStash
@@ -1048,7 +1008,7 @@ namespace PokeViewer.NET.SubForms
             public static DataBlock KMassOutbreakKO9 = new()
             {
                 Name = "KMassOutbreak09NumKOed",
-                Key = 0xB29ADDAD,
+                Key = 0xB29D7978,
                 Type = SCTypeCode.UInt32,
                 IsEncrypted = true,
                 Size = 4,
@@ -1096,7 +1056,7 @@ namespace PokeViewer.NET.SubForms
             public static DataBlock KMassOutbreakKO10 = new()
             {
                 Name = "KMassOutbreak10NumKOed",
-                Key = 0xB298A7D6,
+                Key = 0xB29ADDAD,
                 Type = SCTypeCode.UInt32,
                 IsEncrypted = true,
                 Size = 4,
@@ -1145,7 +1105,7 @@ namespace PokeViewer.NET.SubForms
             public static DataBlock KMassOutbreakKO11 = new()
             {
                 Name = "KMassOutbreak11NumKOed",
-                Key = 0xB294B833,
+                Key = 0xB298A7D6,
                 Type = SCTypeCode.UInt32,
                 IsEncrypted = true,
                 Size = 4,
@@ -1193,7 +1153,7 @@ namespace PokeViewer.NET.SubForms
             public static DataBlock KMassOutbreakKO12 = new()
             {
                 Name = "KMassOutbreakKO12",
-                Key = 0xB29D7978,
+                Key = 0xB294B833,
                 Type = SCTypeCode.UInt32,
                 IsEncrypted = true,
                 Size = 4,

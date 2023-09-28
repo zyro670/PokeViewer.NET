@@ -43,7 +43,6 @@
             DaySkipTotal = new Label();
             DaySkipStats = new Label();
             OverShootUpDown = new NumericUpDown();
-            CollideButton = new Button();
             Form = new Label();
             RemoveSpecies = new Button();
             SpeciesBox = new ComboBox();
@@ -143,9 +142,9 @@
             // OutbreakScan
             // 
             OutbreakScan.BackColor = Color.Transparent;
-            OutbreakScan.Location = new Point(4, 126);
+            OutbreakScan.Location = new Point(4, 122);
             OutbreakScan.Name = "OutbreakScan";
-            OutbreakScan.Size = new Size(98, 23);
+            OutbreakScan.Size = new Size(98, 27);
             OutbreakScan.TabIndex = 6;
             OutbreakScan.Text = "Scan";
             OutbreakScan.UseVisualStyleBackColor = false;
@@ -163,7 +162,7 @@
             // OutbreakSearch
             // 
             OutbreakSearch.AutoSize = true;
-            OutbreakSearch.Location = new Point(4, 75);
+            OutbreakSearch.Location = new Point(5, 75);
             OutbreakSearch.Name = "OutbreakSearch";
             OutbreakSearch.Size = new Size(66, 19);
             OutbreakSearch.TabIndex = 17;
@@ -183,7 +182,6 @@
             groupBox1.Controls.Add(DaySkipTotal);
             groupBox1.Controls.Add(DaySkipStats);
             groupBox1.Controls.Add(OverShootUpDown);
-            groupBox1.Controls.Add(CollideButton);
             groupBox1.Controls.Add(Form);
             groupBox1.Controls.Add(RemoveSpecies);
             groupBox1.Controls.Add(SpeciesBox);
@@ -211,16 +209,16 @@
             // OpenMapBlueberry
             // 
             OpenMapBlueberry.Enabled = false;
-            OpenMapBlueberry.Location = new Point(336, 126);
+            OpenMapBlueberry.Location = new Point(336, 122);
             OpenMapBlueberry.Name = "OpenMapBlueberry";
-            OpenMapBlueberry.Size = new Size(115, 23);
+            OpenMapBlueberry.Size = new Size(115, 27);
             OpenMapBlueberry.TabIndex = 66;
             OpenMapBlueberry.Text = "Blueberry";
             OpenMapBlueberry.UseVisualStyleBackColor = true;
             // 
             // VivillonEditorButton
             // 
-            VivillonEditorButton.Location = new Point(4, 20);
+            VivillonEditorButton.Location = new Point(3, 17);
             VivillonEditorButton.Name = "VivillonEditorButton";
             VivillonEditorButton.Size = new Size(91, 23);
             VivillonEditorButton.TabIndex = 23;
@@ -253,7 +251,7 @@
             // 
             comboBox1.FormattingEnabled = true;
             comboBox1.Items.AddRange(new object[] { "All", "Paldea", "Kitakami" });
-            comboBox1.Location = new Point(4, 99);
+            comboBox1.Location = new Point(4, 95);
             comboBox1.Name = "comboBox1";
             comboBox1.Size = new Size(98, 23);
             comboBox1.TabIndex = 61;
@@ -272,9 +270,9 @@
             // 
             // OpenMapKitakami
             // 
-            OpenMapKitakami.Location = new Point(215, 126);
+            OpenMapKitakami.Location = new Point(215, 122);
             OpenMapKitakami.Name = "OpenMapKitakami";
-            OpenMapKitakami.Size = new Size(115, 23);
+            OpenMapKitakami.Size = new Size(115, 27);
             OpenMapKitakami.TabIndex = 60;
             OpenMapKitakami.Text = "Kitakami";
             OpenMapKitakami.UseVisualStyleBackColor = true;
@@ -283,7 +281,7 @@
             // UptimeLabel
             // 
             UptimeLabel.AutoSize = true;
-            UptimeLabel.Location = new Point(107, 60);
+            UptimeLabel.Location = new Point(107, 58);
             UptimeLabel.Name = "UptimeLabel";
             UptimeLabel.Size = new Size(49, 15);
             UptimeLabel.TabIndex = 41;
@@ -317,18 +315,6 @@
             OverShootUpDown.TabIndex = 13;
             OverShootUpDown.TextAlign = HorizontalAlignment.Center;
             OverShootUpDown.Value = new decimal(new int[] { 920, 0, 0, 0 });
-            // 
-            // CollideButton
-            // 
-            CollideButton.BackColor = Color.Transparent;
-            CollideButton.Enabled = false;
-            CollideButton.Location = new Point(290, 60);
-            CollideButton.Name = "CollideButton";
-            CollideButton.Size = new Size(99, 23);
-            CollideButton.TabIndex = 0;
-            CollideButton.Text = "Collide";
-            CollideButton.UseVisualStyleBackColor = false;
-            CollideButton.Click += CollideButton_Click;
             // 
             // Form
             // 
@@ -380,7 +366,7 @@
             // Apply0To61
             // 
             Apply0To61.AutoSize = true;
-            Apply0To61.Location = new Point(111, 104);
+            Apply0To61.Location = new Point(5, 41);
             Apply0To61.Name = "Apply0To61";
             Apply0To61.Size = new Size(94, 19);
             Apply0To61.TabIndex = 40;
@@ -390,7 +376,7 @@
             // EnableWebhook
             // 
             EnableWebhook.AutoSize = true;
-            EnableWebhook.Location = new Point(4, 54);
+            EnableWebhook.Location = new Point(5, 58);
             EnableWebhook.Name = "EnableWebhook";
             EnableWebhook.Size = new Size(82, 19);
             EnableWebhook.TabIndex = 37;
@@ -400,7 +386,7 @@
             // HardStopOutbreak
             // 
             HardStopOutbreak.AutoSize = true;
-            HardStopOutbreak.Location = new Point(111, 82);
+            HardStopOutbreak.Location = new Point(110, 75);
             HardStopOutbreak.Name = "HardStopOutbreak";
             HardStopOutbreak.Size = new Size(81, 19);
             HardStopOutbreak.TabIndex = 18;
@@ -417,9 +403,9 @@
             // OpenMapPaldea
             // 
             OpenMapPaldea.BackColor = Color.Transparent;
-            OpenMapPaldea.Location = new Point(108, 126);
+            OpenMapPaldea.Location = new Point(108, 122);
             OpenMapPaldea.Name = "OpenMapPaldea";
-            OpenMapPaldea.Size = new Size(101, 23);
+            OpenMapPaldea.Size = new Size(101, 27);
             OpenMapPaldea.TabIndex = 41;
             OpenMapPaldea.Text = "Paldea";
             OpenMapPaldea.UseVisualStyleBackColor = false;
@@ -935,7 +921,7 @@
             groupBox4.Controls.Add(ClearList);
             groupBox4.Controls.Add(SaveList);
             groupBox4.Controls.Add(ViewList);
-            groupBox4.Location = new Point(222, 79);
+            groupBox4.Location = new Point(222, 67);
             groupBox4.Name = "groupBox4";
             groupBox4.Size = new Size(229, 46);
             groupBox4.TabIndex = 22;
@@ -1073,7 +1059,6 @@
         private PictureBox OBSprite3;
         private PictureBox OBSprite2;
         private CheckBox EnableWebhook;
-        private Button CollideButton;
         private Button ChangeFormButton;
         private Label VivForm;
         private Button ReadValues;
