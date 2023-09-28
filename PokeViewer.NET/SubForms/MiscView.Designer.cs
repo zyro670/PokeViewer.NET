@@ -921,9 +921,9 @@
             groupBox4.Controls.Add(ClearList);
             groupBox4.Controls.Add(SaveList);
             groupBox4.Controls.Add(ViewList);
-            groupBox4.Location = new Point(222, 67);
+            groupBox4.Location = new Point(215, 67);
             groupBox4.Name = "groupBox4";
-            groupBox4.Size = new Size(229, 46);
+            groupBox4.Size = new Size(236, 46);
             groupBox4.TabIndex = 22;
             groupBox4.TabStop = false;
             groupBox4.Text = "Search List";
