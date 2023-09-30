@@ -85,7 +85,7 @@ namespace PokeViewer.NET.SubForms
                 outputBox[i].Text = string.Empty;
             }
 
-            button1.Enabled = false;
+            button1.Text = "Saving...";
             await SVSaveGameOverworld(token).ConfigureAwait(false);
             button1.Text = "Scanning...";
             var test = await ReadBlock(Blocks.Overworld, token).ConfigureAwait(false);
@@ -133,7 +133,6 @@ namespace PokeViewer.NET.SubForms
             }
             await Click(B, 1_000, token).ConfigureAwait(false);
             button1.Text = "Scan";
-            button1.Enabled = true;
             return;
         }
 
