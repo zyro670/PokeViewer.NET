@@ -41,14 +41,14 @@
             OpenMapKitakami = new Button();
             UptimeLabel = new Label();
             DaySkipTotal = new Label();
-            DaySkipStats = new Label();
+            StatusLabel = new Label();
             OverShootUpDown = new NumericUpDown();
             Form = new Label();
             RemoveSpecies = new Button();
             SpeciesBox = new ComboBox();
             AddSpecies = new Button();
             FormBox = new NumericUpDown();
-            Apply0To61 = new CheckBox();
+            Apply0To77 = new CheckBox();
             EnableWebhook = new CheckBox();
             HardStopOutbreak = new CheckBox();
             progressBar1 = new ProgressBar();
@@ -108,6 +108,7 @@
             ClearList = new Button();
             SaveList = new Button();
             ViewList = new Button();
+            ScanForEventOutbreak = new CheckBox();
             ReadValues = new Button();
             VivForm = new Label();
             ChangeFormButton = new Button();
@@ -180,14 +181,14 @@
             groupBox1.Controls.Add(OpenMapKitakami);
             groupBox1.Controls.Add(UptimeLabel);
             groupBox1.Controls.Add(DaySkipTotal);
-            groupBox1.Controls.Add(DaySkipStats);
+            groupBox1.Controls.Add(StatusLabel);
             groupBox1.Controls.Add(OverShootUpDown);
             groupBox1.Controls.Add(Form);
             groupBox1.Controls.Add(RemoveSpecies);
             groupBox1.Controls.Add(SpeciesBox);
             groupBox1.Controls.Add(AddSpecies);
             groupBox1.Controls.Add(FormBox);
-            groupBox1.Controls.Add(Apply0To61);
+            groupBox1.Controls.Add(Apply0To77);
             groupBox1.Controls.Add(EnableWebhook);
             groupBox1.Controls.Add(HardStopOutbreak);
             groupBox1.Controls.Add(OutbreakSearch);
@@ -199,6 +200,7 @@
             groupBox1.Controls.Add(BlueberryGroup);
             groupBox1.Controls.Add(groupBox4);
             groupBox1.Controls.Add(label9);
+            groupBox1.Controls.Add(ScanForEventOutbreak);
             groupBox1.Location = new Point(12, 3);
             groupBox1.Name = "groupBox1";
             groupBox1.Size = new Size(458, 432);
@@ -296,14 +298,14 @@
             DaySkipTotal.TabIndex = 40;
             DaySkipTotal.Text = "Day Skips:";
             // 
-            // DaySkipStats
+            // StatusLabel
             // 
-            DaySkipStats.AutoSize = true;
-            DaySkipStats.Location = new Point(107, 19);
-            DaySkipStats.Name = "DaySkipStats";
-            DaySkipStats.Size = new Size(42, 15);
-            DaySkipStats.TabIndex = 39;
-            DaySkipStats.Text = "Status:";
+            StatusLabel.AutoSize = true;
+            StatusLabel.Location = new Point(107, 19);
+            StatusLabel.Name = "StatusLabel";
+            StatusLabel.Size = new Size(42, 15);
+            StatusLabel.TabIndex = 39;
+            StatusLabel.Text = "Status:";
             // 
             // OverShootUpDown
             // 
@@ -363,15 +365,15 @@
             FormBox.Size = new Size(61, 23);
             FormBox.TabIndex = 43;
             // 
-            // Apply0To61
+            // Apply0To77
             // 
-            Apply0To61.AutoSize = true;
-            Apply0To61.Location = new Point(5, 41);
-            Apply0To61.Name = "Apply0To61";
-            Apply0To61.Size = new Size(94, 19);
-            Apply0To61.TabIndex = 40;
-            Apply0To61.Text = "Apply 0 - 61?";
-            Apply0To61.UseVisualStyleBackColor = true;
+            Apply0To77.AutoSize = true;
+            Apply0To77.Location = new Point(5, 41);
+            Apply0To77.Name = "Apply0To77";
+            Apply0To77.Size = new Size(94, 19);
+            Apply0To77.TabIndex = 40;
+            Apply0To77.Text = "Apply 0 - 77?";
+            Apply0To77.UseVisualStyleBackColor = true;
             // 
             // EnableWebhook
             // 
@@ -931,9 +933,9 @@
             // ClearList
             // 
             ClearList.BackColor = Color.Transparent;
-            ClearList.Location = new Point(146, 20);
+            ClearList.Location = new Point(158, 17);
             ClearList.Name = "ClearList";
-            ClearList.Size = new Size(66, 23);
+            ClearList.Size = new Size(74, 23);
             ClearList.TabIndex = 48;
             ClearList.Text = "Clear All";
             ClearList.UseVisualStyleBackColor = false;
@@ -942,9 +944,9 @@
             // SaveList
             // 
             SaveList.BackColor = Color.Transparent;
-            SaveList.Location = new Point(78, 20);
+            SaveList.Location = new Point(81, 17);
             SaveList.Name = "SaveList";
-            SaveList.Size = new Size(63, 23);
+            SaveList.Size = new Size(74, 23);
             SaveList.TabIndex = 47;
             SaveList.Text = "Save";
             SaveList.UseVisualStyleBackColor = false;
@@ -953,13 +955,23 @@
             // ViewList
             // 
             ViewList.BackColor = Color.Transparent;
-            ViewList.Location = new Point(6, 20);
+            ViewList.Location = new Point(4, 17);
             ViewList.Name = "ViewList";
-            ViewList.Size = new Size(66, 23);
+            ViewList.Size = new Size(74, 23);
             ViewList.TabIndex = 42;
             ViewList.Text = "View";
             ViewList.UseVisualStyleBackColor = false;
             ViewList.Click += button1_Click;
+            // 
+            // ScanForEventOutbreak
+            // 
+            ScanForEventOutbreak.AutoSize = true;
+            ScanForEventOutbreak.Location = new Point(110, 94);
+            ScanForEventOutbreak.Name = "ScanForEventOutbreak";
+            ScanForEventOutbreak.Size = new Size(79, 19);
+            ScanForEventOutbreak.TabIndex = 67;
+            ScanForEventOutbreak.Text = "Event OB?";
+            ScanForEventOutbreak.UseVisualStyleBackColor = true;
             // 
             // ReadValues
             // 
@@ -1065,13 +1077,13 @@
         private ComboBox V_ComboBox;
         private ProgressBar progressBar1;
         private NumericUpDown OverShootUpDown;
-        private Label DaySkipStats;
+        private Label StatusLabel;
         private Label DaySkipTotal;
         private Label UptimeLabel;
         private NumericUpDown DPADUpDown;
         private RadioButton DDOWNButton;
         private RadioButton OverShootButton;
-        private CheckBox Apply0To61;
+        private CheckBox Apply0To77;
         private Button OpenMapPaldea;
         private Button ViewList;
         private NumericUpDown FormBox;
@@ -1123,5 +1135,6 @@
         private Label ObCount15;
         private Label ObCount14;
         private Label ObCount13;
+        private CheckBox ScanForEventOutbreak;
     }
 }

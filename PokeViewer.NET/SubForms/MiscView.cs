@@ -16,9 +16,12 @@ namespace PokeViewer.NET.SubForms
         private static ulong BaseBlockKeyPointer = 0;
         public ulong CountCacheP;
         public ulong CountCacheK;
+        public ulong CountCacheBCP;
+        public ulong CountCacheBCK;
         private DateTime StartTime;
         private System.Timers.Timer timer = new();
         public List<OutbreakStash> OutbreakCache = new();
+        public List<OutbreakStash> BCATOutbreakCache = new();
         private List<Image> MapSpritesP = new();
         private List<byte[]?> MapPOSP = new();
         private List<Image> MapSpritesK = new();
@@ -114,6 +117,8 @@ namespace PokeViewer.NET.SubForms
             LoadOutbreakCache();
             CountCacheP = 0;
             CountCacheK = 0;
+            CountCacheBCP = 0;
+            CountCacheBCK = 0;
             Settings.Default.MapSetting = comboBox1.SelectedIndex;
             Settings.Default.Save();
         }
@@ -134,23 +139,39 @@ namespace PokeViewer.NET.SubForms
 
             List<Image> ImgP = new();
             List<Image> ImgK = new();
+            List<Image> ImgObP = new();
+            List<Image> ImgObK = new();
             List<byte[]?> POSlistP = new();
             List<byte[]?> POSlistK = new();
+            List<byte[]?> POSlistObP = new();
+            List<byte[]?> POSlistObK = new();
             List<uint> kolistP = new();
             List<uint> kolistK = new();
+            List<uint> kolistObP = new();
+            List<uint> kolistObK = new();
             List<uint> totallistP = new();
             List<uint> totallistK = new();
+            List<uint> totallistObP = new();
+            List<uint> totallistObK = new();
             List<string> stringsP = new();
             List<string> stringsK = new();
+            List<string> stringsObP = new();
+            List<string> stringsObK = new();
             List<string> CountlistP = new();
             List<string> CountlistK = new();
+            List<string> CountlistObP = new();
+            List<string> CountlistObK = new();
             List<PK9> monsP = new();
             List<PK9> monsK = new();
+            List<PK9> monsObP = new();
+            List<PK9> monsObK = new();
 
             DisableAssets();
             int dayskip = 0;
             int OutbreaktotalP = 0;
             int OutbreaktotalK = 0;
+            int OutbreaktotalBCP = 0;
+            int OutbreaktotalBCK = 0;
             while (!token.IsCancellationRequested)
             {
                 dayskip++;
@@ -160,6 +181,8 @@ namespace PokeViewer.NET.SubForms
                     LoadOutbreakCache();
                     CountCacheP = 0;
                     CountCacheK = 0;
+                    CountCacheBCP = 0;
+                    CountCacheBCK = 0;
                     await ResetGame(token, false).ConfigureAwait(false);
                 }
 
@@ -181,10 +204,10 @@ namespace PokeViewer.NET.SubForms
                     KList[i].Text = string.Empty;
                 }
 
-                DaySkipStats.Text = "Status: Saving...";
+                StatusLabel.Text = "Status: Saving...";
                 UpdateProgress(10, 100);
                 await SVSaveGameOverworld(token).ConfigureAwait(false);
-                DaySkipStats.Text = "Status: Scanning...";
+                StatusLabel.Text = "Status: Scanning...";
 
                 var block = Blocks.KOutbreakSpecies1;
                 var koblock = Blocks.KMassOutbreakKO1;
@@ -296,8 +319,6 @@ namespace PokeViewer.NET.SubForms
                         OutbreakCache[i].SpeciesFormLoaded = fofs;
                         var (obpos, bofs) = await ReadEncryptedBlockArray(pos, OutbreakCache[i].SpeciesCenterPOSLoaded, token).ConfigureAwait(false);
                         OutbreakCache[i].SpeciesCenterPOSLoaded = bofs;
-                        var (obdos, dofs) = await ReadEncryptedBlockArray(pos, OutbreakCache[i].SpeciesDummyPOSLoaded, token).ConfigureAwait(false);
-                        OutbreakCache[i].SpeciesDummyPOSLoaded = dofs;
 
                         PK9 pk = new()
                         {
@@ -317,9 +338,160 @@ namespace PokeViewer.NET.SubForms
                     }
                 }
 
+                if (ScanForEventOutbreak.Checked)
+                {
+                    var BCATObEnabled = await ReadEncryptedBlockBool(Blocks.KBCATOutbreakEnabled, token).ConfigureAwait(false);
+                    if (BCATObEnabled)
+                    {
+                        var BCOspecies = Blocks.KOutbreakBC01MainSpecies;
+                        var BCOko = Blocks.KOutbreakBC01MainNumKOed;
+                        var BCOtotal = Blocks.KOutbreakBC01MainTotalSpawns;
+                        var BCOform = Blocks.KOutbreakBC01MainForm;
+                        var BCOcenter = Blocks.KOutbreakBC01MainCenterPos;
+                        for (int i = 0; i < 20; i++)
+                            BCATOutbreakCache.Add(new());
+
+                        if (comboBox1.SelectedIndex is 0 or 1)
+                        {
+                            var dataBCP = await ReadEncryptedBlockByte(Blocks.KOutbreakBCMainNumActive, CountCacheBCP, token).ConfigureAwait(false);
+                            if (CountCacheBCP == 0)
+                                CountCacheBCP = dataBCP.Item2;
+
+                            OutbreaktotalBCP = Convert.ToInt32(dataBCP.Item1);
+                            if (OutbreaktotalBCP > 10)
+                            {
+                                BaseBlockKeyPointer = await Executor.SwitchConnection.PointerAll(Offsets.BlockKeyPointer, token).ConfigureAwait(false);
+                                // Rerun in case of bad pointer
+                                BCATOutbreakCache = new();
+                                LoadOutbreakCache();
+                                CountCacheBCP = 0;
+                                continue;
+                            }
+
+                            for (int i = 0; i < 10; i++)
+                            {
+                                switch (i)
+                                {
+                                    case 0: break;
+                                    case 1: BCOcenter = Blocks.KOutbreakBC02MainCenterPos; break;
+                                    case 2: BCOcenter = Blocks.KOutbreakBC03MainCenterPos; break;
+                                    case 3: BCOcenter = Blocks.KOutbreakBC04MainCenterPos; break;
+                                    case 4: BCOcenter = Blocks.KOutbreakBC05MainCenterPos; break;
+                                    case 5: BCOcenter = Blocks.KOutbreakBC06MainCenterPos; break;
+                                    case 6: BCOcenter = Blocks.KOutbreakBC07MainCenterPos; break;
+                                    case 7: BCOcenter = Blocks.KOutbreakBC08MainCenterPos; break;
+                                    case 8: BCOcenter = Blocks.KOutbreakBC09MainCenterPos; break;
+                                    case 9: BCOcenter = Blocks.KOutbreakBC10MainCenterPos; break;
+                                }
+                                if (i > OutbreaktotalBCP)
+                                    continue;
+
+                                var (kocount, lofs) = await ReadEncryptedBlockUint(BCOko, BCATOutbreakCache[i].SpeciesKOCountLoaded, token).ConfigureAwait(false);
+                                BCATOutbreakCache[i].SpeciesKOCountLoaded = lofs;
+                                var (totalcount, tofs) = await ReadEncryptedBlockUint(BCOtotal, BCATOutbreakCache[i].SpeciesTotalCountLoaded, token).ConfigureAwait(false);
+                                BCATOutbreakCache[i].SpeciesTotalCountLoaded = tofs;
+                                var (species, sofs) = await ReadEncryptedBlockUint(BCOspecies, BCATOutbreakCache[i].SpeciesLoaded, token).ConfigureAwait(false);
+                                BCATOutbreakCache[i].SpeciesLoaded = sofs;
+                                var (form, fofs) = await ReadEncryptedBlockByte(BCOform, BCATOutbreakCache[i].SpeciesFormLoaded, token).ConfigureAwait(false);
+                                BCATOutbreakCache[i].SpeciesFormLoaded = fofs;
+                                var (obpos, bofs) = await ReadEncryptedBlockArray(BCOcenter, BCATOutbreakCache[i].SpeciesCenterPOSLoaded, token).ConfigureAwait(false);
+                                BCATOutbreakCache[i].SpeciesCenterPOSLoaded = bofs;
+
+                                PK9 pk = new()
+                                {
+                                    Species = SpeciesConverter.GetNational9((ushort)species),
+                                    Form = form,
+                                };
+                                CommonEdits.SetIsShiny(pk, false);
+                                string pkform = form is 0 ? "" : $"-{form}";
+                                stringsObP.Add($"{(Species)pk.Species}{pkform}");
+                                CountlistObP.Add($"{kocount}/{totalcount}");
+                                var img = SpriteUtil.SB8a.GetSprite(pk.Species, pk.Form, 0, 0, 0, false, Shiny.Never, EntityContext.Gen9);
+                                ImgObP.Add(img);
+                                monsObP.Add(pk);
+                                POSlistObP.Add(obpos);
+                                kolistObP.Add(kocount);
+                                totallistObP.Add(totalcount);
+                            }
+                        }
+
+                        if (comboBox1.SelectedIndex is 0 or 2)
+                        {
+                            var dataBCK = await ReadEncryptedBlockByte(Blocks.KOutbreakBCDLC1NumActive, CountCacheBCK, token).ConfigureAwait(false);
+                            if (CountCacheBCK == 0)
+                                CountCacheBCK = dataBCK.Item2;
+
+                            OutbreaktotalBCK = Convert.ToInt32(dataBCK.Item1);
+                            if (OutbreaktotalBCK > 10)
+                            {
+                                BaseBlockKeyPointer = await Executor.SwitchConnection.PointerAll(Offsets.BlockKeyPointer, token).ConfigureAwait(false);
+                                // Rerun in case of bad pointer
+                                BCATOutbreakCache = new();
+                                LoadOutbreakCache();
+                                CountCacheBCK = 0;
+                                continue;
+                            }
+
+                            BCOspecies = Blocks.KOutbreakBC01DLC1Species;
+                            BCOko = Blocks.KOutbreakBC01DLC1NumKOed;
+                            BCOtotal = Blocks.KOutbreakBC01DLC1TotalSpawns;
+                            BCOform = Blocks.KOutbreakBC01DLC1Form;
+                            BCOcenter = Blocks.KOutbreakBC01DLC1CenterPos;
+
+                            for (int i = 10; i < 20; i++)
+                            {
+                                switch (i)
+                                {
+                                    case 10: break;
+                                    case 11: BCOcenter = Blocks.KOutbreakBC02DLC1CenterPos; break;
+                                    case 12: BCOcenter = Blocks.KOutbreakBC03DLC1CenterPos; break;
+                                    case 13: BCOcenter = Blocks.KOutbreakBC04DLC1CenterPos; break;
+                                    case 14: BCOcenter = Blocks.KOutbreakBC05DLC1CenterPos; break;
+                                    case 15: BCOcenter = Blocks.KOutbreakBC06DLC1CenterPos; break;
+                                    case 16: BCOcenter = Blocks.KOutbreakBC07DLC1CenterPos; break;
+                                    case 17: BCOcenter = Blocks.KOutbreakBC08DLC1CenterPos; break;
+                                    case 18: BCOcenter = Blocks.KOutbreakBC09DLC1CenterPos; break;
+                                    case 19: BCOcenter = Blocks.KOutbreakBC10DLC1CenterPos; break;
+                                }
+                                if (i > OutbreaktotalBCK + 10)
+                                    continue;
+
+                                var (kocount, lofs) = await ReadEncryptedBlockUint(BCOko, BCATOutbreakCache[i].SpeciesKOCountLoaded, token).ConfigureAwait(false);
+                                BCATOutbreakCache[i].SpeciesKOCountLoaded = lofs;
+                                var (totalcount, tofs) = await ReadEncryptedBlockUint(BCOtotal, BCATOutbreakCache[i].SpeciesTotalCountLoaded, token).ConfigureAwait(false);
+                                BCATOutbreakCache[i].SpeciesTotalCountLoaded = tofs;
+                                var (species, sofs) = await ReadEncryptedBlockUint(BCOspecies, BCATOutbreakCache[i].SpeciesLoaded, token).ConfigureAwait(false);
+                                BCATOutbreakCache[i].SpeciesLoaded = sofs;
+                                var (form, fofs) = await ReadEncryptedBlockByte(BCOform, BCATOutbreakCache[i].SpeciesFormLoaded, token).ConfigureAwait(false);
+                                BCATOutbreakCache[i].SpeciesFormLoaded = fofs;
+                                var (obpos, bofs) = await ReadEncryptedBlockArray(BCOcenter, BCATOutbreakCache[i].SpeciesCenterPOSLoaded, token).ConfigureAwait(false);
+                                BCATOutbreakCache[i].SpeciesCenterPOSLoaded = bofs;
+
+                                PK9 pk = new()
+                                {
+                                    Species = SpeciesConverter.GetNational9((ushort)species),
+                                    Form = form,
+                                };
+                                CommonEdits.SetIsShiny(pk, false);
+                                string pkform = form is 0 ? "" : $"-{form}";
+                                stringsObK.Add($"{(Species)pk.Species}{pkform}");
+                                CountlistObK.Add($"{kocount}/{totalcount}");
+                                var img = SpriteUtil.SB8a.GetSprite(pk.Species, pk.Form, 0, 0, 0, false, Shiny.Never, EntityContext.Gen9);
+                                ImgObK.Add(img);
+                                monsObK.Add(pk);
+                                POSlistObK.Add(obpos);
+                                kolistObK.Add(kocount);
+                                totallistObK.Add(totalcount);
+                            }
+                        }
+                    }
+                }
+
                 UpdateProgress(100, 100);
-                OpenMapPaldea.Text = $"Paldea: {OutbreaktotalP}";
-                OpenMapKitakami.Text = $"Kitakami: {OutbreaktotalK}";
+                var textp = ScanForEventOutbreak.Checked ? OutbreaktotalBCP + OutbreaktotalP : OutbreaktotalP;
+                var textk = ScanForEventOutbreak.Checked ? OutbreaktotalBCK + OutbreaktotalK : OutbreaktotalK;
+                OpenMapPaldea.Text = $"Paldea: {textp}";
+                OpenMapKitakami.Text = $"Kitakami: {textk}";
 
                 for (int i = 0; i < ImgP.Count; i++)
                 {
@@ -349,6 +521,21 @@ namespace PokeViewer.NET.SubForms
                 foreach (var kps in POSlistK)
                     MapPOSK.Add(kps);
 
+                if (ScanForEventOutbreak.Checked)
+                {
+                    foreach (var pips in ImgObP)
+                        MapSpritesP.Add(pips);
+                    foreach (var pps in POSlistObP)
+                        MapPOSP.Add(pps);
+
+                    await Task.Delay(0_500, token).ConfigureAwait(false);
+
+                    foreach (var kips in ImgObK)
+                        MapSpritesK.Add(kips);
+                    foreach (var kps in POSlistObK)
+                        MapPOSK.Add(kps);
+                }
+
                 for (int i = 0; i < monsP.Count; i++)
                 {
                     bool hunted = false;
@@ -364,11 +551,11 @@ namespace PokeViewer.NET.SubForms
                         EnableAssets();
                         timer.Stop();
 
-                        if (Apply0To61.Checked)
+                        if (Apply0To77.Checked)
                         {
-                            DaySkipStats.Text = "Status: 0 -> 61...";
+                            StatusLabel.Text = "Status: 0 -> 77...";
                             await ResetGame(token, true).ConfigureAwait(false);
-                            DaySkipStats.Text = "Status:";
+                            StatusLabel.Text = "Status:";
                         }
 
                         if (EnableWebhook.Checked)
@@ -406,12 +593,80 @@ namespace PokeViewer.NET.SubForms
                         EnableAssets();
                         timer.Stop();
 
-                        if (Apply0To61.Checked)
+                        if (Apply0To77.Checked)
                         {
-                            DaySkipStats.Text = "Status: 0 -> 61...";
+                            StatusLabel.Text = "Status: 0 -> 77...";
                             await ResetGame(token, true).ConfigureAwait(false);
-                            DaySkipStats.Text = "Status:";
+                            StatusLabel.Text = "Status:";
                         }
+                        return;
+                    }
+                }
+
+                for (int i = 0; i < monsObP.Count; i++)
+                {
+                    bool hunted = false;
+                    foreach (var p in pkList)
+                    {
+                        if (p.Species == monsObP[i].Species && p.Form == monsObP[i].Form)
+                            hunted = true;
+                    }
+                    if (hunted is true && OutbreakSearch.Checked)
+                    {
+                        timer.Stop();
+                        string msg = $"{(Species)monsObP[i].Species} outbreak found!";
+                        EnableAssets();
+                        timer.Stop();
+
+                        if (Apply0To77.Checked)
+                        {
+                            StatusLabel.Text = "Status: 0 -> 77...";
+                            await ResetGame(token, true).ConfigureAwait(false);
+                            StatusLabel.Text = "Status:";
+                        }
+
+                        if (EnableWebhook.Checked)
+                        {
+                            var sprite = PokeImg(monsObP[i], false);
+                            SendNotifications(msg, sprite);
+                        }
+                        else
+                            MessageBox.Show(msg);
+
+                        return;
+                    }
+                }
+
+                for (int i = 0; i < monsObK.Count; i++)
+                {
+                    bool hunted = false;
+                    foreach (var p in pkList)
+                    {
+                        if (p.Species == monsObK[i].Species && p.Form == monsObK[i].Form)
+                            hunted = true;
+                    }
+                    if (hunted is true && OutbreakSearch.Checked)
+                    {
+                        timer.Stop();
+                        string msg = $"{(Species)monsObK[i].Species} outbreak found!";
+                        EnableAssets();
+                        timer.Stop();
+
+                        if (Apply0To77.Checked)
+                        {
+                            StatusLabel.Text = "Status: 0 -> 77...";
+                            await ResetGame(token, true).ConfigureAwait(false);
+                            StatusLabel.Text = "Status:";
+                        }
+
+                        if (EnableWebhook.Checked)
+                        {
+                            var sprite = PokeImg(monsObK[i], false);
+                            SendNotifications(msg, sprite);
+                        }
+                        else
+                            MessageBox.Show(msg);
+
                         return;
                     }
                 }
@@ -448,7 +703,7 @@ namespace PokeViewer.NET.SubForms
                 }
                 if (OutbreakSearch.Checked)
                 {
-                    DaySkipStats.Text = "Status: Skipping...";
+                    StatusLabel.Text = "Status: Skipping...";
                     await DaySkip(token).ConfigureAwait(false);
                     await Task.Delay(2_000, token).ConfigureAwait(false);
                 }
@@ -473,7 +728,7 @@ namespace PokeViewer.NET.SubForms
             await CloseGame(token).ConfigureAwait(false);
             await StartGameScreen(token).ConfigureAwait(false);
             if (knockout is true)
-                await KOToSixty_Click(token).ConfigureAwait(false);
+                await KOToSeventy_Click(token).ConfigureAwait(false);
             await Click(A, 15_000, token).ConfigureAwait(false);
         }
 
@@ -501,17 +756,23 @@ namespace PokeViewer.NET.SubForms
             await Task.Delay(19_000, token).ConfigureAwait(false);
         }
 
-        private async Task KOToSixty_Click(CancellationToken token)
+        private async Task KOToSeventy_Click(CancellationToken token)
         {
+            OutbreakScan.Enabled = false;
             BaseBlockKeyPointer = await Executor.SwitchConnection.PointerAll(Offsets.BlockKeyPointer, token).ConfigureAwait(false);
             var (validOutbreaksP, _) = await ReadEncryptedBlockByte(Blocks.KMassOutbreakTotalPaldea, 0, token).ConfigureAwait(false);
             var (validOutbreaksK, _) = await ReadEncryptedBlockByte(Blocks.KMassOutbreakTotalKitakami, 0, token).ConfigureAwait(false);
+            var (validOutbreaksBCP, _) = await ReadEncryptedBlockByte(Blocks.KOutbreakBC01MainTotalSpawns, 0, token).ConfigureAwait(false);
+            var (validOutbreaksBCK, _) = await ReadEncryptedBlockByte(Blocks.KOutbreakBC01DLC1TotalSpawns, 0, token).ConfigureAwait(false);
+
             var OutbreaktotalP = Convert.ToInt32(validOutbreaksP);
             var OutbreaktotalK = Convert.ToInt32(validOutbreaksK);
+            var OutbreaktotalBCP = Convert.ToInt32(validOutbreaksBCP);
+            var OutbreaktotalBCK = Convert.ToInt32(validOutbreaksBCK);
             var koblock = Blocks.KMassOutbreakKO1;
             for (int i = 0; i < 8; i++)
             {
-                OutbreakScan.Text = $"{8 * i + 1}%";
+                StatusLabel.Text = $"KOing Paldea: {8 * i + 1}%";
                 switch (i)
                 {
                     case 0: break;
@@ -526,26 +787,71 @@ namespace PokeViewer.NET.SubForms
                 if (i > OutbreaktotalP - 1)
                     continue;
                 var (currentcount, _) = await ReadEncryptedBlockInt32(koblock, 0, token).ConfigureAwait(false);
-                uint inj = 61;
+                uint inj = 77;
                 await WriteBlock(inj, koblock, token, (uint)currentcount).ConfigureAwait(false);
             }
-            for (int i = 8; i < 12; i++)
+            for (int i = 0; i < 4; i++)
             {
-                OutbreakScan.Text = $"{8 * i + 1}%";
+                StatusLabel.Text = $"KOing Kitakami: {8 * i + 1}%";
                 switch (i)
                 {
-                    case 8: koblock = Blocks.KMassOutbreakKO9; break;
-                    case 9: koblock = Blocks.KMassOutbreakKO10; break;
-                    case 10: koblock = Blocks.KMassOutbreakKO11; break;
-                    case 11: koblock = Blocks.KMassOutbreakKO12; break;
+                    case 0: koblock = Blocks.KMassOutbreakKO9; break;
+                    case 1: koblock = Blocks.KMassOutbreakKO10; break;
+                    case 2: koblock = Blocks.KMassOutbreakKO11; break;
+                    case 3: koblock = Blocks.KMassOutbreakKO12; break;
                 }
-                if (i > OutbreaktotalK + 8 - 1)
+                if (i > OutbreaktotalK - 1)
                     continue;
                 var (currentcount, _) = await ReadEncryptedBlockInt32(koblock, 0, token).ConfigureAwait(false);
-                uint inj = 61;
+                uint inj = 77;
                 await WriteBlock(inj, koblock, token, (uint)currentcount).ConfigureAwait(false);
             }
-            OutbreakScan.Text = "Scan";
+            for (int i = 0; i < 10; i++)
+            {
+                StatusLabel.Text = $"KOing PaldeaEvent: {10 * i}%";
+                switch (i)
+                {
+                    case 0: koblock = Blocks.KOutbreakBC01MainNumKOed; break;
+                    case 1: koblock = Blocks.KOutbreakBC02MainNumKOed; break;
+                    case 2: koblock = Blocks.KOutbreakBC03MainNumKOed; break;
+                    case 3: koblock = Blocks.KOutbreakBC04MainNumKOed; break;
+                    case 4: koblock = Blocks.KOutbreakBC05MainNumKOed; break;
+                    case 5: koblock = Blocks.KOutbreakBC06MainNumKOed; break;
+                    case 6: koblock = Blocks.KOutbreakBC07MainNumKOed; break;
+                    case 7: koblock = Blocks.KOutbreakBC08MainNumKOed; break;
+                    case 8: koblock = Blocks.KOutbreakBC09MainNumKOed; break;
+                    case 9: koblock = Blocks.KOutbreakBC10MainNumKOed; break;
+                }
+                if (i > OutbreaktotalBCP - 1)
+                    continue;
+                var (currentcount, _) = await ReadEncryptedBlockInt32(koblock, 0, token).ConfigureAwait(false);
+                uint inj = 77;
+                await WriteBlock(inj, koblock, token, (uint)currentcount).ConfigureAwait(false);
+            }
+            for (int i = 0; i < 10; i++)
+            {
+                StatusLabel.Text = $"KOing KitakamiEvent: {10 * i}%";
+                switch (i)
+                {
+                    case 0: koblock = Blocks.KOutbreakBC01DLC1NumKOed; break;
+                    case 1: koblock = Blocks.KOutbreakBC02DLC1NumKOed; break;
+                    case 2: koblock = Blocks.KOutbreakBC03DLC1NumKOed; break;
+                    case 3: koblock = Blocks.KOutbreakBC04DLC1NumKOed; break;
+                    case 4: koblock = Blocks.KOutbreakBC05DLC1NumKOed; break;
+                    case 5: koblock = Blocks.KOutbreakBC06DLC1NumKOed; break;
+                    case 6: koblock = Blocks.KOutbreakBC07DLC1NumKOed; break;
+                    case 7: koblock = Blocks.KOutbreakBC08DLC1NumKOed; break;
+                    case 8: koblock = Blocks.KOutbreakBC09DLC1NumKOed; break;
+                    case 9: koblock = Blocks.KOutbreakBC10DLC1NumKOed; break;
+                }
+                if (i > OutbreaktotalBCK - 1)
+                    continue;
+                var (currentcount, _) = await ReadEncryptedBlockInt32(koblock, 0, token).ConfigureAwait(false);
+                uint inj = 77;
+                await WriteBlock(inj, koblock, token, (uint)currentcount).ConfigureAwait(false);
+            }
+            StatusLabel.Text = "Status:";
+            OutbreakScan.Enabled = true;
         }
 
         private async void button5_Click(object sender, EventArgs e)
@@ -572,615 +878,6 @@ namespace PokeViewer.NET.SubForms
             public ulong SpeciesTotalCountLoaded { get; set; } = 0;
             public ulong SpeciesKOCountLoaded { get; set; } = 0;
             public ulong SpeciesCenterPOSLoaded { get; set; } = 0;
-            public ulong SpeciesDummyPOSLoaded { get; set; } = 0;
-        }
-
-        public class DataBlock
-        {
-            public string? Name { get; set; }
-            public uint Key { get; set; }
-            public SCTypeCode Type { get; set; }
-            public SCTypeCode SubType { get; set; }
-            public IReadOnlyList<long>? Pointer { get; set; }
-            public bool IsEncrypted { get; set; }
-            public int Size { get; set; }
-        }
-
-        public static class Blocks
-        {
-            public static DataBlock KMassOutbreakTotalPaldea = new()
-            {
-                Name = "KMassOutbreakTotalPaldea",
-                Key = 0x6C375C8A,
-                Type = SCTypeCode.Byte,
-                IsEncrypted = true,
-                Size = 1,
-            };
-            public static DataBlock KMassOutbreakTotalKitakami = new()
-            {
-                Name = "KMassOutbreakTotalKitakami",
-                Key = 0xBD7C2A04,
-                Type = SCTypeCode.Byte,
-                IsEncrypted = true,
-                Size = 1,
-            };
-            #region Outbreak1
-            public static DataBlock KOutbreakSpecies1 = new()
-            {
-                Name = "KOutbreakSpecies1",
-                Key = 0x76A2F996,
-                Type = SCTypeCode.UInt32,
-                IsEncrypted = true,
-                Size = 4,
-            };
-            public static DataBlock KMassOutbreak01Form = new()
-            {
-                Name = "KMassOutbreak01Form",
-                Key = 0x29B4615D,
-                Type = SCTypeCode.Byte,
-                IsEncrypted = true,
-                Size = 1,
-            };
-            public static DataBlock KMassOutbreakKO1 = new()
-            {
-                Name = "KMassOutbreak01NumKOed",
-                Key = 0x4B16FBC2,
-                Type = SCTypeCode.UInt32,
-                IsEncrypted = true,
-                Size = 4,
-            };
-            public static DataBlock KMassOutbreak01TotalSpawns = new()
-            {
-                Name = "KMassOutbreak01TotalSpawns",
-                Key = 0xB7DC495A,
-                Type = SCTypeCode.Int32,
-            };
-            public static DataBlock KMassOutbreak01CenterPos = new()
-            {
-                Name = "KMassOutbreak01CenterPos",
-                Key = 0x2ED42F4D,
-                Type = SCTypeCode.Array,
-                IsEncrypted = true,
-                Size = 12,
-            };
-            public static DataBlock KMassOutbreak01DummyPos = new()
-            {
-                Name = "KMassOutbreak01DummyPos",
-                Key = 0x4A13BE7C,
-                Type = SCTypeCode.Array,
-                IsEncrypted = true,
-                Size = 12,
-            };
-            #endregion
-            #region Outbreak2
-            public static DataBlock KOutbreakSpecies2 = new()
-            {
-                Name = "KOutbreakSpecies2",
-                Key = 0x76A0BCF3,
-                Type = SCTypeCode.UInt32,
-                IsEncrypted = true,
-                Size = 4,
-            };
-            public static DataBlock KMassOutbreak02Form = new()
-            {
-                Name = "KMassOutbreak02Form",
-                Key = 0x29B84368,
-                Type = SCTypeCode.Byte,
-                IsEncrypted = true,
-                Size = 1,
-            };
-            public static DataBlock KMassOutbreakKO2 = new()
-            {
-                Name = "KMassOutbreak02NumKOed",
-                Key = 0x4B14BF1F,
-                Type = SCTypeCode.UInt32,
-                IsEncrypted = true,
-                Size = 4,
-            };
-            public static DataBlock KMassOutbreak02TotalSpawns = new()
-            {
-                Name = "KMassOutbreak02TotalSpawns",
-                Key = 0xB7DA0CB7,
-                Type = SCTypeCode.Int32,
-            };
-            public static DataBlock KMassOutbreak02CenterPos = new()
-            {
-                Name = "KMassOutbreak02CenterPos",
-                Key = 0x2ED5F198,
-                Type = SCTypeCode.Array,
-                IsEncrypted = true,
-                Size = 12,
-            };
-            public static DataBlock KMassOutbreak02DummyPos = new()
-            {
-                Name = "KMassOutbreak02DummyPos",
-                Key = 0x4A118F71,
-                Type = SCTypeCode.Array,
-                IsEncrypted = true,
-                Size = 12,
-            };
-            #endregion
-            #region Outbreak3
-            public static DataBlock KOutbreakSpecies3 = new()
-            {
-                Name = "KOutbreakSpecies3",
-                Key = 0x76A97E38,
-                Type = SCTypeCode.UInt32,
-                IsEncrypted = true,
-                Size = 4,
-            };
-            public static DataBlock KMassOutbreak03Form = new()
-            {
-                Name = "KMassOutbreak03Form",
-                Key = 0x29AF8223,
-                Type = SCTypeCode.Byte,
-                IsEncrypted = true,
-                Size = 1,
-            };
-            public static DataBlock KMassOutbreakKO3 = new()
-            {
-                Name = "KMassOutbreak03NumKOed",
-                Key = 0x4B1CA6E4,
-                Type = SCTypeCode.UInt32,
-                IsEncrypted = true,
-                Size = 4,
-            };
-            public static DataBlock KMassOutbreak03TotalSpawns = new()
-            {
-                Name = "KMassOutbreak03TotalSpawns",
-                Key = 0xB7E1F47C,
-                Type = SCTypeCode.Int32,
-            };
-            public static DataBlock KMassOutbreak03CenterPos = new()
-            {
-                Name = "KMassOutbreak03CenterPos",
-                Key = 0x2ECE09D3,
-                Type = SCTypeCode.Array,
-                IsEncrypted = true,
-                Size = 12,
-            };
-            public static DataBlock KMassOutbreak03DummyPos = new()
-            {
-                Name = "KMassOutbreak03DummyPos",
-                Key = 0x4A0E135A,
-                Type = SCTypeCode.Array,
-                IsEncrypted = true,
-                Size = 12,
-            };
-            #endregion
-            #region Outbreak4
-            public static DataBlock KOutbreakSpecies4 = new()
-            {
-                Name = "KOutbreakSpecies4",
-                Key = 0x76A6E26D,
-                Type = SCTypeCode.UInt32,
-                IsEncrypted = true,
-                Size = 4,
-            };
-            public static DataBlock KMassOutbreak04Form = new()
-            {
-                Name = "KMassOutbreak04Form",
-                Key = 0x29B22B86,
-                Type = SCTypeCode.Byte,
-                IsEncrypted = true,
-                Size = 1,
-            };
-            public static DataBlock KMassOutbreakKO4 = new()
-            {
-                Name = "KMassOutbreak04NumKOed",
-                Key = 0x4B1A77D9,
-                Type = SCTypeCode.UInt32,
-                IsEncrypted = true,
-                Size = 4,
-            };
-            public static DataBlock KMassOutbreak04TotalSpawns = new()
-            {
-                Name = "KMassOutbreak04TotalSpawns",
-                Key = 0xB7DFC571,
-                Type = SCTypeCode.Int32,
-            };
-            public static DataBlock KMassOutbreak04CenterPos = new()
-            {
-                Name = "KMassOutbreak04CenterPos",
-                Key = 0x2ED04676,
-                Type = SCTypeCode.Array,
-                IsEncrypted = true,
-                Size = 12,
-            };
-            public static DataBlock KMassOutbreak04DummyPos = new()
-            {
-                Name = "KMassOutbreak04DummyPos",
-                Key = 0x4A0BD6B7,
-                Type = SCTypeCode.Array,
-                IsEncrypted = true,
-                Size = 12,
-            };
-            #endregion
-            #region Outbreak5
-            public static DataBlock KOutbreakSpecies5 = new()
-            {
-                Name = "KOutbreakSpecies5",
-                Key = 0x76986F3A,
-                Type = SCTypeCode.UInt32,
-                IsEncrypted = true,
-                Size = 4,
-            };
-            public static DataBlock KMassOutbreak05Form = new()
-            {
-                Name = "KMassOutbreak05Form",
-                Key = 0x29A9D701,
-                Type = SCTypeCode.Byte,
-                IsEncrypted = true,
-                Size = 1,
-            };
-            public static DataBlock KMassOutbreakKO5 = new()
-            {
-                Name = "KMassOutbreak05NumKOed",
-                Key = 0x4B23391E,
-                Type = SCTypeCode.UInt32,
-                IsEncrypted = true,
-                Size = 4,
-            };
-            public static DataBlock KMassOutbreak05TotalSpawns = new()
-            {
-                Name = "KMassOutbreak05TotalSpawns",
-                Key = 0xB7E886B6,
-                Type = SCTypeCode.Int32,
-            };
-            public static DataBlock KMassOutbreak05CenterPos = new()
-            {
-                Name = "KMassOutbreak05CenterPos",
-                Key = 0x2EC78531,
-                Type = SCTypeCode.Array,
-                IsEncrypted = true,
-                Size = 12,
-            };
-            public static DataBlock KMassOutbreak05DummyPos = new()
-            {
-                Name = "KMassOutbreak05DummyPos",
-                Key = 0x4A1FFBD8,
-                Type = SCTypeCode.Array,
-                IsEncrypted = true,
-                Size = 12,
-            };
-            #endregion
-            #region Outbreak6
-            public static DataBlock KOutbreakSpecies6 = new()
-            {
-                Name = "KOutbreakSpecies6",
-                Key = 0x76947F97,
-                Type = SCTypeCode.UInt32,
-                IsEncrypted = true,
-                Size = 4,
-            };
-            public static DataBlock KMassOutbreak06Form = new()
-            {
-                Name = "KMassOutbreak06Form",
-                Key = 0x29AB994C,
-                Type = SCTypeCode.Byte,
-                IsEncrypted = true,
-                Size = 1,
-            };
-            public static DataBlock KMassOutbreakKO6 = new()
-            {
-                Name = "KMassOutbreak06NumKOed",
-                Key = 0x4B208FBB,
-                Type = SCTypeCode.UInt32,
-                IsEncrypted = true,
-                Size = 4,
-            };
-            public static DataBlock KMassOutbreak06TotalSpawns = new()
-            {
-                Name = "KMassOutbreak06TotalSpawns",
-                Key = 0xB7E49713,
-                Type = SCTypeCode.Int32,
-            };
-            public static DataBlock KMassOutbreak06CenterPos = new()
-            {
-                Name = "KMassOutbreak06CenterPos",
-                Key = 0x2ECB673C,
-                Type = SCTypeCode.Array,
-                IsEncrypted = true,
-                Size = 12,
-            };
-            public static DataBlock KMassOutbreak06DummyPos = new()
-            {
-                Name = "KMassOutbreak06DummyPos",
-                Key = 0x4A1C868D,
-                Type = SCTypeCode.Array,
-                IsEncrypted = true,
-                Size = 12,
-            };
-            #endregion
-            #region Outbreak7
-            public static DataBlock KOutbreakSpecies7 = new()
-            {
-                Name = "KOutbreakSpecies7",
-                Key = 0x769D40DC,
-                Type = SCTypeCode.UInt32,
-                IsEncrypted = true,
-                Size = 4,
-            };
-            public static DataBlock KMassOutbreak07Form = new()
-            {
-                Name = "KMassOutbreak07Form",
-                Key = 0x29A344C7,
-                Type = SCTypeCode.Byte,
-                IsEncrypted = true,
-                Size = 1,
-            };
-            public static DataBlock KMassOutbreakKO7 = new()
-            {
-                Name = "KMassOutbreak07NumKOed",
-                Key = 0x4B28E440,
-                Type = SCTypeCode.UInt32,
-                IsEncrypted = true,
-                Size = 4,
-            };
-            public static DataBlock KMassOutbreak07TotalSpawns = new()
-            {
-                Name = "KMassOutbreak07TotalSpawns",
-                Key = 0xB7EE31D8,
-                Type = SCTypeCode.Int32,
-            };
-            public static DataBlock KMassOutbreak07CenterPos = new()
-            {
-                Name = "KMassOutbreak07CenterPos",
-                Key = 0x2EC1CC77,
-                Type = SCTypeCode.Array,
-                IsEncrypted = true,
-                Size = 12,
-            };
-            public static DataBlock KMassOutbreak07DummyPos = new()
-            {
-                Name = "KMassOutbreak07DummyPos",
-                Key = 0x4A1A50B6,
-                Type = SCTypeCode.Array,
-                IsEncrypted = true,
-                Size = 12,
-            };
-            #endregion
-            #region Outbreak8
-            public static DataBlock KOutbreakSpecies8 = new()
-            {
-                Name = "KOutbreakSpecies8",
-                Key = 0x769B11D1,
-                Type = SCTypeCode.UInt32,
-                IsEncrypted = true,
-                Size = 4,
-            };
-            public static DataBlock KMassOutbreak08Form = new()
-            {
-                Name = "KMassOutbreak08Form",
-                Key = 0x29A5EE2A,
-                Type = SCTypeCode.Byte,
-                IsEncrypted = true,
-                Size = 1,
-            };
-            public static DataBlock KMassOutbreakKO8 = new()
-            {
-                Name = "KMassOutbreak08NumKOed",
-                Key = 0xB29D7978,
-                Type = SCTypeCode.UInt32,
-                IsEncrypted = true,
-                Size = 4,
-            };
-            public static DataBlock KMassOutbreak08TotalSpawns = new()
-            {
-                Name = "KMassOutbreak08TotalSpawns",
-                Key = 0xB7EABC8D,
-                Type = SCTypeCode.Int32,
-            };
-            public static DataBlock KMassOutbreak08CenterPos = new()
-            {
-                Name = "KMassOutbreak08CenterPos",
-                Key = 0x2EC5BC1A,
-                Type = SCTypeCode.Array,
-                IsEncrypted = true,
-                Size = 12,
-            };
-            public static DataBlock KMassOutbreak08DummyPos = new()
-            {
-                Name = "KMassOutbreak08DummyPos",
-                Key = 0x4A166113,
-                Type = SCTypeCode.Array,
-                IsEncrypted = true,
-                Size = 12,
-            };
-            #endregion
-            #region Outbreak9
-            public static DataBlock KOutbreakSpecies9 = new()
-            {
-                Name = "KOutbreakSpecies9",
-                Key = 0x37E55F64,
-                Type = SCTypeCode.UInt32,
-                IsEncrypted = true,
-                Size = 4,
-            };
-            public static DataBlock KMassOutbreak09Form = new()
-            {
-                Name = "KMassOutbreak09Form",
-                Key = 0x69A930AB,
-                Type = SCTypeCode.Byte,
-                IsEncrypted = true,
-                Size = 1,
-            };
-            public static DataBlock KMassOutbreakKO9 = new()
-            {
-                Name = "KMassOutbreak09NumKOed",
-                Key = 0xB29D7978,
-                Type = SCTypeCode.UInt32,
-                IsEncrypted = true,
-                Size = 4,
-            };
-            public static DataBlock KMassOutbreak09TotalSpawns = new()
-            {
-                Name = "KMassOutbreak09TotalSpawns",
-                Key = 0x9E0CEC77,
-                Type = SCTypeCode.Int32,
-            };
-            public static DataBlock KMassOutbreak09CenterPos = new()
-            {
-                Name = "KMassOutbreak09CenterPos",
-                Key = 0x411A0C07,
-                Type = SCTypeCode.Array,
-                IsEncrypted = true,
-                Size = 12,
-            };
-            public static DataBlock KMassOutbreak09DummyPos = new()
-            {
-                Name = "KMassOutbreak09DummyPos",
-                Key = 0x632EFBFE,
-                Type = SCTypeCode.Array,
-                IsEncrypted = true,
-                Size = 12,
-            };
-            #endregion
-            #region Outbreak10
-            public static DataBlock KOutbreakSpecies10 = new()
-            {
-                Name = "KOutbreakSpecies10",
-                Key = 0x37E33059,
-                Type = SCTypeCode.UInt32,
-                IsEncrypted = true,
-                Size = 4,
-            };
-            public static DataBlock KMassOutbreak10Form = new()
-            {
-                Name = "KMassOutbreak10Form",
-                Key = 0x69AD204E,
-                Type = SCTypeCode.Byte,
-                IsEncrypted = true,
-                Size = 1,
-            };
-            public static DataBlock KMassOutbreakKO10 = new()
-            {
-                Name = "KMassOutbreak10NumKOed",
-                Key = 0xB29ADDAD,
-                Type = SCTypeCode.UInt32,
-                IsEncrypted = true,
-                Size = 4,
-            };
-            public static DataBlock KMassOutbreak10TotalSpawns = new()
-            {
-                Name = "KMassOutbreak10TotalSpawns",
-                Key = 0x9E10DC1A,
-                Type = SCTypeCode.Int32,
-                Size = 4,
-            };
-            public static DataBlock KMassOutbreak10CenterPos = new()
-            {
-                Name = "KMassOutbreak10CenterPos",
-                Key = 0x411CB56A,
-                Type = SCTypeCode.Array,
-                IsEncrypted = true,
-                Size = 12,
-            };
-            public static DataBlock KMassOutbreak10DummyPos = new()
-            {
-                Name = "KMassOutbreak10DummyPos",
-                Key = 0x632D2C1B,
-                Type = SCTypeCode.Array,
-                IsEncrypted = true,
-                Size = 12,
-            };
-            #endregion
-            #region Outbreak11
-            public static DataBlock KOutbreakSpecies11 = new()
-            {
-                Name = "KOutbreakSpecies11",
-                Key = 0x37DFB442,
-                Type = SCTypeCode.UInt32,
-                IsEncrypted = true,
-                Size = 4,
-            };
-            public static DataBlock KMassOutbreak11Form = new()
-            {
-                Name = "KMassOutbreak11Form",
-                Key = 0x69AEE965,
-                Type = SCTypeCode.Byte,
-                IsEncrypted = true,
-                Size = 1,
-            };
-            public static DataBlock KMassOutbreakKO11 = new()
-            {
-                Name = "KMassOutbreak11NumKOed",
-                Key = 0xB298A7D6,
-                Type = SCTypeCode.UInt32,
-                IsEncrypted = true,
-                Size = 4,
-            };
-            public static DataBlock KMassOutbreak11TotalSpawns = new()
-            {
-                Name = "KMassOutbreak11TotalSpawns",
-                Key = 0x9E12A531,
-                Type = SCTypeCode.Int32,
-            };
-            public static DataBlock KMassOutbreak11CenterPos = new()
-            {
-                Name = "KMassOutbreak11CenterPos",
-                Key = 0x411EEB41,
-                Type = SCTypeCode.Array,
-                IsEncrypted = true,
-                Size = 12,
-            };
-            public static DataBlock KMassOutbreak11DummyPos = new()
-            {
-                Name = "KMassOutbreak11DummyPos",
-                Key = 0x633580A0,
-                Type = SCTypeCode.Array,
-                IsEncrypted = true,
-                Size = 12,
-            };
-            #endregion
-            #region Outbreak12
-            public static DataBlock KOutbreakSpecies12 = new()
-            {
-                Name = "KOutbreakSpecies12",
-                Key = 0x37DD779F,
-                Type = SCTypeCode.UInt32,
-                IsEncrypted = true,
-                Size = 4,
-            };
-            public static DataBlock KMassOutbreak12Form = new()
-            {
-                Name = "KMassOutbreak12Form",
-                Key = 0x69B2CB70,
-                Type = SCTypeCode.Byte,
-                IsEncrypted = true,
-                Size = 1,
-            };
-            public static DataBlock KMassOutbreakKO12 = new()
-            {
-                Name = "KMassOutbreakKO12",
-                Key = 0xB294B833,
-                Type = SCTypeCode.UInt32,
-                IsEncrypted = true,
-                Size = 4,
-            };
-            public static DataBlock KMassOutbreak12TotalSpawns = new()
-            {
-                Name = "KMassOutbreak12TotalSpawns",
-                Key = 0x9E16873C,
-                Type = SCTypeCode.Int32,
-            };
-            public static DataBlock KMassOutbreak12CenterPos = new()
-            {
-                Name = "KMassOutbreak12CenterPos",
-                Key = 0x4122608C,
-                Type = SCTypeCode.Array,
-                IsEncrypted = true,
-                Size = 12,
-            };
-            public static DataBlock KMassOutbreak12DummyPos = new()
-            {
-                Name = "KMassOutbreak12DummyPos",
-                Key = 0x6332E4D5,
-                Type = SCTypeCode.Array,
-                IsEncrypted = true,
-                Size = 12,
-            };
-            #endregion
         }
 
         public new async Task Click(SwitchButton b, int delay, CancellationToken token)
@@ -1572,21 +1269,21 @@ namespace PokeViewer.NET.SubForms
             OutbreakScan.Enabled = true;
             OutbreakScan.Text = "Scan";
             OutbreakSearch.Enabled = true;
-            Apply0To61.Enabled = true;
+            Apply0To77.Enabled = true;
             OpenMapPaldea.Enabled = true;
             OpenMapKitakami.Enabled = true;
+            ScanForEventOutbreak.Enabled = true;
         }
 
         private void DisableAssets()
         {
             OutbreakScan.Enabled = false;
             OutbreakSearch.Enabled = false;
-            Apply0To61.Enabled = false;
+            Apply0To77.Enabled = false;
             OpenMapPaldea.Enabled = false;
             OpenMapKitakami.Enabled = false;
+            ScanForEventOutbreak.Enabled = false;
         }
-
-        private IReadOnlyList<long> CollisionPointer { get; } = new long[] { 0x46445D8, 0x2A8, 0x0, 0x08, 0x80 };
 
         private void button1_Click(object sender, EventArgs e)
         {

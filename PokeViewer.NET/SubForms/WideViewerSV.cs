@@ -85,6 +85,7 @@ namespace PokeViewer.NET.SubForms
                 outputBox[i].Text = string.Empty;
             }
 
+            button1.Enabled = false;
             await SVSaveGameOverworld(token).ConfigureAwait(false);
             button1.Text = "Scanning...";
             var test = await ReadBlock(Blocks.Overworld, token).ConfigureAwait(false);
@@ -99,7 +100,7 @@ namespace PokeViewer.NET.SubForms
                     outputBox[i].Text = "No Pokémon present.";
                     sprite = "https://raw.githubusercontent.com/kwsch/PKHeX/master/PKHeX.Drawing.PokeSprite/Resources/img/Pokemon%20Sprite%20Overlays/starter.png";
                     boxes[i].Load(sprite);
-                    button1.Text = "Done";
+                    button1.Text = "Scan";
                     return;
                 }
                 string pid = $"{Environment.NewLine}PID: {pk.PID:X8}";
@@ -114,7 +115,8 @@ namespace PokeViewer.NET.SubForms
                 }
                 var hasMark = HasMark(pk, out RibbonIndex mark);
                 string msg = hasMark ? $"{Environment.NewLine}Mark: {mark.ToString().Replace("Mark", "")}" : "";
-                string output = $"{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{(Species)pk.Species}{form}{gender}{pid}{ec}{Environment.NewLine}Nature: {(Nature)pk.Nature}{Environment.NewLine}Ability: {(Ability)pk.Ability}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}{msg}";
+                string scale = $"{Environment.NewLine}Scale: {PokeSizeDetailedUtil.GetSizeRating(pk.Scale)} ({pk.Scale})";
+                string output = $"{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{(Species)pk.Species}{form}{gender}{pid}{ec}{Environment.NewLine}Nature: {(Nature)pk.Nature}{Environment.NewLine}Ability: {(Ability)pk.Ability}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}{scale}{msg}";
                 outputBox[i].Text = output;
                 sprite = PokeImg(pk, false);
                 boxes[i].Load(sprite);
@@ -130,7 +132,8 @@ namespace PokeViewer.NET.SubForms
                 }
             }
             await Click(B, 1_000, token).ConfigureAwait(false);
-            button1.Text = "Done";
+            button1.Text = "Scan";
+            button1.Enabled = true;
             return;
         }
 
