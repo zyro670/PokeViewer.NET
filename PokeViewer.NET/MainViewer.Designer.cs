@@ -487,18 +487,18 @@
             TIDSID.AutoSize = true;
             TIDSID.Location = new Point(6, 49);
             TIDSID.Name = "TIDSID";
-            TIDSID.Size = new Size(53, 15);
+            TIDSID.Size = new Size(56, 15);
             TIDSID.TabIndex = 38;
-            TIDSID.Text = "TID | SID:";
+            TIDSID.Text = "TID | SID: ";
             // 
             // TrainerLabel
             // 
             TrainerLabel.AutoSize = true;
             TrainerLabel.Location = new Point(6, 24);
             TrainerLabel.Name = "TrainerLabel";
-            TrainerLabel.Size = new Size(42, 15);
+            TrainerLabel.Size = new Size(45, 15);
             TrainerLabel.TabIndex = 37;
-            TrainerLabel.Text = "Name:";
+            TrainerLabel.Text = "Name: ";
             // 
             // ScreenOnLabel
             // 

@@ -16,11 +16,12 @@
 		<PlatformTarget>x64</PlatformTarget>
 		<GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
 		<ApplicationIcon>icon.ico</ApplicationIcon>
+		<Configurations>Debug;Release</Configurations>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<Content Include="icon.ico" />
-	</ItemGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+	  <DebugType>portable</DebugType>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Costura.Fody" Version="5.7.0">

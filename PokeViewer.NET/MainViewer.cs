@@ -15,8 +15,8 @@ namespace PokeViewer.NET
     public partial class MainViewer : Form
     {
         public ViewerExecutor Executor = null!;
-        private const string ViewerVersion = "2.5.2";
-        private const int AzureBuildID = 439;
+        private const string ViewerVersion = "2.5.3";
+        private const int AzureBuildID = 446;
         private readonly bool[] FormLoaded = new bool[8];
         private int GameType;
         private SimpleTrainerInfo TrainerInfo = new();
@@ -182,7 +182,7 @@ namespace PokeViewer.NET
                         ToggleSwitchProtocol.Enabled = false;
                         SwitchIP.Enabled = false;
                         await Executor.Connect(token).ConfigureAwait(false);
-                        Window_Loaded(token);                        
+                        Window_Loaded(token);
                     });
                 }
                 catch (SocketException err)
@@ -193,6 +193,7 @@ namespace PokeViewer.NET
             }
             else
             {
+                await Executor.SwitchConnection.SendAsync(SwitchCommand.DetachController(true), token).ConfigureAwait(false);
                 Executor.Disconnect();
                 System.Windows.Forms.Application.Restart();
             }
@@ -309,11 +310,11 @@ namespace PokeViewer.NET
             if (isGmax)
             {
                 var url = $"https://raw.githubusercontent.com/zyro670/PokeTextures/main/OriginMarks/icon_daimax.png";
-                System.Drawing.Image img = null!;
+                Image img = null!;
                 using (HttpClient client = new())
                 {
                     using var response = await client.GetStreamAsync(url, token).ConfigureAwait(false);
-                    img = System.Drawing.Image.FromStream(response);
+                    img = Image.FromStream(response);
                 }
                 Specialty.Visible = true;
                 Specialty.Image = img;
@@ -579,7 +580,7 @@ namespace PokeViewer.NET
                             RaidButton.Enabled = true;
                             EventRedeemButton.Visible = true;
                         });
-                        strings = await GetFakeTrainerSAVSV(token).ConfigureAwait(false);                        
+                        strings = await GetFakeTrainerSAVSV(token).ConfigureAwait(false);
                         break;
                     }
                 case VioletID:
@@ -595,7 +596,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(MiscPage);
                             WideButton.Enabled = true;
                             RaidButton.Enabled = true;
-                            EventRedeemButton.Visible = true;                            
+                            EventRedeemButton.Visible = true;
                         });
                         strings = await GetFakeTrainerSAVSV(token).ConfigureAwait(false);
                         break;
@@ -609,7 +610,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(ViewPage);
                             ViewerControl.TabPages.Add(BoxPage);
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
-                            WideButton.Enabled = true;                            
+                            WideButton.Enabled = true;
                         });
                         strings = await GetFakeTrainerSAVLA(token).ConfigureAwait(false);
                         break;
@@ -624,7 +625,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(BoxPage);
                             ViewerControl.TabPages.Add(NPCPage);
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
-                            WideButton.Enabled = true;                            
+                            WideButton.Enabled = true;
                         });
                         strings = await GetFakeTrainerSAVBDSP(type, token).ConfigureAwait(false);
                         break;
@@ -639,7 +640,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(BoxPage);
                             ViewerControl.TabPages.Add(NPCPage);
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
-                            WideButton.Enabled = true;                            
+                            WideButton.Enabled = true;
                         });
                         strings = await GetFakeTrainerSAVBDSP(type, token).ConfigureAwait(false);
                         break;
@@ -656,7 +657,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(BoxPage);
                             ViewerControl.TabPages.Add(NPCPage);
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
-                            WideButton.Enabled = true;                            
+                            WideButton.Enabled = true;
                         });
                         strings = await GetFakeTrainerSAVSWSH(token).ConfigureAwait(false);
                         break;
@@ -673,7 +674,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(BoxPage);
                             ViewerControl.TabPages.Add(NPCPage);
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
-                            WideButton.Enabled = true;                            
+                            WideButton.Enabled = true;
                         });
                         strings = await GetFakeTrainerSAVSWSH(token).ConfigureAwait(false);
                         break;
@@ -687,7 +688,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(BoxPage);
                             ViewerControl.TabPages.Add(NPCPage);
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
-                            WideButton.Enabled = true;                            
+                            WideButton.Enabled = true;
                         });
                         strings = await GetFakeTrainerSAVLGPE(token).ConfigureAwait(false);
                         break;

@@ -122,7 +122,6 @@ namespace PokeViewer.NET.SubForms
             Settings.Default.MapSetting = comboBox1.SelectedIndex;
             Settings.Default.Save();
         }
-
         private async Task SearchForOutbreak(CancellationToken token)
         {
             BaseBlockKeyPointer = await Executor.SwitchConnection.PointerAll(Offsets.BlockKeyPointer, token).ConfigureAwait(false);
@@ -323,7 +322,7 @@ namespace PokeViewer.NET.SubForms
                         PK9 pk = new()
                         {
                             Species = SpeciesConverter.GetNational9((ushort)species),
-                            Form = 0,
+                            Form = form,
                         };
                         CommonEdits.SetIsShiny(pk, false);
                         string pkform = form is 0 ? "" : $"-{form}";
@@ -575,7 +574,7 @@ namespace PokeViewer.NET.SubForms
                     bool hunted = false;
                     foreach (var p in pkList)
                     {
-                        if (p.Species == monsK[i].Species && p.Form == monsK[i].Form)
+                        if ((Species)p.Species == (Species)monsK[i].Species && p.Form == monsK[i].Form)
                             hunted = true;
                     }
                     if (hunted is true && OutbreakSearch.Checked)
@@ -770,85 +769,97 @@ namespace PokeViewer.NET.SubForms
             var OutbreaktotalBCP = Convert.ToInt32(validOutbreaksBCP);
             var OutbreaktotalBCK = Convert.ToInt32(validOutbreaksBCK);
             var koblock = Blocks.KMassOutbreakKO1;
-            for (int i = 0; i < 8; i++)
+            if (comboBox1.SelectedIndex is 0 or 1)
             {
-                StatusLabel.Text = $"KOing Paldea: {8 * i + 1}%";
-                switch (i)
+                for (int i = 0; i < 8; i++)
                 {
-                    case 0: break;
-                    case 1: koblock = Blocks.KMassOutbreakKO2; break;
-                    case 2: koblock = Blocks.KMassOutbreakKO3; break;
-                    case 3: koblock = Blocks.KMassOutbreakKO4; break;
-                    case 4: koblock = Blocks.KMassOutbreakKO5; break;
-                    case 5: koblock = Blocks.KMassOutbreakKO6; break;
-                    case 6: koblock = Blocks.KMassOutbreakKO7; break;
-                    case 7: koblock = Blocks.KMassOutbreakKO8; break;
+                    StatusLabel.Text = $"KOing Paldea: {8 * i + 1}%";
+                    switch (i)
+                    {
+                        case 0: break;
+                        case 1: koblock = Blocks.KMassOutbreakKO2; break;
+                        case 2: koblock = Blocks.KMassOutbreakKO3; break;
+                        case 3: koblock = Blocks.KMassOutbreakKO4; break;
+                        case 4: koblock = Blocks.KMassOutbreakKO5; break;
+                        case 5: koblock = Blocks.KMassOutbreakKO6; break;
+                        case 6: koblock = Blocks.KMassOutbreakKO7; break;
+                        case 7: koblock = Blocks.KMassOutbreakKO8; break;
+                    }
+                    if (i > OutbreaktotalP - 1)
+                        continue;
+                    var (currentcount, _) = await ReadEncryptedBlockInt32(koblock, 0, token).ConfigureAwait(false);
+                    uint inj = 77;
+                    await WriteBlock(inj, koblock, token, (uint)currentcount).ConfigureAwait(false);
                 }
-                if (i > OutbreaktotalP - 1)
-                    continue;
-                var (currentcount, _) = await ReadEncryptedBlockInt32(koblock, 0, token).ConfigureAwait(false);
-                uint inj = 77;
-                await WriteBlock(inj, koblock, token, (uint)currentcount).ConfigureAwait(false);
             }
-            for (int i = 0; i < 4; i++)
+            if (comboBox1.SelectedIndex is 0 or 2)
             {
-                StatusLabel.Text = $"KOing Kitakami: {8 * i + 1}%";
-                switch (i)
+                for (int i = 0; i < 4; i++)
                 {
-                    case 0: koblock = Blocks.KMassOutbreakKO9; break;
-                    case 1: koblock = Blocks.KMassOutbreakKO10; break;
-                    case 2: koblock = Blocks.KMassOutbreakKO11; break;
-                    case 3: koblock = Blocks.KMassOutbreakKO12; break;
+                    StatusLabel.Text = $"KOing Kitakami: {8 * i + 1}%";
+                    switch (i)
+                    {
+                        case 0: koblock = Blocks.KMassOutbreakKO9; break;
+                        case 1: koblock = Blocks.KMassOutbreakKO10; break;
+                        case 2: koblock = Blocks.KMassOutbreakKO11; break;
+                        case 3: koblock = Blocks.KMassOutbreakKO12; break;
+                    }
+                    if (i > OutbreaktotalK - 1)
+                        continue;
+                    var (currentcount, _) = await ReadEncryptedBlockInt32(koblock, 0, token).ConfigureAwait(false);
+                    uint inj = 77;
+                    await WriteBlock(inj, koblock, token, (uint)currentcount).ConfigureAwait(false);
                 }
-                if (i > OutbreaktotalK - 1)
-                    continue;
-                var (currentcount, _) = await ReadEncryptedBlockInt32(koblock, 0, token).ConfigureAwait(false);
-                uint inj = 77;
-                await WriteBlock(inj, koblock, token, (uint)currentcount).ConfigureAwait(false);
             }
-            for (int i = 0; i < 10; i++)
+            if (comboBox1.SelectedIndex is 0 or 1 && ScanForEventOutbreak.Checked)
             {
-                StatusLabel.Text = $"KOing PaldeaEvent: {10 * i}%";
-                switch (i)
+                for (int i = 0; i < 10; i++)
                 {
-                    case 0: koblock = Blocks.KOutbreakBC01MainNumKOed; break;
-                    case 1: koblock = Blocks.KOutbreakBC02MainNumKOed; break;
-                    case 2: koblock = Blocks.KOutbreakBC03MainNumKOed; break;
-                    case 3: koblock = Blocks.KOutbreakBC04MainNumKOed; break;
-                    case 4: koblock = Blocks.KOutbreakBC05MainNumKOed; break;
-                    case 5: koblock = Blocks.KOutbreakBC06MainNumKOed; break;
-                    case 6: koblock = Blocks.KOutbreakBC07MainNumKOed; break;
-                    case 7: koblock = Blocks.KOutbreakBC08MainNumKOed; break;
-                    case 8: koblock = Blocks.KOutbreakBC09MainNumKOed; break;
-                    case 9: koblock = Blocks.KOutbreakBC10MainNumKOed; break;
+                    StatusLabel.Text = $"KOing PaldeaEvent: {10 * i}%";
+                    switch (i)
+                    {
+                        case 0: koblock = Blocks.KOutbreakBC01MainNumKOed; break;
+                        case 1: koblock = Blocks.KOutbreakBC02MainNumKOed; break;
+                        case 2: koblock = Blocks.KOutbreakBC03MainNumKOed; break;
+                        case 3: koblock = Blocks.KOutbreakBC04MainNumKOed; break;
+                        case 4: koblock = Blocks.KOutbreakBC05MainNumKOed; break;
+                        case 5: koblock = Blocks.KOutbreakBC06MainNumKOed; break;
+                        case 6: koblock = Blocks.KOutbreakBC07MainNumKOed; break;
+                        case 7: koblock = Blocks.KOutbreakBC08MainNumKOed; break;
+                        case 8: koblock = Blocks.KOutbreakBC09MainNumKOed; break;
+                        case 9: koblock = Blocks.KOutbreakBC10MainNumKOed; break;
+                    }
+                    if (i > OutbreaktotalBCP - 1)
+                        continue;
+                    var (currentcount, _) = await ReadEncryptedBlockInt32(koblock, 0, token).ConfigureAwait(false);
+                    uint inj = 77;
+                    await WriteBlock(inj, koblock, token, (uint)currentcount).ConfigureAwait(false);
                 }
-                if (i > OutbreaktotalBCP - 1)
-                    continue;
-                var (currentcount, _) = await ReadEncryptedBlockInt32(koblock, 0, token).ConfigureAwait(false);
-                uint inj = 77;
-                await WriteBlock(inj, koblock, token, (uint)currentcount).ConfigureAwait(false);
             }
-            for (int i = 0; i < 10; i++)
+            if (comboBox1.SelectedIndex is 0 or 2 && ScanForEventOutbreak.Checked)
             {
-                StatusLabel.Text = $"KOing KitakamiEvent: {10 * i}%";
-                switch (i)
+                for (int i = 0; i < 10; i++)
                 {
-                    case 0: koblock = Blocks.KOutbreakBC01DLC1NumKOed; break;
-                    case 1: koblock = Blocks.KOutbreakBC02DLC1NumKOed; break;
-                    case 2: koblock = Blocks.KOutbreakBC03DLC1NumKOed; break;
-                    case 3: koblock = Blocks.KOutbreakBC04DLC1NumKOed; break;
-                    case 4: koblock = Blocks.KOutbreakBC05DLC1NumKOed; break;
-                    case 5: koblock = Blocks.KOutbreakBC06DLC1NumKOed; break;
-                    case 6: koblock = Blocks.KOutbreakBC07DLC1NumKOed; break;
-                    case 7: koblock = Blocks.KOutbreakBC08DLC1NumKOed; break;
-                    case 8: koblock = Blocks.KOutbreakBC09DLC1NumKOed; break;
-                    case 9: koblock = Blocks.KOutbreakBC10DLC1NumKOed; break;
+                    StatusLabel.Text = $"KOing KitakamiEvent: {10 * i}%";
+                    switch (i)
+                    {
+                        case 0: koblock = Blocks.KOutbreakBC01DLC1NumKOed; break;
+                        case 1: koblock = Blocks.KOutbreakBC02DLC1NumKOed; break;
+                        case 2: koblock = Blocks.KOutbreakBC03DLC1NumKOed; break;
+                        case 3: koblock = Blocks.KOutbreakBC04DLC1NumKOed; break;
+                        case 4: koblock = Blocks.KOutbreakBC05DLC1NumKOed; break;
+                        case 5: koblock = Blocks.KOutbreakBC06DLC1NumKOed; break;
+                        case 6: koblock = Blocks.KOutbreakBC07DLC1NumKOed; break;
+                        case 7: koblock = Blocks.KOutbreakBC08DLC1NumKOed; break;
+                        case 8: koblock = Blocks.KOutbreakBC09DLC1NumKOed; break;
+                        case 9: koblock = Blocks.KOutbreakBC10DLC1NumKOed; break;
+                    }
+                    if (i > OutbreaktotalBCK - 1)
+                        continue;
+                    var (currentcount, _) = await ReadEncryptedBlockInt32(koblock, 0, token).ConfigureAwait(false);
+                    uint inj = 77;
+                    await WriteBlock(inj, koblock, token, (uint)currentcount).ConfigureAwait(false);
                 }
-                if (i > OutbreaktotalBCK - 1)
-                    continue;
-                var (currentcount, _) = await ReadEncryptedBlockInt32(koblock, 0, token).ConfigureAwait(false);
-                uint inj = 77;
-                await WriteBlock(inj, koblock, token, (uint)currentcount).ConfigureAwait(false);
             }
             StatusLabel.Text = "Status:";
             OutbreakScan.Enabled = true;
