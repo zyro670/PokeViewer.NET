@@ -162,11 +162,13 @@
             // numericUpDown1
             // 
             numericUpDown1.Location = new Point(50, 17);
-            numericUpDown1.Maximum = new decimal(new int[] { 94, 0, 0, 0 });
+            numericUpDown1.Maximum = new decimal(new int[] { 95, 0, 0, 0 });
+            numericUpDown1.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
             numericUpDown1.Name = "numericUpDown1";
             numericUpDown1.Size = new Size(104, 23);
             numericUpDown1.TabIndex = 9;
             numericUpDown1.TextAlign = HorizontalAlignment.Right;
+            numericUpDown1.Value = new decimal(new int[] { 1, 0, 0, 0 });
             numericUpDown1.ValueChanged += NumericValue_Changed;
             // 
             // GoButton

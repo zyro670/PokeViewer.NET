@@ -174,7 +174,7 @@ namespace PokeViewer.NET.SubForms
             while (!token.IsCancellationRequested)
             {
                 dayskip++;
-                if (dayskip % 10 == 0)
+                if (dayskip % 30 == 0)
                 {
                     OutbreakCache = new();
                     LoadOutbreakCache();

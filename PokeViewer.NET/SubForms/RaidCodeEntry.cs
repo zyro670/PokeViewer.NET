@@ -136,15 +136,19 @@ namespace PokeViewer.NET.SubForms
             GoButton.Enabled = true;
             numericUpDown1.Enabled = true;
             checkBox1.Enabled = true;
+
+            pictureBox1.Load(raidimages[0]);
+            Results.Text = results[0];
+            pictureBox2.Image = teratype[0];
         }
 
         private void NumericValue_Changed(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(raidimages[(int)numericUpDown1.Value]))
+            if (!string.IsNullOrEmpty(raidimages[(int)numericUpDown1.Value - 1]))
             {
-                pictureBox1.Load(raidimages[(int)numericUpDown1.Value]);
-                Results.Text = results[(int)numericUpDown1.Value];
-                pictureBox2.Image = teratype[(int)numericUpDown1.Value];
+                pictureBox1.Load(raidimages[(int)numericUpDown1.Value - 1]);
+                Results.Text = results[(int)numericUpDown1.Value - 1];
+                pictureBox2.Image = teratype[(int)numericUpDown1.Value - 1];
             }
             else
                 MessageBox.Show("No results saved, please hit GO again.");
@@ -267,9 +271,9 @@ namespace PokeViewer.NET.SubForms
 
             await ReadEventRaids(BaseBlockKeyPointer, container, token).ConfigureAwait(false);
 
-            var data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(RaidBlockOffsetP + RaidBlock.HEADER_SIZE, (int)(RaidBlock.SIZE_BASE - RaidBlock.HEADER_SIZE), token).ConfigureAwait(false);
+            var data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(RaidBlockOffsetP + RaidBlock.HEADER_SIZE, (int)RaidBlock.SIZE_BASE, token).ConfigureAwait(false);
 
-            (int delivery, int enc) = container.ReadAllRaids(data, StoryProgress, EventProgress, 0, RaidSerializationFormat.BaseROM);
+            (int delivery, int enc) = container.ReadAllRaids(data, StoryProgress, EventProgress, 0, TeraRaidMapParent.Paldea);
             if (enc > 0)
                 MessageBox.Show($"Failed to find encounters for {enc} raid(s).");
 
@@ -279,10 +283,13 @@ namespace PokeViewer.NET.SubForms
             var raids = container.Raids;
             var encounters = container.Encounters;
             var rewards = container.Rewards;
+            container.ClearRaids();
+            container.ClearEncounters();
+            container.ClearRewards();
 
             data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(RaidBlockOffsetK, 0xC80, token).ConfigureAwait(false);
 
-            (delivery, enc) = container.ReadAllRaids(data, StoryProgress, EventProgress, 0, RaidSerializationFormat.KitakamiROM);
+            (delivery, enc) = container.ReadAllRaids(data, StoryProgress, EventProgress, 0, TeraRaidMapParent.Kitakami);
 
             if (enc > 0)
                 MessageBox.Show($"Failed to find encounters for {enc} raid(s).");
@@ -314,8 +321,7 @@ namespace PokeViewer.NET.SubForms
                 var (spr, txt) = CalculateFromSeed(raid.Seed, blank);
                 results.Add(txt);
                 raidimages.Add(spr);
-                var tera = blank.TeraType;
-                var type = TypeSpriteUtil.GetTypeSpriteGem((byte)tera);
+                var type = TypeSpriteUtil.GetTypeSpriteGem((byte)container.Raids[i].TeraType);
                 teratype.Add(type!);
             }
         }
@@ -349,6 +355,7 @@ namespace PokeViewer.NET.SubForms
             var delivery_lottery_rewards = await ReadBlockDefault(BaseBlockKeyPointer, Offsets.BCATRaidLotteryRewardLocation, "lottery_reward_item_array", force, token).ConfigureAwait(false);
 
             container.DistTeraRaids = TeraDistribution.GetAllEncounters(delivery_raid_fbs);
+            container.MightTeraRaids = TeraMight.GetAllEncounters(delivery_raid_fbs);
             container.DeliveryRaidPriority = group_id;
             container.DeliveryRaidFixedRewards = FlatbufferDumper.DumpFixedRewards(delivery_fixed_rewards);
             container.DeliveryRaidLotteryRewards = FlatbufferDumper.DumpLotteryRewards(delivery_lottery_rewards);
