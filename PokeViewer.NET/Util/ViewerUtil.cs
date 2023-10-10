@@ -14,7 +14,7 @@ namespace PokeViewer.NET
         public const string SwordID = "0100ABF008968000";
         public const string ShieldID = "01008DB008C2C000";
         public const string EeveeID = "0100187003A36000";
-        public const string PikachuID = "010003F003A34000";        
+        public const string PikachuID = "010003F003A34000";
 
         delegate void ChangeButtonStateCallback(Button sender, bool State);
         delegate void TextboxSetTextCallback(TextBox sender, string Text);

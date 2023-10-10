@@ -67,6 +67,10 @@ namespace PokeViewer.NET.SubForms
             OutbreakScan.ForeColor = color.Item2;
             OpenMapPaldea.BackColor = color.Item1;
             OpenMapPaldea.ForeColor = color.Item2;
+            OpenMapKitakami.BackColor = color.Item1;
+            OpenMapKitakami.ForeColor = color.Item2;
+            OpenMapBlueberry.BackColor = color.Item1;
+            OpenMapBlueberry.ForeColor = color.Item2;
             ViewList.BackColor = color.Item1;
             ViewList.ForeColor = color.Item2;
             SaveList.BackColor = color.Item1;
@@ -103,6 +107,8 @@ namespace PokeViewer.NET.SubForms
             V_ComboBox.ForeColor = color.Item2;
             comboBox1.BackColor = color.Item1;
             comboBox1.ForeColor = color.Item2;
+            VivillonEditorButton.BackColor = color.Item1;
+            VivillonEditorButton.ForeColor = color.Item2;
         }
 
         public void LoadOutbreakCache()

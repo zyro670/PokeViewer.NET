@@ -23,6 +23,8 @@ namespace PokeViewer.NET.SubForms
             ShinyBox.ForeColor = color.Item2;
             GenderBox.BackColor = color.Item1;
             GenderBox.ForeColor = color.Item2;
+            NatureBox.BackColor = color.Item1;
+            NatureBox.ForeColor = color.Item2;
             CheckBoxOf3.BackColor = color.Item1;
             CheckBoxOf3.ForeColor = color.Item2;
             ScaleBox.BackColor = color.Item1;
@@ -68,6 +70,7 @@ namespace PokeViewer.NET.SubForms
             Settings.Default.ShinyFilter = ShinyBox.SelectedIndex;
             Settings.Default.SegmentOrFamily = CheckBoxOf3.Checked;
             Settings.Default.GenderFilter = GenderBox.SelectedIndex;
+            Settings.Default.NatureFilter = NatureBox.SelectedIndex;
             Settings.Default.HPFilter = (int)HPFilter.Value;
             Settings.Default.AtkFilter = (int)AtkFilter.Value;
             Settings.Default.DefFilter = (int)DefFilter.Value;
@@ -88,6 +91,7 @@ namespace PokeViewer.NET.SubForms
             ShinyBox.SelectedIndex = 2;
             CheckBoxOf3.Checked = false;
             GenderBox.SelectedIndex = 3;
+            NatureBox.SelectedIndex = 25;
             HPFilter.Value = 0;
             AtkFilter.Value = 0;
             DefFilter.Value = 0;
@@ -105,6 +109,7 @@ namespace PokeViewer.NET.SubForms
             ShinyBox.SelectedIndex = Settings.Default.ShinyFilter;
             CheckBoxOf3.Checked = Settings.Default.SegmentOrFamily;
             GenderBox.SelectedIndex = Settings.Default.GenderFilter;
+            NatureBox.SelectedIndex = Settings.Default.NatureFilter;
             HPFilter.Value = Settings.Default.HPFilter;
             AtkFilter.Value = Settings.Default.AtkFilter;
             DefFilter.Value = Settings.Default.DefFilter;

@@ -346,5 +346,29 @@ namespace PokeViewer.NET.Properties {
                 this["MapSetting"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("25")]
+        public int NatureFilter {
+            get {
+                return ((int)(this["NatureFilter"]));
+            }
+            set {
+                this["NatureFilter"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string PingMessage {
+            get {
+                return ((string)(this["PingMessage"]));
+            }
+            set {
+                this["PingMessage"] = value;
+            }
+        }
     }
 }

@@ -52,6 +52,7 @@
             ToggleSwitchProtocol = new CheckBox();
             ViewerControl = new TabControl();
             ConnectionPage = new TabPage();
+            TurboButton = new Button();
             EventRedeemButton = new Button();
             MoodGroup = new GroupBox();
             BackColorLabel = new Label();
@@ -68,9 +69,8 @@
             TrainerLabel = new Label();
             ScreenOnLabel = new Label();
             ExtrasGroup = new GroupBox();
-            checkBox1 = new CheckBox();
-            TurboButton = new Button();
-            comboBox1 = new ComboBox();
+            MessageText = new TextBox();
+            PingLabel = new Label();
             WideButton = new Button();
             RaidButton = new Button();
             DiscordIDText = new TextBox();
@@ -328,7 +328,7 @@
             ViewerControl.Controls.Add(NPCPage);
             ViewerControl.Controls.Add(InGameScreenshotPage);
             ViewerControl.Controls.Add(MiscPage);
-            ViewerControl.Location = new Point(0, 2);
+            ViewerControl.Location = new Point(-5, 2);
             ViewerControl.Name = "ViewerControl";
             ViewerControl.SelectedIndex = 0;
             ViewerControl.Size = new Size(511, 510);
@@ -338,6 +338,7 @@
             // ConnectionPage
             // 
             ConnectionPage.BackColor = SystemColors.ControlLightLight;
+            ConnectionPage.Controls.Add(TurboButton);
             ConnectionPage.Controls.Add(EventRedeemButton);
             ConnectionPage.Controls.Add(MoodGroup);
             ConnectionPage.Controls.Add(ScreenLabel);
@@ -354,9 +355,19 @@
             ConnectionPage.TabIndex = 0;
             ConnectionPage.Text = "Connection 🔌";
             // 
+            // TurboButton
+            // 
+            TurboButton.Location = new Point(407, 6);
+            TurboButton.Name = "TurboButton";
+            TurboButton.Size = new Size(75, 23);
+            TurboButton.TabIndex = 50;
+            TurboButton.Text = "Turbo";
+            TurboButton.UseVisualStyleBackColor = true;
+            TurboButton.Click += button1_Click_1;
+            // 
             // EventRedeemButton
             // 
-            EventRedeemButton.Location = new Point(404, 6);
+            EventRedeemButton.Location = new Point(407, 31);
             EventRedeemButton.Name = "EventRedeemButton";
             EventRedeemButton.Size = new Size(75, 23);
             EventRedeemButton.TabIndex = 49;
@@ -374,7 +385,7 @@
             MoodGroup.Controls.Add(SetMoodButton);
             MoodGroup.Controls.Add(DefaultMoodRadio);
             MoodGroup.Controls.Add(AltMoodRadio);
-            MoodGroup.Location = new Point(276, 288);
+            MoodGroup.Location = new Point(279, 288);
             MoodGroup.Name = "MoodGroup";
             MoodGroup.Size = new Size(212, 132);
             MoodGroup.TabIndex = 48;
@@ -454,7 +465,7 @@
             // ScreenLabel
             // 
             ScreenLabel.AutoSize = true;
-            ScreenLabel.Location = new Point(40, 28);
+            ScreenLabel.Location = new Point(43, 28);
             ScreenLabel.Name = "ScreenLabel";
             ScreenLabel.Size = new Size(42, 15);
             ScreenLabel.TabIndex = 44;
@@ -466,7 +477,7 @@
             TrainerPassportGroup.Controls.Add(TrainerPhoto);
             TrainerPassportGroup.Controls.Add(TIDSID);
             TrainerPassportGroup.Controls.Add(TrainerLabel);
-            TrainerPassportGroup.Location = new Point(105, 195);
+            TrainerPassportGroup.Location = new Point(108, 195);
             TrainerPassportGroup.Name = "TrainerPassportGroup";
             TrainerPassportGroup.Size = new Size(264, 81);
             TrainerPassportGroup.TabIndex = 36;
@@ -503,7 +514,7 @@
             // ScreenOnLabel
             // 
             ScreenOnLabel.AutoSize = true;
-            ScreenOnLabel.Location = new Point(94, 28);
+            ScreenOnLabel.Location = new Point(97, 28);
             ScreenOnLabel.Name = "ScreenOnLabel";
             ScreenOnLabel.Size = new Size(25, 15);
             ScreenOnLabel.TabIndex = 43;
@@ -512,9 +523,8 @@
             // ExtrasGroup
             // 
             ExtrasGroup.BackColor = Color.Transparent;
-            ExtrasGroup.Controls.Add(checkBox1);
-            ExtrasGroup.Controls.Add(TurboButton);
-            ExtrasGroup.Controls.Add(comboBox1);
+            ExtrasGroup.Controls.Add(MessageText);
+            ExtrasGroup.Controls.Add(PingLabel);
             ExtrasGroup.Controls.Add(WideButton);
             ExtrasGroup.Controls.Add(RaidButton);
             ExtrasGroup.Controls.Add(DiscordIDText);
@@ -523,42 +533,28 @@
             ExtrasGroup.Controls.Add(ToggleSwitchProtocol);
             ExtrasGroup.Controls.Add(WebHookURL);
             ExtrasGroup.Controls.Add(SaveButton);
-            ExtrasGroup.Location = new Point(4, 288);
+            ExtrasGroup.Location = new Point(7, 288);
             ExtrasGroup.Name = "ExtrasGroup";
             ExtrasGroup.Size = new Size(266, 132);
             ExtrasGroup.TabIndex = 35;
             ExtrasGroup.TabStop = false;
             ExtrasGroup.Text = "Extras";
             // 
-            // checkBox1
+            // MessageText
             // 
-            checkBox1.AutoSize = true;
-            checkBox1.Location = new Point(176, 102);
-            checkBox1.Name = "checkBox1";
-            checkBox1.Size = new Size(84, 19);
-            checkBox1.TabIndex = 50;
-            checkBox1.Text = "Stop Turbo";
-            checkBox1.UseVisualStyleBackColor = true;
+            MessageText.Location = new Point(68, 100);
+            MessageText.Name = "MessageText";
+            MessageText.Size = new Size(185, 23);
+            MessageText.TabIndex = 51;
             // 
-            // TurboButton
+            // PingLabel
             // 
-            TurboButton.Location = new Point(80, 101);
-            TurboButton.Name = "TurboButton";
-            TurboButton.Size = new Size(90, 23);
-            TurboButton.TabIndex = 40;
-            TurboButton.Text = "Turbo";
-            TurboButton.UseVisualStyleBackColor = true;
-            TurboButton.Click += TurboButton_ClickAsync;
-            // 
-            // comboBox1
-            // 
-            comboBox1.FormattingEnabled = true;
-            comboBox1.Items.AddRange(new object[] { "A", "B", "X", "Y", "RSTICK", "LSTICK", "L", "R", "ZL", "ZR", "PLUS", "MINUS", "DUP", "DDOWN", "DLEFT", "DRIGHT", "HOME", "CAPTURE" });
-            comboBox1.Location = new Point(6, 102);
-            comboBox1.Name = "comboBox1";
-            comboBox1.Size = new Size(68, 23);
-            comboBox1.TabIndex = 39;
-            comboBox1.Text = "A";
+            PingLabel.AutoSize = true;
+            PingLabel.Location = new Point(1, 103);
+            PingLabel.Name = "PingLabel";
+            PingLabel.Size = new Size(53, 15);
+            PingLabel.TabIndex = 39;
+            PingLabel.Text = "Message";
             // 
             // WideButton
             // 
@@ -630,7 +626,7 @@
             // ScreenOffLabel
             // 
             ScreenOffLabel.AutoSize = true;
-            ScreenOffLabel.Location = new Point(0, 28);
+            ScreenOffLabel.Location = new Point(3, 28);
             ScreenOffLabel.Name = "ScreenOffLabel";
             ScreenOffLabel.Size = new Size(28, 15);
             ScreenOffLabel.TabIndex = 42;
@@ -643,7 +639,7 @@
             ConnectionGroupBox.Controls.Add(ConnectionSpriteBox);
             ConnectionGroupBox.Controls.Add(Connect);
             ConnectionGroupBox.Controls.Add(SwitchIP);
-            ConnectionGroupBox.Location = new Point(135, 21);
+            ConnectionGroupBox.Location = new Point(138, 21);
             ConnectionGroupBox.Name = "ConnectionGroupBox";
             ConnectionGroupBox.Size = new Size(200, 168);
             ConnectionGroupBox.TabIndex = 34;
@@ -671,7 +667,7 @@
             // 
             ScreenTrackBar.BackColor = SystemColors.ControlLightLight;
             ScreenTrackBar.LargeChange = 1;
-            ScreenTrackBar.Location = new Point(-2, 3);
+            ScreenTrackBar.Location = new Point(1, 3);
             ScreenTrackBar.Maximum = 1;
             ScreenTrackBar.Name = "ScreenTrackBar";
             ScreenTrackBar.Size = new Size(123, 45);
@@ -865,7 +861,7 @@
         private Label ForeColorLabel;
         private Button EventRedeemButton;
         private Button TurboButton;
-        private ComboBox comboBox1;
-        private CheckBox checkBox1;
+        private Label PingLabel;
+        private TextBox MessageText;
     }
 }

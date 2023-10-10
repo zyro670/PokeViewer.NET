@@ -23,7 +23,7 @@ namespace PokeViewer.NET.SubForms
             SetColors(color);
         }
 
-        private (Color, Color) setcolors;
+        private (Color, Color) SetColor;
         private int eggcount = 0;
         private int sandwichcount = 0;
         private int starcount = 0;
@@ -52,7 +52,7 @@ namespace PokeViewer.NET.SubForms
             WaitTime.ForeColor = color.Item2;
             NumericWaitTime.BackColor = color.Item1;
             NumericWaitTime.ForeColor = color.Item2;
-            setcolors = color;
+            SetColor = color;
         }
 
         private void SanityCheck(PKM pk, int count)
@@ -245,6 +245,9 @@ namespace PokeViewer.NET.SubForms
             if (pk.Gender != Settings.Default.GenderFilter && Settings.Default.GenderFilter != 3)
                 return false; // gender != gender filter when gender is not Any
 
+            if (pk.Nature != Settings.Default.NatureFilter && Settings.Default.NatureFilter != 25)
+                return false; // nature != nature filter when nature is not Random
+
             if (Settings.Default.MinMaxOnly && pk.Scale > 0 && pk.Scale < 255) // Mini/Jumbo Only
                 return false;
 
@@ -283,8 +286,8 @@ namespace PokeViewer.NET.SubForms
             pk.IsEgg = true;
             pk.Nickname = "Egg";
             pk.Met_Location = 0;
-            pk.Egg_Location = 30023;
             pk.MetDate = DateOnly.Parse("2023/02/17");
+            pk.Egg_Location = 30023;
             pk.EggMetDate = pk.MetDate;
             pk.OT_Name = "ZYZYZYZY";
             pk.HeldItem = 0;
@@ -355,11 +358,13 @@ namespace PokeViewer.NET.SubForms
         private async Task MakeSandwich(CancellationToken token)
         {
             await Click(MINUS, 0_500, token).ConfigureAwait(false);
-            await SetStick(LEFT, 0, 30000, 0_700, token).ConfigureAwait(false); // Face up to table
+            await SetStick(LEFT, 0, 32323, 0_700, token).ConfigureAwait(false); // Face up to table
             await SetStick(LEFT, 0, 0, 0, token).ConfigureAwait(false);
+            await Task.Delay(1_000, token).ConfigureAwait(false);
             await Click(A, 1_500, token).ConfigureAwait(false);
-            await Click(A, 5_000, token).ConfigureAwait(false);
-            await Click(X, 1_500, token).ConfigureAwait(false);
+            await Click(A, 1_500, token).ConfigureAwait(false); // Dummy press if we're in union circle, doesn't affect routine
+            await Click(A, 10_000, token).ConfigureAwait(false);
+            await Click(X, 2_500, token).ConfigureAwait(false);
 
             if (!string.IsNullOrEmpty(Item1Value.Text))
             {
@@ -581,7 +586,7 @@ namespace PokeViewer.NET.SubForms
         private static object GenerateWebhook(string results, string thumbnail, bool pinguser)
         {
             string userContent = pinguser ? $"<@{Settings.Default.UserDiscordID}>" : "";
-            string title = pinguser ? $"Match Found!" : "Unwanted match..";
+            string title = pinguser ? $"Match Found!\n{Settings.Default.PingMessage}" : "Unwanted match..";
             var WebHook = new
             {
                 username = $"EggViewer.NET",
@@ -606,7 +611,7 @@ namespace PokeViewer.NET.SubForms
 
         private void StopConditionsButton_Click(object sender, EventArgs e)
         {
-            using StopConditions miniform = new(setcolors);
+            using StopConditions miniform = new(SetColor);
             miniform.ShowDialog();
         }
 
@@ -625,12 +630,25 @@ namespace PokeViewer.NET.SubForms
             return ivsequence;
         }
 
+        public Bitmap CropImage(Bitmap source, Rectangle section)
+        {
+            var bitmap = new Bitmap(section.Width, section.Height);
+            using (var g = Graphics.FromImage(bitmap))
+            {
+                g.DrawImage(source, 0, 0, section, GraphicsUnit.Pixel);
+                return bitmap;
+            }
+        }
+
         private void ScreenshotButton_Click(object sender, EventArgs e)
         {
             Rectangle bounds = Bounds;
-            Bitmap bmp = new(Width, Height - 60);
+            Bitmap bmp = new(250, 260);
             DrawToBitmap(bmp, bounds);
-            Clipboard.SetImage(bmp);
+
+            Bitmap CroppedImage = bmp.Clone(new(80, 30, bmp.Width - 80, bmp.Height - 30), bmp.PixelFormat);
+
+            Clipboard.SetImage(CroppedImage);
             MessageBox.Show("Copied to clipboard!");
         }
 
@@ -653,7 +671,7 @@ namespace PokeViewer.NET.SubForms
                     case 4: val = 0x50; break;
                     case 5: val = 0x58; break;
                 }
-                var pointer = new long[] { 0x44E4FD8, 0x08, val, 0x30, 0x00 };
+                var pointer = new long[] { 0x46447D8, 0x08, val, 0x30, 0x00 };
                 var offset = await Executor.SwitchConnection.PointerAll(pointer, token).ConfigureAwait(false);
                 var pk = await ReadBoxPokemonSV(offset, 0x158, token).ConfigureAwait(false);
                 SanityCheck(pk, i);

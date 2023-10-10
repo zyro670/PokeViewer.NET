@@ -53,6 +53,8 @@ namespace PokeViewer.NET
             button3.ForeColor = color.Item2;
             button2.BackColor = color.Item1;
             button2.ForeColor = color.Item2;
+            comboBox1.BackColor = color.Item1;
+            comboBox1.ForeColor = color.Item2;
 
             PictureBox[] boxes =
             {
@@ -62,9 +64,7 @@ namespace PokeViewer.NET
             };
 
             for (int i = 0; i < boxes.Length; i++)
-            {
                 boxes[i].BackColor = color.Item1;
-            }
         }
 
         private async void LoadResponses()

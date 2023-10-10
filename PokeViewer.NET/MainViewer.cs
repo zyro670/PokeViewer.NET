@@ -15,8 +15,8 @@ namespace PokeViewer.NET
     public partial class MainViewer : Form
     {
         public ViewerExecutor Executor = null!;
-        private const string ViewerVersion = "2.5.4";
-        private const int AzureBuildID = 455;
+        private const string ViewerVersion = "2.5.5";
+        private const int AzureBuildID = 458;
         private readonly bool[] FormLoaded = new bool[8];
         private int GameType;
         private SimpleTrainerInfo TrainerInfo = new();
@@ -32,6 +32,7 @@ namespace PokeViewer.NET
             CheckTrainerIcon();
             WebhookURLText.Text = Settings.Default.WebHook;
             DiscordIDText.Text = Settings.Default.UserDiscordID;
+            MessageText.Text = Settings.Default.PingMessage;
             DisableTabsOnStart();
             VersionLabel.Text = $"v{ViewerVersion}";
             CheckReleaseLabel();
@@ -864,6 +865,20 @@ namespace PokeViewer.NET
             AltBackCombo.ForeColor = fore;
             EventRedeemButton.BackColor = back;
             EventRedeemButton.ForeColor = fore;
+            WebHookURL.BackColor = back;
+            WebHookURL.ForeColor = fore;
+            DiscordID.BackColor = back;
+            DiscordID.ForeColor = fore;
+            PingLabel.BackColor = back;
+            PingLabel.ForeColor = fore;
+            WebhookURLText.BackColor = back;
+            WebhookURLText.ForeColor = fore;
+            DiscordIDText.BackColor = back;
+            DiscordIDText.ForeColor = fore;
+            MessageText.BackColor = back;
+            MessageText.ForeColor = fore;
+            TurboButton.BackColor = back;
+            TurboButton.ForeColor = fore;
         }
 
         private static bool CheckForMood()
@@ -909,6 +924,11 @@ namespace PokeViewer.NET
             if (!string.IsNullOrEmpty(DiscordIDText.Text))
             {
                 Settings.Default.UserDiscordID = DiscordIDText.Text;
+                Settings.Default.Save();
+            }
+            if (!string.IsNullOrEmpty(MessageText.Text))
+            {
+                Settings.Default.PingMessage = MessageText.Text;
                 Settings.Default.Save();
             }
             MessageBox.Show("Done.");
@@ -1158,24 +1178,11 @@ namespace PokeViewer.NET
             form.ShowDialog();
         }
 
-        private new async Task Click(SwitchButton b, int delay, CancellationToken token)
+        private void button1_Click_1(object sender, EventArgs e)
         {
-            await Executor.Connection.SendAsync(SwitchCommand.Click(b, true), token).ConfigureAwait(false);
-            await Task.Delay(delay, token).ConfigureAwait(false);
-        }
-
-        private async void TurboButton_ClickAsync(object sender, EventArgs e)
-        {
-            var token = CancellationToken.None;
-            if (!checkBox1.Checked)
-                TurboButton.Enabled = false;
-            while (!checkBox1.Checked)
-            {
-                await Click((SwitchButton)comboBox1.SelectedIndex, 0_100, token).ConfigureAwait(false);
-            }
-            MessageBox.Show("Turbo has been stopped!");
-            TurboButton.Enabled = true;
-            checkBox1.Checked = false;
+            var colors = CheckForColors(Settings.Default.DarkMode);
+            TurboView form = new(Executor, colors);
+            form.ShowDialog();
         }
     }
 }

@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             StopConditionsGroup = new GroupBox();
+            NatureBox = new ComboBox();
+            label2 = new Label();
             ScaleBox = new CheckBox();
             ShinyBox = new ComboBox();
             label1 = new Label();
@@ -64,6 +66,8 @@
             // 
             // StopConditionsGroup
             // 
+            StopConditionsGroup.Controls.Add(NatureBox);
+            StopConditionsGroup.Controls.Add(label2);
             StopConditionsGroup.Controls.Add(ScaleBox);
             StopConditionsGroup.Controls.Add(ShinyBox);
             StopConditionsGroup.Controls.Add(label1);
@@ -93,10 +97,29 @@
             StopConditionsGroup.TabStop = false;
             StopConditionsGroup.Text = "Stop Conditions";
             // 
+            // NatureBox
+            // 
+            NatureBox.FormattingEnabled = true;
+            NatureBox.Items.AddRange(new object[] { "Hardy", "Lonely", "Brave", "Adamant", "Naughty", "Bold", "Docile", "Relaxed", "Impish", "Lax", "Timid", "Hasty", "Serious", "Jolly", "Naive", "Modest", "Mild", "Quiet", "Bashful", "Rash", "Calm", "Gentle", "Sassy", "Careful", "Quirky", "Random" });
+            NatureBox.Location = new Point(219, 76);
+            NatureBox.Name = "NatureBox";
+            NatureBox.Size = new Size(106, 23);
+            NatureBox.TabIndex = 68;
+            NatureBox.Text = "Random";
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(168, 80);
+            label2.Name = "label2";
+            label2.Size = new Size(43, 15);
+            label2.TabIndex = 67;
+            label2.Text = "Nature";
+            // 
             // ScaleBox
             // 
             ScaleBox.AutoSize = true;
-            ScaleBox.Location = new Point(23, 48);
+            ScaleBox.Location = new Point(12, 48);
             ScaleBox.Name = "ScaleBox";
             ScaleBox.Size = new Size(124, 19);
             ScaleBox.TabIndex = 66;
@@ -168,7 +191,7 @@
             // CheckBoxOf3
             // 
             CheckBoxOf3.AutoSize = true;
-            CheckBoxOf3.Location = new Point(88, 76);
+            CheckBoxOf3.Location = new Point(12, 80);
             CheckBoxOf3.Name = "CheckBoxOf3";
             CheckBoxOf3.Size = new Size(150, 19);
             CheckBoxOf3.TabIndex = 12;
@@ -372,5 +395,7 @@
         private ComboBox ShinyBox;
         private Label label1;
         private CheckBox ScaleBox;
+        private ComboBox NatureBox;
+        private Label label2;
     }
 }
