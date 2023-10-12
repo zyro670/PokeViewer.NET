@@ -204,7 +204,7 @@ namespace PokeViewer.NET
             CurrentSlotStats = new();
             if (GameType is (int)GameSelected.Scarlet or (int)GameSelected.Violet && AbsoluteBoxOffset == 0)
             {
-                var SVptr = new long[] { 0x4616648, 0x1C0, 0x30, 0x9D0, 0x0 };
+                var SVptr = new long[] { 0x4617648, 0x1C0, 0x30, 0x9D0, 0x0 };
                 AbsoluteBoxOffset = await Executor.SwitchConnection.PointerAll(SVptr, CancellationToken.None).ConfigureAwait(false);
             }
             if (GameType is (int)GameSelected.LegendsArceus && AbsoluteBoxOffset == 0)

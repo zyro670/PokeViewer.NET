@@ -948,10 +948,6 @@ namespace PokeViewer.NET.SubForms
             await Click(A, 0_200, token).ConfigureAwait(false); // Confirm date/time change
             await Click(HOME, 1_000, token).ConfigureAwait(false);
             await Click(A, 2_000, token).ConfigureAwait(false); // Back to title screen
-            /*for (int i = 0; i < 4; i++)
-                await Click(DUP, 0_250, token).ConfigureAwait(false);
-            await Click(A, 1_000, token).ConfigureAwait(false); // Back to title screen
-            await Click(B, 1_000, token).ConfigureAwait(false);*/
         }
 
         private static HttpClient? _client;

@@ -357,6 +357,7 @@
             // 
             // TurboButton
             // 
+            TurboButton.Enabled = false;
             TurboButton.Location = new Point(407, 6);
             TurboButton.Name = "TurboButton";
             TurboButton.Size = new Size(75, 23);

@@ -177,7 +177,7 @@ namespace PokeViewer.NET.SubForms
                             case 2: break;
                         }
                         string sensitiveinfo = HidePIDEC.Checked ? "" : $"{pid}{ec}";
-                        string output = $"{$"Egg #{eggcount}"}{Environment.NewLine}{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{(Species)pk.Species}{form}{gender}{sensitiveinfo}{Environment.NewLine}Nature: {(Nature)pk.Nature}{Environment.NewLine}Ability: {(Ability)pk.Ability}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}{Environment.NewLine}Scale: {PokeSizeDetailedUtil.GetSizeRating(pk.Scale)} ({pk.Scale})";
+                        string output = $"{$"Egg #{eggcount}"}{Environment.NewLine}{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{(Species)pk.Species}{form}{gender}{sensitiveinfo}{Environment.NewLine}Nature: {(Nature)pk.Nature}{Environment.NewLine}Ability: {GameInfo.GetStrings(1).Ability[pk.Ability]}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}{Environment.NewLine}Scale: {PokeSizeDetailedUtil.GetSizeRating(pk.Scale)} ({pk.Scale})";
                         PokeStats.Text = output;
                         LogUtil.LogText(output);
                         string? sprite;
@@ -671,7 +671,7 @@ namespace PokeViewer.NET.SubForms
                     case 4: val = 0x50; break;
                     case 5: val = 0x58; break;
                 }
-                var pointer = new long[] { 0x46447D8, 0x08, val, 0x30, 0x00 };
+                var pointer = new long[] { 0x46457D8, 0x08, val, 0x30, 0x00 };
                 var offset = await Executor.SwitchConnection.PointerAll(pointer, token).ConfigureAwait(false);
                 var pk = await ReadBoxPokemonSV(offset, 0x158, token).ConfigureAwait(false);
                 SanityCheck(pk, i);

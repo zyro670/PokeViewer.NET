@@ -15,8 +15,8 @@ namespace PokeViewer.NET
     public partial class MainViewer : Form
     {
         public ViewerExecutor Executor = null!;
-        private const string ViewerVersion = "2.5.5";
-        private const int AzureBuildID = 458;
+        private const string ViewerVersion = "2.6.0";
+        private const int AzureBuildID = 459;
         private readonly bool[] FormLoaded = new bool[8];
         private int GameType;
         private SimpleTrainerInfo TrainerInfo = new();
@@ -580,6 +580,7 @@ namespace PokeViewer.NET
                             WideButton.Enabled = true;
                             RaidButton.Enabled = true;
                             EventRedeemButton.Visible = true;
+                            TurboButton.Enabled = true;
                         });
                         strings = await GetFakeTrainerSAVSV(token).ConfigureAwait(false);
                         break;
@@ -598,6 +599,7 @@ namespace PokeViewer.NET
                             WideButton.Enabled = true;
                             RaidButton.Enabled = true;
                             EventRedeemButton.Visible = true;
+                            TurboButton.Enabled = true;
                         });
                         strings = await GetFakeTrainerSAVSV(token).ConfigureAwait(false);
                         break;
@@ -612,6 +614,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(BoxPage);
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
                             WideButton.Enabled = true;
+                            TurboButton.Enabled = true;
                         });
                         strings = await GetFakeTrainerSAVLA(token).ConfigureAwait(false);
                         break;
@@ -627,6 +630,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(NPCPage);
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
                             WideButton.Enabled = true;
+                            TurboButton.Enabled = true;
                         });
                         strings = await GetFakeTrainerSAVBDSP(type, token).ConfigureAwait(false);
                         break;
@@ -642,6 +646,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(NPCPage);
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
                             WideButton.Enabled = true;
+                            TurboButton.Enabled = true;
                         });
                         strings = await GetFakeTrainerSAVBDSP(type, token).ConfigureAwait(false);
                         break;
@@ -659,6 +664,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(NPCPage);
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
                             WideButton.Enabled = true;
+                            TurboButton.Enabled = true;
                         });
                         strings = await GetFakeTrainerSAVSWSH(token).ConfigureAwait(false);
                         break;
@@ -676,6 +682,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(NPCPage);
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
                             WideButton.Enabled = true;
+                            TurboButton.Enabled = true;
                         });
                         strings = await GetFakeTrainerSAVSWSH(token).ConfigureAwait(false);
                         break;
