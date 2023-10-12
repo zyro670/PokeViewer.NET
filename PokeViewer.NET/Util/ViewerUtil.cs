@@ -120,7 +120,7 @@ namespace PokeViewer.NET
         public IReadOnlyList<long> BlockKeyPointer = new List<long>() { 0x4617648, 0xD8, 0x0, 0x0, 0x30, 0x0 };
         public IReadOnlyList<long> RaidBlockPointerP { get; } = new long[] { 0x4617648, 0x1C0, 0x88, 0x40 };
         public IReadOnlyList<long> RaidBlockPointerK { get; } = new long[] { 0x4617648, 0x1C0, 0x88, 0xCD8 };
-        public IReadOnlyList<long> OverworldPointer { get; } = new long[] { 0x4644870, 0x348, 0x10, 0xD8, 0x28 };
+        public IReadOnlyList<long> OverworldPointer { get; } = new long[] { 0x461CB18, 0x160, 0xE8, 0x28 };
         public IReadOnlyList<long> MyStatusPointerSV { get; } = new long[] { 0x4617648, 0x1C0, 0x0, 0x40 };
         public IReadOnlyList<long> MyStatusPointerLA { get; } = new long[] { 0x42BA6B0, 0x218, 0x68 };
         public IReadOnlyList<long> MyStatusTrainerPointerBD { get; } = new long[] { 0x4C64DC0, 0xB8, 0x10, 0xE0, 0x0 };
