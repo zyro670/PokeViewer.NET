@@ -31,12 +31,8 @@ namespace PokeViewer.NET.SubForms
             ScaleBox.ForeColor = color.Item2;
             GenderFilter.BackColor = color.Item1;
             GenderFilter.ForeColor = color.Item2;
-            IgnoreIVFilter.BackColor = color.Item1;
-            IgnoreIVFilter.ForeColor = color.Item2;
-            PresetIVBox.BackColor = color.Item1;
-            PresetIVBox.ForeColor = color.Item2;
-            PresetIVs.BackColor = color.Item1;
-            PresetIVs.ForeColor = color.Item2;
+            ApplyIVFilter.BackColor = color.Item1;
+            ApplyIVFilter.ForeColor = color.Item2;
             HPFilter.BackColor = color.Item1;
             HPFilter.ForeColor = color.Item2;
             AtkFilter.BackColor = color.Item1;
@@ -63,6 +59,18 @@ namespace PokeViewer.NET.SubForms
             TargetSPE.ForeColor = color.Item2;
             StopConditionsGroup.BackColor = color.Item1;
             StopConditionsGroup.ForeColor = color.Item2;
+            HPCon.BackColor = color.Item1;
+            HPCon.ForeColor = color.Item2;
+            ATKCon.BackColor = color.Item1;
+            ATKCon.ForeColor = color.Item2;
+            DEFCon.BackColor = color.Item1;
+            DEFCon.ForeColor = color.Item2;
+            SPACon.BackColor = color.Item1;
+            SPACon.ForeColor = color.Item2;
+            SPDCon.BackColor = color.Item1;
+            SPDCon.ForeColor = color.Item2;
+            SPECon.BackColor = color.Item1;
+            SPECon.ForeColor = color.Item2;
         }
 
         private void SaveButton_Click(object sender, EventArgs e)
@@ -77,10 +85,15 @@ namespace PokeViewer.NET.SubForms
             Settings.Default.SpaFilter = (int)SpaFilter.Value;
             Settings.Default.SpdFilter = (int)SpdFilter.Value;
             Settings.Default.SpeFilter = (int)SpeFilter.Value;
-            Settings.Default.IgnoreIVFilter = IgnoreIVFilter.Checked;
-            Settings.Default.PresetIVS = PresetIVBox.SelectedIndex;
+            Settings.Default.ApplyIVFilter = ApplyIVFilter.Checked;
             Settings.Default.MinMaxOnly = ScaleBox.Checked;
-            Settings.Default.IgnoreIVFilter = IgnoreIVFilter.Checked;
+            Settings.Default.ApplyIVFilter = ApplyIVFilter.Checked;
+            Settings.Default.HpCon = HPCon.SelectedIndex;
+            Settings.Default.AtkCon = ATKCon.SelectedIndex;
+            Settings.Default.DefCon = DEFCon.SelectedIndex;
+            Settings.Default.SpaCon = SPACon.SelectedIndex;
+            Settings.Default.SpdCon = SPDCon.SelectedIndex;
+            Settings.Default.SpeCon = SPECon.SelectedIndex;
 
             Settings.Default.Save();
             Close();
@@ -98,8 +111,13 @@ namespace PokeViewer.NET.SubForms
             SpaFilter.Value = 0;
             SpdFilter.Value = 0;
             SpeFilter.Value = 0;
-            IgnoreIVFilter.Checked = true;
-            PresetIVBox.SelectedIndex = 0;
+            HPCon.SelectedIndex = 0;
+            ATKCon.SelectedIndex = 0;
+            DEFCon.SelectedIndex = 0;
+            SPACon.SelectedIndex = 0;
+            SPDCon.SelectedIndex = 0;
+            SPECon.SelectedIndex = 0;
+            ApplyIVFilter.Checked = true;
             ScaleBox.Checked = false;
             MessageBox.Show("Stop Conditions have been reset to default values.");
         }
@@ -116,36 +134,14 @@ namespace PokeViewer.NET.SubForms
             SpaFilter.Value = Settings.Default.SpaFilter;
             SpdFilter.Value = Settings.Default.SpdFilter;
             SpeFilter.Value = Settings.Default.SpeFilter;
-            if (Settings.Default.IgnoreIVFilter)
-                IgnoreIVFilter.Checked = true;
-            PresetIVBox.SelectedIndex = Settings.Default.PresetIVS;
+            HPCon.SelectedIndex = Settings.Default.HpCon;
+            ATKCon.SelectedIndex = Settings.Default.AtkCon;
+            DEFCon.SelectedIndex = Settings.Default.DefCon;
+            SPACon.SelectedIndex = Settings.Default.SpaCon;
+            SPDCon.SelectedIndex = Settings.Default.SpdCon;
+            SPECon.SelectedIndex = Settings.Default.SpeCon;
             ScaleBox.Checked = Settings.Default.MinMaxOnly;
-            IgnoreIVFilter.Checked = Settings.Default.IgnoreIVFilter;
-        }
-
-        private void PresetIVBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            var selection = PresetIVBox.SelectedIndex;
-            switch (selection)
-            {
-                case 0: break; // Disablecheck
-                case 1:
-                    {
-                        HPFilter.Value = 31; AtkFilter.Value = 31; DefFilter.Value = 31; SpaFilter.Value = 31; SpdFilter.Value = 31; SpeFilter.Value = 31; IgnoreIVFilter.Checked = false; break;
-                    }
-                case 2:
-                    {
-                        HPFilter.Value = 31; AtkFilter.Value = 0; DefFilter.Value = 31; SpaFilter.Value = 31; SpdFilter.Value = 31; SpeFilter.Value = 0; IgnoreIVFilter.Checked = false; break;
-                    }
-                case 3:
-                    {
-                        HPFilter.Value = 31; AtkFilter.Value = 0; DefFilter.Value = 31; SpaFilter.Value = 31; SpdFilter.Value = 31; SpeFilter.Value = 31; IgnoreIVFilter.Checked = false; break;
-                    }
-                case 4:
-                    {
-                        HPFilter.Value = 31; AtkFilter.Value = 31; DefFilter.Value = 31; SpaFilter.Value = 31; SpdFilter.Value = 31; SpeFilter.Value = 0; IgnoreIVFilter.Checked = false; break;
-                    }
-            }
+            ApplyIVFilter.Checked = Settings.Default.ApplyIVFilter;
         }
 
         private void ShinyBox_SelectedIndexChanged(object sender, EventArgs e)

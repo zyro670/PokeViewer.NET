@@ -107,8 +107,8 @@ namespace PokeViewer.NET.SubForms
             V_ComboBox.ForeColor = color.Item2;
             comboBox1.BackColor = color.Item1;
             comboBox1.ForeColor = color.Item2;
-            VivillonEditorButton.BackColor = color.Item1;
-            VivillonEditorButton.ForeColor = color.Item2;
+            TimeViewerButton.BackColor = color.Item1;
+            TimeViewerButton.ForeColor = color.Item2;
         }
 
         public void LoadOutbreakCache()
@@ -180,6 +180,10 @@ namespace PokeViewer.NET.SubForms
             while (!token.IsCancellationRequested)
             {
                 dayskip++;
+
+                if (dayskip % 2 == 0)
+                    await ResetTime(token).ConfigureAwait(false);
+
                 if (dayskip % 30 == 0)
                 {
                     OutbreakCache = new();
@@ -212,6 +216,7 @@ namespace PokeViewer.NET.SubForms
                 StatusLabel.Text = "Status: Saving...";
                 UpdateProgress(10, 100);
                 await SVSaveGameOverworld(token).ConfigureAwait(false);
+                await Task.Delay(1_500, token).ConfigureAwait(false);
                 StatusLabel.Text = "Status: Scanning...";
 
                 var block = Blocks.KOutbreakSpecies1;
@@ -709,8 +714,9 @@ namespace PokeViewer.NET.SubForms
                 if (OutbreakSearch.Checked)
                 {
                     StatusLabel.Text = "Status: Skipping...";
-                    await DaySkip(token).ConfigureAwait(false);
-                    await Task.Delay(2_000, token).ConfigureAwait(false);
+                    for (int i = 0; i < 24; i++)
+                        await TimeSkipFwd(token).ConfigureAwait(false);
+                    await Task.Delay(3_000, token).ConfigureAwait(false);
                 }
                 else if (!OutbreakSearch.Checked)
                     break;
@@ -731,6 +737,7 @@ namespace PokeViewer.NET.SubForms
         private async Task ResetGame(CancellationToken token, bool knockout)
         {
             await CloseGame(token).ConfigureAwait(false);
+            await ResetTime(token).ConfigureAwait(false);
             await StartGameScreen(token).ConfigureAwait(false);
             if (knockout is true)
                 await KOToSeventy_Click(token).ConfigureAwait(false);
@@ -911,44 +918,10 @@ namespace PokeViewer.NET.SubForms
             await Task.Delay(delay, token).ConfigureAwait(false);
         }
 
-        private async Task DaySkip(CancellationToken token)
-        {
-            for (int i = 0; i < 2; i++)
-                await Click(B, 0_150, token).ConfigureAwait(false);
-            await Click(HOME, 2_000, token).ConfigureAwait(false); // Back to title screen
-
-            for (int i = 0; i < 2; i++)
-                await Click(DRIGHT, 0_150, token).ConfigureAwait(false);
-            await Click(DDOWN, 0_150, token).ConfigureAwait(false);
-            await Click(DRIGHT, 0_150, token).ConfigureAwait(false);
-            await Click(A, 1_250, token).ConfigureAwait(false); // Enter settings
-
-            await PressAndHold(DDOWN, 2_000, 0_250, token).ConfigureAwait(false); // Scroll to system settings
-            await Click(A, 1_250, token).ConfigureAwait(false);
-
-            if (OverShootButton.Checked)
-            {
-                await PressAndHold(DDOWN, (int)OverShootUpDown.Value, 0_100, token).ConfigureAwait(false);
-                await Click(DUP, 0_500, token).ConfigureAwait(false);
-            }
-            else if (DDOWNButton.Checked)
-            {
-                for (int i = 0; i < DPADUpDown.Value; i++)
-                    await Click(DDOWN, 0_100, token).ConfigureAwait(false);
-            }
-
-            await Click(A, 1_250, token).ConfigureAwait(false);
-            for (int i = 0; i < 2; i++)
-                await Click(DDOWN, 0_250, token).ConfigureAwait(false);
-            await Click(A, 0_500, token).ConfigureAwait(false);
-
-            for (int i = 0; i < 8; i++) // Mash DRIGHT to confirm
-                await Click(DRIGHT, 0_200, token).ConfigureAwait(false);
-
-            await Click(A, 0_200, token).ConfigureAwait(false); // Confirm date/time change
-            await Click(HOME, 1_000, token).ConfigureAwait(false);
-            await Click(A, 2_000, token).ConfigureAwait(false); // Back to title screen
-        }
+        public async Task DaySkip(CancellationToken token) => await Executor.Connection.SendAsync(SwitchCommand.DaySkip(true), token).ConfigureAwait(false);
+        public async Task TimeSkipFwd(CancellationToken token) => await Executor.Connection.SendAsync(SwitchCommand.TimeSkipForward(true), token).ConfigureAwait(false);
+        public async Task TimeSkipBwd(CancellationToken token) => await Executor.Connection.SendAsync(SwitchCommand.TimeSkipBack(true), token).ConfigureAwait(false);
+        public async Task ResetTime(CancellationToken token) => await Executor.Connection.SendAsync(SwitchCommand.ResetTime(true), token).ConfigureAwait(false);
 
         private static HttpClient? _client;
         private static HttpClient Client
@@ -1273,7 +1246,7 @@ namespace PokeViewer.NET.SubForms
             await Click(X, 2_000, token).ConfigureAwait(false);
             await Click(R, 1_800, token).ConfigureAwait(false);
             await Click(A, 5_000, token).ConfigureAwait(false);
-            for (int i = 0; i < 10; i++) // Mash B
+            for (int i = 0; i < 6; i++) // Mash B
                 await Click(B, 0_500, token).ConfigureAwait(false);
         }
 
@@ -1400,9 +1373,9 @@ namespace PokeViewer.NET.SubForms
             form.ShowDialog();
         }
 
-        private void VivillonEditorButton_Click(object sender, EventArgs e)
+        private void TimeViewerButton_Click(object sender, EventArgs e)
         {
-            VivillonEditor form = new(Executor);
+            TimeViewer form = new(Executor);
             form.ShowDialog();
         }
     }

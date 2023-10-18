@@ -218,24 +218,12 @@ namespace PokeViewer.NET.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool IgnoreIVFilter {
+        public bool ApplyIVFilter {
             get {
-                return ((bool)(this["IgnoreIVFilter"]));
+                return ((bool)(this["ApplyIVFilter"]));
             }
             set {
-                this["IgnoreIVFilter"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public int PresetIVS {
-            get {
-                return ((int)(this["PresetIVS"]));
-            }
-            set {
-                this["PresetIVS"] = value;
+                this["ApplyIVFilter"] = value;
             }
         }
         
@@ -368,6 +356,78 @@ namespace PokeViewer.NET.Properties {
             }
             set {
                 this["PingMessage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int HpCon {
+            get {
+                return ((int)(this["HpCon"]));
+            }
+            set {
+                this["HpCon"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int AtkCon {
+            get {
+                return ((int)(this["AtkCon"]));
+            }
+            set {
+                this["AtkCon"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int DefCon {
+            get {
+                return ((int)(this["DefCon"]));
+            }
+            set {
+                this["DefCon"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int SpaCon {
+            get {
+                return ((int)(this["SpaCon"]));
+            }
+            set {
+                this["SpaCon"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int SpdCon {
+            get {
+                return ((int)(this["SpdCon"]));
+            }
+            set {
+                this["SpdCon"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int SpeCon {
+            get {
+                return ((int)(this["SpeCon"]));
+            }
+            set {
+                this["SpeCon"] = value;
             }
         }
     }

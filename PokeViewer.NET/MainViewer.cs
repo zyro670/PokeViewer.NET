@@ -7,6 +7,7 @@ using System.Diagnostics;
 using PokeViewer.NET.Properties;
 using PokeViewer.NET.SubForms;
 using PokeViewer.NET.WideViewForms;
+using System.IO.Compression;
 using static PokeViewer.NET.RoutineExecutor;
 using static PokeViewer.NET.ViewerUtil;
 
@@ -15,8 +16,7 @@ namespace PokeViewer.NET
     public partial class MainViewer : Form
     {
         public ViewerExecutor Executor = null!;
-        private const string ViewerVersion = "2.6.1";
-        private const int AzureBuildID = 460;
+        private const string ViewerVersion = "2.7.0";
         private readonly bool[] FormLoaded = new bool[8];
         private int GameType;
         private SimpleTrainerInfo TrainerInfo = new();
@@ -52,29 +52,6 @@ namespace PokeViewer.NET
             LoadDateTime(sender, e);
         }
 
-        private static void GetVersionsOnStart(int azurematch)
-        {
-            if (azurematch < 0)
-            {
-                DialogResult dialogResult = MessageBox.Show("A new azure-artifact build is available. Go to artifacts page?", "An update is available", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (dialogResult == DialogResult.Yes)
-                    Process.Start(new ProcessStartInfo("https://dev.azure.com/zyrocodez/Project%20Zyro/_build?definitionId=5") { UseShellExecute = true });
-                else if (dialogResult == DialogResult.No)
-                    return;
-            }
-        }
-
-        private static async Task CheckAzureLabel()
-        {
-            int azurematch;
-            string latestazure = "https://dev.azure.com/zyrocodez/Project%20Zyro/_apis/build/builds?definitions=5&$top=1&api-version=5.0-preview.5";
-            HttpClient client = new();
-            var content = await client.GetStringAsync(latestazure);
-            int buildId = int.Parse(content.Substring(135, 3));
-            azurematch = AzureBuildID.CompareTo(buildId);
-            GetVersionsOnStart(azurematch);
-        }
-
         private static async void CheckReleaseLabel()
         {
             GitHubClient client = new(new ProductHeaderValue("PokeViewer.NET"));
@@ -84,11 +61,19 @@ namespace PokeViewer.NET
             int versionComparison = localVersion.CompareTo(latestGitHubVersion);
             if (versionComparison < 0)
             {
-                DialogResult dialogResult = MessageBox.Show("A new PokeViewer.NET release is available. Go to Releases page?", "An update is available", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                DialogResult dialogResult = MessageBox.Show("A new PokeViewer.NET release is available. Download?", "An update is available", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (dialogResult == DialogResult.Yes)
-                    Process.Start(new ProcessStartInfo("https://github.com/zyro670/PokeViewer.NET/releases") { UseShellExecute = true });
+                {
+                    HttpClient httpClient = new();
+                    var file = await httpClient.GetByteArrayAsync($"https://github.com/zyro670/PokeViewer.NET/releases/download/{releases.TagName}/v{releases.TagName}.zip");
+                    File.WriteAllBytes($"PokeViewer.NET-{releases.TagName}.zip", file);
+                    ZipFile.ExtractToDirectory($"PokeViewer.NET-{releases.TagName}.zip", AppDomain.CurrentDomain.BaseDirectory);
+                    await Task.Delay(1_000, CancellationToken.None).ConfigureAwait(false);
+                    File.Delete($"PokeViewer.NET-{releases.TagName}.zip");
+                    MessageBox.Show($"Download complete. Please replace the PokeViewer.exe with the new one found in the v{releases.TagName} folder after you click Ok.", "Update Message");
+                    System.Windows.Forms.Application.Exit();
+                }
             }
-            await CheckAzureLabel().ConfigureAwait(false);
         }
 
         private void LoadOriginDefault()

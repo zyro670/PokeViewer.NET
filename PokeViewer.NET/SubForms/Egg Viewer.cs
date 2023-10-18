@@ -30,7 +30,6 @@ namespace PokeViewer.NET.SubForms
         private int squarecount = 0;
         private PK9 prevShiny = new();
         private readonly byte[] BlankVal = { 0x01 };
-        private int[] IVFilters = Array.Empty<int>();
         private ulong OverworldOffset;
         private DateTime StartTime;
 
@@ -102,7 +101,6 @@ namespace PokeViewer.NET.SubForms
 
         private async Task PerformEggRoutine(CancellationToken token)
         {
-            IVFilters = GrabIvFilters();
             if (FetchButton.Enabled == true)
                 DisableOptions();
 
@@ -239,8 +237,20 @@ namespace PokeViewer.NET.SubForms
                     ForcifyEgg(pk);
             }
 
-            if (!pk.IVs.SequenceEqual(IVFilters) && !Settings.Default.IgnoreIVFilter)
-                return false; // ivs != iv filters and ignore filter is false
+            if (Settings.Default.ApplyIVFilter)
+            {
+                if (Settings.Default.HpCon is 0 && pk.IV_HP != Settings.Default.HPFilter || Settings.Default.AtkCon is 0 && pk.IV_ATK != Settings.Default.AtkFilter || Settings.Default.DefCon is 0 && pk.IV_DEF != Settings.Default.DefFilter ||
+                    Settings.Default.SpaCon is 0 && pk.IV_SPA != Settings.Default.SpaFilter || Settings.Default.SpdCon is 0 && pk.IV_SPD != Settings.Default.SpdFilter || Settings.Default.SpeCon is 0 && pk.IV_SPE != Settings.Default.SpeFilter)
+                    return false;
+
+                if (Settings.Default.HpCon is 1 && pk.IV_HP > Settings.Default.HPFilter || Settings.Default.AtkCon is 1 && pk.IV_ATK > Settings.Default.AtkFilter || Settings.Default.DefCon is 1 && pk.IV_DEF > Settings.Default.DefFilter ||
+                    Settings.Default.SpaCon is 1 && pk.IV_SPA > Settings.Default.SpaFilter || Settings.Default.SpdCon is 1 && pk.IV_SPD > Settings.Default.SpdFilter || Settings.Default.SpeCon is 1 && pk.IV_SPE > Settings.Default.SpeFilter)
+                    return false;
+
+                if (Settings.Default.HpCon is 2 && pk.IV_HP < Settings.Default.HPFilter || Settings.Default.AtkCon is 2 && pk.IV_ATK < Settings.Default.AtkFilter || Settings.Default.DefCon is 2 && pk.IV_DEF < Settings.Default.DefFilter ||
+                    Settings.Default.SpaCon is 2 && pk.IV_SPA < Settings.Default.SpaFilter || Settings.Default.SpdCon is 2 && pk.IV_SPD < Settings.Default.SpdFilter || Settings.Default.SpeCon is 2 && pk.IV_SPE < Settings.Default.SpeFilter)
+                    return false;
+            }
 
             if (pk.Gender != Settings.Default.GenderFilter && Settings.Default.GenderFilter != 3)
                 return false; // gender != gender filter when gender is not Any
@@ -585,11 +595,11 @@ namespace PokeViewer.NET.SubForms
 
         private static object GenerateWebhook(string results, string thumbnail, bool pinguser)
         {
-            string userContent = pinguser ? $"<@{Settings.Default.UserDiscordID}>" : "";
-            string title = pinguser ? $"Match Found!\n{Settings.Default.PingMessage}" : "Unwanted match..";
+            string userContent = pinguser ? $"<@{Settings.Default.UserDiscordID}>\n{Settings.Default.PingMessage}" : "";
+            string title = pinguser ? $"Match Found!" : "Unwanted match..";
             var WebHook = new
             {
-                username = $"EggViewer.NET",
+                username = $"PokéViewer.NET",
                 content = userContent,
                 embeds = new List<object>
                 {
@@ -615,39 +625,12 @@ namespace PokeViewer.NET.SubForms
             miniform.ShowDialog();
         }
 
-        private static int[] GrabIvFilters()
-        {
-            int[] ivsequence = Array.Empty<int>();
-            int filters = Settings.Default.PresetIVS;
-            switch (filters)
-            {
-                case 0: ivsequence = new[] { Settings.Default.HPFilter, Settings.Default.AtkFilter, Settings.Default.DefFilter, Settings.Default.SpaFilter, Settings.Default.SpdFilter, Settings.Default.SpeFilter }; break;
-                case 1: ivsequence = new[] { 31, 31, 31, 31, 31, 31 }; break;
-                case 2: ivsequence = new[] { 31, 0, 31, 31, 31, 0 }; break;
-                case 3: ivsequence = new[] { 31, 0, 31, 31, 31, 31 }; break;
-                case 4: ivsequence = new[] { 31, 31, 31, 31, 31, 0 }; break;
-            }
-            return ivsequence;
-        }
-
-        public Bitmap CropImage(Bitmap source, Rectangle section)
-        {
-            var bitmap = new Bitmap(section.Width, section.Height);
-            using (var g = Graphics.FromImage(bitmap))
-            {
-                g.DrawImage(source, 0, 0, section, GraphicsUnit.Pixel);
-                return bitmap;
-            }
-        }
-
         private void ScreenshotButton_Click(object sender, EventArgs e)
         {
             Rectangle bounds = Bounds;
             Bitmap bmp = new(250, 260);
             DrawToBitmap(bmp, bounds);
-
             Bitmap CroppedImage = bmp.Clone(new(80, 30, bmp.Width - 80, bmp.Height - 30), bmp.PixelFormat);
-
             Clipboard.SetImage(CroppedImage);
             MessageBox.Show("Copied to clipboard!");
         }

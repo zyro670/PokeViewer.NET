@@ -50,11 +50,8 @@
     <Setting Name="SpeFilter" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">31</Value>
     </Setting>
-    <Setting Name="IgnoreIVFilter" Type="System.Boolean" Scope="User">
+    <Setting Name="ApplyIVFilter" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
-    </Setting>
-    <Setting Name="PresetIVS" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="MinMaxOnly" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
@@ -88,6 +85,24 @@
     </Setting>
     <Setting Name="PingMessage" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="HpCon" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="AtkCon" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="DefCon" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="SpaCon" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="SpdCon" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="SpeCon" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -33,7 +33,7 @@
             OutbreakSearch = new CheckBox();
             groupBox1 = new GroupBox();
             OpenMapBlueberry = new Button();
-            VivillonEditorButton = new Button();
+            TimeViewerButton = new Button();
             DPADUpDown = new NumericUpDown();
             DDOWNButton = new RadioButton();
             comboBox1 = new ComboBox();
@@ -173,7 +173,7 @@
             // groupBox1
             // 
             groupBox1.Controls.Add(OpenMapBlueberry);
-            groupBox1.Controls.Add(VivillonEditorButton);
+            groupBox1.Controls.Add(TimeViewerButton);
             groupBox1.Controls.Add(DPADUpDown);
             groupBox1.Controls.Add(DDOWNButton);
             groupBox1.Controls.Add(comboBox1);
@@ -218,15 +218,15 @@
             OpenMapBlueberry.Text = "Blueberry";
             OpenMapBlueberry.UseVisualStyleBackColor = true;
             // 
-            // VivillonEditorButton
+            // TimeViewerButton
             // 
-            VivillonEditorButton.Location = new Point(3, 17);
-            VivillonEditorButton.Name = "VivillonEditorButton";
-            VivillonEditorButton.Size = new Size(91, 23);
-            VivillonEditorButton.TabIndex = 23;
-            VivillonEditorButton.Text = "Vivillon Editor";
-            VivillonEditorButton.UseVisualStyleBackColor = true;
-            VivillonEditorButton.Click += VivillonEditorButton_Click;
+            TimeViewerButton.Location = new Point(3, 17);
+            TimeViewerButton.Name = "TimeViewerButton";
+            TimeViewerButton.Size = new Size(91, 23);
+            TimeViewerButton.TabIndex = 23;
+            TimeViewerButton.Text = "Time Viewer";
+            TimeViewerButton.UseVisualStyleBackColor = true;
+            TimeViewerButton.Click += TimeViewerButton_Click;
             // 
             // DPADUpDown
             // 
@@ -1105,7 +1105,7 @@
         private Button OpenMapKitakami;
         private ComboBox comboBox1;
         private Button button1;
-        private Button VivillonEditorButton;
+        private Button TimeViewerButton;
         private Label Ob1Results;
         private GroupBox PaldeaGroup;
         private GroupBox KitakamiGroup;

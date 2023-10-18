@@ -21,7 +21,7 @@
         [STAThread]
         private void button1_Click(object sender, EventArgs e)
         {
-            Thread STAThread = new Thread(
+            Thread STAThread = new(
             delegate ()
             {
                 var token = CancellationToken.None;
