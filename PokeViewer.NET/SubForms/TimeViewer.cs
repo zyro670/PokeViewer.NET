@@ -17,7 +17,8 @@ namespace PokeViewer.NET.SubForms
             button2.Enabled = false;
             button3.Enabled = false;
 
-            await Executor.SwitchConnection.SendAsync(SwitchCommand.TimeSkipBack(true), CancellationToken.None).ConfigureAwait(false);
+            for (int i = 0; i < numericUpDown1.Value; i++)
+                await Executor.SwitchConnection.SendAsync(SwitchCommand.TimeSkipBack(true), CancellationToken.None).ConfigureAwait(false);
             //ulong unix = (ulong)await Executor.SwitchConnection.SendAsync(SwitchCommand.GetUnixTime(true), CancellationToken.None).ConfigureAwait(false);
             //DateTime Today = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(unix).ToLocalTime();            
             button1.Enabled = true;
@@ -33,7 +34,8 @@ namespace PokeViewer.NET.SubForms
             button2.Enabled = false;
             button3.Enabled = false;
 
-            await Executor.SwitchConnection.SendAsync(SwitchCommand.TimeSkipForward(true), CancellationToken.None).ConfigureAwait(false);
+            for (int i = 0; i < numericUpDown1.Value; i++)
+                await Executor.SwitchConnection.SendAsync(SwitchCommand.TimeSkipForward(true), CancellationToken.None).ConfigureAwait(false);
             //ulong unix = (ulong)await Executor.SwitchConnection.SendAsync(SwitchCommand.GetUnixTime(true), CancellationToken.None).ConfigureAwait(false);
             //DateTime Today = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(unix).ToLocalTime();
             button1.Enabled = true;
