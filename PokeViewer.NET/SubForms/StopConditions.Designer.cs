@@ -392,7 +392,9 @@
             ClientSize = new Size(422, 263);
             ControlBox = false;
             Controls.Add(StopConditionsGroup);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
             Name = "StopConditions";
+            StartPosition = FormStartPosition.CenterParent;
             Text = "Stop Conditions";
             StopConditionsGroup.ResumeLayout(false);
             StopConditionsGroup.PerformLayout();
