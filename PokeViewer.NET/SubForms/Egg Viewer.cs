@@ -271,7 +271,7 @@ namespace PokeViewer.NET.SubForms
                                 SendNotifications(PokeStats.Text, SpriteUrl, match);
                             EnableOptions();
                             Activate();
-                            MessageBox.Show("Match found! Claim your egg before closing the picnic!");
+                            MessageBox.Show("Match found! Make sure to move your match to a different spot from Box 1 Slot 1 or it will be deleted on the next bot start.");
                             return;
                         }
                     }
