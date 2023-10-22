@@ -18,9 +18,9 @@ Special credits and thanks to the minds behind the resources used for this proje
 -----
 
 Requirements:
-- CFW
-- [SysBot.Base](https://github.com/Koi-3088/sys-usb-botbase/releases)
-- [ldn_mitm](https://github.com/spacemeowx2/ldn_mitm/releases) for Sword and Shield titles without being connected to Y-COMM. Not required for other titles.
+- CFW.
+- [usb-botbase hybrid](https://github.com/zyro670/PokeViewer.NET/releases).
+- [ldn_mitm](https://github.com/Lusamine/ldn_mitm/releases) for Sword and Shield titles without being connected to Y-COMM. Not required for other titles.
 
 -----
 
