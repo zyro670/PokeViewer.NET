@@ -64,8 +64,8 @@
             pictureBox4 = new PictureBox();
             pictureBox5 = new PictureBox();
             pictureBox6 = new PictureBox();
-            label2 = new Label();
-            DumpEggCheck = new CheckBox();
+            BasketCount = new Label();
+            ForceDumpCheck = new CheckBox();
             ((System.ComponentModel.ISupportInitialize)PokeSpriteBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)BallBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)NumberOfFillings).BeginInit();
@@ -425,24 +425,25 @@
             pictureBox6.TabIndex = 74;
             pictureBox6.TabStop = false;
             // 
-            // label2
+            // BasketCount
             // 
-            label2.AutoSize = true;
-            label2.Location = new Point(257, 285);
-            label2.Name = "label2";
-            label2.Size = new Size(45, 15);
-            label2.TabIndex = 78;
-            label2.Text = "Status: ";
+            BasketCount.AutoSize = true;
+            BasketCount.Location = new Point(257, 285);
+            BasketCount.Name = "BasketCount";
+            BasketCount.Size = new Size(77, 15);
+            BasketCount.TabIndex = 78;
+            BasketCount.Text = "BasketCount:";
             // 
-            // DumpEggCheck
+            // ForceDumpCheck
             // 
-            DumpEggCheck.AutoSize = true;
-            DumpEggCheck.Location = new Point(362, 118);
-            DumpEggCheck.Name = "DumpEggCheck";
-            DumpEggCheck.Size = new Size(64, 19);
-            DumpEggCheck.TabIndex = 79;
-            DumpEggCheck.Text = "Dump?";
-            DumpEggCheck.UseVisualStyleBackColor = true;
+            ForceDumpCheck.AutoSize = true;
+            ForceDumpCheck.Location = new Point(362, 118);
+            ForceDumpCheck.Name = "ForceDumpCheck";
+            ForceDumpCheck.Size = new Size(46, 19);
+            ForceDumpCheck.TabIndex = 79;
+            ForceDumpCheck.Text = "👻 ?";
+            ForceDumpCheck.UseVisualStyleBackColor = true;
+            ForceDumpCheck.CheckedChanged += ForceEgg_CheckedChanged;
             // 
             // Egg_Viewer
             // 
@@ -450,8 +451,8 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.Control;
             ClientSize = new Size(426, 404);
-            Controls.Add(DumpEggCheck);
-            Controls.Add(label2);
+            Controls.Add(ForceDumpCheck);
+            Controls.Add(BasketCount);
             Controls.Add(pictureBox6);
             Controls.Add(pictureBox5);
             Controls.Add(pictureBox4);
@@ -542,7 +543,7 @@
         private PictureBox pictureBox4;
         private PictureBox pictureBox5;
         private PictureBox pictureBox6;
-        private Label label2;
-        private CheckBox DumpEggCheck;
+        private Label BasketCount;
+        private CheckBox ForceDumpCheck;
     }
 }
