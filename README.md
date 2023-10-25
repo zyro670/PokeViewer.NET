@@ -19,7 +19,7 @@ Special credits and thanks to the minds behind the resources used for this proje
 
 Requirements:
 - CFW.
-- [usb-botbase hybrid](https://github.com/zyro670/PokeViewer.NET/releases).
+- [usb-botbase hybrid](https://github.com/zyro670/PokeViewer.NET/releases](https://github.com/zyro670/usb-botbase/releases/tag/2.3.5)).
 - [ldn_mitm](https://github.com/Lusamine/ldn_mitm/releases) for Sword and Shield titles without being connected to Y-COMM. Not required for other titles.
 
 -----
