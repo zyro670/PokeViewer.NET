@@ -1,6 +1,6 @@
 ﻿namespace PokeViewer.NET.SubForms
 {
-    partial class MiscView
+    partial class OutbreakViewSV
     {
         /// <summary>
         /// Required designer variable.
@@ -28,26 +28,18 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(OutbreakViewSV));
             OutbreakScan = new Button();
             label9 = new Label();
             OutbreakSearch = new CheckBox();
             groupBox1 = new GroupBox();
             OpenMapBlueberry = new Button();
             TimeViewerButton = new Button();
-            DPADUpDown = new NumericUpDown();
-            DDOWNButton = new RadioButton();
             comboBox1 = new ComboBox();
-            OverShootButton = new RadioButton();
             OpenMapKitakami = new Button();
             UptimeLabel = new Label();
             DaySkipTotal = new Label();
             StatusLabel = new Label();
-            OverShootUpDown = new NumericUpDown();
-            Form = new Label();
-            RemoveSpecies = new Button();
-            SpeciesBox = new ComboBox();
-            AddSpecies = new Button();
-            FormBox = new NumericUpDown();
             Apply0To77 = new CheckBox();
             EnableWebhook = new CheckBox();
             HardStopOutbreak = new CheckBox();
@@ -104,20 +96,23 @@
             ObResults4 = new Label();
             ObResults16 = new Label();
             ObResults15 = new Label();
+            ScanForEventOutbreak = new CheckBox();
             groupBox4 = new GroupBox();
+            pictureBox1 = new PictureBox();
             ClearList = new Button();
             SaveList = new Button();
             ViewList = new Button();
-            ScanForEventOutbreak = new CheckBox();
+            FormBox = new NumericUpDown();
+            AddSpecies = new Button();
+            SpeciesBox = new ComboBox();
+            RemoveSpecies = new Button();
+            Form = new Label();
             ReadValues = new Button();
             VivForm = new Label();
             ChangeFormButton = new Button();
             V_ComboBox = new ComboBox();
             button1 = new Button();
             groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)DPADUpDown).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)OverShootUpDown).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)FormBox).BeginInit();
             KitakamiGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)ObSprite11).BeginInit();
             ((System.ComponentModel.ISupportInitialize)ObSprite9).BeginInit();
@@ -138,14 +133,16 @@
             ((System.ComponentModel.ISupportInitialize)ObSprite14).BeginInit();
             ((System.ComponentModel.ISupportInitialize)ObSprite16).BeginInit();
             groupBox4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)FormBox).BeginInit();
             SuspendLayout();
             // 
             // OutbreakScan
             // 
             OutbreakScan.BackColor = Color.Transparent;
-            OutbreakScan.Location = new Point(4, 122);
+            OutbreakScan.Location = new Point(7, 122);
             OutbreakScan.Name = "OutbreakScan";
-            OutbreakScan.Size = new Size(98, 27);
+            OutbreakScan.Size = new Size(100, 47);
             OutbreakScan.TabIndex = 6;
             OutbreakScan.Text = "Scan";
             OutbreakScan.UseVisualStyleBackColor = false;
@@ -154,7 +151,7 @@
             // label9
             // 
             label9.AutoSize = true;
-            label9.Location = new Point(7, 386);
+            label9.Location = new Point(2, 50);
             label9.Name = "label9";
             label9.Size = new Size(46, 15);
             label9.TabIndex = 16;
@@ -163,7 +160,7 @@
             // OutbreakSearch
             // 
             OutbreakSearch.AutoSize = true;
-            OutbreakSearch.Location = new Point(5, 75);
+            OutbreakSearch.Location = new Point(8, 75);
             OutbreakSearch.Name = "OutbreakSearch";
             OutbreakSearch.Size = new Size(66, 19);
             OutbreakSearch.TabIndex = 17;
@@ -174,20 +171,11 @@
             // 
             groupBox1.Controls.Add(OpenMapBlueberry);
             groupBox1.Controls.Add(TimeViewerButton);
-            groupBox1.Controls.Add(DPADUpDown);
-            groupBox1.Controls.Add(DDOWNButton);
             groupBox1.Controls.Add(comboBox1);
-            groupBox1.Controls.Add(OverShootButton);
             groupBox1.Controls.Add(OpenMapKitakami);
             groupBox1.Controls.Add(UptimeLabel);
             groupBox1.Controls.Add(DaySkipTotal);
             groupBox1.Controls.Add(StatusLabel);
-            groupBox1.Controls.Add(OverShootUpDown);
-            groupBox1.Controls.Add(Form);
-            groupBox1.Controls.Add(RemoveSpecies);
-            groupBox1.Controls.Add(SpeciesBox);
-            groupBox1.Controls.Add(AddSpecies);
-            groupBox1.Controls.Add(FormBox);
             groupBox1.Controls.Add(Apply0To77);
             groupBox1.Controls.Add(EnableWebhook);
             groupBox1.Controls.Add(HardStopOutbreak);
@@ -198,12 +186,11 @@
             groupBox1.Controls.Add(KitakamiGroup);
             groupBox1.Controls.Add(PaldeaGroup);
             groupBox1.Controls.Add(BlueberryGroup);
-            groupBox1.Controls.Add(groupBox4);
-            groupBox1.Controls.Add(label9);
             groupBox1.Controls.Add(ScanForEventOutbreak);
-            groupBox1.Location = new Point(12, 3);
+            groupBox1.Controls.Add(groupBox4);
+            groupBox1.Location = new Point(15, 3);
             groupBox1.Name = "groupBox1";
-            groupBox1.Size = new Size(458, 432);
+            groupBox1.Size = new Size(468, 432);
             groupBox1.TabIndex = 18;
             groupBox1.TabStop = false;
             groupBox1.Text = "Outbreak Conditions";
@@ -211,16 +198,16 @@
             // OpenMapBlueberry
             // 
             OpenMapBlueberry.Enabled = false;
-            OpenMapBlueberry.Location = new Point(336, 122);
+            OpenMapBlueberry.Location = new Point(339, 122);
             OpenMapBlueberry.Name = "OpenMapBlueberry";
-            OpenMapBlueberry.Size = new Size(115, 27);
+            OpenMapBlueberry.Size = new Size(117, 47);
             OpenMapBlueberry.TabIndex = 66;
             OpenMapBlueberry.Text = "Blueberry";
             OpenMapBlueberry.UseVisualStyleBackColor = true;
             // 
             // TimeViewerButton
             // 
-            TimeViewerButton.Location = new Point(3, 17);
+            TimeViewerButton.Location = new Point(6, 17);
             TimeViewerButton.Name = "TimeViewerButton";
             TimeViewerButton.Size = new Size(91, 23);
             TimeViewerButton.TabIndex = 23;
@@ -228,53 +215,22 @@
             TimeViewerButton.UseVisualStyleBackColor = true;
             TimeViewerButton.Click += TimeViewerButton_Click;
             // 
-            // DPADUpDown
-            // 
-            DPADUpDown.Location = new Point(397, 16);
-            DPADUpDown.Name = "DPADUpDown";
-            DPADUpDown.Size = new Size(54, 23);
-            DPADUpDown.TabIndex = 44;
-            DPADUpDown.TextAlign = HorizontalAlignment.Center;
-            DPADUpDown.Value = new decimal(new int[] { 38, 0, 0, 0 });
-            // 
-            // DDOWNButton
-            // 
-            DDOWNButton.AutoSize = true;
-            DDOWNButton.Checked = true;
-            DDOWNButton.Location = new Point(291, 18);
-            DDOWNButton.Name = "DDOWNButton";
-            DDOWNButton.Size = new Size(92, 19);
-            DDOWNButton.TabIndex = 43;
-            DDOWNButton.TabStop = true;
-            DDOWNButton.Text = "Use DDOWN";
-            DDOWNButton.UseVisualStyleBackColor = true;
-            // 
             // comboBox1
             // 
             comboBox1.FormattingEnabled = true;
             comboBox1.Items.AddRange(new object[] { "All", "Paldea", "Kitakami" });
-            comboBox1.Location = new Point(4, 95);
+            comboBox1.Location = new Point(7, 95);
             comboBox1.Name = "comboBox1";
             comboBox1.Size = new Size(98, 23);
             comboBox1.TabIndex = 61;
             comboBox1.Text = "All";
             comboBox1.SelectedIndexChanged += SelectedIndex_IsChanged;
             // 
-            // OverShootButton
-            // 
-            OverShootButton.AutoSize = true;
-            OverShootButton.Location = new Point(291, 41);
-            OverShootButton.Name = "OverShootButton";
-            OverShootButton.Size = new Size(103, 19);
-            OverShootButton.TabIndex = 42;
-            OverShootButton.Text = "Use OverShoot";
-            OverShootButton.UseVisualStyleBackColor = true;
-            // 
             // OpenMapKitakami
             // 
-            OpenMapKitakami.Location = new Point(215, 122);
+            OpenMapKitakami.Location = new Point(218, 122);
             OpenMapKitakami.Name = "OpenMapKitakami";
-            OpenMapKitakami.Size = new Size(115, 27);
+            OpenMapKitakami.Size = new Size(117, 47);
             OpenMapKitakami.TabIndex = 60;
             OpenMapKitakami.Text = "Kitakami";
             OpenMapKitakami.UseVisualStyleBackColor = true;
@@ -283,7 +239,7 @@
             // UptimeLabel
             // 
             UptimeLabel.AutoSize = true;
-            UptimeLabel.Location = new Point(107, 58);
+            UptimeLabel.Location = new Point(110, 58);
             UptimeLabel.Name = "UptimeLabel";
             UptimeLabel.Size = new Size(49, 15);
             UptimeLabel.TabIndex = 41;
@@ -292,7 +248,7 @@
             // DaySkipTotal
             // 
             DaySkipTotal.AutoSize = true;
-            DaySkipTotal.Location = new Point(107, 38);
+            DaySkipTotal.Location = new Point(110, 38);
             DaySkipTotal.Name = "DaySkipTotal";
             DaySkipTotal.Size = new Size(60, 15);
             DaySkipTotal.TabIndex = 40;
@@ -301,74 +257,16 @@
             // StatusLabel
             // 
             StatusLabel.AutoSize = true;
-            StatusLabel.Location = new Point(107, 19);
+            StatusLabel.Location = new Point(110, 19);
             StatusLabel.Name = "StatusLabel";
             StatusLabel.Size = new Size(42, 15);
             StatusLabel.TabIndex = 39;
             StatusLabel.Text = "Status:";
             // 
-            // OverShootUpDown
-            // 
-            OverShootUpDown.Location = new Point(397, 43);
-            OverShootUpDown.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
-            OverShootUpDown.Minimum = new decimal(new int[] { 500, 0, 0, 0 });
-            OverShootUpDown.Name = "OverShootUpDown";
-            OverShootUpDown.Size = new Size(54, 23);
-            OverShootUpDown.TabIndex = 13;
-            OverShootUpDown.TextAlign = HorizontalAlignment.Center;
-            OverShootUpDown.Value = new decimal(new int[] { 920, 0, 0, 0 });
-            // 
-            // Form
-            // 
-            Form.AutoSize = true;
-            Form.Location = new Point(178, 385);
-            Form.Name = "Form";
-            Form.Size = new Size(35, 15);
-            Form.TabIndex = 47;
-            Form.Text = "Form";
-            // 
-            // RemoveSpecies
-            // 
-            RemoveSpecies.BackColor = Color.Transparent;
-            RemoveSpecies.Location = new Point(371, 382);
-            RemoveSpecies.Name = "RemoveSpecies";
-            RemoveSpecies.Size = new Size(80, 23);
-            RemoveSpecies.TabIndex = 46;
-            RemoveSpecies.Text = "Remove";
-            RemoveSpecies.UseVisualStyleBackColor = false;
-            RemoveSpecies.Click += RemoveSpecies_Click;
-            // 
-            // SpeciesBox
-            // 
-            SpeciesBox.FormattingEnabled = true;
-            SpeciesBox.Location = new Point(59, 383);
-            SpeciesBox.Name = "SpeciesBox";
-            SpeciesBox.Size = new Size(113, 23);
-            SpeciesBox.TabIndex = 45;
-            // 
-            // AddSpecies
-            // 
-            AddSpecies.BackColor = Color.Transparent;
-            AddSpecies.Location = new Point(285, 382);
-            AddSpecies.Name = "AddSpecies";
-            AddSpecies.Size = new Size(80, 23);
-            AddSpecies.TabIndex = 44;
-            AddSpecies.Text = "Add";
-            AddSpecies.UseVisualStyleBackColor = false;
-            AddSpecies.Click += AddSpecies_Click;
-            // 
-            // FormBox
-            // 
-            FormBox.Location = new Point(215, 382);
-            FormBox.Maximum = new decimal(new int[] { 20, 0, 0, 0 });
-            FormBox.Name = "FormBox";
-            FormBox.Size = new Size(61, 23);
-            FormBox.TabIndex = 43;
-            // 
             // Apply0To77
             // 
             Apply0To77.AutoSize = true;
-            Apply0To77.Location = new Point(5, 41);
+            Apply0To77.Location = new Point(8, 41);
             Apply0To77.Name = "Apply0To77";
             Apply0To77.Size = new Size(94, 19);
             Apply0To77.TabIndex = 40;
@@ -378,7 +276,7 @@
             // EnableWebhook
             // 
             EnableWebhook.AutoSize = true;
-            EnableWebhook.Location = new Point(5, 58);
+            EnableWebhook.Location = new Point(8, 58);
             EnableWebhook.Name = "EnableWebhook";
             EnableWebhook.Size = new Size(82, 19);
             EnableWebhook.TabIndex = 37;
@@ -388,7 +286,7 @@
             // HardStopOutbreak
             // 
             HardStopOutbreak.AutoSize = true;
-            HardStopOutbreak.Location = new Point(110, 75);
+            HardStopOutbreak.Location = new Point(113, 75);
             HardStopOutbreak.Name = "HardStopOutbreak";
             HardStopOutbreak.Size = new Size(81, 19);
             HardStopOutbreak.TabIndex = 18;
@@ -397,17 +295,17 @@
             // 
             // progressBar1
             // 
-            progressBar1.Location = new Point(9, 410);
+            progressBar1.Location = new Point(6, 408);
             progressBar1.Name = "progressBar1";
-            progressBar1.Size = new Size(442, 15);
+            progressBar1.Size = new Size(450, 15);
             progressBar1.TabIndex = 39;
             // 
             // OpenMapPaldea
             // 
             OpenMapPaldea.BackColor = Color.Transparent;
-            OpenMapPaldea.Location = new Point(108, 122);
+            OpenMapPaldea.Location = new Point(111, 122);
             OpenMapPaldea.Name = "OpenMapPaldea";
-            OpenMapPaldea.Size = new Size(101, 27);
+            OpenMapPaldea.Size = new Size(103, 47);
             OpenMapPaldea.TabIndex = 41;
             OpenMapPaldea.Text = "Paldea";
             OpenMapPaldea.UseVisualStyleBackColor = false;
@@ -427,16 +325,16 @@
             KitakamiGroup.Controls.Add(ObResults10);
             KitakamiGroup.Controls.Add(ObResults11);
             KitakamiGroup.Controls.Add(ObResults12);
-            KitakamiGroup.Location = new Point(215, 145);
+            KitakamiGroup.Location = new Point(218, 165);
             KitakamiGroup.Name = "KitakamiGroup";
-            KitakamiGroup.Size = new Size(115, 234);
+            KitakamiGroup.Size = new Size(117, 234);
             KitakamiGroup.TabIndex = 64;
             KitakamiGroup.TabStop = false;
             // 
             // ObCount12
             // 
             ObCount12.AutoSize = true;
-            ObCount12.Location = new Point(64, 194);
+            ObCount12.Location = new Point(67, 194);
             ObCount12.Name = "ObCount12";
             ObCount12.Size = new Size(0, 15);
             ObCount12.TabIndex = 63;
@@ -444,7 +342,7 @@
             // ObCount11
             // 
             ObCount11.AutoSize = true;
-            ObCount11.Location = new Point(64, 138);
+            ObCount11.Location = new Point(67, 138);
             ObCount11.Name = "ObCount11";
             ObCount11.Size = new Size(0, 15);
             ObCount11.TabIndex = 62;
@@ -452,7 +350,7 @@
             // ObCount10
             // 
             ObCount10.AutoSize = true;
-            ObCount10.Location = new Point(64, 83);
+            ObCount10.Location = new Point(67, 83);
             ObCount10.Name = "ObCount10";
             ObCount10.Size = new Size(0, 15);
             ObCount10.TabIndex = 61;
@@ -461,14 +359,14 @@
             // 
             ObCount9.AutoSize = true;
             ObCount9.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            ObCount9.Location = new Point(64, 29);
+            ObCount9.Location = new Point(67, 29);
             ObCount9.Name = "ObCount9";
             ObCount9.Size = new Size(0, 13);
             ObCount9.TabIndex = 60;
             // 
             // ObSprite11
             // 
-            ObSprite11.Location = new Point(15, 121);
+            ObSprite11.Location = new Point(18, 121);
             ObSprite11.Name = "ObSprite11";
             ObSprite11.Size = new Size(45, 40);
             ObSprite11.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -477,7 +375,7 @@
             // 
             // ObSprite9
             // 
-            ObSprite9.Location = new Point(15, 11);
+            ObSprite9.Location = new Point(18, 11);
             ObSprite9.Name = "ObSprite9";
             ObSprite9.Size = new Size(45, 40);
             ObSprite9.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -486,7 +384,7 @@
             // 
             // ObSprite10
             // 
-            ObSprite10.Location = new Point(15, 68);
+            ObSprite10.Location = new Point(18, 68);
             ObSprite10.Name = "ObSprite10";
             ObSprite10.Size = new Size(45, 40);
             ObSprite10.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -495,7 +393,7 @@
             // 
             // ObSprite12
             // 
-            ObSprite12.Location = new Point(15, 179);
+            ObSprite12.Location = new Point(18, 179);
             ObSprite12.Name = "ObSprite12";
             ObSprite12.Size = new Size(45, 40);
             ObSprite12.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -506,7 +404,7 @@
             // 
             ObResults9.AutoSize = true;
             ObResults9.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            ObResults9.Location = new Point(13, 53);
+            ObResults9.Location = new Point(16, 53);
             ObResults9.Name = "ObResults9";
             ObResults9.Size = new Size(35, 13);
             ObResults9.TabIndex = 52;
@@ -516,7 +414,7 @@
             // 
             ObResults10.AutoSize = true;
             ObResults10.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            ObResults10.Location = new Point(13, 109);
+            ObResults10.Location = new Point(16, 109);
             ObResults10.Name = "ObResults10";
             ObResults10.Size = new Size(35, 13);
             ObResults10.TabIndex = 53;
@@ -526,7 +424,7 @@
             // 
             ObResults11.AutoSize = true;
             ObResults11.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            ObResults11.Location = new Point(13, 164);
+            ObResults11.Location = new Point(16, 164);
             ObResults11.Name = "ObResults11";
             ObResults11.Size = new Size(35, 13);
             ObResults11.TabIndex = 54;
@@ -536,7 +434,7 @@
             // 
             ObResults12.AutoSize = true;
             ObResults12.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            ObResults12.Location = new Point(13, 218);
+            ObResults12.Location = new Point(16, 218);
             ObResults12.Name = "ObResults12";
             ObResults12.Size = new Size(35, 13);
             ObResults12.TabIndex = 55;
@@ -568,7 +466,7 @@
             PaldeaGroup.Controls.Add(Ob2Results);
             PaldeaGroup.Controls.Add(Ob3Results);
             PaldeaGroup.Controls.Add(Ob4Results);
-            PaldeaGroup.Location = new Point(4, 145);
+            PaldeaGroup.Location = new Point(7, 165);
             PaldeaGroup.Name = "PaldeaGroup";
             PaldeaGroup.Size = new Size(205, 234);
             PaldeaGroup.TabIndex = 63;
@@ -577,7 +475,7 @@
             // ObCount8
             // 
             ObCount8.AutoSize = true;
-            ObCount8.Location = new Point(159, 194);
+            ObCount8.Location = new Point(162, 194);
             ObCount8.Name = "ObCount8";
             ObCount8.Size = new Size(0, 15);
             ObCount8.TabIndex = 44;
@@ -585,7 +483,7 @@
             // ObCount7
             // 
             ObCount7.AutoSize = true;
-            ObCount7.Location = new Point(159, 138);
+            ObCount7.Location = new Point(162, 138);
             ObCount7.Name = "ObCount7";
             ObCount7.Size = new Size(0, 15);
             ObCount7.TabIndex = 43;
@@ -593,7 +491,7 @@
             // ObCount6
             // 
             ObCount6.AutoSize = true;
-            ObCount6.Location = new Point(159, 83);
+            ObCount6.Location = new Point(162, 83);
             ObCount6.Name = "ObCount6";
             ObCount6.Size = new Size(0, 15);
             ObCount6.TabIndex = 42;
@@ -601,7 +499,7 @@
             // ObCount5
             // 
             ObCount5.AutoSize = true;
-            ObCount5.Location = new Point(159, 29);
+            ObCount5.Location = new Point(162, 29);
             ObCount5.Name = "ObCount5";
             ObCount5.Size = new Size(0, 15);
             ObCount5.TabIndex = 41;
@@ -609,7 +507,7 @@
             // ObCount4
             // 
             ObCount4.AutoSize = true;
-            ObCount4.Location = new Point(57, 194);
+            ObCount4.Location = new Point(60, 194);
             ObCount4.Name = "ObCount4";
             ObCount4.Size = new Size(0, 15);
             ObCount4.TabIndex = 40;
@@ -617,7 +515,7 @@
             // ObCount3
             // 
             ObCount3.AutoSize = true;
-            ObCount3.Location = new Point(57, 138);
+            ObCount3.Location = new Point(60, 138);
             ObCount3.Name = "ObCount3";
             ObCount3.Size = new Size(0, 15);
             ObCount3.TabIndex = 39;
@@ -625,7 +523,7 @@
             // ObCount2
             // 
             ObCount2.AutoSize = true;
-            ObCount2.Location = new Point(57, 83);
+            ObCount2.Location = new Point(60, 83);
             ObCount2.Name = "ObCount2";
             ObCount2.Size = new Size(0, 15);
             ObCount2.TabIndex = 38;
@@ -633,14 +531,14 @@
             // ObCount1
             // 
             ObCount1.AutoSize = true;
-            ObCount1.Location = new Point(57, 29);
+            ObCount1.Location = new Point(60, 29);
             ObCount1.Name = "ObCount1";
             ObCount1.Size = new Size(0, 15);
             ObCount1.TabIndex = 37;
             // 
             // OBSprite1
             // 
-            OBSprite1.Location = new Point(8, 13);
+            OBSprite1.Location = new Point(11, 13);
             OBSprite1.Name = "OBSprite1";
             OBSprite1.Size = new Size(45, 40);
             OBSprite1.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -649,7 +547,7 @@
             // 
             // OBSprite2
             // 
-            OBSprite2.Location = new Point(8, 68);
+            OBSprite2.Location = new Point(11, 68);
             OBSprite2.Name = "OBSprite2";
             OBSprite2.Size = new Size(45, 40);
             OBSprite2.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -658,7 +556,7 @@
             // 
             // OBSprite3
             // 
-            OBSprite3.Location = new Point(8, 123);
+            OBSprite3.Location = new Point(11, 123);
             OBSprite3.Name = "OBSprite3";
             OBSprite3.Size = new Size(45, 40);
             OBSprite3.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -667,7 +565,7 @@
             // 
             // OBSprite4
             // 
-            OBSprite4.Location = new Point(8, 179);
+            OBSprite4.Location = new Point(11, 179);
             OBSprite4.Name = "OBSprite4";
             OBSprite4.Size = new Size(45, 40);
             OBSprite4.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -676,7 +574,7 @@
             // 
             // OBSprite5
             // 
-            OBSprite5.Location = new Point(110, 13);
+            OBSprite5.Location = new Point(113, 13);
             OBSprite5.Name = "OBSprite5";
             OBSprite5.Size = new Size(45, 40);
             OBSprite5.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -685,7 +583,7 @@
             // 
             // OBSprite6
             // 
-            OBSprite6.Location = new Point(110, 69);
+            OBSprite6.Location = new Point(113, 69);
             OBSprite6.Name = "OBSprite6";
             OBSprite6.Size = new Size(45, 40);
             OBSprite6.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -694,7 +592,7 @@
             // 
             // OBSprite7
             // 
-            OBSprite7.Location = new Point(110, 121);
+            OBSprite7.Location = new Point(113, 121);
             OBSprite7.Name = "OBSprite7";
             OBSprite7.Size = new Size(45, 40);
             OBSprite7.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -703,7 +601,7 @@
             // 
             // OBSprite8
             // 
-            OBSprite8.Location = new Point(110, 179);
+            OBSprite8.Location = new Point(113, 179);
             OBSprite8.Name = "OBSprite8";
             OBSprite8.Size = new Size(45, 40);
             OBSprite8.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -714,7 +612,7 @@
             // 
             Ob5Results.AutoSize = true;
             Ob5Results.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            Ob5Results.Location = new Point(106, 54);
+            Ob5Results.Location = new Point(109, 54);
             Ob5Results.Name = "Ob5Results";
             Ob5Results.Size = new Size(35, 13);
             Ob5Results.TabIndex = 23;
@@ -724,7 +622,7 @@
             // 
             Ob6Results.AutoSize = true;
             Ob6Results.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            Ob6Results.Location = new Point(106, 109);
+            Ob6Results.Location = new Point(109, 109);
             Ob6Results.Name = "Ob6Results";
             Ob6Results.Size = new Size(35, 13);
             Ob6Results.TabIndex = 24;
@@ -734,7 +632,7 @@
             // 
             Ob7Results.AutoSize = true;
             Ob7Results.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            Ob7Results.Location = new Point(106, 164);
+            Ob7Results.Location = new Point(109, 164);
             Ob7Results.Name = "Ob7Results";
             Ob7Results.Size = new Size(35, 13);
             Ob7Results.TabIndex = 25;
@@ -744,7 +642,7 @@
             // 
             Ob8Results.AutoSize = true;
             Ob8Results.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            Ob8Results.Location = new Point(106, 218);
+            Ob8Results.Location = new Point(109, 218);
             Ob8Results.Name = "Ob8Results";
             Ob8Results.Size = new Size(35, 13);
             Ob8Results.TabIndex = 26;
@@ -754,7 +652,7 @@
             // 
             Ob1Results.AutoSize = true;
             Ob1Results.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            Ob1Results.Location = new Point(5, 54);
+            Ob1Results.Location = new Point(8, 54);
             Ob1Results.Name = "Ob1Results";
             Ob1Results.Size = new Size(35, 13);
             Ob1Results.TabIndex = 19;
@@ -764,7 +662,7 @@
             // 
             Ob2Results.AutoSize = true;
             Ob2Results.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            Ob2Results.Location = new Point(5, 109);
+            Ob2Results.Location = new Point(8, 109);
             Ob2Results.Name = "Ob2Results";
             Ob2Results.Size = new Size(35, 13);
             Ob2Results.TabIndex = 20;
@@ -774,7 +672,7 @@
             // 
             Ob3Results.AutoSize = true;
             Ob3Results.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            Ob3Results.Location = new Point(5, 164);
+            Ob3Results.Location = new Point(8, 164);
             Ob3Results.Name = "Ob3Results";
             Ob3Results.Size = new Size(35, 13);
             Ob3Results.TabIndex = 21;
@@ -784,7 +682,7 @@
             // 
             Ob4Results.AutoSize = true;
             Ob4Results.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            Ob4Results.Location = new Point(3, 218);
+            Ob4Results.Location = new Point(6, 218);
             Ob4Results.Name = "Ob4Results";
             Ob4Results.Size = new Size(35, 13);
             Ob4Results.TabIndex = 22;
@@ -804,16 +702,16 @@
             BlueberryGroup.Controls.Add(ObResults4);
             BlueberryGroup.Controls.Add(ObResults16);
             BlueberryGroup.Controls.Add(ObResults15);
-            BlueberryGroup.Location = new Point(336, 145);
+            BlueberryGroup.Location = new Point(339, 165);
             BlueberryGroup.Name = "BlueberryGroup";
-            BlueberryGroup.Size = new Size(115, 234);
+            BlueberryGroup.Size = new Size(117, 234);
             BlueberryGroup.TabIndex = 65;
             BlueberryGroup.TabStop = false;
             // 
             // ObCount16
             // 
             ObCount16.AutoSize = true;
-            ObCount16.Location = new Point(62, 194);
+            ObCount16.Location = new Point(65, 194);
             ObCount16.Name = "ObCount16";
             ObCount16.Size = new Size(0, 15);
             ObCount16.TabIndex = 71;
@@ -821,7 +719,7 @@
             // ObCount15
             // 
             ObCount15.AutoSize = true;
-            ObCount15.Location = new Point(62, 138);
+            ObCount15.Location = new Point(65, 138);
             ObCount15.Name = "ObCount15";
             ObCount15.Size = new Size(0, 15);
             ObCount15.TabIndex = 70;
@@ -829,7 +727,7 @@
             // ObCount14
             // 
             ObCount14.AutoSize = true;
-            ObCount14.Location = new Point(62, 83);
+            ObCount14.Location = new Point(65, 83);
             ObCount14.Name = "ObCount14";
             ObCount14.Size = new Size(0, 15);
             ObCount14.TabIndex = 69;
@@ -837,14 +735,14 @@
             // ObCount13
             // 
             ObCount13.AutoSize = true;
-            ObCount13.Location = new Point(62, 26);
+            ObCount13.Location = new Point(65, 26);
             ObCount13.Name = "ObCount13";
             ObCount13.Size = new Size(0, 15);
             ObCount13.TabIndex = 68;
             // 
             // ObSprite15
             // 
-            ObSprite15.Location = new Point(13, 121);
+            ObSprite15.Location = new Point(16, 121);
             ObSprite15.Name = "ObSprite15";
             ObSprite15.Size = new Size(45, 40);
             ObSprite15.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -853,7 +751,7 @@
             // 
             // ObSprite13
             // 
-            ObSprite13.Location = new Point(13, 11);
+            ObSprite13.Location = new Point(16, 11);
             ObSprite13.Name = "ObSprite13";
             ObSprite13.Size = new Size(45, 40);
             ObSprite13.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -862,7 +760,7 @@
             // 
             // ObSprite14
             // 
-            ObSprite14.Location = new Point(13, 68);
+            ObSprite14.Location = new Point(16, 68);
             ObSprite14.Name = "ObSprite14";
             ObSprite14.Size = new Size(45, 40);
             ObSprite14.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -871,7 +769,7 @@
             // 
             // ObSprite16
             // 
-            ObSprite16.Location = new Point(13, 179);
+            ObSprite16.Location = new Point(16, 179);
             ObSprite16.Name = "ObSprite16";
             ObSprite16.Size = new Size(45, 40);
             ObSprite16.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -882,7 +780,7 @@
             // 
             ObResults13.AutoSize = true;
             ObResults13.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            ObResults13.Location = new Point(10, 53);
+            ObResults13.Location = new Point(13, 53);
             ObResults13.Name = "ObResults13";
             ObResults13.Size = new Size(43, 13);
             ObResults13.TabIndex = 60;
@@ -892,7 +790,7 @@
             // 
             ObResults4.AutoSize = true;
             ObResults4.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            ObResults4.Location = new Point(11, 108);
+            ObResults4.Location = new Point(14, 108);
             ObResults4.Name = "ObResults4";
             ObResults4.Size = new Size(43, 13);
             ObResults4.TabIndex = 61;
@@ -902,7 +800,7 @@
             // 
             ObResults16.AutoSize = true;
             ObResults16.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            ObResults16.Location = new Point(10, 218);
+            ObResults16.Location = new Point(13, 218);
             ObResults16.Name = "ObResults16";
             ObResults16.Size = new Size(43, 13);
             ObResults16.TabIndex = 63;
@@ -912,28 +810,55 @@
             // 
             ObResults15.AutoSize = true;
             ObResults15.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
-            ObResults15.Location = new Point(10, 164);
+            ObResults15.Location = new Point(13, 164);
             ObResults15.Name = "ObResults15";
             ObResults15.Size = new Size(43, 13);
             ObResults15.TabIndex = 62;
             ObResults15.Text = "Soon™";
             // 
+            // ScanForEventOutbreak
+            // 
+            ScanForEventOutbreak.AutoSize = true;
+            ScanForEventOutbreak.Location = new Point(113, 94);
+            ScanForEventOutbreak.Name = "ScanForEventOutbreak";
+            ScanForEventOutbreak.Size = new Size(79, 19);
+            ScanForEventOutbreak.TabIndex = 67;
+            ScanForEventOutbreak.Text = "Event OB?";
+            ScanForEventOutbreak.UseVisualStyleBackColor = true;
+            // 
             // groupBox4
             // 
+            groupBox4.Controls.Add(pictureBox1);
             groupBox4.Controls.Add(ClearList);
             groupBox4.Controls.Add(SaveList);
             groupBox4.Controls.Add(ViewList);
-            groupBox4.Location = new Point(215, 67);
+            groupBox4.Controls.Add(FormBox);
+            groupBox4.Controls.Add(AddSpecies);
+            groupBox4.Controls.Add(SpeciesBox);
+            groupBox4.Controls.Add(RemoveSpecies);
+            groupBox4.Controls.Add(label9);
+            groupBox4.Controls.Add(Form);
+            groupBox4.Location = new Point(218, 12);
             groupBox4.Name = "groupBox4";
-            groupBox4.Size = new Size(236, 46);
+            groupBox4.Size = new Size(238, 104);
             groupBox4.TabIndex = 22;
             groupBox4.TabStop = false;
             groupBox4.Text = "Search List";
             // 
+            // pictureBox1
+            // 
+            pictureBox1.Image = (Image)resources.GetObject("pictureBox1.Image");
+            pictureBox1.Location = new Point(99, 11);
+            pictureBox1.Name = "pictureBox1";
+            pictureBox1.Size = new Size(44, 34);
+            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+            pictureBox1.TabIndex = 49;
+            pictureBox1.TabStop = false;
+            // 
             // ClearList
             // 
             ClearList.BackColor = Color.Transparent;
-            ClearList.Location = new Point(158, 17);
+            ClearList.Location = new Point(161, 75);
             ClearList.Name = "ClearList";
             ClearList.Size = new Size(74, 23);
             ClearList.TabIndex = 48;
@@ -944,9 +869,9 @@
             // SaveList
             // 
             SaveList.BackColor = Color.Transparent;
-            SaveList.Location = new Point(81, 17);
+            SaveList.Location = new Point(149, 18);
             SaveList.Name = "SaveList";
-            SaveList.Size = new Size(74, 23);
+            SaveList.Size = new Size(86, 23);
             SaveList.TabIndex = 47;
             SaveList.Text = "Save";
             SaveList.UseVisualStyleBackColor = false;
@@ -955,60 +880,97 @@
             // ViewList
             // 
             ViewList.BackColor = Color.Transparent;
-            ViewList.Location = new Point(4, 17);
+            ViewList.Location = new Point(7, 18);
             ViewList.Name = "ViewList";
-            ViewList.Size = new Size(74, 23);
+            ViewList.Size = new Size(86, 23);
             ViewList.TabIndex = 42;
             ViewList.Text = "View";
             ViewList.UseVisualStyleBackColor = false;
             ViewList.Click += button1_Click;
             // 
-            // ScanForEventOutbreak
+            // FormBox
             // 
-            ScanForEventOutbreak.AutoSize = true;
-            ScanForEventOutbreak.Location = new Point(110, 94);
-            ScanForEventOutbreak.Name = "ScanForEventOutbreak";
-            ScanForEventOutbreak.Size = new Size(79, 19);
-            ScanForEventOutbreak.TabIndex = 67;
-            ScanForEventOutbreak.Text = "Event OB?";
-            ScanForEventOutbreak.UseVisualStyleBackColor = true;
+            FormBox.Location = new Point(174, 47);
+            FormBox.Maximum = new decimal(new int[] { 20, 0, 0, 0 });
+            FormBox.Name = "FormBox";
+            FormBox.Size = new Size(61, 23);
+            FormBox.TabIndex = 43;
+            // 
+            // AddSpecies
+            // 
+            AddSpecies.BackColor = Color.Transparent;
+            AddSpecies.Location = new Point(7, 75);
+            AddSpecies.Name = "AddSpecies";
+            AddSpecies.Size = new Size(75, 23);
+            AddSpecies.TabIndex = 44;
+            AddSpecies.Text = "Add";
+            AddSpecies.UseVisualStyleBackColor = false;
+            AddSpecies.Click += AddSpecies_Click;
+            // 
+            // SpeciesBox
+            // 
+            SpeciesBox.FormattingEnabled = true;
+            SpeciesBox.Location = new Point(49, 47);
+            SpeciesBox.Name = "SpeciesBox";
+            SpeciesBox.Size = new Size(91, 23);
+            SpeciesBox.TabIndex = 45;
+            // 
+            // RemoveSpecies
+            // 
+            RemoveSpecies.BackColor = Color.Transparent;
+            RemoveSpecies.Location = new Point(84, 75);
+            RemoveSpecies.Name = "RemoveSpecies";
+            RemoveSpecies.Size = new Size(75, 23);
+            RemoveSpecies.TabIndex = 46;
+            RemoveSpecies.Text = "Remove";
+            RemoveSpecies.UseVisualStyleBackColor = false;
+            RemoveSpecies.Click += RemoveSpecies_Click;
+            // 
+            // Form
+            // 
+            Form.AutoSize = true;
+            Form.Location = new Point(140, 50);
+            Form.Name = "Form";
+            Form.Size = new Size(35, 15);
+            Form.TabIndex = 47;
+            Form.Text = "Form";
             // 
             // ReadValues
             // 
-            ReadValues.Location = new Point(0, 0);
+            ReadValues.Location = new Point(3, 0);
             ReadValues.Name = "ReadValues";
             ReadValues.Size = new Size(75, 23);
             ReadValues.TabIndex = 0;
             // 
             // VivForm
             // 
-            VivForm.Location = new Point(0, 0);
+            VivForm.Location = new Point(3, 0);
             VivForm.Name = "VivForm";
             VivForm.Size = new Size(100, 23);
             VivForm.TabIndex = 0;
             // 
             // ChangeFormButton
             // 
-            ChangeFormButton.Location = new Point(0, 0);
+            ChangeFormButton.Location = new Point(3, 0);
             ChangeFormButton.Name = "ChangeFormButton";
             ChangeFormButton.Size = new Size(75, 23);
             ChangeFormButton.TabIndex = 0;
             // 
             // V_ComboBox
             // 
-            V_ComboBox.Location = new Point(0, 0);
+            V_ComboBox.Location = new Point(3, 0);
             V_ComboBox.Name = "V_ComboBox";
             V_ComboBox.Size = new Size(121, 23);
             V_ComboBox.TabIndex = 0;
             // 
             // button1
             // 
-            button1.Location = new Point(0, 0);
+            button1.Location = new Point(3, 0);
             button1.Name = "button1";
             button1.Size = new Size(75, 23);
             button1.TabIndex = 0;
             // 
-            // MiscView
+            // OutbreakViewSV
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -1016,13 +978,10 @@
             ClientSize = new Size(482, 442);
             Controls.Add(groupBox1);
             FormBorderStyle = FormBorderStyle.None;
-            Name = "MiscView";
+            Name = "OutbreakViewSV";
             Text = "MiscView";
             groupBox1.ResumeLayout(false);
             groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)DPADUpDown).EndInit();
-            ((System.ComponentModel.ISupportInitialize)OverShootUpDown).EndInit();
-            ((System.ComponentModel.ISupportInitialize)FormBox).EndInit();
             KitakamiGroup.ResumeLayout(false);
             KitakamiGroup.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)ObSprite11).EndInit();
@@ -1046,6 +1005,9 @@
             ((System.ComponentModel.ISupportInitialize)ObSprite14).EndInit();
             ((System.ComponentModel.ISupportInitialize)ObSprite16).EndInit();
             groupBox4.ResumeLayout(false);
+            groupBox4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)FormBox).EndInit();
             ResumeLayout(false);
         }
 
@@ -1076,13 +1038,9 @@
         private Button ReadValues;
         private ComboBox V_ComboBox;
         private ProgressBar progressBar1;
-        private NumericUpDown OverShootUpDown;
         private Label StatusLabel;
         private Label DaySkipTotal;
         private Label UptimeLabel;
-        private NumericUpDown DPADUpDown;
-        private RadioButton DDOWNButton;
-        private RadioButton OverShootButton;
         private CheckBox Apply0To77;
         private Button OpenMapPaldea;
         private Button ViewList;
@@ -1091,7 +1049,6 @@
         private ComboBox SpeciesBox;
         private Button RemoveSpecies;
         private Button SaveList;
-        private GroupBox groupBox4;
         private Label Form;
         private Button ClearList;
         private PictureBox ObSprite12;
@@ -1136,5 +1093,7 @@
         private Label ObCount14;
         private Label ObCount13;
         private CheckBox ScanForEventOutbreak;
+        private GroupBox groupBox4;
+        private PictureBox pictureBox1;
     }
 }

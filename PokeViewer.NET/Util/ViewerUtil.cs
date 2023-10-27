@@ -195,14 +195,6 @@ namespace PokeViewer.NET
             IsEncrypted = true,
             Size = 1,
         };
-        public static DataBlock KBCATOutbreakPokeData = new()
-        {
-            Name = "KBCATOutbreakPokeData",
-            Key = 0x6C1A131B,
-            Type = SCTypeCode.Array,
-            IsEncrypted = true,
-            Size = 12,
-        };
         public static DataBlock KBCATOutbreakEnabled = new()
         {
             Name = "KBCATOutbreakEnabled",

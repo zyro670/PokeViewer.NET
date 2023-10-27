@@ -10,7 +10,7 @@ using static PokeViewer.NET.RoutineExecutor;
 
 namespace PokeViewer.NET.SubForms
 {
-    public partial class MiscView : Form
+    public partial class OutbreakViewSV : Form
     {
         private readonly ViewerExecutor Executor;
         private static ulong BaseBlockKeyPointer = 0;
@@ -28,7 +28,7 @@ namespace PokeViewer.NET.SubForms
         private List<byte[]?> MapPOSK = new();
         private List<PK9> pkList = new();
         protected ViewerOffsets Offsets { get; } = new();
-        public MiscView(ViewerExecutor executor, (Color, Color) color)
+        public OutbreakViewSV(ViewerExecutor executor, (Color, Color) color)
         {
             InitializeComponent();
             Executor = executor;
@@ -39,7 +39,6 @@ namespace PokeViewer.NET.SubForms
             if (File.Exists(path))
                 LoadFilters(path);
 
-            OverShootUpDown.Value = Settings.Default.MiscOvershoot;
             LoadOutbreakCache();
         }
 
@@ -95,10 +94,8 @@ namespace PokeViewer.NET.SubForms
             groupBox4.ForeColor = color.Item2;
             BlueberryGroup.BackColor = color.Item1;
             BlueberryGroup.ForeColor = color.Item2;
-            DPADUpDown.BackColor = color.Item1;
-            DPADUpDown.ForeColor = color.Item2;
-            OverShootUpDown.BackColor = color.Item1;
-            OverShootUpDown.ForeColor = color.Item2;
+            pictureBox1.BackColor = color.Item1;
+            pictureBox1.ForeColor = color.Item2;
             SpeciesBox.BackColor = color.Item1;
             SpeciesBox.ForeColor = color.Item2;
             FormBox.BackColor = color.Item1;
@@ -131,9 +128,6 @@ namespace PokeViewer.NET.SubForms
         private async Task SearchForOutbreak(CancellationToken token)
         {
             BaseBlockKeyPointer = await Executor.SwitchConnection.PointerAll(Offsets.BlockKeyPointer, token).ConfigureAwait(false);
-
-            Settings.Default.MiscOvershoot = OverShootUpDown.Value;
-            Settings.Default.Save();
 
             Label[] Plist = { Ob1Results, Ob2Results, Ob3Results, Ob4Results, Ob5Results, Ob6Results, Ob7Results, Ob8Results };
             PictureBox[] SprP = { OBSprite1, OBSprite2, OBSprite3, OBSprite4, OBSprite5, OBSprite6, OBSprite7, OBSprite8 };
@@ -383,15 +377,15 @@ namespace PokeViewer.NET.SubForms
                                 switch (i)
                                 {
                                     case 0: break;
-                                    case 1: BCOcenter = Blocks.KOutbreakBC02MainCenterPos; break;
-                                    case 2: BCOcenter = Blocks.KOutbreakBC03MainCenterPos; break;
-                                    case 3: BCOcenter = Blocks.KOutbreakBC04MainCenterPos; break;
-                                    case 4: BCOcenter = Blocks.KOutbreakBC05MainCenterPos; break;
-                                    case 5: BCOcenter = Blocks.KOutbreakBC06MainCenterPos; break;
-                                    case 6: BCOcenter = Blocks.KOutbreakBC07MainCenterPos; break;
-                                    case 7: BCOcenter = Blocks.KOutbreakBC08MainCenterPos; break;
-                                    case 8: BCOcenter = Blocks.KOutbreakBC09MainCenterPos; break;
-                                    case 9: BCOcenter = Blocks.KOutbreakBC10MainCenterPos; break;
+                                    case 1: BCOspecies = Blocks.KOutbreakBC02MainSpecies; BCOform = Blocks.KOutbreakBC02MainForm; BCOko = Blocks.KOutbreakBC02MainNumKOed; BCOtotal = Blocks.KOutbreakBC02MainTotalSpawns; BCOcenter = Blocks.KOutbreakBC02MainCenterPos; break;
+                                    case 2: BCOspecies = Blocks.KOutbreakBC03MainSpecies; BCOform = Blocks.KOutbreakBC03MainForm; BCOko = Blocks.KOutbreakBC03MainNumKOed; BCOtotal = Blocks.KOutbreakBC03MainTotalSpawns; BCOcenter = Blocks.KOutbreakBC03MainCenterPos; break;
+                                    case 3: BCOspecies = Blocks.KOutbreakBC04MainSpecies; BCOform = Blocks.KOutbreakBC04MainForm; BCOko = Blocks.KOutbreakBC04MainNumKOed; BCOtotal = Blocks.KOutbreakBC04MainTotalSpawns; BCOcenter = Blocks.KOutbreakBC04MainCenterPos; break;
+                                    case 4: BCOspecies = Blocks.KOutbreakBC05MainSpecies; BCOform = Blocks.KOutbreakBC05MainForm; BCOko = Blocks.KOutbreakBC05MainNumKOed; BCOtotal = Blocks.KOutbreakBC05MainTotalSpawns; BCOcenter = Blocks.KOutbreakBC05MainCenterPos; break;
+                                    case 5: BCOspecies = Blocks.KOutbreakBC06MainSpecies; BCOform = Blocks.KOutbreakBC06MainForm; BCOko = Blocks.KOutbreakBC06MainNumKOed; BCOtotal = Blocks.KOutbreakBC06MainTotalSpawns; BCOcenter = Blocks.KOutbreakBC06MainCenterPos; break;
+                                    case 6: BCOspecies = Blocks.KOutbreakBC07MainSpecies; BCOform = Blocks.KOutbreakBC07MainForm; BCOko = Blocks.KOutbreakBC07MainNumKOed; BCOtotal = Blocks.KOutbreakBC07MainTotalSpawns; BCOcenter = Blocks.KOutbreakBC07MainCenterPos; break;
+                                    case 7: BCOspecies = Blocks.KOutbreakBC08MainSpecies; BCOform = Blocks.KOutbreakBC08MainForm; BCOko = Blocks.KOutbreakBC08MainNumKOed; BCOtotal = Blocks.KOutbreakBC08MainTotalSpawns; BCOcenter = Blocks.KOutbreakBC08MainCenterPos; break;
+                                    case 8: BCOspecies = Blocks.KOutbreakBC09MainSpecies; BCOform = Blocks.KOutbreakBC09MainForm; BCOko = Blocks.KOutbreakBC09MainNumKOed; BCOtotal = Blocks.KOutbreakBC09MainTotalSpawns; BCOcenter = Blocks.KOutbreakBC09MainCenterPos; break;
+                                    case 9: BCOspecies = Blocks.KOutbreakBC10MainSpecies; BCOform = Blocks.KOutbreakBC10MainForm; BCOko = Blocks.KOutbreakBC10MainNumKOed; BCOtotal = Blocks.KOutbreakBC10MainTotalSpawns; BCOcenter = Blocks.KOutbreakBC10MainCenterPos; break;
                                 }
                                 if (i > OutbreaktotalBCP)
                                     continue;
@@ -453,15 +447,15 @@ namespace PokeViewer.NET.SubForms
                                 switch (i)
                                 {
                                     case 10: break;
-                                    case 11: BCOcenter = Blocks.KOutbreakBC02DLC1CenterPos; break;
-                                    case 12: BCOcenter = Blocks.KOutbreakBC03DLC1CenterPos; break;
-                                    case 13: BCOcenter = Blocks.KOutbreakBC04DLC1CenterPos; break;
-                                    case 14: BCOcenter = Blocks.KOutbreakBC05DLC1CenterPos; break;
-                                    case 15: BCOcenter = Blocks.KOutbreakBC06DLC1CenterPos; break;
-                                    case 16: BCOcenter = Blocks.KOutbreakBC07DLC1CenterPos; break;
-                                    case 17: BCOcenter = Blocks.KOutbreakBC08DLC1CenterPos; break;
-                                    case 18: BCOcenter = Blocks.KOutbreakBC09DLC1CenterPos; break;
-                                    case 19: BCOcenter = Blocks.KOutbreakBC10DLC1CenterPos; break;
+                                    case 11: BCOspecies = Blocks.KOutbreakBC02DLC1Species; BCOform = Blocks.KOutbreakBC02DLC1Form; BCOko = Blocks.KOutbreakBC02DLC1NumKOed; BCOtotal = Blocks.KOutbreakBC02DLC1TotalSpawns; BCOcenter = Blocks.KOutbreakBC02DLC1CenterPos; break;
+                                    case 12: BCOspecies = Blocks.KOutbreakBC03DLC1Species; BCOform = Blocks.KOutbreakBC03DLC1Form; BCOko = Blocks.KOutbreakBC03DLC1NumKOed; BCOtotal = Blocks.KOutbreakBC03DLC1TotalSpawns; BCOcenter = Blocks.KOutbreakBC03DLC1CenterPos; break;
+                                    case 13: BCOspecies = Blocks.KOutbreakBC04DLC1Species; BCOform = Blocks.KOutbreakBC04DLC1Form; BCOko = Blocks.KOutbreakBC04DLC1NumKOed; BCOtotal = Blocks.KOutbreakBC04DLC1TotalSpawns; BCOcenter = Blocks.KOutbreakBC04DLC1CenterPos; break;
+                                    case 14: BCOspecies = Blocks.KOutbreakBC05DLC1Species; BCOform = Blocks.KOutbreakBC05DLC1Form; BCOko = Blocks.KOutbreakBC05DLC1NumKOed; BCOtotal = Blocks.KOutbreakBC05DLC1TotalSpawns; BCOcenter = Blocks.KOutbreakBC05DLC1CenterPos; break;
+                                    case 15: BCOspecies = Blocks.KOutbreakBC06DLC1Species; BCOform = Blocks.KOutbreakBC06DLC1Form; BCOko = Blocks.KOutbreakBC06DLC1NumKOed; BCOtotal = Blocks.KOutbreakBC06DLC1TotalSpawns; BCOcenter = Blocks.KOutbreakBC06DLC1CenterPos; break;
+                                    case 16: BCOspecies = Blocks.KOutbreakBC07DLC1Species; BCOform = Blocks.KOutbreakBC07DLC1Form; BCOko = Blocks.KOutbreakBC07DLC1NumKOed; BCOtotal = Blocks.KOutbreakBC07DLC1TotalSpawns; BCOcenter = Blocks.KOutbreakBC07DLC1CenterPos; break;
+                                    case 17: BCOspecies = Blocks.KOutbreakBC08DLC1Species; BCOform = Blocks.KOutbreakBC08DLC1Form; BCOko = Blocks.KOutbreakBC08DLC1NumKOed; BCOtotal = Blocks.KOutbreakBC08DLC1TotalSpawns; BCOcenter = Blocks.KOutbreakBC08DLC1CenterPos; break;
+                                    case 18: BCOspecies = Blocks.KOutbreakBC09DLC1Species; BCOform = Blocks.KOutbreakBC09DLC1Form; BCOko = Blocks.KOutbreakBC09DLC1NumKOed; BCOtotal = Blocks.KOutbreakBC09DLC1TotalSpawns; BCOcenter = Blocks.KOutbreakBC09DLC1CenterPos; break;
+                                    case 19: BCOspecies = Blocks.KOutbreakBC10DLC1Species; BCOform = Blocks.KOutbreakBC10DLC1Form; BCOko = Blocks.KOutbreakBC10DLC1NumKOed; BCOtotal = Blocks.KOutbreakBC10DLC1TotalSpawns; BCOcenter = Blocks.KOutbreakBC10DLC1CenterPos; break;
                                 }
                                 if (i > OutbreaktotalBCK + 10)
                                     continue;
@@ -828,7 +822,7 @@ namespace PokeViewer.NET.SubForms
             {
                 for (int i = 0; i < 10; i++)
                 {
-                    StatusLabel.Text = $"KOing PaldeaEvent: {10 * i}%";
+                    StatusLabel.Text = $"KOing PaldeaBC: {10 * i}%";
                     switch (i)
                     {
                         case 0: koblock = Blocks.KOutbreakBC01MainNumKOed; break;
@@ -853,7 +847,7 @@ namespace PokeViewer.NET.SubForms
             {
                 for (int i = 0; i < 10; i++)
                 {
-                    StatusLabel.Text = $"KOing KitakamiEvent: {10 * i}%";
+                    StatusLabel.Text = $"KOing KitaBC: {10 * i}%";
                     switch (i)
                     {
                         case 0: koblock = Blocks.KOutbreakBC01DLC1NumKOed; break;

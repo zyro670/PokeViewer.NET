@@ -16,7 +16,7 @@ namespace PokeViewer.NET
     public partial class MainViewer : Form
     {
         public ViewerExecutor Executor = null!;
-        private const string ViewerVersion = "2.7.3";
+        private const string ViewerVersion = "2.7.4";
         private readonly bool[] FormLoaded = new bool[8];
         private int GameType;
         private SimpleTrainerInfo TrainerInfo = new();
@@ -801,7 +801,7 @@ namespace PokeViewer.NET
                 case "Egg 🥚": form = new Egg_Viewer(GameType, Executor, colors) { TopLevel = false }; FormLoaded[4] = true; break;
                 case "NPC 🤖": form = new NPCViewer(GameType, Executor, colors) { TopLevel = false }; FormLoaded[5] = true; break;
                 case "Screenshot 📷": form = new ScreenshotForm(Executor, colors) { TopLevel = false }; FormLoaded[6] = true; break;
-                case "Misc 📓": form = new MiscView(Executor, colors) { TopLevel = false }; FormLoaded[7] = true; break;
+                case "Misc 📓": form = new OutbreakViewSV(Executor, colors) { TopLevel = false }; FormLoaded[7] = true; break;
             }
 
             int curr = ViewerControl.SelectedIndex;
