@@ -227,6 +227,7 @@
             MaximizeBox = false;
             MinimizeBox = false;
             Name = "WideViewerLA";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "PokeViewer.NET - WideViewLA";
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();

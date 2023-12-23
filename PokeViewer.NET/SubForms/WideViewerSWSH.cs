@@ -70,8 +70,8 @@ namespace PokeViewer.NET.WideViewForms
                 {
                     uint fishing = 0x4505B640 + i * Offsets.KCoordIncrement;
                     byte[] check = await Executor.SwitchConnection.ReadBytesAsync(fishing, 4, token).ConfigureAwait(false);
-                    Species species = (Species)BitConverter.ToUInt16(check.Slice(0, 2), 0);
-                    var form = (byte)BitConverter.ToUInt16(check.Slice(0x2, 2), 0);
+                    Species species = (Species)BitConverter.ToUInt16(check.AsSpan(0, 2));
+                    var form = (byte)BitConverter.ToUInt16(check.AsSpan(0x2, 2));
                     if (species == 0 || species > Species.MAX_COUNT || !PersonalTable.SWSH.IsPresentInGame((ushort)species, form))
                         continue;
 
@@ -90,8 +90,8 @@ namespace PokeViewer.NET.WideViewForms
 
                         uint startingoffset = Offsets.StartingOffset + i * Offsets.KCoordIncrement;
                         byte[] check = await Executor.SwitchConnection.ReadBytesAsync(startingoffset, 4, token).ConfigureAwait(false);
-                        Species species = (Species)BitConverter.ToUInt16(check.Slice(0, 2), 0);
-                        var form = (byte)BitConverter.ToUInt16(check.Slice(0x2, 2), 0);
+                        Species species = (Species)BitConverter.ToUInt16(check.AsSpan(0, 2));
+                        var form = (byte)BitConverter.ToUInt16(check.AsSpan(0x2, 2));
                         if (species == 0 || species > Species.MAX_COUNT || !PersonalTable.SWSH.IsPresentInGame((ushort)species, form))
                             continue;
 
@@ -153,8 +153,8 @@ namespace PokeViewer.NET.WideViewForms
                 var newoffset = offset + i * Offsets.KCoordIncrement;
                 var data = await Executor.SwitchConnection.ReadBytesAsync(newoffset, 56, token).ConfigureAwait(false);
 
-                species = (Species)BitConverter.ToUInt16(data.Slice(0, 2), 0);
-                var form = (byte)BitConverter.ToUInt16(data.Slice(0x2, 2), 0);
+                species = (Species)BitConverter.ToUInt16(data.AsSpan(0, 2));
+                var form = (byte)BitConverter.ToUInt16(data.AsSpan(0x2, 2));
                 if (species == 0 || species > Species.MAX_COUNT || !PersonalTable.SWSH.IsPresentInGame((ushort)species, form))
                     continue;
                 var lastdata = await Executor.SwitchConnection.ReadBytesAsync(newoffset + 0x39, 1, token).ConfigureAwait(false);
@@ -162,15 +162,15 @@ namespace PokeViewer.NET.WideViewForms
                     continue;
                 PK8 pk = new();
                 pk.Species = (ushort)species;
-                pk.Form = (byte)BitConverter.ToUInt16(data.Slice(0x2, 2), 0);
-                pk.Gender = BitConverter.ToUInt16(data.Slice(0x10, 2), 0);
+                pk.Form = (byte)BitConverter.ToUInt16(data.AsSpan(0x2, 2));
+                pk.Gender = BitConverter.ToUInt16(data.AsSpan(0x10, 2));
                 pk.SetNature(data[8]);
                 pk.SetAbility(data[12] - 1);
                 if (data[22] != 255)
                     pk.SetRibbonIndex((RibbonIndex)data[22]);
                 var hasMark = HasMark(pk, out RibbonIndex mark);
                 string msg = hasMark ? $"{Environment.NewLine}Mark: {mark.ToString().Replace("Mark", "")}" : "";
-                aura = BitConverter.ToUInt16(data.Slice(0x20, 2), 0);
+                aura = BitConverter.ToUInt16(data.AsSpan(0x20, 2));
                 overworldseed = BitConverter.ToUInt32(await Executor.SwitchConnection.ReadBytesAsync(newoffset + 0x18, 4, token).ConfigureAwait(false), 0);
 
                 var shinytype = BitConverter.ToUInt16(await Executor.SwitchConnection.ReadBytesAsync(newoffset + 0x6, 2, token).ConfigureAwait(false), 0);

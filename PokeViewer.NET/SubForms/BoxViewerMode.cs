@@ -2,6 +2,7 @@
 using PKHeX.Core;
 using PKHeX.Drawing;
 using PKHeX.Drawing.Misc;
+using PKHeX.Drawing.PokeSprite;
 using PokeViewer.NET.SubForms;
 using static PokeViewer.NET.RoutineExecutor;
 using static PokeViewer.NET.ViewerUtil;
@@ -15,6 +16,13 @@ namespace PokeViewer.NET
         private ToolTip tt = new();
         private bool ReadInProgress;
         private List<string> CurrentSlotStats = new();
+        private List<string> CurrentSlotSpecies = new();
+        private List<string> CurrentSlotNature = new();
+        private List<string> CurrentSlotAbility = new();
+        private List<string> CurrentSlotIVs = new();
+        private List<string> CurrentSlotScale = new();
+        private List<string> CurrentSlotMark = new();
+        private List<string> CurrentSlotBall = new();
         private List<PKM> PKMs = new();
         private readonly ViewerExecutor Executor;
         private ulong AbsoluteBoxOffset;
@@ -55,6 +63,14 @@ namespace PokeViewer.NET
             button2.ForeColor = color.Item2;
             comboBox1.BackColor = color.Item1;
             comboBox1.ForeColor = color.Item2;
+            HidePIDECCheck.BackColor = color.Item1;
+            HidePIDECCheck.ForeColor = color.Item2;
+            CSVCheck.BackColor = color.Item1;
+            CSVCheck.ForeColor = color.Item2;
+            DumpCheck.BackColor = color.Item1;
+            DumpCheck.ForeColor = color.Item2;
+            ViewAllCheck.BackColor = color.Item1;
+            ViewAllCheck.ForeColor = color.Item2;
 
             PictureBox[] boxes =
             {
@@ -122,7 +138,7 @@ namespace PokeViewer.NET
             FlexButton.Enabled = true;
         }
 
-        private async Task ReadBoxes(int boxnumber, CancellationToken token)
+        public async Task ReadBoxes(int boxnumber, CancellationToken token)
         {
             PictureBox[] boxes =
             {
@@ -146,8 +162,6 @@ namespace PokeViewer.NET
             var trainersubfolder = $"BoxViewer\\{(GameSelected)GameType}\\{TrainerInfo.OT}-{TrainerInfo.TID16}";
             if (!Directory.Exists(trainersubfolder))
                 Directory.CreateDirectory(trainersubfolder);
-            if (Directory.Exists(trainersubfolder))
-                NewFolder(trainersubfolder);
 
             try
             {
@@ -186,25 +200,19 @@ namespace PokeViewer.NET
             ViewAllCheck.Enabled = true;
         }
 
-        private static void NewFolder(string path)
-        {
-            string name = @"\New Folder";
-            string current = name;
-            int i = 0;
-            while (Directory.Exists(path + current))
-            {
-                i++;
-                current = String.Format("{0} {1}", name, i);
-            }
-            Directory.CreateDirectory(path + current);
-        }
-
-        private async Task BoxRoutine(int box, PictureBox[] boxes, List<Image> images, List<Color> colors, PKM pk, bool dumpall, CancellationToken token)
+        public async Task BoxRoutine(int box, PictureBox[] boxes, List<Image> images, List<Color> colors, PKM pk, bool dumpall, CancellationToken token)
         {
             CurrentSlotStats = new();
+            CurrentSlotSpecies = new();
+            CurrentSlotNature = new();
+            CurrentSlotAbility = new();
+            CurrentSlotIVs = new();
+            CurrentSlotScale = new();
+            CurrentSlotMark = new();
+            CurrentSlotBall = new();
             if (GameType is (int)GameSelected.Scarlet or (int)GameSelected.Violet && AbsoluteBoxOffset == 0)
             {
-                var SVptr = new long[] { 0x4617648, 0x1C0, 0x30, 0x9D0, 0x0 };
+                var SVptr = new long[] { 0x47350D8, 0xD8, 0x8, 0xB8, 0x30, 0x9D0, 0x0 };
                 AbsoluteBoxOffset = await Executor.SwitchConnection.PointerAll(SVptr, CancellationToken.None).ConfigureAwait(false);
             }
             if (GameType is (int)GameSelected.LegendsArceus && AbsoluteBoxOffset == 0)
@@ -285,7 +293,7 @@ namespace PokeViewer.NET
                         images.Add(blank);
                         colors.Add(ic);
                     }
-                    CurrentSlotStats.Add($"Box {box + 1} Slot {i} is empty.");
+                    CurrentSlotStats.Add($"Box {box + 1} Slot {i + 1} is empty.");
                     continue;
                 }
                 var img = await Sanitize(pk, token).ConfigureAwait(false);
@@ -320,8 +328,25 @@ namespace PokeViewer.NET
             {
                 var filePath = $"BoxViewer\\{(GameSelected)GameType}\\{TrainerInfo.OT}-{TrainerInfo.TID16}\\Box{box + 1}.csv";
                 string res = string.Empty;
-                for (int s = 0; s < CurrentSlotStats.Count; s++)
-                    res += Environment.NewLine + CurrentSlotStats[s].ToString();
+                res += "Species" + ",";
+                res += "Nature" + ",";
+                res += "Ability" + ",";
+                res += "IVs" + ",";
+                res += "Scale" + ",";
+                res += "Mark" + ",";
+                res += "Ball" + ",";
+                res += Environment.NewLine;
+                for (int s = 0; s < CurrentSlotSpecies.Count; s++)
+                {
+                    res += CurrentSlotSpecies[s].ToString() + ",";
+                    res += CurrentSlotNature[s].ToString().Replace("Nature: ", "") + ",";
+                    res += CurrentSlotAbility[s].ToString().Replace("Ability: ", "") + ",";
+                    res += CurrentSlotIVs[s].ToString().Replace("IVs: ", "") + ",";
+                    res += CurrentSlotScale[s].ToString().Replace("Scale: ", "") + ",";
+                    res += CurrentSlotMark[s].ToString().Replace("Mark: ", "") + ",";
+                    res += CurrentSlotBall[s].ToString().Replace("Ball: ", "") + ",";
+                    res += Environment.NewLine;
+                }
                 using StreamWriter writer = new(new FileStream(filePath, FileMode.Create, FileAccess.Write));
                 writer.WriteLine(res);
             }
@@ -330,8 +355,12 @@ namespace PokeViewer.NET
         private async Task<Image> Sanitize(PKM pk, CancellationToken token)
         {
             using HttpClient client = new();
-            string pid = $"{Environment.NewLine}PID: {pk.PID:X8}";
-            string ec = $"{Environment.NewLine}EC: {pk.EncryptionConstant:X8}";
+            string pid = string.Empty;
+            if (!HidePIDECCheck.Checked)
+                pid = $"PID: {pk.PID:X8}";
+            string ec = string.Empty;
+            if (!HidePIDECCheck.Checked)
+                ec = $"{Environment.NewLine}EC: {pk.EncryptionConstant:X8}";
             string form = FormOutput(pk.Species, pk.Form, out _);
             string gender = string.Empty;
             switch (pk.Gender)
@@ -359,12 +388,12 @@ namespace PokeViewer.NET
                     if (pk is PK9)
                     {
                         bool hasMark = HasMark((PK9)pk, out RibbonIndex mark);
-                        msg = hasMark ? $"{Environment.NewLine}Mark: {mark.ToString().Replace("Mark", "")}" : "";
+                        msg = hasMark ? $"Mark: {mark.ToString().Replace("Mark", "")}" : "";
                     }
                     else
                     {
                         bool hasMark = HasMark((PK8)pk, out RibbonIndex mark);
-                        msg = hasMark ? $"{Environment.NewLine}Mark: {mark.ToString().Replace("Mark", "")}" : "";
+                        msg = hasMark ? $"Mark: {mark.ToString().Replace("Mark", "")}" : "";
                     }
                 }
             }
@@ -372,7 +401,7 @@ namespace PokeViewer.NET
             if (pk is PKH)
             {
                 bool hasMark = HasAffixedRibbon((IRibbonSetAffixed)pk, out RibbonIndex mark);
-                msg = hasMark ? $"{Environment.NewLine}Mark: {mark.ToString().Replace("Mark", "")}" : "";
+                msg = hasMark ? $"Mark: {mark.ToString().Replace("Mark", "")}" : "";
                 string markon = "https://raw.githubusercontent.com/zyro670/PokeTextures/5141086ee706c09d6c9aca1a773a3d08143e6460/Ribbons/icon_ribbon_";
                 if (hasMark)
                 {
@@ -381,26 +410,9 @@ namespace PokeViewer.NET
                     m = Image.FromStream(markresponse8);
                     m = new Bitmap(m, new Size(m.Width, m.Height));
                 }
-
-                var spr = OriginMarkUtil.GetOriginMark(pk);
-                string origin = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/OriginMarks/icon_generation_";
-                string res = string.Empty;
-                res = spr switch
-                {
-                    OriginMark.Gen9Paldea => "09",
-                    OriginMark.Gen8Trio => "08",
-                    OriginMark.Gen8Arc => "07",
-                    OriginMark.GO => "06",
-                    OriginMark.LetsGo => "05",
-                    OriginMark.Gen8Galar => "04",
-                    OriginMark.Gen7Clover => "03",
-                    OriginMark.Gen6Pentagon => "02",
-                    OriginMark.GameBoy => "00",
-                    _ => "01",
-                };
-                var gin = await client.GetStreamAsync(origin + res + "%5Esb.png", token).ConfigureAwait(false);
-                o = Image.FromStream(gin);
             }
+
+            o = SpriteUtil.GetBallSprite(pk.Ball);
 
             string alpha = string.Empty;
             if (pk is PA8)
@@ -414,9 +426,30 @@ namespace PokeViewer.NET
 
             string scale = string.Empty;
             if (pk is PK9 pk9)
-                scale = $"{Environment.NewLine}Scale: {PokeSizeDetailedUtil.GetSizeRating(pk9.Scale)} ({pk9.Scale})";
+                scale = $"Scale: {PokeSizeDetailedUtil.GetSizeRating(pk9.Scale)} ({pk9.Scale})";
+            if (pk is PK8 pk82)
+                scale = $"Scale: {PokeSizeDetailedUtil.GetSizeRating(pk82.HeightScalar)} ({pk82.HeightScalar})";
+            if (pk is PB8 pb8)
+                scale = $"Scale: {PokeSizeDetailedUtil.GetSizeRating(pb8.HeightScalar)} ({pb8.HeightScalar})";
+            if (pk is PA8 pa82)
+                scale = $"Scale: {PokeSizeDetailedUtil.GetSizeRating(pa82.HeightScalar)} ({pa82.HeightScalar})";
+            if (pk is PKH pkh2)
+                scale = $"Scale: {PokeSizeDetailedUtil.GetSizeRating(pkh2.HeightScalar)} ({pkh2.HeightScalar})";
+            string ballstring = string.Empty;
+            ballstring = $"Ball: {(Ball)pk.Ball}";
 
-            CurrentSlotStats.Add($"{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{gMax}{alpha}{(Species)pk.Species}{form}{gender}{pid}{ec}{Environment.NewLine}Nature: {(Nature)pk.Nature}{Environment.NewLine}Ability: {GameInfo.GetStrings(1).Ability[pk.Ability]}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}{scale}{msg}");
+            string sens = string.Empty;
+            if (!string.IsNullOrEmpty(pid) && !string.IsNullOrEmpty(ec))
+                sens = pid + ec;
+            CurrentSlotSpecies.Add($"{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{gMax}{alpha}{(Species)pk.Species}{form}{gender}{Environment.NewLine}{sens}");
+            CurrentSlotNature.Add($"Nature: {(Nature)pk.Nature}");
+            CurrentSlotAbility.Add($"Ability: {(Ability)pk.Ability}");
+            CurrentSlotIVs.Add($"IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}");
+            CurrentSlotScale.Add(scale);
+            CurrentSlotMark.Add(msg);
+            CurrentSlotBall.Add(ballstring);
+            CurrentSlotStats.Add($"{CurrentSlotSpecies.Last()}{Environment.NewLine}{CurrentSlotNature.Last()}{Environment.NewLine}{CurrentSlotAbility.Last()}{Environment.NewLine}" +
+                $"{CurrentSlotIVs.Last()}{Environment.NewLine}{CurrentSlotScale.Last()}{Environment.NewLine}{CurrentSlotBall.Last()}{Environment.NewLine}{CurrentSlotMark.Last()}");
             if (pk is PK8 && isGmax)
             {
                 if (pk.Species == (int)Species.Charmander || pk.Species == (int)Species.Charmeleon || pk.Species == (int)Species.Hattrem)
@@ -463,7 +496,6 @@ namespace PokeViewer.NET
 
             if (o != null)
             {
-                o = new Bitmap(o, new Size(o.Width / 2, o.Height / 2));
                 img2 = ImageUtil.LayerImage(img2, o, 100, 100);
             }
             return img2;
@@ -753,6 +785,133 @@ namespace PokeViewer.NET
             MessageBox.Show("Copied to clipboard!");
             FlexButton.Visible = true;
             DumpCheck.Visible = true;
+        }
+
+        public async Task<ulong> ReturnBoxSlot(int box, int slot)
+        {
+            PrepareSlots();
+            if (GameType is (int)GameSelected.Scarlet or (int)GameSelected.Violet && AbsoluteBoxOffset == 0)
+            {
+                var SVptr = new long[] { 0x47350D8, 0xD8, 0x8, 0xB8, 0x30, 0x9D0, 0x0 };
+                AbsoluteBoxOffset = await Executor.SwitchConnection.PointerAll(SVptr, CancellationToken.None).ConfigureAwait(false);
+            }
+            if (GameType is (int)GameSelected.LegendsArceus && AbsoluteBoxOffset == 0)
+            {
+                var LAptr = new long[] { 0x42BA6B0, 0x1F0, 0x68 };
+                AbsoluteBoxOffset = await Executor.SwitchConnection.PointerAll(LAptr, CancellationToken.None).ConfigureAwait(false);
+            }
+            var boxsize = 30 * BoxSlotSize;
+            var boxStart = AbsoluteBoxOffset + (ulong)(box * boxsize);
+            var slotstart = boxStart + (ulong)(slot * BoxSlotSize);
+            return slotstart;
+        }
+
+        public async Task<(string, string, PKM)> SlotAssist(int box, int slot, CancellationToken token)
+        {
+            PrepareSlots();
+            if (GameType is (int)GameSelected.Scarlet or (int)GameSelected.Violet && AbsoluteBoxOffset == 0)
+            {
+                var SVptr = new long[] { 0x47350D8, 0xD8, 0x8, 0xB8, 0x30, 0x9D0, 0x0 };
+                AbsoluteBoxOffset = await Executor.SwitchConnection.PointerAll(SVptr, CancellationToken.None).ConfigureAwait(false);
+            }
+            if (GameType is (int)GameSelected.LegendsArceus && AbsoluteBoxOffset == 0)
+            {
+                var LAptr = new long[] { 0x42BA6B0, 0x1F0, 0x68 };
+                AbsoluteBoxOffset = await Executor.SwitchConnection.PointerAll(LAptr, CancellationToken.None).ConfigureAwait(false);
+            }
+
+            PKM pk;
+            var boxsize = 30 * BoxSlotSize;
+            var boxStart = AbsoluteBoxOffset + (ulong)(box * boxsize);
+            var slotstart = boxStart + (ulong)(slot * BoxSlotSize);
+            pk = await ReadBoxPokemon(slotstart, BoxOffset, BoxSlotSize, token).ConfigureAwait(false);
+            string ball = $"https://raw.githubusercontent.com/zyro670/PokeTextures/main/Ball/{pk.Ball}.png";
+            bool isGmax = false;
+            if (pk is PK8 pk8 && pk8.CanGigantamax)
+                isGmax = true;
+            string sprite = PokeImg(pk, isGmax);
+            return (sprite, ball, pk);
+        }
+
+        public async Task<List<PKM>> BoxRoutineAssist(int box, CancellationToken token)
+        {
+            PrepareSlots();
+            List<PKM> list = new();
+            if (GameType is (int)GameSelected.Scarlet or (int)GameSelected.Violet && AbsoluteBoxOffset == 0)
+            {
+                var SVptr = new long[] { 0x47350D8, 0xD8, 0x8, 0xB8, 0x30, 0x9D0, 0x0 };
+                AbsoluteBoxOffset = await Executor.SwitchConnection.PointerAll(SVptr, CancellationToken.None).ConfigureAwait(false);
+            }
+            if (GameType is (int)GameSelected.LegendsArceus && AbsoluteBoxOffset == 0)
+            {
+                var LAptr = new long[] { 0x42BA6B0, 0x1F0, 0x68 };
+                AbsoluteBoxOffset = await Executor.SwitchConnection.PointerAll(LAptr, CancellationToken.None).ConfigureAwait(false);
+            }
+
+            for (int i = 0; i < 30; i++)
+            {
+                PKM pk;
+                switch (GameType)
+                {
+                    case (int)GameSelected.HOME:
+                        {
+                            pk = await ReadPKH((uint)(BoxOffset + (BoxSlotSize * i + (BoxSlotSize * 30 * box))), BoxSlotSize, token).ConfigureAwait(false);
+                            list.Add(pk);
+                            break;
+                        }
+                    case (int)GameSelected.Scarlet or (int)GameSelected.Violet:
+                        {
+                            var boxsize = 30 * BoxSlotSize;
+                            var boxStart = AbsoluteBoxOffset + (ulong)(box * boxsize);
+                            var slotstart = boxStart + (ulong)(i * BoxSlotSize);
+                            pk = await ReadBoxPokemon(slotstart, BoxOffset, BoxSlotSize, token).ConfigureAwait(false);
+                            list.Add((PK9)pk);
+                            break;
+                        }
+                    case (int)GameSelected.LegendsArceus:
+                        {
+                            var boxsize = 30 * BoxSlotSize;
+                            var boxStart = AbsoluteBoxOffset + (ulong)(box * boxsize);
+                            var slotstart = boxStart + (ulong)(i * BoxSlotSize);
+                            pk = await ReadBoxPokemon(slotstart, BoxOffset, BoxSlotSize, token).ConfigureAwait(false);
+                            list.Add((PA8)pk);
+                            break;
+                        }
+                    case (int)GameSelected.BrilliantDiamond:
+                        {
+                            var sizeup = GetBDSPSlotValue(i);
+                            var boxvalue = GetBDSPBoxValue(box);
+                            var b1s1b = new long[] { 0x4C64DC0, 0xB8, 0x10, 0xA0, boxvalue, sizeup, 0x20 };
+                            var boxStart = await Executor.SwitchConnection.PointerAll(b1s1b, token).ConfigureAwait(false);
+                            pk = await ReadBoxPokemon(boxStart, BoxOffset, BoxSlotSize, token).ConfigureAwait(false);
+                            list.Add((PB8)pk);
+                            break;
+                        }
+                    case (int)GameSelected.ShiningPearl:
+                        {
+                            var sizeup = GetBDSPSlotValue(i);
+                            var boxvalue = GetBDSPBoxValue(box);
+                            var b1s1b = new long[] { 0x4E7BE98, 0xB8, 0x10, 0xA0, boxvalue, sizeup, 0x20 };
+                            var boxStart = await Executor.SwitchConnection.PointerAll(b1s1b, token).ConfigureAwait(false);
+                            pk = await ReadBoxPokemon(boxStart, BoxOffset, BoxSlotSize, token).ConfigureAwait(false);
+                            list.Add((PB8)pk);
+                            break;
+                        }
+                    case (int)GameSelected.Sword or (int)GameSelected.Shield:
+                        {
+                            pk = await ReadBoxPokemon(AbsoluteBoxOffset, (uint)(BoxOffset + (BoxSlotSize * i + (BoxSlotSize * 30 * box))), BoxSlotSize, token).ConfigureAwait(false);
+                            list.Add((PK8)pk);
+                            break;
+                        }
+                    case (int)GameSelected.LetsGoPikachu or (int)GameSelected.LetsGoEevee:
+                        {
+                            pk = await ReadBoxPokemon(AbsoluteBoxOffset, (uint)GetSlotOffset(box, i), LGPESlotSize + LGPEGapSize, token).ConfigureAwait(false);
+                            list.Add((PB7)pk);
+                            break;
+                        }
+                }
+            }
+            return list;
         }
     }
 }

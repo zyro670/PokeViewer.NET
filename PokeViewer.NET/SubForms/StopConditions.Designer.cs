@@ -394,7 +394,7 @@
             Controls.Add(StopConditionsGroup);
             FormBorderStyle = FormBorderStyle.FixedSingle;
             Name = "StopConditions";
-            StartPosition = FormStartPosition.CenterParent;
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "Stop Conditions";
             StopConditionsGroup.ResumeLayout(false);
             StopConditionsGroup.PerformLayout();

@@ -2,8 +2,8 @@
 using SysBot.Base;
 using static PokeViewer.NET.RoutineExecutor;
 using static PokeViewer.NET.ViewerUtil;
-using static System.Buffers.Binary.BinaryPrimitives;
 using static SysBot.Base.SwitchButton;
+using static System.Buffers.Binary.BinaryPrimitives;
 
 namespace PokeViewer.NET.SubForms
 {
@@ -88,11 +88,10 @@ namespace PokeViewer.NET.SubForms
             button1.Text = "Saving...";
             await SVSaveGameOverworld(token).ConfigureAwait(false);
             button1.Text = "Scanning...";
-            var test = await ReadBlock(Blocks.Overworld, token).ConfigureAwait(false);
+            var data = await ReadBlock(Blocks.Overworld, token).ConfigureAwait(false);
             for (int i = 0; i < 15; i++)
             {
-                var data = test.Slice(0 + (i * 0x1D4), 0x157);
-                var pk = new PK9(data);
+                PK9 pk = new(data.AsSpan(0 + (i * 0x1D4), 0x157).ToArray());
 
                 bool isValid = PersonalTable.SV.IsPresentInGame(pk.Species, pk.Form);
                 if (!isValid || pk == null || pk.Species < 0 || pk.Species > (int)Species.MAX_COUNT)
@@ -103,8 +102,8 @@ namespace PokeViewer.NET.SubForms
                     button1.Text = "Scan";
                     return;
                 }
-                string pid = $"{Environment.NewLine}PID: {pk.PID:X8}";
-                string ec = $"{Environment.NewLine}EC: {pk.EncryptionConstant:X8}";
+                string pid = string.Empty;
+                string ec = string.Empty;
                 var form = FormOutput(pk.Species, pk.Form, out _);
                 string gender = string.Empty;
                 switch (pk.Gender)

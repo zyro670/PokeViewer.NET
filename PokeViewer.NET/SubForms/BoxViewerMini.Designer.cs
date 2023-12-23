@@ -41,9 +41,11 @@
             pictureBox1.SizeMode = PictureBoxSizeMode.CenterImage;
             pictureBox1.TabIndex = 0;
             pictureBox1.TabStop = false;
+            pictureBox1.DoubleClick += pictureBox1_Click;
             // 
             // textBox1
             // 
+            textBox1.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
             textBox1.Location = new Point(63, 146);
             textBox1.Multiline = true;
             textBox1.Name = "textBox1";
@@ -51,6 +53,7 @@
             textBox1.Size = new Size(148, 137);
             textBox1.TabIndex = 1;
             textBox1.TextAlign = HorizontalAlignment.Center;
+            textBox1.DoubleClick += textBox1_TextChanged;
             // 
             // BoxViewerMini
             // 
@@ -62,6 +65,7 @@
             FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
             Name = "BoxViewerMini";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "BoxViewerMini";
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);

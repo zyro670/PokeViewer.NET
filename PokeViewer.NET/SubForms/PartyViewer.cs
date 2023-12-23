@@ -44,7 +44,7 @@ namespace PokeViewer.NET.SubForms
         private void SanityCheck(PKM pk, int count)
         {
             PictureBox[] boxes = { pictureBox1, pictureBox2, pictureBox3, pictureBox4, pictureBox5, pictureBox6 };
-            bool isValid = false;
+            bool isValid = true;
             switch (GameType)
             {
                 case (int)GameSelected.Scarlet or (int)GameSelected.Violet: isValid = PersonalTable.SV.IsPresentInGame(pk.Species, pk.Form); break;
@@ -138,7 +138,7 @@ namespace PokeViewer.NET.SubForms
                                 case 4: val = 0x50; break;
                                 case 5: val = 0x58; break;
                             }
-                            var pointer = new long[] { 0x46457D8, 0x08, val, 0x30, 0x00 };
+                            var pointer = new long[] { 0x4763C98, 0x08, val, 0x30, 0x00 };
                             var offset = await Executor.SwitchConnection.PointerAll(pointer, token).ConfigureAwait(false);
                             var data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(offset, 0x158, token).ConfigureAwait(false);
                             var pk = new PK9(data);

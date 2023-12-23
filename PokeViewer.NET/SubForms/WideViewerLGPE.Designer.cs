@@ -72,6 +72,7 @@
             Controls.Add(pictureBox1);
             MaximizeBox = false;
             Name = "WideViewerLGPE";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "PokeViewer.NET - WideViewLGPE";
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);

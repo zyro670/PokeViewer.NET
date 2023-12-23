@@ -66,6 +66,7 @@
             pictureBox6 = new PictureBox();
             BasketCount = new Label();
             ForceDumpCheck = new CheckBox();
+            CollectEggsCheck = new CheckBox();
             ((System.ComponentModel.ISupportInitialize)PokeSpriteBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)BallBox).BeginInit();
             ((System.ComponentModel.ISupportInitialize)NumberOfFillings).BeginInit();
@@ -445,12 +446,24 @@
             ForceDumpCheck.UseVisualStyleBackColor = true;
             ForceDumpCheck.CheckedChanged += ForceEgg_CheckedChanged;
             // 
+            // CollectEggsCheck
+            // 
+            CollectEggsCheck.AutoSize = true;
+            CollectEggsCheck.Location = new Point(263, 12);
+            CollectEggsCheck.Name = "CollectEggsCheck";
+            CollectEggsCheck.Size = new Size(96, 19);
+            CollectEggsCheck.TabIndex = 80;
+            CollectEggsCheck.Text = "Collect Eggs?";
+            CollectEggsCheck.UseVisualStyleBackColor = true;
+            CollectEggsCheck.CheckedChanged += checkBox1_CheckedChanged;
+            // 
             // Egg_Viewer
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.Control;
             ClientSize = new Size(426, 404);
+            Controls.Add(CollectEggsCheck);
             Controls.Add(ForceDumpCheck);
             Controls.Add(BasketCount);
             Controls.Add(pictureBox6);
@@ -545,5 +558,6 @@
         private PictureBox pictureBox6;
         private Label BasketCount;
         private CheckBox ForceDumpCheck;
+        private CheckBox CollectEggsCheck;
     }
 }

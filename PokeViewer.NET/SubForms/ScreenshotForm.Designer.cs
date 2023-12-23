@@ -63,6 +63,7 @@
             Controls.Add(pictureBox1);
             FormBorderStyle = FormBorderStyle.None;
             Name = "ScreenshotForm";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "ScreenshotForm";
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ResumeLayout(false);

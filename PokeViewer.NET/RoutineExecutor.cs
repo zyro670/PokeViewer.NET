@@ -25,6 +25,10 @@ namespace PokeViewer.NET
             string[] baseLink;
             baseLink = "https://raw.githubusercontent.com/zyro670/HomeImages/master/128x128/poke_capture_0001_000_mf_n_00000000_f_n.png".Split('_');
 
+            if (pkm is PK8 pk8)
+            {
+                canGmax = pk8.CanGigantamax;
+            }
             if (Enum.IsDefined(typeof(GenderDependent), pkm.Species) && !canGmax && pkm.Form is 0)
             {
                 if (pkm.Gender is 0 && pkm.Species is not (ushort)Species.Torchic)

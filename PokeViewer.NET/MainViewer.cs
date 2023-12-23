@@ -1,28 +1,42 @@
-﻿using SysBot.Base;
+﻿using Discord;
+using Discord.Commands;
+using Discord.WebSocket;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using Octokit;
 using PKHeX.Core;
 using PKHeX.Drawing.Misc;
-using System.Net.Sockets;
-using System.Diagnostics;
 using PokeViewer.NET.Properties;
 using PokeViewer.NET.SubForms;
 using PokeViewer.NET.WideViewForms;
+using SysBot.Base;
+using System.Diagnostics;
 using System.IO.Compression;
+using System.Net.Sockets;
+using System.Reflection;
+using static PokeViewer.NET.CommandsUtil.CommandsUtil;
 using static PokeViewer.NET.RoutineExecutor;
 using static PokeViewer.NET.ViewerUtil;
+using Color = System.Drawing.Color;
+using Image = System.Drawing.Image;
+using MethodInvoker = System.Windows.Forms.MethodInvoker;
 
 namespace PokeViewer.NET
 {
     public partial class MainViewer : Form
     {
         public ViewerExecutor Executor = null!;
-        private const string ViewerVersion = "2.7.4";
+        private const string ViewerVersion = "3.0.0";
         private readonly bool[] FormLoaded = new bool[8];
         private int GameType;
         private SimpleTrainerInfo TrainerInfo = new();
         private readonly string RefreshTime = Settings.Default.RefreshRate;
-        private readonly List<Color> UIColors = new();
+        private readonly List<Color> UIColors = [];
         protected ViewerOffsets Offsets { get; } = new();
+        public DiscordSocketClient client;
+        public CommandService commands;
+        public IServiceProvider services;
+        private string BotPrefix = string.Empty;
         public MainViewer()
         {
             InitializeComponent();
@@ -33,9 +47,65 @@ namespace PokeViewer.NET
             WebhookURLText.Text = Settings.Default.WebHook;
             DiscordIDText.Text = Settings.Default.UserDiscordID;
             MessageText.Text = Settings.Default.PingMessage;
+            BotToken.Text = Settings.Default.BotToken;
+            PrefixBox.SelectedIndex = Settings.Default.BotPrefix;
+            CheckForSudo();
+            CheckForOutbreakFilter();
+            CreateCustomSequenceJson();
+            SetBotPrefix(PrefixBox.SelectedIndex);
             DisableTabsOnStart();
             VersionLabel.Text = $"v{ViewerVersion}";
             CheckReleaseLabel();
+            client = new DiscordSocketClient(new DiscordSocketConfig
+            {
+                GatewayIntents = GatewayIntents.All,
+                LogLevel = LogSeverity.Info,
+                MessageCacheSize = 100,
+                AlwaysDownloadUsers = true,
+            });
+            commands = new CommandService(new CommandServiceConfig
+            {
+                LogLevel = LogSeverity.Info,
+                DefaultRunMode = Discord.Commands.RunMode.Async,
+                CaseSensitiveCommands = false,
+            });
+            var map = new ServiceCollection();
+            services = map.BuildServiceProvider();
+        }
+
+        private static void CheckForOutbreakFilter()
+        {
+            var path = "outbreakfilters.txt";
+            var newpath = "refs\\outbreakfilters.txt";
+            if (File.Exists(path))
+                File.Move(path, newpath);
+        }
+
+        private static void CheckForSudo()
+        {
+            var path = "refs\\sudo.txt";
+            if (!File.Exists(path))
+                File.WriteAllText(path, $"{Settings.Default.UserDiscordID},");
+        }
+
+        private static void CreateCustomSequenceJson()
+        {
+            var path = "refs\\customsequence.json";
+            if (!File.Exists(path))
+            {
+                List<CustomSequence> _data = new()
+            {
+                new CustomSequence()
+                {
+                    Name = "Template",
+                    Click = Array.Empty<SwitchButton>(),
+                    Delay = Array.Empty<int>(),
+                }
+            };
+
+                string json = JsonConvert.SerializeObject(_data.ToArray());
+                File.WriteAllText(path, json);
+            }
         }
 
         private void MoodChecker()
@@ -170,6 +240,12 @@ namespace PokeViewer.NET
                         await Executor.Connect(token).ConfigureAwait(false);
                         Window_Loaded(token);
                     });
+                    if (!string.IsNullOrEmpty(BotToken.Text))
+                    {
+                        await RegisterCommandsAsync().ConfigureAwait(false);
+                        await client.LoginAsync(TokenType.Bot, BotToken.Text, true).ConfigureAwait(false);
+                        await client.StartAsync().ConfigureAwait(false);
+                    }
                 }
                 catch (SocketException err)
                 {
@@ -181,6 +257,7 @@ namespace PokeViewer.NET
             {
                 await Executor.SwitchConnection.SendAsync(SwitchCommand.DetachController(true), token).ConfigureAwait(false);
                 Executor.Disconnect();
+                await client.StopAsync().ConfigureAwait(false);
                 System.Windows.Forms.Application.Restart();
             }
         }
@@ -259,11 +336,11 @@ namespace PokeViewer.NET
             if (alpha)
             {
                 var url = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/OriginMarks/icon_alpha.png";
-                System.Drawing.Image img = null!;
+                Image img = null!;
                 using (HttpClient client = new())
                 {
                     using var response = await client.GetStreamAsync(url, token).ConfigureAwait(false);
-                    img = System.Drawing.Image.FromStream(response);
+                    img = Image.FromStream(response);
                 }
                 Specialty.Visible = true;
                 Specialty.Image = img;
@@ -326,7 +403,7 @@ namespace PokeViewer.NET
                     }
                     LiveStats.Text = $"{GameInfo.GetStrings(1).Move[pk.Move1]} - {pk.Move1_PP}PP{Environment.NewLine}{GameInfo.GetStrings(1).Move[pk.Move2]} - {pk.Move2_PP}PP{Environment.NewLine}{GameInfo.GetStrings(1).Move[pk.Move3]} - {pk.Move3_PP}PP{Environment.NewLine}{GameInfo.GetStrings(1).Move[pk.Move4]} - {pk.Move4_PP}PP";
                     HpLabel.Text = $"HP - {(pk.Stat_HPCurrent / StartingHP) * 100}%";
-                    await Task.Delay(refr, token).ConfigureAwait(false); // Wait time between reads
+                    await Task.Delay(refr, token).ConfigureAwait(false);
                 }
                 LiveStats.Clear();
                 HpLabel.Text = "          HP%";
@@ -561,11 +638,10 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(PartyPage);
                             ViewerControl.TabPages.Add(EggPage);
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
-                            ViewerControl.TabPages.Add(MiscPage);
+                            ViewerControl.TabPages.Add(OutbreakPage);
                             WideButton.Enabled = true;
-                            RaidButton.Enabled = true;
                             EventRedeemButton.Visible = true;
-                            TurboButton.Enabled = true;
+                            ControllerButton.Enabled = true;
                         });
                         strings = await GetFakeTrainerSAVSV(token).ConfigureAwait(false);
                         break;
@@ -580,11 +656,10 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(PartyPage);
                             ViewerControl.TabPages.Add(EggPage);
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
-                            ViewerControl.TabPages.Add(MiscPage);
+                            ViewerControl.TabPages.Add(OutbreakPage);
                             WideButton.Enabled = true;
-                            RaidButton.Enabled = true;
                             EventRedeemButton.Visible = true;
-                            TurboButton.Enabled = true;
+                            ControllerButton.Enabled = true;
                         });
                         strings = await GetFakeTrainerSAVSV(token).ConfigureAwait(false);
                         break;
@@ -599,7 +674,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(BoxPage);
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
                             WideButton.Enabled = true;
-                            TurboButton.Enabled = true;
+                            ControllerButton.Enabled = true;
                         });
                         strings = await GetFakeTrainerSAVLA(token).ConfigureAwait(false);
                         break;
@@ -615,7 +690,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(NPCPage);
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
                             WideButton.Enabled = true;
-                            TurboButton.Enabled = true;
+                            ControllerButton.Enabled = true;
                         });
                         strings = await GetFakeTrainerSAVBDSP(type, token).ConfigureAwait(false);
                         break;
@@ -631,7 +706,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(NPCPage);
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
                             WideButton.Enabled = true;
-                            TurboButton.Enabled = true;
+                            ControllerButton.Enabled = true;
                         });
                         strings = await GetFakeTrainerSAVBDSP(type, token).ConfigureAwait(false);
                         break;
@@ -649,7 +724,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(NPCPage);
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
                             WideButton.Enabled = true;
-                            TurboButton.Enabled = true;
+                            ControllerButton.Enabled = true;
                         });
                         strings = await GetFakeTrainerSAVSWSH(token).ConfigureAwait(false);
                         break;
@@ -667,7 +742,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(NPCPage);
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
                             WideButton.Enabled = true;
-                            TurboButton.Enabled = true;
+                            ControllerButton.Enabled = true;
                         });
                         strings = await GetFakeTrainerSAVSWSH(token).ConfigureAwait(false);
                         break;
@@ -704,6 +779,8 @@ namespace PokeViewer.NET
             OriginIcon.ImageLocation = url;
             ConnectionSpriteBox.ImageLocation = url;
             GameType = type;
+            Settings.Default.GameConnected = GameType;
+            Settings.Default.Save();
             ViewBox.Text = "Click View!";
             var bg = "https://raw.githubusercontent.com/kwsch/PKHeX/master/PKHeX.Drawing.PokeSprite/Resources/img/Pokemon%20Sprite%20Overlays/starter.png";
             PokeSprite.ImageLocation = bg;
@@ -771,7 +848,7 @@ namespace PokeViewer.NET
                 return;
 
             Form form = new();
-            string currentTab = ViewerControl.SelectedTab.Text;
+            string currentTab = ViewerControl.SelectedTab!.Text;
             int selectedInt = 0;
             bool mode = CheckForMood();
             var colors = CheckForColors(mode);
@@ -801,7 +878,7 @@ namespace PokeViewer.NET
                 case "Egg 🥚": form = new Egg_Viewer(GameType, Executor, colors) { TopLevel = false }; FormLoaded[4] = true; break;
                 case "NPC 🤖": form = new NPCViewer(GameType, Executor, colors) { TopLevel = false }; FormLoaded[5] = true; break;
                 case "Screenshot 📷": form = new ScreenshotForm(Executor, colors) { TopLevel = false }; FormLoaded[6] = true; break;
-                case "Misc 📓": form = new OutbreakViewSV(Executor, colors) { TopLevel = false }; FormLoaded[7] = true; break;
+                case "Misc 📓": form = new MiscViewSV(Executor, colors) { TopLevel = false }; FormLoaded[7] = true; break;
             }
 
             int curr = ViewerControl.SelectedIndex;
@@ -827,8 +904,6 @@ namespace PokeViewer.NET
             SaveButton.ForeColor = fore;
             WideButton.BackColor = back;
             WideButton.ForeColor = fore;
-            RaidButton.BackColor = back;
-            RaidButton.ForeColor = fore;
             Connect.BackColor = back;
             Connect.ForeColor = fore;
             ConnectionPage.BackColor = back;
@@ -843,8 +918,6 @@ namespace PokeViewer.NET
             SetMoodButton.ForeColor = fore;
             TrainerPassportGroup.BackColor = back;
             TrainerPassportGroup.ForeColor = fore;
-            MoodGroup.BackColor = back;
-            MoodGroup.ForeColor = fore;
             ExtrasGroup.BackColor = back;
             ExtrasGroup.ForeColor = fore;
             ToggleSwitchProtocol.BackColor = back;
@@ -869,8 +942,16 @@ namespace PokeViewer.NET
             DiscordIDText.ForeColor = fore;
             MessageText.BackColor = back;
             MessageText.ForeColor = fore;
-            TurboButton.BackColor = back;
-            TurboButton.ForeColor = fore;
+            ControllerButton.BackColor = back;
+            ControllerButton.ForeColor = fore;
+            BotToken.BackColor = back;
+            BotToken.ForeColor = fore;
+            BotTokenLabel.BackColor = back;
+            BotTokenLabel.ForeColor = fore;
+            PrefixBox.BackColor = back;
+            PrefixBox.ForeColor = fore;
+            BotPrefixLabel.BackColor = back;
+            BotPrefixLabel.ForeColor = fore;
         }
 
         private static bool CheckForMood()
@@ -897,32 +978,25 @@ namespace PokeViewer.NET
             ViewerControl.TabPages.Remove(EggPage);
             ViewerControl.TabPages.Remove(NPCPage);
             ViewerControl.TabPages.Remove(InGameScreenshotPage);
-            ViewerControl.TabPages.Remove(MiscPage);
+            ViewerControl.TabPages.Remove(OutbreakPage);
         }
 
         private void SaveButton_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(WebhookURLText.Text) || string.IsNullOrEmpty(DiscordIDText.Text))
-            {
-                MessageBox.Show("Please fill the fields before attempting to save.");
-                return;
-            }
-
             if (!string.IsNullOrEmpty(WebhookURLText.Text))
-            {
                 Settings.Default.WebHook = WebhookURLText.Text;
-                Settings.Default.Save();
-            }
+
             if (!string.IsNullOrEmpty(DiscordIDText.Text))
-            {
                 Settings.Default.UserDiscordID = DiscordIDText.Text;
-                Settings.Default.Save();
-            }
+
             if (!string.IsNullOrEmpty(MessageText.Text))
-            {
                 Settings.Default.PingMessage = MessageText.Text;
-                Settings.Default.Save();
-            }
+
+            if (!string.IsNullOrEmpty(BotToken.Text))
+                Settings.Default.BotToken = BotToken.Text;
+
+            Settings.Default.BotPrefix = PrefixBox.SelectedIndex;
+            Settings.Default.Save();
             MessageBox.Show("Done.");
         }
 
@@ -961,16 +1035,9 @@ namespace PokeViewer.NET
             form.ShowDialog();
         }
 
-        private void RaidButton_Click(object sender, EventArgs e)
-        {
-            var colors = CheckForColors(Settings.Default.DarkMode);
-            RaidCodeEntry RaidForm = new(Executor, colors);
-            RaidForm.ShowDialog();
-        }
-
         private async void ScreenTrackBar_Scroll(object sender, EventArgs e)
         {
-            if (Executor is null || !Executor.Connection.Connected)
+            if (Executor is null || !Executor.Connection.Connected && ToggleSwitchProtocol.Checked)
             {
                 var owner = new Form { Visible = false };
                 MessageBox.Show(owner, text: "You are not connected to a console!", "Not Connected");
@@ -1129,7 +1196,7 @@ namespace PokeViewer.NET
             KnownColor[] colors = (KnownColor[])Enum.GetValues(typeof(KnownColor));
             for (int i = 28; i < 97; i++)
             {
-                UIColors.Add(Color.FromKnownColor((KnownColor)colors[i]));
+                UIColors.Add(Color.FromKnownColor(colors[i]));
             }
         }
 
@@ -1173,8 +1240,103 @@ namespace PokeViewer.NET
         private void button1_Click_1(object sender, EventArgs e)
         {
             var colors = CheckForColors(Settings.Default.DarkMode);
-            TurboView form = new(Executor, colors);
+            ControllerView form = new(Executor, colors);
             form.ShowDialog();
+        }
+
+        public async Task RegisterCommandsAsync()
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+
+            await commands.AddModulesAsync(assembly, services).ConfigureAwait(false);
+
+            client.MessageReceived += HandleCommandAsync;
+            client.ReactionAdded += HandleReactionAsync;
+        }
+
+        public static bool CanUseCommandSudo(ulong uid)
+        {
+            var path = "refs\\sudo.txt";
+            string contents = File.ReadAllText(path);
+            var sudos = contents.Split(',');
+            foreach (var s in sudos)
+            {
+                if (s.Equals(uid.ToString()))
+                    return true;
+            }
+            return false;
+        }
+
+        private async Task HandleReactionAsync(Cacheable<IUserMessage, ulong> message, Cacheable<IMessageChannel, ulong> channel, SocketReaction reaction)
+        {
+            if (reaction.Emote.Name == "👍")
+            {
+                await message.GetOrDownloadAsync().Result.GetReactionUsersAsync(new Discord.Emoji("👍"), 1000).FlattenAsync();
+            }
+            if (reaction.Emote.Name == "👎")
+            {
+                await message.GetOrDownloadAsync().Result.GetReactionUsersAsync(new Discord.Emoji("👎"), 1000).FlattenAsync();
+            }
+        }
+        private async Task HandleCommandAsync(SocketMessage s)
+        {
+            if (s is not SocketUserMessage msg)
+                return;
+
+            int pos = 0;
+            if (msg.HasStringPrefix(BotPrefix, ref pos))
+            {
+                bool handled = await TryHandleCommand(msg, pos).ConfigureAwait(false);
+                if (handled)
+                    return;
+            }
+            return;
+        }
+
+        private async Task<bool> TryHandleCommand(SocketUserMessage msg, int pos)
+        {
+            var context = new SocketCommandContext(client, msg);
+            if (!CanUseCommandSudo(msg.Author.Id))
+            {
+                await msg.Channel.SendMessageAsync("You do not have permission to use commands.").ConfigureAwait(false);
+                return false;
+            }
+            else
+            {
+                var result = await commands.ExecuteAsync(context, pos, services).ConfigureAwait(false);
+                if (!result.IsSuccess)
+                    await msg.Channel.SendMessageAsync(result.ErrorReason).ConfigureAwait(false);
+
+                if (result.Error == CommandError.UnknownCommand)
+                    return false;
+            }
+            return true;
+        }
+
+        private string SetBotPrefix(int value)
+        {
+            switch (value)
+            {
+                case 0: BotPrefix = "$"; break;
+                case 1: BotPrefix = "!"; break;
+                case 2: BotPrefix = "%"; break;
+                case 3: BotPrefix = "^"; break;
+                case 4: BotPrefix = "&"; break;
+                case 5: BotPrefix = "*"; break;
+                case 6: BotPrefix = "."; break;
+                case 7: BotPrefix = ","; break;
+                case 8: BotPrefix = ";"; break;
+                case 9: BotPrefix = "-"; break;
+                case 10: BotPrefix = "_"; break;
+            }
+            return BotPrefix;
+        }
+
+        private void Prefix_CheckedChanged(object sender, EventArgs e)
+        {
+            Settings.Default.BotPrefix = PrefixBox.SelectedIndex;
+            Settings.Default.Save();
+            BotPrefix = SetBotPrefix(Settings.Default.BotPrefix);
         }
     }
 }

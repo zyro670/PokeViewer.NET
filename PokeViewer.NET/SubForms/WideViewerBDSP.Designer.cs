@@ -303,6 +303,7 @@
             Controls.Add(WideImage1);
             MaximizeBox = false;
             Name = "WideViewerBDSP";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "PokeViewer.NET - WideViewBDSP - Underground Spawns";
             ((System.ComponentModel.ISupportInitialize)WideImage1).EndInit();
             ((System.ComponentModel.ISupportInitialize)WideImage2).EndInit();

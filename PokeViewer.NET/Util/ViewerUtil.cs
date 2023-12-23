@@ -117,19 +117,24 @@ namespace PokeViewer.NET
 
     public class ViewerOffsets
     {
-        public IReadOnlyList<long> BlockKeyPointer = new List<long>() { 0x4617648, 0xD8, 0x0, 0x0, 0x30, 0x0 };
-        public IReadOnlyList<long> RaidBlockPointerP { get; } = new long[] { 0x4617648, 0x1C0, 0x88, 0x40 };
-        public IReadOnlyList<long> RaidBlockPointerK { get; } = new long[] { 0x4617648, 0x1C0, 0x88, 0xCD8 };
-        public IReadOnlyList<long> OverworldPointer { get; } = new long[] { 0x461CB18, 0x160, 0xE8, 0x28 };
-        public IReadOnlyList<long> MyStatusPointerSV { get; } = new long[] { 0x4617648, 0x1C0, 0x0, 0x40 };
+        public IReadOnlyList<long> BlockKeyPointer = new List<long>() { 0x47350D8, 0xD8, 0x0, 0x0, 0x30, 0x0 };
+        public IReadOnlyList<long> RaidBlockPointerP { get; } = new long[] { 0x47350D8, 0x1C0, 0x88, 0x40 };
+        public IReadOnlyList<long> RaidBlockPointerK { get; } = new long[] { 0x47350D8, 0x1C0, 0x88, 0xCD8 };
+        public IReadOnlyList<long> RaidBlockPointerB { get; } = new long[] { 0x47350D8, 0x1C0, 0x88, 0x1958 };
+        public IReadOnlyList<long> OverworldPointer { get; } = new long[] { 0x473ADE0, 0x160, 0xE8, 0x28 };
+        public IReadOnlyList<long> MyStatusPointerSV { get; } = new long[] { 0x47350D8, 0x1C0, 0x0, 0x40 };
+        public IReadOnlyList<long> BoxStartSV { get; } = new long[] { 0x47350D8, 0xD8, 0x8, 0xB8, 0x30, 0x9D0, 0x0 };
+        public IReadOnlyList<long> CurrentBoxSV { get; } = new long[] { 0x47350D8, 0xD8, 0x8, 0xB8, 0x28, 0x570 };
+        public IReadOnlyList<long> TradePartnerSV { get; } = new long[] { 0x473A110, 0x48, 0xE0, 0x0 };
+        public IReadOnlyList<long> TradePartnerNIDSV { get; } = new long[] { 0x475EA28, 0xF8, 0x8 };
         public IReadOnlyList<long> MyStatusPointerLA { get; } = new long[] { 0x42BA6B0, 0x218, 0x68 };
         public IReadOnlyList<long> MyStatusTrainerPointerBD { get; } = new long[] { 0x4C64DC0, 0xB8, 0x10, 0xE0, 0x0 };
         public IReadOnlyList<long> MyStatusTIDPointerBD { get; } = new long[] { 0x4C64DC0, 0xB8, 0x10, 0xE8 };
         public IReadOnlyList<long> MyStatusTrainerPointerSP { get; } = new long[] { 0x4E7BE98, 0xB8, 0x10, 0xE0, 0x0 };
         public IReadOnlyList<long> MyStatusTIDPointerSP { get; } = new long[] { 0x4E7BE98, 0xB8, 0x10, 0xE8 };
 
-        public readonly uint EggData = 0x04623BA8;
-        public readonly uint PicnicMenu = 0x046B4020;
+        public readonly uint EggData = 0x04742118;
+        public readonly uint PicnicMenu = 0x047D2020;
 
         public readonly uint StartingOffset = 0x4505B880;
         public readonly uint KCoordIncrement = 192;
@@ -155,6 +160,14 @@ namespace PokeViewer.NET
 
     public static class Blocks
     {
+        public static DataBlock KPlayerCurrentFieldID = new()
+        {
+            Name = "KPlayerCurrentFieldID",
+            Key = 0xF17EB014,
+            Type = SCTypeCode.SByte,
+            IsEncrypted = true,
+            Size = 1,
+        };
         public static DataBlock KMassOutbreakTotalPaldea = new()
         {
             Name = "KMassOutbreakTotalPaldea",
@@ -167,6 +180,14 @@ namespace PokeViewer.NET
         {
             Name = "KMassOutbreakTotalKitakami",
             Key = 0xBD7C2A04,
+            Type = SCTypeCode.Byte,
+            IsEncrypted = true,
+            Size = 1,
+        };
+        public static DataBlock KMassOutbreakTotalBlueberry = new()
+        {
+            Name = "KMassOutbreakTotalBlueberry",
+            Key = 0x19A98811,
             Type = SCTypeCode.Byte,
             IsEncrypted = true,
             Size = 1,
@@ -683,6 +704,199 @@ namespace PokeViewer.NET
             IsEncrypted = true,
             Size = 12,
         };
+        #endregion
+        #region Outbreak13
+        public static DataBlock KOutbreakSpecies13 = new()
+        {
+            Name = "KOutbreakSpecies13",
+            Key = 0xB8E99C8D,
+            Type = SCTypeCode.UInt32,
+            IsEncrypted = true,
+            Size = 4,
+        };
+        public static DataBlock KMassOutbreak13Form = new()
+        {
+            Name = "KMassOutbreak13Form",
+            Key = 0xEFA6983A,
+            Type = SCTypeCode.Byte,
+            IsEncrypted = true,
+            Size = 1,
+        };
+        public static DataBlock KMassOutbreakKO13 = new()
+        {
+            Name = "KMassOutbreakKO13",
+            Key = 0x4EF9BC25,
+            Type = SCTypeCode.UInt32,
+            IsEncrypted = true,
+            Size = 4,
+        };
+        public static DataBlock KMassOutbreak13TotalSpawns = new()
+        {
+            Name = "KMassOutbreak13TotalSpawns",
+            Key = 0x4385E0AD,
+            Type = SCTypeCode.Int32,
+        };
+        public static DataBlock KMassOutbreak13CenterPos = new()
+        {
+            Name = "KMassOutbreak13CenterPos",
+            Key = 0xCE463C0C,
+            Type = SCTypeCode.Array,
+            IsEncrypted = true,
+            Size = 12,
+        };
+        public static DataBlock KOutbreakSpecies14 = new()
+        {
+            Name = "KOutbreakSpecies14",
+            Key = 0xB8ED11D8,
+            Type = SCTypeCode.UInt32,
+            IsEncrypted = true,
+            Size = 4,
+        };
+        public static DataBlock KMassOutbreak14Form = new()
+        {
+            Name = "KMassOutbreak14Form",
+            Key = 0xEFA2A897,
+            Type = SCTypeCode.Byte,
+            IsEncrypted = true,
+            Size = 1,
+        };
+        public static DataBlock KMassOutbreakKO14 = new()
+        {
+            Name = "KMassOutbreakKO14",
+            Key = 0x4EFBEB30,
+            Type = SCTypeCode.UInt32,
+            IsEncrypted = true,
+            Size = 4,
+        };
+        public static DataBlock KMassOutbreak14TotalSpawns = new()
+        {
+            Name = "KMassOutbreak14TotalSpawns",
+            Key = 0x43887C78,
+            Type = SCTypeCode.Int32,
+        };
+        public static DataBlock KMassOutbreak14CenterPos = new()
+        {
+            Name = "KMassOutbreak14CenterPos",
+            Key = 0xCE42C6C1,
+            Type = SCTypeCode.Array,
+            IsEncrypted = true,
+            Size = 12,
+        };
+        public static DataBlock KOutbreakSpecies15 = new()
+        {
+            Name = "KOutbreakSpecies15",
+            Key = 0xB8E37713,
+            Type = SCTypeCode.UInt32,
+            IsEncrypted = true,
+            Size = 4,
+        };
+        public static DataBlock KMassOutbreak15Form = new()
+        {
+            Name = "KMassOutbreak15Form",
+            Key = 0xEFAB69DC,
+            Type = SCTypeCode.Byte,
+            IsEncrypted = true,
+            Size = 1,
+        };
+        public static DataBlock KMassOutbreakKO15 = new()
+        {
+            Name = "KMassOutbreakKO15",
+            Key = 0x4EF4036B,
+            Type = SCTypeCode.UInt32,
+            IsEncrypted = true,
+            Size = 4,
+        };
+        public static DataBlock KMassOutbreak15TotalSpawns = new()
+        {
+            Name = "KMassOutbreak15TotalSpawns",
+            Key = 0x437FBB33,
+            Type = SCTypeCode.Int32,
+        };
+        public static DataBlock KMassOutbreak15CenterPos = new()
+        {
+            Name = "KMassOutbreak15CenterPos",
+            Key = 0xCE4090EA,
+            Type = SCTypeCode.Array,
+            IsEncrypted = true,
+            Size = 12,
+        };
+        public static DataBlock KOutbreakSpecies16 = new()
+        {
+            Name = "KOutbreakSpecies16",
+            Key = 0xB8E766B6,
+            Type = SCTypeCode.UInt32,
+            IsEncrypted = true,
+            Size = 4,
+        };
+        public static DataBlock KMassOutbreak16Form = new()
+        {
+            Name = "KMassOutbreak16Form",
+            Key = 0xEFA93AD1,
+            Type = SCTypeCode.Byte,
+            IsEncrypted = true,
+            Size = 1,
+        };
+        public static DataBlock KMassOutbreakKO16 = new()
+        {
+            Name = "KMassOutbreakKO16",
+            Key = 0x4EF6400E,
+            Type = SCTypeCode.UInt32,
+            IsEncrypted = true,
+            Size = 4,
+        };
+        public static DataBlock KMassOutbreak16TotalSpawns = new()
+        {
+            Name = "KMassOutbreak16TotalSpawns",
+            Key = 0x4383AAD6,
+            Type = SCTypeCode.Int32,
+        };
+        public static DataBlock KMassOutbreak16CenterPos = new()
+        {
+            Name = "KMassOutbreak16CenterPos",
+            Key = 0xCE3DE787,
+            Type = SCTypeCode.Array,
+            IsEncrypted = true,
+            Size = 12,
+        };
+        public static DataBlock KOutbreakSpecies17 = new()
+        {
+            Name = "KOutbreakSpecies17",
+            Key = 0xB8DEA571,
+            Type = SCTypeCode.UInt32,
+            IsEncrypted = true,
+            Size = 4,
+        };
+        public static DataBlock KMassOutbreak17Form = new()
+        {
+            Name = "KMassOutbreak17Form",
+            Key = 0xEFB12296,
+            Type = SCTypeCode.Byte,
+            IsEncrypted = true,
+            Size = 1,
+        };
+        public static DataBlock KMassOutbreakKO17 = new()
+        {
+            Name = "KMassOutbreakKO17",
+            Key = 0x4EED7EC9,
+            Type = SCTypeCode.UInt32,
+            IsEncrypted = true,
+            Size = 4,
+        };
+        public static DataBlock KMassOutbreak17TotalSpawns = new()
+        {
+            Name = "KMassOutbreak17TotalSpawns",
+            Key = 0x437A1011,
+            Type = SCTypeCode.Int32,
+        };
+        public static DataBlock KMassOutbreak17CenterPos = new()
+        {
+            Name = "KMassOutbreak17CenterPos",
+            Key = 0xCE513328,
+            Type = SCTypeCode.Array,
+            IsEncrypted = true,
+            Size = 12,
+        };
+
         #endregion
         #region KOutbreakBC01MainSpecies
         public static DataBlock KOutbreakBC01MainSpecies = new()
@@ -1884,6 +2098,14 @@ namespace PokeViewer.NET
             Size = 12,
         };
         #endregion
+        public static DataBlock KBlueberryPoints = new()
+        {
+            Name = "KBlueberryPoints",
+            Key = 0x66A33824,
+            Type = SCTypeCode.UInt32,
+            IsEncrypted = true,
+            Size = 4,
+        };
     }
 
 }

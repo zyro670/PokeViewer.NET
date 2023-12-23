@@ -52,27 +52,29 @@
             ToggleSwitchProtocol = new CheckBox();
             ViewerControl = new TabControl();
             ConnectionPage = new TabPage();
-            TurboButton = new Button();
-            EventRedeemButton = new Button();
-            MoodGroup = new GroupBox();
-            BackColorLabel = new Label();
-            ForeColorLabel = new Label();
-            AltBackCombo = new ComboBox();
-            AltForeCombo = new ComboBox();
-            SetMoodButton = new Button();
-            DefaultMoodRadio = new RadioButton();
-            AltMoodRadio = new RadioButton();
             ScreenLabel = new Label();
+            EventRedeemButton = new Button();
             TrainerPassportGroup = new GroupBox();
             TrainerPhoto = new PictureBox();
             TIDSID = new Label();
             TrainerLabel = new Label();
             ScreenOnLabel = new Label();
             ExtrasGroup = new GroupBox();
-            MessageText = new TextBox();
-            PingLabel = new Label();
             WideButton = new Button();
-            RaidButton = new Button();
+            PrefixBox = new ComboBox();
+            ControllerButton = new Button();
+            BotPrefixLabel = new Label();
+            BackColorLabel = new Label();
+            BotTokenLabel = new Label();
+            ForeColorLabel = new Label();
+            BotToken = new TextBox();
+            AltBackCombo = new ComboBox();
+            MessageText = new TextBox();
+            AltForeCombo = new ComboBox();
+            PingLabel = new Label();
+            SetMoodButton = new Button();
+            DefaultMoodRadio = new RadioButton();
+            AltMoodRadio = new RadioButton();
             DiscordIDText = new TextBox();
             WebhookURLText = new TextBox();
             DiscordID = new Label();
@@ -89,7 +91,7 @@
             EggPage = new TabPage();
             NPCPage = new TabPage();
             InGameScreenshotPage = new TabPage();
-            MiscPage = new TabPage();
+            OutbreakPage = new TabPage();
             ((System.ComponentModel.ISupportInitialize)PokeSprite).BeginInit();
             ((System.ComponentModel.ISupportInitialize)Specialty).BeginInit();
             ((System.ComponentModel.ISupportInitialize)OriginIcon).BeginInit();
@@ -97,7 +99,6 @@
             ((System.ComponentModel.ISupportInitialize)Typing2).BeginInit();
             ViewerControl.SuspendLayout();
             ConnectionPage.SuspendLayout();
-            MoodGroup.SuspendLayout();
             TrainerPassportGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)TrainerPhoto).BeginInit();
             ExtrasGroup.SuspendLayout();
@@ -109,7 +110,7 @@
             // 
             // Connect
             // 
-            Connect.Location = new Point(66, 57);
+            Connect.Location = new Point(65, 57);
             Connect.Name = "Connect";
             Connect.Size = new Size(75, 25);
             Connect.TabIndex = 0;
@@ -119,7 +120,7 @@
             // 
             // SwitchIP
             // 
-            SwitchIP.Location = new Point(37, 26);
+            SwitchIP.Location = new Point(36, 26);
             SwitchIP.Name = "SwitchIP";
             SwitchIP.Size = new Size(128, 23);
             SwitchIP.TabIndex = 2;
@@ -327,7 +328,7 @@
             ViewerControl.Controls.Add(EggPage);
             ViewerControl.Controls.Add(NPCPage);
             ViewerControl.Controls.Add(InGameScreenshotPage);
-            ViewerControl.Controls.Add(MiscPage);
+            ViewerControl.Controls.Add(OutbreakPage);
             ViewerControl.Location = new Point(-5, 2);
             ViewerControl.Name = "ViewerControl";
             ViewerControl.SelectedIndex = 0;
@@ -338,10 +339,8 @@
             // ConnectionPage
             // 
             ConnectionPage.BackColor = SystemColors.ControlLightLight;
-            ConnectionPage.Controls.Add(TurboButton);
-            ConnectionPage.Controls.Add(EventRedeemButton);
-            ConnectionPage.Controls.Add(MoodGroup);
             ConnectionPage.Controls.Add(ScreenLabel);
+            ConnectionPage.Controls.Add(EventRedeemButton);
             ConnectionPage.Controls.Add(TrainerPassportGroup);
             ConnectionPage.Controls.Add(ScreenOnLabel);
             ConnectionPage.Controls.Add(ExtrasGroup);
@@ -355,114 +354,6 @@
             ConnectionPage.TabIndex = 0;
             ConnectionPage.Text = "Connection 🔌";
             // 
-            // TurboButton
-            // 
-            TurboButton.Enabled = false;
-            TurboButton.Location = new Point(407, 6);
-            TurboButton.Name = "TurboButton";
-            TurboButton.Size = new Size(75, 23);
-            TurboButton.TabIndex = 50;
-            TurboButton.Text = "Turbo";
-            TurboButton.UseVisualStyleBackColor = true;
-            TurboButton.Click += button1_Click_1;
-            // 
-            // EventRedeemButton
-            // 
-            EventRedeemButton.Location = new Point(407, 31);
-            EventRedeemButton.Name = "EventRedeemButton";
-            EventRedeemButton.Size = new Size(75, 23);
-            EventRedeemButton.TabIndex = 49;
-            EventRedeemButton.Text = "Event";
-            EventRedeemButton.UseVisualStyleBackColor = true;
-            EventRedeemButton.Visible = false;
-            EventRedeemButton.Click += button1_Click;
-            // 
-            // MoodGroup
-            // 
-            MoodGroup.Controls.Add(BackColorLabel);
-            MoodGroup.Controls.Add(ForeColorLabel);
-            MoodGroup.Controls.Add(AltBackCombo);
-            MoodGroup.Controls.Add(AltForeCombo);
-            MoodGroup.Controls.Add(SetMoodButton);
-            MoodGroup.Controls.Add(DefaultMoodRadio);
-            MoodGroup.Controls.Add(AltMoodRadio);
-            MoodGroup.Location = new Point(279, 288);
-            MoodGroup.Name = "MoodGroup";
-            MoodGroup.Size = new Size(212, 132);
-            MoodGroup.TabIndex = 48;
-            MoodGroup.TabStop = false;
-            MoodGroup.Text = "Mood";
-            // 
-            // BackColorLabel
-            // 
-            BackColorLabel.AutoSize = true;
-            BackColorLabel.Location = new Point(6, 103);
-            BackColorLabel.Name = "BackColorLabel";
-            BackColorLabel.Size = new Size(61, 15);
-            BackColorLabel.TabIndex = 50;
-            BackColorLabel.Text = "BackColor";
-            // 
-            // ForeColorLabel
-            // 
-            ForeColorLabel.AutoSize = true;
-            ForeColorLabel.Location = new Point(6, 74);
-            ForeColorLabel.Name = "ForeColorLabel";
-            ForeColorLabel.Size = new Size(59, 15);
-            ForeColorLabel.TabIndex = 49;
-            ForeColorLabel.Text = "ForeColor";
-            // 
-            // AltBackCombo
-            // 
-            AltBackCombo.FormattingEnabled = true;
-            AltBackCombo.Location = new Point(71, 100);
-            AltBackCombo.Name = "AltBackCombo";
-            AltBackCombo.Size = new Size(132, 23);
-            AltBackCombo.TabIndex = 48;
-            AltBackCombo.SelectedIndexChanged += AltBackCombo_SelectedIndexChanged;
-            // 
-            // AltForeCombo
-            // 
-            AltForeCombo.FormattingEnabled = true;
-            AltForeCombo.Location = new Point(71, 71);
-            AltForeCombo.Name = "AltForeCombo";
-            AltForeCombo.Size = new Size(132, 23);
-            AltForeCombo.TabIndex = 37;
-            AltForeCombo.SelectedIndexChanged += ColorComboBox_SelectedIndexChanged;
-            // 
-            // SetMoodButton
-            // 
-            SetMoodButton.Location = new Point(128, 22);
-            SetMoodButton.Name = "SetMoodButton";
-            SetMoodButton.Size = new Size(75, 23);
-            SetMoodButton.TabIndex = 47;
-            SetMoodButton.Text = "Set Mood";
-            SetMoodButton.UseVisualStyleBackColor = true;
-            SetMoodButton.Click += SetMoodButton_Click;
-            // 
-            // DefaultMoodRadio
-            // 
-            DefaultMoodRadio.AutoSize = true;
-            DefaultMoodRadio.Location = new Point(11, 22);
-            DefaultMoodRadio.Name = "DefaultMoodRadio";
-            DefaultMoodRadio.Size = new Size(98, 19);
-            DefaultMoodRadio.TabIndex = 45;
-            DefaultMoodRadio.TabStop = true;
-            DefaultMoodRadio.Text = "Default Mood";
-            DefaultMoodRadio.UseVisualStyleBackColor = true;
-            DefaultMoodRadio.CheckedChanged += DefaultMoodRadio_CheckedChanged;
-            // 
-            // AltMoodRadio
-            // 
-            AltMoodRadio.AutoSize = true;
-            AltMoodRadio.Location = new Point(11, 46);
-            AltMoodRadio.Name = "AltMoodRadio";
-            AltMoodRadio.Size = new Size(108, 19);
-            AltMoodRadio.TabIndex = 46;
-            AltMoodRadio.TabStop = true;
-            AltMoodRadio.Text = "Alternate Mood";
-            AltMoodRadio.UseVisualStyleBackColor = true;
-            AltMoodRadio.CheckedChanged += AltMoodRadio_CheckedChanged;
-            // 
             // ScreenLabel
             // 
             ScreenLabel.AutoSize = true;
@@ -471,6 +362,17 @@
             ScreenLabel.Size = new Size(42, 15);
             ScreenLabel.TabIndex = 44;
             ScreenLabel.Text = "Screen";
+            // 
+            // EventRedeemButton
+            // 
+            EventRedeemButton.Location = new Point(416, 6);
+            EventRedeemButton.Name = "EventRedeemButton";
+            EventRedeemButton.Size = new Size(75, 23);
+            EventRedeemButton.TabIndex = 49;
+            EventRedeemButton.Text = "Event";
+            EventRedeemButton.UseVisualStyleBackColor = true;
+            EventRedeemButton.Visible = false;
+            EventRedeemButton.Click += button1_Click;
             // 
             // TrainerPassportGroup
             // 
@@ -524,22 +426,117 @@
             // ExtrasGroup
             // 
             ExtrasGroup.BackColor = Color.Transparent;
-            ExtrasGroup.Controls.Add(MessageText);
-            ExtrasGroup.Controls.Add(PingLabel);
             ExtrasGroup.Controls.Add(WideButton);
-            ExtrasGroup.Controls.Add(RaidButton);
+            ExtrasGroup.Controls.Add(PrefixBox);
+            ExtrasGroup.Controls.Add(ControllerButton);
+            ExtrasGroup.Controls.Add(BotPrefixLabel);
+            ExtrasGroup.Controls.Add(BackColorLabel);
+            ExtrasGroup.Controls.Add(BotTokenLabel);
+            ExtrasGroup.Controls.Add(ForeColorLabel);
+            ExtrasGroup.Controls.Add(BotToken);
+            ExtrasGroup.Controls.Add(AltBackCombo);
+            ExtrasGroup.Controls.Add(MessageText);
+            ExtrasGroup.Controls.Add(AltForeCombo);
+            ExtrasGroup.Controls.Add(PingLabel);
+            ExtrasGroup.Controls.Add(SetMoodButton);
+            ExtrasGroup.Controls.Add(DefaultMoodRadio);
+            ExtrasGroup.Controls.Add(AltMoodRadio);
             ExtrasGroup.Controls.Add(DiscordIDText);
             ExtrasGroup.Controls.Add(WebhookURLText);
             ExtrasGroup.Controls.Add(DiscordID);
             ExtrasGroup.Controls.Add(ToggleSwitchProtocol);
             ExtrasGroup.Controls.Add(WebHookURL);
             ExtrasGroup.Controls.Add(SaveButton);
-            ExtrasGroup.Location = new Point(7, 288);
+            ExtrasGroup.Location = new Point(7, 283);
             ExtrasGroup.Name = "ExtrasGroup";
-            ExtrasGroup.Size = new Size(266, 132);
+            ExtrasGroup.Size = new Size(484, 157);
             ExtrasGroup.TabIndex = 35;
             ExtrasGroup.TabStop = false;
             ExtrasGroup.Text = "Extras";
+            // 
+            // WideButton
+            // 
+            WideButton.Location = new Point(177, 15);
+            WideButton.Name = "WideButton";
+            WideButton.Size = new Size(75, 23);
+            WideButton.TabIndex = 54;
+            WideButton.Text = "Wide View";
+            WideButton.UseVisualStyleBackColor = true;
+            WideButton.Click += WideButton_Click;
+            // 
+            // PrefixBox
+            // 
+            PrefixBox.FormattingEnabled = true;
+            PrefixBox.Items.AddRange(new object[] { "$", "!", "%", "^", "&", "*", ".", ",", ";", "-", "_" });
+            PrefixBox.Location = new Point(217, 130);
+            PrefixBox.Name = "PrefixBox";
+            PrefixBox.Size = new Size(35, 23);
+            PrefixBox.TabIndex = 53;
+            PrefixBox.Text = "$";
+            PrefixBox.SelectedIndexChanged += Prefix_CheckedChanged;
+            // 
+            // ControllerButton
+            // 
+            ControllerButton.Enabled = false;
+            ControllerButton.Location = new Point(270, 124);
+            ControllerButton.Name = "ControllerButton";
+            ControllerButton.Size = new Size(197, 23);
+            ControllerButton.TabIndex = 50;
+            ControllerButton.Text = "Controller Assist";
+            ControllerButton.UseVisualStyleBackColor = true;
+            ControllerButton.Click += button1_Click_1;
+            // 
+            // BotPrefixLabel
+            // 
+            BotPrefixLabel.AutoSize = true;
+            BotPrefixLabel.Location = new Point(157, 133);
+            BotPrefixLabel.Name = "BotPrefixLabel";
+            BotPrefixLabel.Size = new Size(58, 15);
+            BotPrefixLabel.TabIndex = 52;
+            BotPrefixLabel.Text = "Bot Prefix";
+            // 
+            // BackColorLabel
+            // 
+            BackColorLabel.AutoSize = true;
+            BackColorLabel.Location = new Point(270, 98);
+            BackColorLabel.Name = "BackColorLabel";
+            BackColorLabel.Size = new Size(61, 15);
+            BackColorLabel.TabIndex = 50;
+            BackColorLabel.Text = "BackColor";
+            // 
+            // BotTokenLabel
+            // 
+            BotTokenLabel.AutoSize = true;
+            BotTokenLabel.Location = new Point(1, 133);
+            BotTokenLabel.Name = "BotTokenLabel";
+            BotTokenLabel.Size = new Size(59, 15);
+            BotTokenLabel.TabIndex = 51;
+            BotTokenLabel.Text = "Bot Token";
+            // 
+            // ForeColorLabel
+            // 
+            ForeColorLabel.AutoSize = true;
+            ForeColorLabel.Location = new Point(270, 69);
+            ForeColorLabel.Name = "ForeColorLabel";
+            ForeColorLabel.Size = new Size(59, 15);
+            ForeColorLabel.TabIndex = 49;
+            ForeColorLabel.Text = "ForeColor";
+            // 
+            // BotToken
+            // 
+            BotToken.Location = new Point(68, 130);
+            BotToken.Name = "BotToken";
+            BotToken.Size = new Size(84, 23);
+            BotToken.TabIndex = 51;
+            // 
+            // AltBackCombo
+            // 
+            AltBackCombo.FormattingEnabled = true;
+            AltBackCombo.Location = new Point(335, 95);
+            AltBackCombo.Name = "AltBackCombo";
+            AltBackCombo.Size = new Size(132, 23);
+            AltBackCombo.TabIndex = 48;
+            AltBackCombo.SelectedIndexChanged += AltBackCombo_SelectedIndexChanged;
             // 
             // MessageText
             // 
@@ -547,6 +544,15 @@
             MessageText.Name = "MessageText";
             MessageText.Size = new Size(185, 23);
             MessageText.TabIndex = 51;
+            // 
+            // AltForeCombo
+            // 
+            AltForeCombo.FormattingEnabled = true;
+            AltForeCombo.Location = new Point(335, 66);
+            AltForeCombo.Name = "AltForeCombo";
+            AltForeCombo.Size = new Size(132, 23);
+            AltForeCombo.TabIndex = 37;
+            AltForeCombo.SelectedIndexChanged += ColorComboBox_SelectedIndexChanged;
             // 
             // PingLabel
             // 
@@ -557,27 +563,39 @@
             PingLabel.TabIndex = 39;
             PingLabel.Text = "Message";
             // 
-            // WideButton
+            // SetMoodButton
             // 
-            WideButton.Enabled = false;
-            WideButton.Location = new Point(131, 15);
-            WideButton.Name = "WideButton";
-            WideButton.Size = new Size(59, 23);
-            WideButton.TabIndex = 37;
-            WideButton.Text = "Wide";
-            WideButton.UseVisualStyleBackColor = true;
-            WideButton.Click += WideButton_Click;
+            SetMoodButton.Location = new Point(392, 17);
+            SetMoodButton.Name = "SetMoodButton";
+            SetMoodButton.Size = new Size(75, 23);
+            SetMoodButton.TabIndex = 47;
+            SetMoodButton.Text = "Set Mood";
+            SetMoodButton.UseVisualStyleBackColor = true;
+            SetMoodButton.Click += SetMoodButton_Click;
             // 
-            // RaidButton
+            // DefaultMoodRadio
             // 
-            RaidButton.Enabled = false;
-            RaidButton.Location = new Point(195, 15);
-            RaidButton.Name = "RaidButton";
-            RaidButton.Size = new Size(58, 23);
-            RaidButton.TabIndex = 38;
-            RaidButton.Text = "Raid";
-            RaidButton.UseVisualStyleBackColor = true;
-            RaidButton.Click += RaidButton_Click;
+            DefaultMoodRadio.AutoSize = true;
+            DefaultMoodRadio.Location = new Point(275, 17);
+            DefaultMoodRadio.Name = "DefaultMoodRadio";
+            DefaultMoodRadio.Size = new Size(98, 19);
+            DefaultMoodRadio.TabIndex = 45;
+            DefaultMoodRadio.TabStop = true;
+            DefaultMoodRadio.Text = "Default Mood";
+            DefaultMoodRadio.UseVisualStyleBackColor = true;
+            DefaultMoodRadio.CheckedChanged += DefaultMoodRadio_CheckedChanged;
+            // 
+            // AltMoodRadio
+            // 
+            AltMoodRadio.AutoSize = true;
+            AltMoodRadio.Location = new Point(275, 41);
+            AltMoodRadio.Name = "AltMoodRadio";
+            AltMoodRadio.Size = new Size(108, 19);
+            AltMoodRadio.TabIndex = 46;
+            AltMoodRadio.TabStop = true;
+            AltMoodRadio.Text = "Alternate Mood";
+            AltMoodRadio.UseVisualStyleBackColor = true;
+            AltMoodRadio.CheckedChanged += AltMoodRadio_CheckedChanged;
             // 
             // DiscordIDText
             // 
@@ -589,12 +607,11 @@
             // 
             // WebhookURLText
             // 
-            WebhookURLText.Location = new Point(68, 41);
+            WebhookURLText.Location = new Point(68, 40);
             WebhookURLText.Name = "WebhookURLText";
             WebhookURLText.Size = new Size(185, 23);
             WebhookURLText.TabIndex = 3;
             WebhookURLText.TextAlign = HorizontalAlignment.Center;
-            WebhookURLText.UseSystemPasswordChar = true;
             // 
             // DiscordID
             // 
@@ -618,7 +635,7 @@
             // 
             SaveButton.Location = new Point(67, 15);
             SaveButton.Name = "SaveButton";
-            SaveButton.Size = new Size(59, 23);
+            SaveButton.Size = new Size(104, 23);
             SaveButton.TabIndex = 0;
             SaveButton.Text = "Save";
             SaveButton.UseVisualStyleBackColor = true;
@@ -658,7 +675,7 @@
             // 
             // ConnectionSpriteBox
             // 
-            ConnectionSpriteBox.Location = new Point(71, 90);
+            ConnectionSpriteBox.Location = new Point(70, 90);
             ConnectionSpriteBox.Name = "ConnectionSpriteBox";
             ConnectionSpriteBox.Size = new Size(64, 64);
             ConnectionSpriteBox.TabIndex = 35;
@@ -753,14 +770,14 @@
             InGameScreenshotPage.Text = "Screenshot 📷";
             InGameScreenshotPage.UseVisualStyleBackColor = true;
             // 
-            // MiscPage
+            // OutbreakPage
             // 
-            MiscPage.Location = new Point(4, 24);
-            MiscPage.Name = "MiscPage";
-            MiscPage.Size = new Size(503, 482);
-            MiscPage.TabIndex = 9;
-            MiscPage.Text = "Misc 📓";
-            MiscPage.UseVisualStyleBackColor = true;
+            OutbreakPage.Location = new Point(4, 24);
+            OutbreakPage.Name = "OutbreakPage";
+            OutbreakPage.Size = new Size(503, 482);
+            OutbreakPage.TabIndex = 9;
+            OutbreakPage.Text = "Misc 📓";
+            OutbreakPage.UseVisualStyleBackColor = true;
             // 
             // MainViewer
             // 
@@ -785,8 +802,6 @@
             ViewerControl.ResumeLayout(false);
             ConnectionPage.ResumeLayout(false);
             ConnectionPage.PerformLayout();
-            MoodGroup.ResumeLayout(false);
-            MoodGroup.PerformLayout();
             TrainerPassportGroup.ResumeLayout(false);
             TrainerPassportGroup.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)TrainerPhoto).EndInit();
@@ -835,15 +850,13 @@
         private Label VersionLabel;
         private TabPage InGameScreenshotPage;
         private TabPage PartyPage;
-        private TabPage MiscPage;
+        private TabPage OutbreakPage;
         private GroupBox ExtrasGroup;
         private Button SaveButton;
         private TextBox WebhookURLText;
         private Label DiscordID;
         private Label WebHookURL;
         private TextBox DiscordIDText;
-        private Button RaidButton;
-        private Button WideButton;
         private Label TrainerLabel;
         private GroupBox TrainerPassportGroup;
         private Label TIDSID;
@@ -852,7 +865,6 @@
         private Label ScreenLabel;
         private Label ScreenOnLabel;
         private Label ScreenOffLabel;
-        private GroupBox MoodGroup;
         private Button SetMoodButton;
         private RadioButton DefaultMoodRadio;
         private RadioButton AltMoodRadio;
@@ -861,8 +873,13 @@
         private Label BackColorLabel;
         private Label ForeColorLabel;
         private Button EventRedeemButton;
-        private Button TurboButton;
+        private Button ControllerButton;
         private Label PingLabel;
         private TextBox MessageText;
+        private TextBox BotToken;
+        private Label BotTokenLabel;
+        private Label BotPrefixLabel;
+        private ComboBox PrefixBox;
+        private Button WideButton;
     }
 }

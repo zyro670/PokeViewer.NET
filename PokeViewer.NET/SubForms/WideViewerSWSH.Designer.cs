@@ -471,6 +471,7 @@
             Controls.Add(button1);
             FormBorderStyle = FormBorderStyle.None;
             Name = "WideViewerSWSH";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "PokeViewer.NET - WideViewSWSH - Overworld Spawns";
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();

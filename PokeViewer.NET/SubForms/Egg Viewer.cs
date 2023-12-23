@@ -1,12 +1,12 @@
-﻿using SysBot.Base;
+﻿using Newtonsoft.Json;
 using PKHeX.Core;
 using PKHeX.Drawing.PokeSprite;
-using System.Text;
-using Newtonsoft.Json;
 using PokeViewer.NET.Properties;
+using SysBot.Base;
+using System.Text;
+using static PokeViewer.NET.RoutineExecutor;
 using static SysBot.Base.SwitchButton;
 using static SysBot.Base.SwitchStick;
-using static PokeViewer.NET.RoutineExecutor;
 
 namespace PokeViewer.NET.SubForms
 {
@@ -35,6 +35,7 @@ namespace PokeViewer.NET.SubForms
         private readonly byte[] BlankVal = { 0x01 };
         private List<Species> SpeciesResults = new();
         private List<Image> SpriteResults = new();
+        private ulong BoxStartOffset;
         private DateTime StartTime;
 
         private void SetColors((Color, Color) color)
@@ -69,6 +70,8 @@ namespace PokeViewer.NET.SubForms
             DUPItem2Check.ForeColor = color.Item2;
             DUPItem3Check.BackColor = color.Item1;
             DUPItem3Check.ForeColor = color.Item2;
+            CollectEggsCheck.BackColor = color.Item1;
+            CollectEggsCheck.ForeColor = color.Item2;
             SetColor = color;
         }
 
@@ -100,10 +103,15 @@ namespace PokeViewer.NET.SubForms
         private async void button1_Click(object sender, EventArgs e)
         {
             var token = CancellationToken.None;
+            UptimeOnLoad(sender, e);
+            await EggStart(token).ConfigureAwait(false);
+        }
+
+        public async Task EggStart(CancellationToken token)
+        {
             if (DisplayPartyCheck.Checked)
                 await GatherPokeParty(token).ConfigureAwait(false);
             StartTime = DateTime.Now;
-            UptimeOnLoad(sender, e);
             await PerformEggRoutine(token).ConfigureAwait(false);
         }
 
@@ -117,23 +125,62 @@ namespace PokeViewer.NET.SubForms
             timer.Start();
         }
 
+        private async Task SetupBoxState(CancellationToken token)
+        {
+            var existing = await ReadBoxPokemonSV(BoxStartOffset, 0x158, token).ConfigureAwait(false);
+            if (existing.Species != 0 && existing.ChecksumValid)
+                ViewerUtil.DumpPokemon(AppDomain.CurrentDomain.BaseDirectory, "saved", existing);
+
+            await SetBoxPokemonEgg(Blank, BoxStartOffset, token).ConfigureAwait(false);
+        }
+
+        private async Task SetCurrentBox(byte box, CancellationToken token)
+        {
+            await Executor.SwitchConnection.PointerPoke(new[] { box }, Offsets.CurrentBoxSV, token).ConfigureAwait(false);
+        }
+
+        public async Task SetBoxPokemonEgg(PK9 pkm, ulong ofs, CancellationToken token)
+        {
+            pkm.ResetPartyStats();
+            await Executor.SwitchConnection.WriteBytesAbsoluteAsync(pkm.EncryptedPartyData, ofs, token).ConfigureAwait(false);
+        }
+
+        private async Task InitializeSessionOffsets(CancellationToken token)
+        {
+            BoxStartOffset = await Executor.SwitchConnection.PointerAll(Offsets.BoxStartSV, token).ConfigureAwait(false);
+        }
+
         private async Task PerformEggRoutine(CancellationToken token)
         {
-            if (FetchButton.Enabled == true)
+            if (FetchButton.Enabled)
                 DisableOptions();
 
             eggcount = 0;
             await Executor.SwitchConnection.WriteBytesMainAsync(BlankVal, Offsets.PicnicMenu, token).ConfigureAwait(false);
             prevPK = await ReadPokemonSV(Offsets.EggData, 344, token).ConfigureAwait(false);
+            if (CollectEggsCheck.Checked)
+            {
+                await InitializeSessionOffsets(token).ConfigureAwait(false);
+                await SetupBoxState(token).ConfigureAwait(false);
+                await SetCurrentBox(0, token).ConfigureAwait(false);
+            }
             try
             {
                 if (EatOnStart.Checked)
                 {
                     await MakeSandwich(token).ConfigureAwait(false);
-                    await WaitForEggs(token).ConfigureAwait(false);
+                    if (CollectEggsCheck.Checked)
+                        await WaitAndCollectEggs(token).ConfigureAwait(false);
+                    else
+                        await WaitForEggs(token).ConfigureAwait(false);
                 }
                 else
-                    await WaitForEggs(token).ConfigureAwait(false);
+                {
+                    if (CollectEggsCheck.Checked)
+                        await WaitAndCollectEggs(token).ConfigureAwait(false);
+                    else
+                        await WaitForEggs(token).ConfigureAwait(false);
+                }
 
                 return;
             }
@@ -145,10 +192,125 @@ namespace PokeViewer.NET.SubForms
             return;
         }
 
-        public async Task SetBoxPokemonEgg(PK9 pkm, ulong ofs, CancellationToken token)
+        private async Task WaitAndCollectEggs(CancellationToken token)
         {
-            pkm.ResetPartyStats();
-            await Executor.SwitchConnection.WriteBytesAbsoluteAsync(pkm.EncryptedPartyData, ofs, token).ConfigureAwait(false);
+            PK9 pkprev = new();
+            SpriteUrl = string.Empty;
+            while (!token.IsCancellationRequested)
+            {
+                var wait = TimeSpan.FromMinutes(31);
+                var endTime = DateTime.Now + wait;
+                var waiting = 0;
+                NextSanwichLabel.Text = $"Next Sandwich: {endTime:hh\\:mm\\:ss}";
+                while (DateTime.Now < endTime)
+                {
+                    BasketCount.Text = "Status: Waiting..";
+                    var pk = await ReadPokemonSV(Offsets.EggData, 344, token).ConfigureAwait(false);
+                    while (pk == prevPK || pk == null || pkprev!.EncryptionConstant == pk.EncryptionConstant || (Species)pk.Species == Species.None)
+                    {
+                        if (DateTime.Now >= endTime)
+                            break;
+
+                        await Task.Delay(1_500, token).ConfigureAwait(false);
+                        pk = await ReadPokemonSV(Offsets.EggData, 344, token).ConfigureAwait(false);
+                        waiting++;
+
+                        if (waiting == 120)
+                        {
+                            await Click(A, 1_500, token).ConfigureAwait(false);
+                            waiting = 0;
+                        }
+                    }
+                    BasketCount.Text = "Status: Checking..";
+                    var (match, enc) = await RetrieveEgg(token).ConfigureAwait(false);
+
+                    if (enc.Species != (ushort)Species.None)
+                    {
+                        PokeStats.Text = GetPrint(enc);
+
+                        if (SpriteResults.Count is not 0)
+                        {
+                            for (int k = 0; k < SpriteResults.Count; k++)
+                            {
+                                if (SpeciesResults[k] == (Species)enc.Species)
+                                {
+                                    if (!pk!.IsShiny)
+                                        PokeSpriteBox.Image = SpriteResults[k];
+                                    else
+                                    {
+                                        SpriteUrl = PokeImg(pk, false);
+                                        PokeSpriteBox.Load(SpriteUrl);
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            try
+                            {
+                                SpriteUrl = PokeImg(enc, false);
+                            }
+                            catch
+                            {
+                                SpriteUrl = "https://raw.githubusercontent.com/kwsch/PKHeX/master/PKHeX.Drawing.PokeSprite/Resources/img/Pokemon%20Sprite%20Overlays/starter.png";
+                            }
+                            Image image = null!;
+                            using (var httpClient = new HttpClient())
+                            {
+                                var imageContent = await httpClient.GetByteArrayAsync(SpriteUrl, token);
+                                using var imageBuffer = new MemoryStream(imageContent);
+                                image = Image.FromStream(imageBuffer);
+                            }
+
+                            SpriteResults.Add(image);
+                            SpeciesResults.Add((Species)enc.Species);
+                            PokeSpriteBox.Image = image;
+                        }
+                        var ballsprite = SpriteUtil.GetBallSprite(enc.Ball);
+                        BallBox.Image = ballsprite;
+
+                        if (!match)
+                        {
+                            if (enc.IsShiny)
+                            {
+                                var shinyurl = PokeImg(enc, false);
+                                PokeSpriteBox.Load(shinyurl);
+                                SendNotifications(PokeStats.Text, shinyurl, match);
+                            }
+                        }
+                        if (match)
+                        {
+                            prevPK = enc;
+                            await Click(HOME, 0_500, token).ConfigureAwait(false);
+                            if (enc.IsShiny)
+                            {
+                                var shinyurl = PokeImg(enc, false);
+                                PokeSpriteBox.Load(shinyurl);
+                                SendNotifications(PokeStats.Text, shinyurl, match);
+                            }
+                            else
+                                SendNotifications(PokeStats.Text, SpriteUrl, match);
+                            EnableOptions();
+                            Activate();
+                            MessageBox.Show("Match found! Egg should be first one in your boxes! Double check with BoxView! " +
+                                "Make sure to move your match to a different spot from Box 1 Slot 1 or it will be deleted on the next bot start.");
+                            return;
+                        }
+                        if (!match)
+                            await SetBoxPokemonEgg(Blank, BoxStartOffset, token).ConfigureAwait(false);
+
+                        pkprev = pk!;
+                        waiting = 0;
+                    }
+                }
+                if (EatAgain.Checked)
+                {
+                    BasketCount.Text = "Status: Time to eat..";
+                    await MakeSandwich(token).ConfigureAwait(false);
+                }
+                else
+                    BasketCount.Text = "Status: Done.";
+            }
         }
 
         private async Task WaitForEggs(CancellationToken token)
@@ -249,7 +411,6 @@ namespace PokeViewer.NET.SubForms
                         if (match)
                         {
                             prevPK = pk;
-                            await Click(HOME, 0_500, token).ConfigureAwait(false);
                             if (pk.IsShiny)
                             {
                                 var shinyurl = PokeImg(pk, false);
@@ -293,6 +454,38 @@ namespace PokeViewer.NET.SubForms
             string sensitiveinfo = HidePIDEC.Checked ? "" : $"{pid}{ec}";
             return $"{$"Egg #{eggcount}"}{Environment.NewLine}{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{(Species)pk.Species}{form}{gender}{sensitiveinfo}{Environment.NewLine}Nature: {(Nature)pk.Nature}{Environment.NewLine}Ability: {GameInfo.GetStrings(1).Ability[pk.Ability]}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}{Environment.NewLine}Scale: {PokeSizeDetailedUtil.GetSizeRating(pk.Scale)} ({pk.Scale})";
 
+        }
+
+        private async Task<(bool, PK9)> RetrieveEgg(CancellationToken token)
+        {
+            bool match = false;
+            PK9 pk = new();
+            for (int a = 0; a < 4; a++)
+                await Click(A, 1_500, token).ConfigureAwait(false);
+
+            await Task.Delay(0_500, token).ConfigureAwait(false);
+            pk = await ReadBoxPokemonSV(BoxStartOffset, 344, token).ConfigureAwait(false);
+            if ((Species)pk.Species != Species.None)
+            {
+                BasketCount.Text = "Status: Egg found!";
+                eggcount++;
+                match = ValidateEncounter(pk);
+                if (ForceDumpCheck.Checked)
+                    ViewerUtil.DumpPokemon(AppDomain.CurrentDomain.BaseDirectory, "eggs", pk);
+                await Click(MINUS, 1_500, token).ConfigureAwait(false);
+                for (int a = 0; a < 2; a++)
+                    await Click(A, 1_500, token).ConfigureAwait(false);
+                return (match, pk);
+            }
+
+            else
+            {
+                BasketCount.Text = "Status: No egg :(";
+                for (int a = 0; a < 2; a++)
+                    await Click(A, 1_500, token).ConfigureAwait(false);
+            }
+
+            return (match, pk);
         }
 
         private bool ValidateEncounter(PK9 pk)
@@ -589,6 +782,7 @@ namespace PokeViewer.NET.SubForms
             EatAgain.Enabled = false;
             HoldIngredients.Enabled = false;
             DisplayPartyCheck.Enabled = false;
+            CollectEggsCheck.Enabled = false;
         }
 
         private void EnableOptions()
@@ -606,6 +800,7 @@ namespace PokeViewer.NET.SubForms
             EatAgain.Enabled = true;
             HoldIngredients.Enabled = true;
             DisplayPartyCheck.Enabled = true;
+            CollectEggsCheck.Enabled = true;
         }
 
         private static HttpClient? _client;
@@ -694,7 +889,7 @@ namespace PokeViewer.NET.SubForms
                     case 4: val = 0x50; break;
                     case 5: val = 0x58; break;
                 }
-                var pointer = new long[] { 0x46457D8, 0x08, val, 0x30, 0x00 };
+                var pointer = new long[] { 0x4763C98, 0x08, val, 0x30, 0x00 };
                 var offset = await Executor.SwitchConnection.PointerAll(pointer, token).ConfigureAwait(false);
                 var pk = await ReadBoxPokemonSV(offset, 0x158, token).ConfigureAwait(false);
                 SanityCheck(pk, i);
@@ -712,6 +907,13 @@ namespace PokeViewer.NET.SubForms
         {
             if (ForceDumpCheck.Checked)
                 MessageBox.Show("You have enabled force dump eggs. These should not be considered legitimate and are only a backup for ghost eggs. Please do not pass these off as legitimate eggs.");
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            if (CollectEggsCheck.Checked)
+                MessageBox.Show("This mode uses the legacy method of collecting the egg from the basket as soon as it spawns. If you are experiencing an unstable experience with Wi-Fi desync/lag," +
+                    " please leave this unchecked.");
         }
     }
 }

@@ -128,7 +128,7 @@
             // 
             // textBox1
             // 
-            textBox1.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            textBox1.Font = new Font("Segoe UI", 8.25F);
             textBox1.Location = new Point(12, 78);
             textBox1.Multiline = true;
             textBox1.Name = "textBox1";
@@ -164,7 +164,7 @@
             // 
             // textBox2
             // 
-            textBox2.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            textBox2.Font = new Font("Segoe UI", 8.25F);
             textBox2.Location = new Point(156, 78);
             textBox2.Multiline = true;
             textBox2.Name = "textBox2";
@@ -173,7 +173,7 @@
             // 
             // textBox3
             // 
-            textBox3.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            textBox3.Font = new Font("Segoe UI", 8.25F);
             textBox3.Location = new Point(300, 78);
             textBox3.Multiline = true;
             textBox3.Name = "textBox3";
@@ -182,7 +182,7 @@
             // 
             // textBox4
             // 
-            textBox4.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            textBox4.Font = new Font("Segoe UI", 8.25F);
             textBox4.Location = new Point(444, 78);
             textBox4.Multiline = true;
             textBox4.Name = "textBox4";
@@ -191,7 +191,7 @@
             // 
             // textBox5
             // 
-            textBox5.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            textBox5.Font = new Font("Segoe UI", 8.25F);
             textBox5.Location = new Point(588, 78);
             textBox5.Multiline = true;
             textBox5.Name = "textBox5";
@@ -272,7 +272,7 @@
             // 
             // textBox6
             // 
-            textBox6.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            textBox6.Font = new Font("Segoe UI", 8.25F);
             textBox6.Location = new Point(12, 272);
             textBox6.Multiline = true;
             textBox6.Name = "textBox6";
@@ -281,7 +281,7 @@
             // 
             // textBox7
             // 
-            textBox7.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            textBox7.Font = new Font("Segoe UI", 8.25F);
             textBox7.Location = new Point(156, 272);
             textBox7.Multiline = true;
             textBox7.Name = "textBox7";
@@ -326,7 +326,7 @@
             // 
             // textBox8
             // 
-            textBox8.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            textBox8.Font = new Font("Segoe UI", 8.25F);
             textBox8.Location = new Point(300, 272);
             textBox8.Multiline = true;
             textBox8.Name = "textBox8";
@@ -353,7 +353,7 @@
             // 
             // textBox9
             // 
-            textBox9.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            textBox9.Font = new Font("Segoe UI", 8.25F);
             textBox9.Location = new Point(444, 272);
             textBox9.Multiline = true;
             textBox9.Name = "textBox9";
@@ -362,7 +362,7 @@
             // 
             // textBox10
             // 
-            textBox10.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            textBox10.Font = new Font("Segoe UI", 8.25F);
             textBox10.Location = new Point(588, 272);
             textBox10.Multiline = true;
             textBox10.Name = "textBox10";
@@ -479,7 +479,7 @@
             // 
             // textBox11
             // 
-            textBox11.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            textBox11.Font = new Font("Segoe UI", 8.25F);
             textBox11.Location = new Point(12, 466);
             textBox11.Multiline = true;
             textBox11.Name = "textBox11";
@@ -488,7 +488,7 @@
             // 
             // textBox12
             // 
-            textBox12.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            textBox12.Font = new Font("Segoe UI", 8.25F);
             textBox12.Location = new Point(156, 466);
             textBox12.Multiline = true;
             textBox12.Name = "textBox12";
@@ -497,7 +497,7 @@
             // 
             // textBox13
             // 
-            textBox13.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            textBox13.Font = new Font("Segoe UI", 8.25F);
             textBox13.Location = new Point(300, 466);
             textBox13.Multiline = true;
             textBox13.Name = "textBox13";
@@ -506,7 +506,7 @@
             // 
             // textBox14
             // 
-            textBox14.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            textBox14.Font = new Font("Segoe UI", 8.25F);
             textBox14.Location = new Point(444, 466);
             textBox14.Multiline = true;
             textBox14.Name = "textBox14";
@@ -515,7 +515,7 @@
             // 
             // textBox15
             // 
-            textBox15.Font = new Font("Segoe UI", 8.25F, FontStyle.Regular, GraphicsUnit.Point);
+            textBox15.Font = new Font("Segoe UI", 8.25F);
             textBox15.Location = new Point(588, 466);
             textBox15.Multiline = true;
             textBox15.Name = "textBox15";
@@ -573,7 +573,9 @@
             Controls.Add(textBox1);
             Controls.Add(pictureBox1);
             Controls.Add(button1);
+            FormBorderStyle = FormBorderStyle.FixedSingle;
             Name = "WideViewerSV";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "PokeViewer.NET - WideViewSV";
             ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).EndInit();

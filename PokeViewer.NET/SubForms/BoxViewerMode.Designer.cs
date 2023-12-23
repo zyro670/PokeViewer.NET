@@ -68,6 +68,7 @@
             CSVCheck = new CheckBox();
             ViewAllCheck = new CheckBox();
             CurrentBox = new Label();
+            HidePIDECCheck = new CheckBox();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
@@ -527,11 +528,11 @@
             // 
             DumpCheck.AutoSize = true;
             DumpCheck.Font = new Font("Segoe UI", 9F, FontStyle.Italic, GraphicsUnit.Point);
-            DumpCheck.Location = new Point(339, 397);
+            DumpCheck.Location = new Point(87, 376);
             DumpCheck.Name = "DumpCheck";
-            DumpCheck.Size = new Size(64, 19);
+            DumpCheck.Size = new Size(85, 19);
             DumpCheck.TabIndex = 36;
-            DumpCheck.Text = "Dump?";
+            DumpCheck.Text = "Dump Box?";
             DumpCheck.UseVisualStyleBackColor = true;
             // 
             // progressBar1
@@ -566,18 +567,18 @@
             // 
             CSVCheck.AutoSize = true;
             CSVCheck.Font = new Font("Segoe UI", 9F, FontStyle.Italic, GraphicsUnit.Point);
-            CSVCheck.Location = new Point(31, 376);
+            CSVCheck.Location = new Point(12, 376);
             CSVCheck.Name = "CSVCheck";
-            CSVCheck.Size = new Size(117, 19);
+            CSVCheck.Size = new Size(74, 19);
             CSVCheck.TabIndex = 40;
-            CSVCheck.Text = "CSV Current Box?";
+            CSVCheck.Text = "CSV Box?";
             CSVCheck.UseVisualStyleBackColor = true;
             // 
             // ViewAllCheck
             // 
             ViewAllCheck.AutoSize = true;
             ViewAllCheck.Font = new Font("Segoe UI", 9F, FontStyle.Italic, GraphicsUnit.Point);
-            ViewAllCheck.Location = new Point(31, 397);
+            ViewAllCheck.Location = new Point(12, 397);
             ViewAllCheck.Name = "ViewAllCheck";
             ViewAllCheck.Size = new Size(163, 19);
             ViewAllCheck.TabIndex = 41;
@@ -595,6 +596,16 @@
             CurrentBox.Text = "1";
             CurrentBox.Visible = false;
             // 
+            // HidePIDECCheck
+            // 
+            HidePIDECCheck.AutoSize = true;
+            HidePIDECCheck.Location = new Point(290, 397);
+            HidePIDECCheck.Name = "HidePIDECCheck";
+            HidePIDECCheck.Size = new Size(96, 19);
+            HidePIDECCheck.TabIndex = 43;
+            HidePIDECCheck.Text = "Hide PID/EC?";
+            HidePIDECCheck.UseVisualStyleBackColor = true;
+            // 
             // BoxViewerMode
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -602,6 +613,7 @@
             AutoSizeMode = AutoSizeMode.GrowAndShrink;
             BackColor = SystemColors.ControlLightLight;
             ClientSize = new Size(492, 453);
+            Controls.Add(HidePIDECCheck);
             Controls.Add(ViewAllCheck);
             Controls.Add(CSVCheck);
             Controls.Add(comboBox1);
@@ -640,8 +652,8 @@
             Controls.Add(pictureBox2);
             Controls.Add(pictureBox1);
             Controls.Add(ViewButton);
-            Controls.Add(DumpCheck);
             Controls.Add(CurrentBox);
+            Controls.Add(DumpCheck);
             FormBorderStyle = FormBorderStyle.None;
             MaximizeBox = false;
             Name = "BoxViewerMode";
@@ -721,5 +733,6 @@
         private CheckBox CSVCheck;
         private CheckBox ViewAllCheck;
         private Label CurrentBox;
+        private CheckBox HidePIDECCheck;
     }
 }
