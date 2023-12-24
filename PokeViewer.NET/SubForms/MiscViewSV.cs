@@ -176,60 +176,60 @@ namespace PokeViewer.NET.SubForms
         {
             BaseBlockKeyPointer = await Executor.SwitchConnection.PointerAll(Offsets.BlockKeyPointer, token).ConfigureAwait(false);
 
-            List<Image> ImgP = new();
-            List<Image> ImgK = new();
-            List<Image> ImgB = new();
-            List<Image> ImgObP = new();
-            List<Image> ImgObK = new();
-            List<Image> ImgObB = new();
-            List<byte[]?> POSlistP = new();
-            List<byte[]?> POSlistK = new();
-            List<byte[]?> POSlistB = new();
-            List<byte[]?> POSlistObP = new();
-            List<byte[]?> POSlistObK = new();
-            List<byte[]?> POSlistObB = new();
-            List<uint> kolistP = new();
-            List<uint> kolistK = new();
-            List<uint> kolistB = new();
-            List<uint> kolistObP = new();
-            List<uint> kolistObK = new();
-            List<uint> kolistObB = new();
-            List<uint> totallistP = new();
-            List<uint> totallistK = new();
-            List<uint> totallistB = new();
-            List<uint> totallistObP = new();
-            List<uint> totallistObK = new();
-            List<uint> totallistObB = new();
-            List<string> stringsP = new();
-            List<string> stringsK = new();
-            List<string> stringsB = new();
-            List<string> stringsObP = new();
-            List<string> stringsObK = new();
-            List<string> stringsObB = new();
-            List<string> CountlistP = new();
-            List<string> CountlistK = new();
-            List<string> CountlistB = new();
-            List<string> CountlistObP = new();
-            List<string> CountlistObK = new();
-            List<string> CountlistObB = new();
-            List<PK9> monsP = new();
-            List<PK9> monsK = new();
-            List<PK9> monsB = new();
-            List<PK9> monsObP = new();
-            List<PK9> monsObK = new();
-            List<PK9> monsObB = new();
-            MapSpritesP = new();
-            MapPOSP = new();
-            MapCountP = new();
-            MapStringsP = new();
-            MapSpritesK = new();
-            MapCountK = new();
-            MapStringsK = new();
-            MapPOSK = new();
-            MapSpritesB = new();
-            MapPOSB = new();
-            MapCountB = new();
-            MapStringsB = new();
+            List<Image> ImgP = [];
+            List<Image> ImgK = [];
+            List<Image> ImgB = [];
+            List<Image> ImgObP = [];
+            List<Image> ImgObK = [];
+            List<Image> ImgObB = [];
+            List<byte[]?> POSlistP = [];
+            List<byte[]?> POSlistK = [];
+            List<byte[]?> POSlistB = [];
+            List<byte[]?> POSlistObP = [];
+            List<byte[]?> POSlistObK = [];
+            List<byte[]?> POSlistObB = [];
+            List<uint> kolistP = [];
+            List<uint> kolistK = [];
+            List<uint> kolistB = [];
+            List<uint> kolistObP = [];
+            List<uint> kolistObK = [];
+            List<uint> kolistObB = [];
+            List<uint> totallistP = [];
+            List<uint> totallistK = [];
+            List<uint> totallistB = [];
+            List<uint> totallistObP = [];
+            List<uint> totallistObK = [];
+            List<uint> totallistObB = [];
+            List<string> stringsP = [];
+            List<string> stringsK = [];
+            List<string> stringsB = [];
+            List<string> stringsObP = [];
+            List<string> stringsObK = [];
+            List<string> stringsObB = [];
+            List<string> CountlistP = [];
+            List<string> CountlistK = [];
+            List<string> CountlistB = [];
+            List<string> CountlistObP = [];
+            List<string> CountlistObK = [];
+            List<string> CountlistObB = [];
+            List<PK9> monsP = [];
+            List<PK9> monsK = [];
+            List<PK9> monsB = [];
+            List<PK9> monsObP = [];
+            List<PK9> monsObK = [];
+            List<PK9> monsObB = [];
+            MapSpritesP = [];
+            MapPOSP = [];
+            MapCountP = [];
+            MapStringsP = [];
+            MapSpritesK = [];
+            MapCountK = [];
+            MapStringsK = [];
+            MapPOSK = [];
+            MapSpritesB = [];
+            MapPOSB = [];
+            MapCountB = [];
+            MapStringsB = [];
 
             DisableAssets();
             int dayskip = 0;
@@ -275,7 +275,7 @@ namespace PokeViewer.NET.SubForms
                     {
                         BaseBlockKeyPointer = await Executor.SwitchConnection.PointerAll(Offsets.BlockKeyPointer, token).ConfigureAwait(false);
                         // Rerun in case of bad pointer
-                        OutbreakCache = new();
+                        OutbreakCache = [];
                         LoadOutbreakCache();
                         CountCacheP = 0;
                         continue;
@@ -398,7 +398,7 @@ namespace PokeViewer.NET.SubForms
                     {
                         BaseBlockKeyPointer = await Executor.SwitchConnection.PointerAll(Offsets.BlockKeyPointer, token).ConfigureAwait(false);
                         // Rerun in case of bad pointer
-                        OutbreakCache = new();
+                        OutbreakCache = [];
                         LoadOutbreakCache();
                         CountCacheB = 0;
                         continue;
@@ -471,7 +471,7 @@ namespace PokeViewer.NET.SubForms
                             {
                                 BaseBlockKeyPointer = await Executor.SwitchConnection.PointerAll(Offsets.BlockKeyPointer, token).ConfigureAwait(false);
                                 // Rerun in case of bad pointer
-                                BCATOutbreakCache = new();
+                                BCATOutbreakCache = [];
                                 LoadOutbreakCache();
                                 CountCacheBCP = 0;
                                 continue;
@@ -536,7 +536,7 @@ namespace PokeViewer.NET.SubForms
                             {
                                 BaseBlockKeyPointer = await Executor.SwitchConnection.PointerAll(Offsets.BlockKeyPointer, token).ConfigureAwait(false);
                                 // Rerun in case of bad pointer
-                                BCATOutbreakCache = new();
+                                BCATOutbreakCache = [];
                                 LoadOutbreakCache();
                                 CountCacheBCK = 0;
                                 continue;
@@ -1073,10 +1073,10 @@ namespace PokeViewer.NET.SubForms
             BaseBlockKeyPointer = await Executor.SwitchConnection.PointerAll(Offsets.BlockKeyPointer, token).ConfigureAwait(false);
             var (validOutbreaksP, _) = await ReadEncryptedBlockByte(Blocks.KMassOutbreakTotalPaldea, 0, token).ConfigureAwait(false);
             var (validOutbreaksK, _) = await ReadEncryptedBlockByte(Blocks.KMassOutbreakTotalKitakami, 0, token).ConfigureAwait(false);
-            var (validOutbreaksB, _) = await ReadEncryptedBlockByte(Blocks.KMassOutbreakTotalKitakami, 0, token).ConfigureAwait(false);
+            var (validOutbreaksB, _) = await ReadEncryptedBlockByte(Blocks.KMassOutbreakTotalBlueberry, 0, token).ConfigureAwait(false);
             var (validOutbreaksBCP, _) = await ReadEncryptedBlockByte(Blocks.KOutbreakBC01MainTotalSpawns, 0, token).ConfigureAwait(false);
             var (validOutbreaksBCK, _) = await ReadEncryptedBlockByte(Blocks.KOutbreakBC01DLC1TotalSpawns, 0, token).ConfigureAwait(false);
-            var (validOutbreaksBCB, _) = await ReadEncryptedBlockByte(Blocks.KOutbreakBC01DLC1TotalSpawns, 0, token).ConfigureAwait(false);
+            var (validOutbreaksBCB, _) = await ReadEncryptedBlockByte(Blocks.KOutbreakBC01DLC2TotalSpawns, 0, token).ConfigureAwait(false);
 
             var OutbreaktotalP = Convert.ToInt32(validOutbreaksP);
             var OutbreaktotalK = Convert.ToInt32(validOutbreaksK);
@@ -1112,7 +1112,7 @@ namespace PokeViewer.NET.SubForms
             {
                 for (int i = 0; i < 4; i++)
                 {
-                    StatusLabel.Text = $"KOing Kitakami: {8 * i + 1}%";
+                    StatusLabel.Text = $"KOing Kitakami: {25 * i}%";
                     switch (i)
                     {
                         case 0: koblock = Blocks.KMassOutbreakKO9; break;
@@ -1129,9 +1129,9 @@ namespace PokeViewer.NET.SubForms
             }
             if (MapGroup.SelectedIndex is 0 or 3)
             {
-                for (int i = 0; i < 4; i++)
+                for (int i = 0; i < 5; i++)
                 {
-                    StatusLabel.Text = $"KOing Blueberry: {8 * i + 1}%";
+                    StatusLabel.Text = $"KOing Blueberry: {20 * i}%";
                     switch (i)
                     {
                         case 0: koblock = Blocks.KMassOutbreakKO13; break;
