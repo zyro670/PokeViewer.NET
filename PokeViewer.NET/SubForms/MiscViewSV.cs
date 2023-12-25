@@ -24,33 +24,33 @@ namespace PokeViewer.NET.SubForms
         public ulong CountCacheBCB;
         private DateTime StartTime;
         private System.Timers.Timer timer = new();
-        public List<OutbreakStash> OutbreakCache = new();
-        public List<OutbreakStash> BCATOutbreakCache = new();
-        private List<Image> MapSpritesP = new();
-        private List<byte[]?> MapPOSP = new();
-        private List<byte[]?> MapPOSObP = new();
-        private List<string> MapCountP = new();
-        private List<string> MapStringsP = new();
-        private List<Image> MapSpritesObP = new();
-        private List<string> MapCountObP = new();
-        private List<string> MapStringsObP = new();
-        private List<Image> MapSpritesK = new();
-        private List<byte[]?> MapPOSK = new();
-        private List<byte[]?> MapPOSObK = new();
-        private List<string> MapCountK = new();
-        private List<string> MapStringsK = new();
-        private List<Image> MapSpritesObK = new();
-        private List<string> MapCountObK = new();
-        private List<string> MapStringsObK = new();
-        private List<Image> MapSpritesB = new();
-        private List<byte[]?> MapPOSB = new();
-        private List<byte[]?> MapPOSObB = new();
-        private List<string> MapCountB = new();
-        private List<string> MapStringsB = new();
-        private List<Image> MapSpritesObB = new();
-        private List<string> MapCountObB = new();
-        private List<string> MapStringsObB = new();
-        private List<PK9> pkList = new();
+        public List<OutbreakStash> OutbreakCache = [];
+        public List<OutbreakStash> BCATOutbreakCache = [];
+        private List<Image> MapSpritesP = [];
+        private List<byte[]?> MapPOSP = [];
+        private List<byte[]?> MapPOSObP = [];
+        private List<string> MapCountP = [];
+        private List<string> MapStringsP = [];
+        private List<Image> MapSpritesObP = [];
+        private List<string> MapCountObP = [];
+        private List<string> MapStringsObP = [];
+        private List<Image> MapSpritesK = [];
+        private List<byte[]?> MapPOSK = [];
+        private List<byte[]?> MapPOSObK = [];
+        private List<string> MapCountK = [];
+        private List<string> MapStringsK = [];
+        private List<Image> MapSpritesObK = [];
+        private List<string> MapCountObK = [];
+        private List<string> MapStringsObK = [];
+        private List<Image> MapSpritesB = [];
+        private List<byte[]?> MapPOSB = [];
+        private List<byte[]?> MapPOSObB = [];
+        private List<string> MapCountB = [];
+        private List<string> MapStringsB = [];
+        private List<Image> MapSpritesObB = [];
+        private List<string> MapCountObB = [];
+        private List<string> MapStringsObB = [];
+        private List<PK9> pkList = [];
         protected ViewerOffsets Offsets { get; } = new();
         public MiscViewSV(ViewerExecutor executor, (Color, Color) color)
         {
@@ -162,7 +162,7 @@ namespace PokeViewer.NET.SubForms
 
         private void SelectedIndex_IsChanged(object sender, EventArgs e)
         {
-            OutbreakCache = new();
+            OutbreakCache = [];
             LoadOutbreakCache();
             CountCacheP = 0;
             CountCacheK = 0;
@@ -607,7 +607,7 @@ namespace PokeViewer.NET.SubForms
                             {
                                 BaseBlockKeyPointer = await Executor.SwitchConnection.PointerAll(Offsets.BlockKeyPointer, token).ConfigureAwait(false);
                                 // Rerun in case of bad pointer
-                                BCATOutbreakCache = new();
+                                BCATOutbreakCache = [];
                                 LoadOutbreakCache();
                                 CountCacheBCB = 0;
                                 continue;
@@ -634,7 +634,7 @@ namespace PokeViewer.NET.SubForms
                                     case 28: BCOspecies = Blocks.KOutbreakBC09DLC2Species; BCOform = Blocks.KOutbreakBC09DLC2Form; BCOko = Blocks.KOutbreakBC09DLC2NumKOed; BCOtotal = Blocks.KOutbreakBC09DLC2TotalSpawns; BCOcenter = Blocks.KOutbreakBC09DLC2CenterPos; break;
                                     case 29: BCOspecies = Blocks.KOutbreakBC10DLC2Species; BCOform = Blocks.KOutbreakBC10DLC2Form; BCOko = Blocks.KOutbreakBC10DLC2NumKOed; BCOtotal = Blocks.KOutbreakBC10DLC2TotalSpawns; BCOcenter = Blocks.KOutbreakBC10DLC2CenterPos; break;
                                 }
-                                if (i > OutbreaktotalBCB + 10)
+                                if (i > OutbreaktotalBCB + 20)
                                     continue;
 
                                 var (kocount, lofs) = await ReadEncryptedBlockUint(BCOko, BCATOutbreakCache[i].SpeciesKOCountLoaded, token).ConfigureAwait(false);
@@ -941,63 +941,66 @@ namespace PokeViewer.NET.SubForms
 
                 if (OutbreakSearch.Checked)
                 {
-                    ImgP = new();
-                    ImgObP = new();
-                    POSlistP = new();
-                    POSlistObP = new();
-                    kolistP = new();
-                    kolistObP = new();
-                    totallistP = new();
-                    totallistObP = new();
-                    stringsP = new();
-                    stringsObP = new();
-                    monsP = new();
-                    monsObP = new();
-                    CountlistP = new();
-                    CountlistObP = new();
+                    ImgP = [];
+                    ImgObP = [];
+                    POSlistP = [];
+                    POSlistObP = [];
+                    kolistP = [];
+                    kolistObP = [];
+                    totallistP = [];
+                    totallistObP = [];
+                    stringsP = [];
+                    stringsObP = [];
+                    monsP = [];
+                    monsObP = [];
+                    CountlistP = [];
+                    CountlistObP = [];
 
-                    ImgK = new();
-                    ImgObK = new();
-                    POSlistK = new();
-                    POSlistObK = new();
-                    kolistK = new();
-                    kolistObK = new();
-                    totallistK = new();
-                    totallistObK = new();
-                    stringsK = new();
-                    stringsObK = new();
-                    monsK = new();
-                    monsObK = new();
-                    CountlistK = new();
-                    CountlistObK = new();
+                    ImgK = [];
+                    ImgObK = [];
+                    POSlistK = [];
+                    POSlistObK = [];
+                    kolistK = [];
+                    kolistObK = [];
+                    totallistK = [];
+                    totallistObK = [];
+                    stringsK = [];
+                    stringsObK = [];
+                    monsK = [];
+                    monsObK = [];
+                    CountlistK = [];
+                    CountlistObK = [];
 
-                    ImgB = new();
-                    ImgObB = new();
-                    POSlistB = new();
-                    POSlistObB = new();
-                    kolistB = new();
-                    kolistObB = new();
-                    totallistB = new();
-                    totallistObB = new();
-                    stringsB = new();
-                    stringsObB = new();
-                    monsB = new();
-                    monsObB = new();
-                    CountlistB = new();
-                    CountlistObB = new();
+                    ImgB = [];
+                    ImgObB = [];
+                    POSlistB = [];
+                    POSlistObB = [];
+                    kolistB = [];
+                    kolistObB = [];
+                    totallistB = [];
+                    totallistObB = [];
+                    stringsB = [];
+                    stringsObB = [];
+                    monsB = [];
+                    monsObB = [];
+                    CountlistB = [];
+                    CountlistObB = [];
 
-                    MapSpritesP = new();
-                    MapPOSP = new();
-                    MapCountP = new();
-                    MapStringsP = new();
-                    MapSpritesK = new();
-                    MapCountK = new();
-                    MapStringsK = new();
-                    MapPOSK = new();
-                    MapSpritesB = new();
-                    MapPOSB = new();
-                    MapCountB = new();
-                    MapStringsB = new();
+                    MapSpritesP = [];
+                    MapPOSP = [];
+                    MapCountP = [];
+                    MapStringsP = [];
+                    MapSpritesK = [];
+                    MapCountK = [];
+                    MapStringsK = [];
+                    MapPOSK = [];
+                    MapSpritesB = [];
+                    MapPOSB = [];
+                    MapCountB = [];
+                    MapStringsB = [];
+
+                    Apply0To64.Checked = false;
+                    OutbreakSearch.Checked = false;
                 }
 
                 DaySkipTotal.Text = $"Day Skips: {dayskip}";
@@ -2089,10 +2092,10 @@ namespace PokeViewer.NET.SubForms
             return DecryptBlock(key, obj)[5..];
         }
 
-        private List<string> raidimages = new();
-        private List<string> results = new();
-        private List<Image> teratype = new();
-        private List<int> stars = new();
+        private List<string> raidimages = [];
+        private List<string> results = [];
+        private List<Image> teratype = [];
+        private List<int> stars = [];
         private ulong RaidBlockOffsetP;
         private ulong RaidBlockOffsetK;
         private ulong RaidBlockOffsetB;

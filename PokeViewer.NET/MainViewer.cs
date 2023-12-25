@@ -26,7 +26,7 @@ namespace PokeViewer.NET
     public partial class MainViewer : Form
     {
         public ViewerExecutor Executor = null!;
-        private const string ViewerVersion = "3.0.0";
+        private const string ViewerVersion = "3.0.1";
         private readonly bool[] FormLoaded = new bool[8];
         private int GameType;
         private SimpleTrainerInfo TrainerInfo = new();
@@ -238,6 +238,7 @@ namespace PokeViewer.NET
                         ToggleSwitchProtocol.Enabled = false;
                         SwitchIP.Enabled = false;
                         await Executor.Connect(token).ConfigureAwait(false);
+                        ScreenTrackBar.Enabled = true;
                         Window_Loaded(token);
                     });
                     if (!string.IsNullOrEmpty(BotToken.Text))
@@ -1037,19 +1038,10 @@ namespace PokeViewer.NET
 
         private async void ScreenTrackBar_Scroll(object sender, EventArgs e)
         {
-            if (Executor is null || !Executor.Connection.Connected && ToggleSwitchProtocol.Checked)
-            {
-                var owner = new Form { Visible = false };
-                MessageBox.Show(owner, text: "You are not connected to a console!", "Not Connected");
-
-            }
+            if (ScreenTrackBar.Value != 1)
+                await SetScreen(ScreenState.Off, CancellationToken.None).ConfigureAwait(false);
             else
-            {
-                if (ScreenTrackBar.Value != 1)
-                    await SetScreen(ScreenState.Off, CancellationToken.None).ConfigureAwait(false);
-                else
-                    await SetScreen(ScreenState.On, CancellationToken.None).ConfigureAwait(false);
-            }
+                await SetScreen(ScreenState.On, CancellationToken.None).ConfigureAwait(false);
         }
 
         private async Task SetScreen(ScreenState state, CancellationToken token)

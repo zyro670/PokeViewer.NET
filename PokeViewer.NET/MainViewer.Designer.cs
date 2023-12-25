@@ -53,12 +53,14 @@
             ViewerControl = new TabControl();
             ConnectionPage = new TabPage();
             ScreenLabel = new Label();
+            ScreenOnLabel = new Label();
+            ScreenOffLabel = new Label();
+            ScreenTrackBar = new TrackBar();
             EventRedeemButton = new Button();
             TrainerPassportGroup = new GroupBox();
             TrainerPhoto = new PictureBox();
             TIDSID = new Label();
             TrainerLabel = new Label();
-            ScreenOnLabel = new Label();
             ExtrasGroup = new GroupBox();
             WideButton = new Button();
             PrefixBox = new ComboBox();
@@ -80,11 +82,9 @@
             DiscordID = new Label();
             WebHookURL = new Label();
             SaveButton = new Button();
-            ScreenOffLabel = new Label();
             ConnectionGroupBox = new GroupBox();
             VersionLabel = new Label();
             ConnectionSpriteBox = new PictureBox();
-            ScreenTrackBar = new TrackBar();
             ViewPage = new TabPage();
             BoxPage = new TabPage();
             PartyPage = new TabPage();
@@ -99,12 +99,12 @@
             ((System.ComponentModel.ISupportInitialize)Typing2).BeginInit();
             ViewerControl.SuspendLayout();
             ConnectionPage.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)ScreenTrackBar).BeginInit();
             TrainerPassportGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)TrainerPhoto).BeginInit();
             ExtrasGroup.SuspendLayout();
             ConnectionGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)ConnectionSpriteBox).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)ScreenTrackBar).BeginInit();
             ViewPage.SuspendLayout();
             SuspendLayout();
             // 
@@ -340,13 +340,13 @@
             // 
             ConnectionPage.BackColor = SystemColors.ControlLightLight;
             ConnectionPage.Controls.Add(ScreenLabel);
+            ConnectionPage.Controls.Add(ScreenOnLabel);
+            ConnectionPage.Controls.Add(ScreenOffLabel);
+            ConnectionPage.Controls.Add(ScreenTrackBar);
             ConnectionPage.Controls.Add(EventRedeemButton);
             ConnectionPage.Controls.Add(TrainerPassportGroup);
-            ConnectionPage.Controls.Add(ScreenOnLabel);
             ConnectionPage.Controls.Add(ExtrasGroup);
-            ConnectionPage.Controls.Add(ScreenOffLabel);
             ConnectionPage.Controls.Add(ConnectionGroupBox);
-            ConnectionPage.Controls.Add(ScreenTrackBar);
             ConnectionPage.Location = new Point(4, 24);
             ConnectionPage.Name = "ConnectionPage";
             ConnectionPage.Padding = new Padding(3);
@@ -362,6 +362,37 @@
             ScreenLabel.Size = new Size(42, 15);
             ScreenLabel.TabIndex = 44;
             ScreenLabel.Text = "Screen";
+            // 
+            // ScreenOnLabel
+            // 
+            ScreenOnLabel.AutoSize = true;
+            ScreenOnLabel.Location = new Point(97, 28);
+            ScreenOnLabel.Name = "ScreenOnLabel";
+            ScreenOnLabel.Size = new Size(25, 15);
+            ScreenOnLabel.TabIndex = 43;
+            ScreenOnLabel.Text = "ON";
+            // 
+            // ScreenOffLabel
+            // 
+            ScreenOffLabel.AutoSize = true;
+            ScreenOffLabel.Location = new Point(3, 28);
+            ScreenOffLabel.Name = "ScreenOffLabel";
+            ScreenOffLabel.Size = new Size(28, 15);
+            ScreenOffLabel.TabIndex = 42;
+            ScreenOffLabel.Text = "OFF";
+            // 
+            // ScreenTrackBar
+            // 
+            ScreenTrackBar.BackColor = SystemColors.ControlLightLight;
+            ScreenTrackBar.Enabled = false;
+            ScreenTrackBar.LargeChange = 1;
+            ScreenTrackBar.Location = new Point(1, 3);
+            ScreenTrackBar.Maximum = 1;
+            ScreenTrackBar.Name = "ScreenTrackBar";
+            ScreenTrackBar.Size = new Size(123, 45);
+            ScreenTrackBar.TabIndex = 38;
+            ScreenTrackBar.Value = 1;
+            ScreenTrackBar.Scroll += ScreenTrackBar_Scroll;
             // 
             // EventRedeemButton
             // 
@@ -413,15 +444,6 @@
             TrainerLabel.Size = new Size(45, 15);
             TrainerLabel.TabIndex = 37;
             TrainerLabel.Text = "Name: ";
-            // 
-            // ScreenOnLabel
-            // 
-            ScreenOnLabel.AutoSize = true;
-            ScreenOnLabel.Location = new Point(97, 28);
-            ScreenOnLabel.Name = "ScreenOnLabel";
-            ScreenOnLabel.Size = new Size(25, 15);
-            ScreenOnLabel.TabIndex = 43;
-            ScreenOnLabel.Text = "ON";
             // 
             // ExtrasGroup
             // 
@@ -641,15 +663,6 @@
             SaveButton.UseVisualStyleBackColor = true;
             SaveButton.Click += SaveButton_Click;
             // 
-            // ScreenOffLabel
-            // 
-            ScreenOffLabel.AutoSize = true;
-            ScreenOffLabel.Location = new Point(3, 28);
-            ScreenOffLabel.Name = "ScreenOffLabel";
-            ScreenOffLabel.Size = new Size(28, 15);
-            ScreenOffLabel.TabIndex = 42;
-            ScreenOffLabel.Text = "OFF";
-            // 
             // ConnectionGroupBox
             // 
             ConnectionGroupBox.BackColor = Color.Transparent;
@@ -680,18 +693,6 @@
             ConnectionSpriteBox.Size = new Size(64, 64);
             ConnectionSpriteBox.TabIndex = 35;
             ConnectionSpriteBox.TabStop = false;
-            // 
-            // ScreenTrackBar
-            // 
-            ScreenTrackBar.BackColor = SystemColors.ControlLightLight;
-            ScreenTrackBar.LargeChange = 1;
-            ScreenTrackBar.Location = new Point(1, 3);
-            ScreenTrackBar.Maximum = 1;
-            ScreenTrackBar.Name = "ScreenTrackBar";
-            ScreenTrackBar.Size = new Size(123, 45);
-            ScreenTrackBar.TabIndex = 38;
-            ScreenTrackBar.Value = 1;
-            ScreenTrackBar.Scroll += ScreenTrackBar_Scroll;
             // 
             // ViewPage
             // 
@@ -802,6 +803,7 @@
             ViewerControl.ResumeLayout(false);
             ConnectionPage.ResumeLayout(false);
             ConnectionPage.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)ScreenTrackBar).EndInit();
             TrainerPassportGroup.ResumeLayout(false);
             TrainerPassportGroup.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)TrainerPhoto).EndInit();
@@ -810,7 +812,6 @@
             ConnectionGroupBox.ResumeLayout(false);
             ConnectionGroupBox.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)ConnectionSpriteBox).EndInit();
-            ((System.ComponentModel.ISupportInitialize)ScreenTrackBar).EndInit();
             ViewPage.ResumeLayout(false);
             ViewPage.PerformLayout();
             ResumeLayout(false);
