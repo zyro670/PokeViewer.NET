@@ -160,14 +160,6 @@ namespace PokeViewer.NET
 
     public static class Blocks
     {
-        public static DataBlock KPlayerCurrentFieldID = new()
-        {
-            Name = "KPlayerCurrentFieldID",
-            Key = 0xF17EB014,
-            Type = SCTypeCode.SByte,
-            IsEncrypted = true,
-            Size = 1,
-        };
         public static DataBlock KMassOutbreakTotalPaldea = new()
         {
             Name = "KMassOutbreakTotalPaldea",
@@ -2098,14 +2090,5 @@ namespace PokeViewer.NET
             Size = 12,
         };
         #endregion
-        public static DataBlock KBlueberryPoints = new()
-        {
-            Name = "KBlueberryPoints",
-            Key = 0x66A33824,
-            Type = SCTypeCode.UInt32,
-            IsEncrypted = true,
-            Size = 4,
-        };
     }
-
 }

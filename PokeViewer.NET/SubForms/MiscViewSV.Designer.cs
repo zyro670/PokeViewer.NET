@@ -63,14 +63,13 @@ namespace PokeViewer.NET.SubForms
             OpenMapPaldea = new Button();
             ScanForEventOutbreak = new CheckBox();
             SearchListGroup = new GroupBox();
+            FormCombo = new ComboBox();
             OutbreakIcon = new PictureBox();
             ClearList = new Button();
             ViewList = new Button();
-            FormBox = new NumericUpDown();
             AddSpecies = new Button();
             SpeciesBox = new ComboBox();
             RemoveSpecies = new Button();
-            Form = new Label();
             groupBox2 = new GroupBox();
             FCETextBox = new TextBox();
             ClearFCE = new Button();
@@ -90,7 +89,6 @@ namespace PokeViewer.NET.SubForms
             ((System.ComponentModel.ISupportInitialize)TimeNumeric).BeginInit();
             SearchListGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)OutbreakIcon).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)FormBox).BeginInit();
             groupBox2.SuspendLayout();
             SuspendLayout();
             // 
@@ -432,21 +430,28 @@ namespace PokeViewer.NET.SubForms
             // 
             // SearchListGroup
             // 
+            SearchListGroup.Controls.Add(FormCombo);
             SearchListGroup.Controls.Add(OutbreakIcon);
             SearchListGroup.Controls.Add(ClearList);
             SearchListGroup.Controls.Add(ViewList);
-            SearchListGroup.Controls.Add(FormBox);
             SearchListGroup.Controls.Add(AddSpecies);
             SearchListGroup.Controls.Add(SpeciesBox);
             SearchListGroup.Controls.Add(RemoveSpecies);
             SearchListGroup.Controls.Add(label9);
-            SearchListGroup.Controls.Add(Form);
             SearchListGroup.Location = new Point(218, 12);
             SearchListGroup.Name = "SearchListGroup";
             SearchListGroup.Size = new Size(238, 104);
             SearchListGroup.TabIndex = 22;
             SearchListGroup.TabStop = false;
             SearchListGroup.Text = "Search List";
+            // 
+            // FormCombo
+            // 
+            FormCombo.FormattingEnabled = true;
+            FormCombo.Location = new Point(142, 47);
+            FormCombo.Name = "FormCombo";
+            FormCombo.Size = new Size(93, 23);
+            FormCombo.TabIndex = 50;
             // 
             // OutbreakIcon
             // 
@@ -480,14 +485,6 @@ namespace PokeViewer.NET.SubForms
             ViewList.UseVisualStyleBackColor = false;
             ViewList.Click += button1_Click;
             // 
-            // FormBox
-            // 
-            FormBox.Location = new Point(174, 47);
-            FormBox.Maximum = new decimal(new int[] { 20, 0, 0, 0 });
-            FormBox.Name = "FormBox";
-            FormBox.Size = new Size(61, 23);
-            FormBox.TabIndex = 43;
-            // 
             // AddSpecies
             // 
             AddSpecies.BackColor = Color.Transparent;
@@ -506,6 +503,7 @@ namespace PokeViewer.NET.SubForms
             SpeciesBox.Name = "SpeciesBox";
             SpeciesBox.Size = new Size(91, 23);
             SpeciesBox.TabIndex = 45;
+            SpeciesBox.SelectedIndexChanged += SpeciesBox_IsChanged;
             // 
             // RemoveSpecies
             // 
@@ -517,15 +515,6 @@ namespace PokeViewer.NET.SubForms
             RemoveSpecies.Text = "Remove";
             RemoveSpecies.UseVisualStyleBackColor = false;
             RemoveSpecies.Click += RemoveSpecies_Click;
-            // 
-            // Form
-            // 
-            Form.AutoSize = true;
-            Form.Location = new Point(140, 50);
-            Form.Name = "Form";
-            Form.Size = new Size(35, 15);
-            Form.TabIndex = 47;
-            Form.Text = "Form";
             // 
             // groupBox2
             // 
@@ -639,7 +628,6 @@ namespace PokeViewer.NET.SubForms
             SearchListGroup.ResumeLayout(false);
             SearchListGroup.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)OutbreakIcon).EndInit();
-            ((System.ComponentModel.ISupportInitialize)FormBox).EndInit();
             groupBox2.ResumeLayout(false);
             groupBox2.PerformLayout();
             ResumeLayout(false);
@@ -663,11 +651,9 @@ namespace PokeViewer.NET.SubForms
         private CheckBox Apply0To64;
         private Button OpenMapPaldea;
         private Button ViewList;
-        private NumericUpDown FormBox;
         private Button AddSpecies;
         private ComboBox SpeciesBox;
         private Button RemoveSpecies;
-        private Label Form;
         private Button ClearList;
         private Button OpenMapKitakami;
         private ComboBox MapGroup;
@@ -696,5 +682,6 @@ namespace PokeViewer.NET.SubForms
         private Button EnterButton;
         private Button CaptureRaidButton;
         private Label RaidDifficultyLabel;
+        private ComboBox FormCombo;
     }
 }

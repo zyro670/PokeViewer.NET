@@ -51,6 +51,10 @@ namespace PokeViewer.NET.SubForms
         private List<string> MapCountObB = [];
         private List<string> MapStringsObB = [];
         private List<PK9> pkList = [];
+        private readonly string[] SpeciesList = null!;
+        private readonly string[] FormsList = null!;
+        private readonly string[] TypesList = null!;
+        private readonly string[] GenderList = null!;
         protected ViewerOffsets Offsets { get; } = new();
         public MiscViewSV(ViewerExecutor executor, (Color, Color) color)
         {
@@ -64,6 +68,10 @@ namespace PokeViewer.NET.SubForms
                 LoadFilters(path);
 
             LoadOutbreakCache();
+            SpeciesList = GameInfo.GetStrings(1).specieslist;
+            FormsList = GameInfo.GetStrings(1).forms;
+            TypesList = GameInfo.GetStrings(1).types;
+            GenderList = [.. GameInfo.GenderSymbolUnicode];
         }
 
         private void LoadFilters(string data)
@@ -114,8 +122,8 @@ namespace PokeViewer.NET.SubForms
             OutbreakIcon.ForeColor = color.Item2;
             SpeciesBox.BackColor = color.Item1;
             SpeciesBox.ForeColor = color.Item2;
-            FormBox.BackColor = color.Item1;
-            FormBox.ForeColor = color.Item2;
+            FormCombo.BackColor = color.Item1;
+            FormCombo.ForeColor = color.Item2;
             MapGroup.BackColor = color.Item1;
             MapGroup.ForeColor = color.Item2;
             FwdButton.BackColor = color.Item1;
@@ -998,9 +1006,6 @@ namespace PokeViewer.NET.SubForms
                     MapPOSB = [];
                     MapCountB = [];
                     MapStringsB = [];
-
-                    Apply0To64.Checked = false;
-                    OutbreakSearch.Checked = false;
                 }
 
                 DaySkipTotal.Text = $"Day Skips: {dayskip}";
@@ -1629,12 +1634,29 @@ namespace PokeViewer.NET.SubForms
             MessageBox.Show(r, "Search List");
         }
 
+        private void SpeciesBox_IsChanged(object sender, EventArgs e)
+        {
+            FormCombo.Items.Clear();
+            FormCombo.Text = string.Empty;
+            var formlist = FormConverter.GetFormList((ushort)(Species)SpeciesBox.SelectedIndex, TypesList, FormsList, GenderList, EntityContext.Gen9);
+            if ((Species)SpeciesBox.SelectedIndex == Species.Minior)
+                formlist = formlist.Take((formlist.Length + 1) / 2).ToArray();
+
+            if (formlist.Length == 0 || (formlist.Length == 1 && formlist[0].Equals("")))
+                FormCombo.Visible = false;
+            else
+            {
+                FormCombo.Items.AddRange(formlist);
+                FormCombo.Visible = true;
+            }
+        }
+
         private void AddSpecies_Click(object sender, EventArgs e)
         {
             PK9 pk = new()
             {
                 Species = (ushort)(Species)SpeciesBox.SelectedIndex,
-                Form = (byte)FormBox.Value,
+                Form = (byte)FormCombo.SelectedIndex,
             };
 
             if (pk.Species == 0)
@@ -1686,7 +1708,7 @@ namespace PokeViewer.NET.SubForms
             PK9 pk = new()
             {
                 Species = (ushort)(Species)SpeciesBox.SelectedIndex,
-                Form = (byte)FormBox.Value,
+                Form = (byte)FormCombo.SelectedIndex,
             };
             foreach (var p in pkList.ToList())
             {
@@ -1789,7 +1811,7 @@ namespace PokeViewer.NET.SubForms
             var strokes = FCETextBox.Text.ToUpper().ToArray();
             var number = $"NumPad";
             string[] badVals = { "@", "I", "O", "=", "&", ";", "Z", "*", "#", "!", "?" };
-            List<HidKeyboardKey> keystopress = new();
+            List<HidKeyboardKey> keystopress = [];
             foreach (var str in strokes)
             {
                 if (badVals.Contains(str.ToString()))
