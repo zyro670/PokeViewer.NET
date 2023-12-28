@@ -26,7 +26,7 @@ namespace PokeViewer.NET
     public partial class MainViewer : Form
     {
         public ViewerExecutor Executor = null!;
-        private const string ViewerVersion = "3.0.2";
+        private const string ViewerVersion = "3.0.3";
         private readonly bool[] FormLoaded = new bool[8];
         private int GameType;
         private SimpleTrainerInfo TrainerInfo = new();

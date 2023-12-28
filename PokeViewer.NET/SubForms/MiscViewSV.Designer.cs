@@ -30,11 +30,8 @@ namespace PokeViewer.NET.SubForms
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MiscViewSV));
-            OutbreakScan = new Button();
-            label9 = new Label();
-            OutbreakSearch = new CheckBox();
             OutbreakGroup = new GroupBox();
+            OutbreakBtn = new Button();
             SeedToPokemonGroup = new GroupBox();
             RaidDifficultyLabel = new Label();
             CaptureRaidButton = new Button();
@@ -50,26 +47,6 @@ namespace PokeViewer.NET.SubForms
             TimeNumeric = new NumericUpDown();
             BwdButton = new Button();
             ResetButton = new Button();
-            OpenMapBlueberry = new Button();
-            MapGroup = new ComboBox();
-            OpenMapKitakami = new Button();
-            UptimeLabel = new Label();
-            DaySkipTotal = new Label();
-            StatusLabel = new Label();
-            Apply0To64 = new CheckBox();
-            EnableWebhook = new CheckBox();
-            HardStopOutbreak = new CheckBox();
-            progressBar1 = new ProgressBar();
-            OpenMapPaldea = new Button();
-            ScanForEventOutbreak = new CheckBox();
-            SearchListGroup = new GroupBox();
-            FormCombo = new ComboBox();
-            OutbreakIcon = new PictureBox();
-            ClearList = new Button();
-            ViewList = new Button();
-            AddSpecies = new Button();
-            SpeciesBox = new ComboBox();
-            RemoveSpecies = new Button();
             groupBox2 = new GroupBox();
             FCETextBox = new TextBox();
             ClearFCE = new Button();
@@ -87,67 +64,32 @@ namespace PokeViewer.NET.SubForms
             ((System.ComponentModel.ISupportInitialize)RaidNumeric).BeginInit();
             TimeGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)TimeNumeric).BeginInit();
-            SearchListGroup.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)OutbreakIcon).BeginInit();
             groupBox2.SuspendLayout();
             SuspendLayout();
             // 
-            // OutbreakScan
-            // 
-            OutbreakScan.BackColor = Color.Transparent;
-            OutbreakScan.Location = new Point(6, 122);
-            OutbreakScan.Name = "OutbreakScan";
-            OutbreakScan.Size = new Size(135, 47);
-            OutbreakScan.TabIndex = 6;
-            OutbreakScan.Text = "Scan";
-            OutbreakScan.UseVisualStyleBackColor = false;
-            OutbreakScan.Click += button5_Click;
-            // 
-            // label9
-            // 
-            label9.AutoSize = true;
-            label9.Location = new Point(2, 50);
-            label9.Name = "label9";
-            label9.Size = new Size(46, 15);
-            label9.TabIndex = 16;
-            label9.Text = "Species";
-            // 
-            // OutbreakSearch
-            // 
-            OutbreakSearch.AutoSize = true;
-            OutbreakSearch.Location = new Point(7, 69);
-            OutbreakSearch.Name = "OutbreakSearch";
-            OutbreakSearch.Size = new Size(66, 19);
-            OutbreakSearch.TabIndex = 17;
-            OutbreakSearch.Text = "Search?";
-            OutbreakSearch.UseVisualStyleBackColor = true;
-            // 
             // OutbreakGroup
             // 
+            OutbreakGroup.Controls.Add(OutbreakBtn);
             OutbreakGroup.Controls.Add(SeedToPokemonGroup);
             OutbreakGroup.Controls.Add(TimeGroup);
-            OutbreakGroup.Controls.Add(OpenMapBlueberry);
-            OutbreakGroup.Controls.Add(MapGroup);
-            OutbreakGroup.Controls.Add(OpenMapKitakami);
-            OutbreakGroup.Controls.Add(UptimeLabel);
-            OutbreakGroup.Controls.Add(DaySkipTotal);
-            OutbreakGroup.Controls.Add(StatusLabel);
-            OutbreakGroup.Controls.Add(Apply0To64);
-            OutbreakGroup.Controls.Add(EnableWebhook);
-            OutbreakGroup.Controls.Add(HardStopOutbreak);
-            OutbreakGroup.Controls.Add(OutbreakSearch);
-            OutbreakGroup.Controls.Add(OutbreakScan);
-            OutbreakGroup.Controls.Add(progressBar1);
-            OutbreakGroup.Controls.Add(OpenMapPaldea);
-            OutbreakGroup.Controls.Add(ScanForEventOutbreak);
-            OutbreakGroup.Controls.Add(SearchListGroup);
             OutbreakGroup.Controls.Add(groupBox2);
             OutbreakGroup.Location = new Point(15, 3);
             OutbreakGroup.Name = "OutbreakGroup";
             OutbreakGroup.Size = new Size(468, 432);
             OutbreakGroup.TabIndex = 18;
             OutbreakGroup.TabStop = false;
-            OutbreakGroup.Text = "Outbreak Conditions";
+            OutbreakGroup.Text = "Misc Tools";
+            // 
+            // OutbreakBtn
+            // 
+            OutbreakBtn.Font = new Font("Segoe UI", 24F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            OutbreakBtn.Location = new Point(36, 269);
+            OutbreakBtn.Name = "OutbreakBtn";
+            OutbreakBtn.Size = new Size(397, 144);
+            OutbreakBtn.TabIndex = 81;
+            OutbreakBtn.Text = "Outbreaks";
+            OutbreakBtn.UseVisualStyleBackColor = true;
+            OutbreakBtn.Click += button2_Click;
             // 
             // SeedToPokemonGroup
             // 
@@ -160,7 +102,7 @@ namespace PokeViewer.NET.SubForms
             SeedToPokemonGroup.Controls.Add(GoButton);
             SeedToPokemonGroup.Controls.Add(SeedLabel);
             SeedToPokemonGroup.Controls.Add(RaidSensCheck);
-            SeedToPokemonGroup.Location = new Point(225, 198);
+            SeedToPokemonGroup.Location = new Point(227, 22);
             SeedToPokemonGroup.Name = "SeedToPokemonGroup";
             SeedToPokemonGroup.Size = new Size(233, 229);
             SeedToPokemonGroup.TabIndex = 79;
@@ -266,7 +208,7 @@ namespace PokeViewer.NET.SubForms
             TimeGroup.Controls.Add(TimeNumeric);
             TimeGroup.Controls.Add(BwdButton);
             TimeGroup.Controls.Add(ResetButton);
-            TimeGroup.Location = new Point(6, 198);
+            TimeGroup.Location = new Point(8, 22);
             TimeGroup.Name = "TimeGroup";
             TimeGroup.Size = new Size(200, 100);
             TimeGroup.TabIndex = 74;
@@ -312,217 +254,13 @@ namespace PokeViewer.NET.SubForms
             ResetButton.UseVisualStyleBackColor = true;
             ResetButton.Click += ResetButton_Click;
             // 
-            // OpenMapBlueberry
-            // 
-            OpenMapBlueberry.Location = new Point(357, 122);
-            OpenMapBlueberry.Name = "OpenMapBlueberry";
-            OpenMapBlueberry.Size = new Size(99, 47);
-            OpenMapBlueberry.TabIndex = 66;
-            OpenMapBlueberry.Text = "Blueberry";
-            OpenMapBlueberry.UseVisualStyleBackColor = true;
-            OpenMapBlueberry.Click += OpenMapBlueberry_Click;
-            // 
-            // MapGroup
-            // 
-            MapGroup.FormattingEnabled = true;
-            MapGroup.Items.AddRange(new object[] { "All", "Paldea", "Kitakami", "Blueberry" });
-            MapGroup.Location = new Point(7, 95);
-            MapGroup.Name = "MapGroup";
-            MapGroup.Size = new Size(98, 23);
-            MapGroup.TabIndex = 61;
-            MapGroup.Text = "All";
-            MapGroup.SelectedIndexChanged += SelectedIndex_IsChanged;
-            // 
-            // OpenMapKitakami
-            // 
-            OpenMapKitakami.Location = new Point(252, 122);
-            OpenMapKitakami.Name = "OpenMapKitakami";
-            OpenMapKitakami.Size = new Size(99, 47);
-            OpenMapKitakami.TabIndex = 60;
-            OpenMapKitakami.Text = "Kitakami";
-            OpenMapKitakami.UseVisualStyleBackColor = true;
-            OpenMapKitakami.Click += OpenMapKitakami_Click;
-            // 
-            // UptimeLabel
-            // 
-            UptimeLabel.AutoSize = true;
-            UptimeLabel.Location = new Point(110, 58);
-            UptimeLabel.Name = "UptimeLabel";
-            UptimeLabel.Size = new Size(49, 15);
-            UptimeLabel.TabIndex = 41;
-            UptimeLabel.Text = "Uptime:";
-            // 
-            // DaySkipTotal
-            // 
-            DaySkipTotal.AutoSize = true;
-            DaySkipTotal.Location = new Point(110, 38);
-            DaySkipTotal.Name = "DaySkipTotal";
-            DaySkipTotal.Size = new Size(60, 15);
-            DaySkipTotal.TabIndex = 40;
-            DaySkipTotal.Text = "Day Skips:";
-            // 
-            // StatusLabel
-            // 
-            StatusLabel.AutoSize = true;
-            StatusLabel.Location = new Point(110, 19);
-            StatusLabel.Name = "StatusLabel";
-            StatusLabel.Size = new Size(42, 15);
-            StatusLabel.TabIndex = 39;
-            StatusLabel.Text = "Status:";
-            // 
-            // Apply0To64
-            // 
-            Apply0To64.AutoSize = true;
-            Apply0To64.Location = new Point(7, 19);
-            Apply0To64.Name = "Apply0To64";
-            Apply0To64.Size = new Size(94, 19);
-            Apply0To64.TabIndex = 40;
-            Apply0To64.Text = "Apply 0 - 64?";
-            Apply0To64.UseVisualStyleBackColor = true;
-            // 
-            // EnableWebhook
-            // 
-            EnableWebhook.AutoSize = true;
-            EnableWebhook.Location = new Point(7, 44);
-            EnableWebhook.Name = "EnableWebhook";
-            EnableWebhook.Size = new Size(82, 19);
-            EnableWebhook.TabIndex = 37;
-            EnableWebhook.Text = "Webhook?";
-            EnableWebhook.UseVisualStyleBackColor = true;
-            // 
-            // HardStopOutbreak
-            // 
-            HardStopOutbreak.AutoSize = true;
-            HardStopOutbreak.Location = new Point(113, 76);
-            HardStopOutbreak.Name = "HardStopOutbreak";
-            HardStopOutbreak.Size = new Size(81, 19);
-            HardStopOutbreak.TabIndex = 18;
-            HardStopOutbreak.Text = "HardStop?";
-            HardStopOutbreak.UseVisualStyleBackColor = true;
-            // 
-            // progressBar1
-            // 
-            progressBar1.Location = new Point(6, 177);
-            progressBar1.Name = "progressBar1";
-            progressBar1.Size = new Size(450, 15);
-            progressBar1.TabIndex = 39;
-            // 
-            // OpenMapPaldea
-            // 
-            OpenMapPaldea.BackColor = Color.Transparent;
-            OpenMapPaldea.Location = new Point(147, 122);
-            OpenMapPaldea.Name = "OpenMapPaldea";
-            OpenMapPaldea.Size = new Size(99, 47);
-            OpenMapPaldea.TabIndex = 41;
-            OpenMapPaldea.Text = "Paldea";
-            OpenMapPaldea.UseVisualStyleBackColor = false;
-            OpenMapPaldea.Click += OpenMap_Click;
-            // 
-            // ScanForEventOutbreak
-            // 
-            ScanForEventOutbreak.AutoSize = true;
-            ScanForEventOutbreak.Location = new Point(113, 99);
-            ScanForEventOutbreak.Name = "ScanForEventOutbreak";
-            ScanForEventOutbreak.Size = new Size(79, 19);
-            ScanForEventOutbreak.TabIndex = 67;
-            ScanForEventOutbreak.Text = "Event OB?";
-            ScanForEventOutbreak.UseVisualStyleBackColor = true;
-            // 
-            // SearchListGroup
-            // 
-            SearchListGroup.Controls.Add(FormCombo);
-            SearchListGroup.Controls.Add(OutbreakIcon);
-            SearchListGroup.Controls.Add(ClearList);
-            SearchListGroup.Controls.Add(ViewList);
-            SearchListGroup.Controls.Add(AddSpecies);
-            SearchListGroup.Controls.Add(SpeciesBox);
-            SearchListGroup.Controls.Add(RemoveSpecies);
-            SearchListGroup.Controls.Add(label9);
-            SearchListGroup.Location = new Point(218, 12);
-            SearchListGroup.Name = "SearchListGroup";
-            SearchListGroup.Size = new Size(238, 104);
-            SearchListGroup.TabIndex = 22;
-            SearchListGroup.TabStop = false;
-            SearchListGroup.Text = "Search List";
-            // 
-            // FormCombo
-            // 
-            FormCombo.FormattingEnabled = true;
-            FormCombo.Location = new Point(142, 47);
-            FormCombo.Name = "FormCombo";
-            FormCombo.Size = new Size(93, 23);
-            FormCombo.TabIndex = 50;
-            // 
-            // OutbreakIcon
-            // 
-            OutbreakIcon.Image = (Image)resources.GetObject("OutbreakIcon.Image");
-            OutbreakIcon.Location = new Point(188, 10);
-            OutbreakIcon.Name = "OutbreakIcon";
-            OutbreakIcon.Size = new Size(44, 34);
-            OutbreakIcon.SizeMode = PictureBoxSizeMode.Zoom;
-            OutbreakIcon.TabIndex = 49;
-            OutbreakIcon.TabStop = false;
-            // 
-            // ClearList
-            // 
-            ClearList.BackColor = Color.Transparent;
-            ClearList.Location = new Point(101, 18);
-            ClearList.Name = "ClearList";
-            ClearList.Size = new Size(74, 23);
-            ClearList.TabIndex = 48;
-            ClearList.Text = "Clear All";
-            ClearList.UseVisualStyleBackColor = false;
-            ClearList.Click += ClearList_Click;
-            // 
-            // ViewList
-            // 
-            ViewList.BackColor = Color.Transparent;
-            ViewList.Location = new Point(7, 18);
-            ViewList.Name = "ViewList";
-            ViewList.Size = new Size(86, 23);
-            ViewList.TabIndex = 42;
-            ViewList.Text = "View";
-            ViewList.UseVisualStyleBackColor = false;
-            ViewList.Click += button1_Click;
-            // 
-            // AddSpecies
-            // 
-            AddSpecies.BackColor = Color.Transparent;
-            AddSpecies.Location = new Point(7, 75);
-            AddSpecies.Name = "AddSpecies";
-            AddSpecies.Size = new Size(107, 23);
-            AddSpecies.TabIndex = 44;
-            AddSpecies.Text = "Add";
-            AddSpecies.UseVisualStyleBackColor = false;
-            AddSpecies.Click += AddSpecies_Click;
-            // 
-            // SpeciesBox
-            // 
-            SpeciesBox.FormattingEnabled = true;
-            SpeciesBox.Location = new Point(49, 47);
-            SpeciesBox.Name = "SpeciesBox";
-            SpeciesBox.Size = new Size(91, 23);
-            SpeciesBox.TabIndex = 45;
-            SpeciesBox.SelectedIndexChanged += SpeciesBox_IsChanged;
-            // 
-            // RemoveSpecies
-            // 
-            RemoveSpecies.BackColor = Color.Transparent;
-            RemoveSpecies.Location = new Point(120, 75);
-            RemoveSpecies.Name = "RemoveSpecies";
-            RemoveSpecies.Size = new Size(112, 23);
-            RemoveSpecies.TabIndex = 46;
-            RemoveSpecies.Text = "Remove";
-            RemoveSpecies.UseVisualStyleBackColor = false;
-            RemoveSpecies.Click += RemoveSpecies_Click;
-            // 
             // groupBox2
             // 
             groupBox2.Controls.Add(FCETextBox);
             groupBox2.Controls.Add(ClearFCE);
             groupBox2.Controls.Add(AutoPaste);
             groupBox2.Controls.Add(EnterButton);
-            groupBox2.Location = new Point(6, 304);
+            groupBox2.Location = new Point(8, 128);
             groupBox2.Name = "groupBox2";
             groupBox2.Size = new Size(200, 122);
             groupBox2.TabIndex = 80;
@@ -617,7 +355,6 @@ namespace PokeViewer.NET.SubForms
             Name = "MiscViewSV";
             Text = "MiscView";
             OutbreakGroup.ResumeLayout(false);
-            OutbreakGroup.PerformLayout();
             SeedToPokemonGroup.ResumeLayout(false);
             SeedToPokemonGroup.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)TeraIcon).EndInit();
@@ -625,43 +362,18 @@ namespace PokeViewer.NET.SubForms
             ((System.ComponentModel.ISupportInitialize)RaidNumeric).EndInit();
             TimeGroup.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)TimeNumeric).EndInit();
-            SearchListGroup.ResumeLayout(false);
-            SearchListGroup.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)OutbreakIcon).EndInit();
             groupBox2.ResumeLayout(false);
             groupBox2.PerformLayout();
             ResumeLayout(false);
         }
 
         #endregion
-        private Button OutbreakScan;
-        private Label label9;
-        private CheckBox OutbreakSearch;
         private GroupBox OutbreakGroup;
-        private CheckBox HardStopOutbreak;
-        private CheckBox EnableWebhook;
         private Button ChangeFormButton;
         private Label VivForm;
         private Button ReadValues;
         private ComboBox V_ComboBox;
-        private ProgressBar progressBar1;
-        private Label StatusLabel;
-        private Label DaySkipTotal;
-        private Label UptimeLabel;
-        private CheckBox Apply0To64;
-        private Button OpenMapPaldea;
-        private Button ViewList;
-        private Button AddSpecies;
-        private ComboBox SpeciesBox;
-        private Button RemoveSpecies;
-        private Button ClearList;
-        private Button OpenMapKitakami;
-        private ComboBox MapGroup;
         private Button button1;
-        private Button OpenMapBlueberry;
-        private CheckBox ScanForEventOutbreak;
-        private GroupBox SearchListGroup;
-        private PictureBox OutbreakIcon;
         private GroupBox TimeGroup;
         private Button FwdButton;
         private NumericUpDown TimeNumeric;
@@ -682,6 +394,6 @@ namespace PokeViewer.NET.SubForms
         private Button EnterButton;
         private Button CaptureRaidButton;
         private Label RaidDifficultyLabel;
-        private ComboBox FormCombo;
+        private Button OutbreakBtn;
     }
 }
