@@ -17,7 +17,6 @@ pool:
 
 variables:
   Solution: '**/*.sln'
-  Project: '**/PokeViewer.NET.csproj'
   Platform: 'x64'
   Configuration: 'Release'
 
