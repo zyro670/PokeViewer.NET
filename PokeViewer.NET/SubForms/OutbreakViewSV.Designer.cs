@@ -85,6 +85,8 @@
             progressBar1 = new ProgressBar();
             ScanForEventOutbreak = new CheckBox();
             SearchListGroup = new GroupBox();
+            ResetGameLabel = new Label();
+            ResetGameNumeric = new NumericUpDown();
             FormCombo = new ComboBox();
             OutbreakIcon = new PictureBox();
             ClearList = new Button();
@@ -176,6 +178,7 @@
             PaldeaGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)PaldeaMap).BeginInit();
             SearchListGroup.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)ResetGameNumeric).BeginInit();
             ((System.ComponentModel.ISupportInitialize)OutbreakIcon).BeginInit();
             KitakamiGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)KSpr1).BeginInit();
@@ -644,7 +647,7 @@
             // 
             MapGroup.FormattingEnabled = true;
             MapGroup.Items.AddRange(new object[] { "All", "Paldea", "Kitakami", "Blueberry" });
-            MapGroup.Location = new Point(479, 346);
+            MapGroup.Location = new Point(10, 24);
             MapGroup.Name = "MapGroup";
             MapGroup.Size = new Size(93, 23);
             MapGroup.TabIndex = 91;
@@ -681,7 +684,7 @@
             // Apply0To64
             // 
             Apply0To64.AutoSize = true;
-            Apply0To64.Location = new Point(478, 392);
+            Apply0To64.Location = new Point(10, 78);
             Apply0To64.Name = "Apply0To64";
             Apply0To64.Size = new Size(94, 19);
             Apply0To64.TabIndex = 87;
@@ -691,7 +694,7 @@
             // EnableWebhook
             // 
             EnableWebhook.AutoSize = true;
-            EnableWebhook.Location = new Point(581, 346);
+            EnableWebhook.Location = new Point(112, 24);
             EnableWebhook.Name = "EnableWebhook";
             EnableWebhook.Size = new Size(82, 19);
             EnableWebhook.TabIndex = 83;
@@ -701,7 +704,7 @@
             // HardStopOutbreak
             // 
             HardStopOutbreak.AutoSize = true;
-            HardStopOutbreak.Location = new Point(581, 392);
+            HardStopOutbreak.Location = new Point(112, 78);
             HardStopOutbreak.Name = "HardStopOutbreak";
             HardStopOutbreak.Size = new Size(81, 19);
             HardStopOutbreak.TabIndex = 81;
@@ -711,7 +714,7 @@
             // OutbreakSearch
             // 
             OutbreakSearch.AutoSize = true;
-            OutbreakSearch.Location = new Point(479, 371);
+            OutbreakSearch.Location = new Point(10, 54);
             OutbreakSearch.Name = "OutbreakSearch";
             OutbreakSearch.Size = new Size(66, 19);
             OutbreakSearch.TabIndex = 80;
@@ -721,7 +724,7 @@
             // OutbreakScan
             // 
             OutbreakScan.BackColor = Color.Transparent;
-            OutbreakScan.Location = new Point(478, 417);
+            OutbreakScan.Location = new Point(8, 107);
             OutbreakScan.Name = "OutbreakScan";
             OutbreakScan.Size = new Size(203, 28);
             OutbreakScan.TabIndex = 79;
@@ -739,7 +742,7 @@
             // ScanForEventOutbreak
             // 
             ScanForEventOutbreak.AutoSize = true;
-            ScanForEventOutbreak.Location = new Point(581, 371);
+            ScanForEventOutbreak.Location = new Point(112, 52);
             ScanForEventOutbreak.Name = "ScanForEventOutbreak";
             ScanForEventOutbreak.Size = new Size(79, 19);
             ScanForEventOutbreak.TabIndex = 93;
@@ -748,25 +751,52 @@
             // 
             // SearchListGroup
             // 
+            SearchListGroup.Controls.Add(ResetGameLabel);
+            SearchListGroup.Controls.Add(ResetGameNumeric);
             SearchListGroup.Controls.Add(FormCombo);
+            SearchListGroup.Controls.Add(MapGroup);
             SearchListGroup.Controls.Add(OutbreakIcon);
             SearchListGroup.Controls.Add(ClearList);
             SearchListGroup.Controls.Add(ViewList);
             SearchListGroup.Controls.Add(AddSpecies);
+            SearchListGroup.Controls.Add(Apply0To64);
             SearchListGroup.Controls.Add(SpeciesBox);
+            SearchListGroup.Controls.Add(EnableWebhook);
             SearchListGroup.Controls.Add(RemoveSpecies);
+            SearchListGroup.Controls.Add(HardStopOutbreak);
+            SearchListGroup.Controls.Add(OutbreakSearch);
             SearchListGroup.Controls.Add(label21);
-            SearchListGroup.Location = new Point(687, 341);
+            SearchListGroup.Controls.Add(OutbreakScan);
+            SearchListGroup.Controls.Add(ScanForEventOutbreak);
+            SearchListGroup.Location = new Point(478, 341);
             SearchListGroup.Name = "SearchListGroup";
-            SearchListGroup.Size = new Size(238, 104);
+            SearchListGroup.Size = new Size(447, 148);
             SearchListGroup.TabIndex = 82;
             SearchListGroup.TabStop = false;
             SearchListGroup.Text = "Search List";
             // 
+            // ResetGameLabel
+            // 
+            ResetGameLabel.AutoSize = true;
+            ResetGameLabel.Location = new Point(217, 114);
+            ResetGameLabel.Name = "ResetGameLabel";
+            ResetGameLabel.Size = new Size(98, 15);
+            ResetGameLabel.TabIndex = 52;
+            ResetGameLabel.Text = "Reset Game After";
+            // 
+            // ResetGameNumeric
+            // 
+            ResetGameNumeric.Location = new Point(321, 110);
+            ResetGameNumeric.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
+            ResetGameNumeric.Name = "ResetGameNumeric";
+            ResetGameNumeric.Size = new Size(120, 23);
+            ResetGameNumeric.TabIndex = 51;
+            ResetGameNumeric.Value = new decimal(new int[] { 50, 0, 0, 0 });
+            // 
             // FormCombo
             // 
             FormCombo.FormattingEnabled = true;
-            FormCombo.Location = new Point(142, 47);
+            FormCombo.Location = new Point(351, 50);
             FormCombo.Name = "FormCombo";
             FormCombo.Size = new Size(93, 23);
             FormCombo.TabIndex = 50;
@@ -774,7 +804,7 @@
             // OutbreakIcon
             // 
             OutbreakIcon.Image = (Image)resources.GetObject("OutbreakIcon.Image");
-            OutbreakIcon.Location = new Point(188, 10);
+            OutbreakIcon.Location = new Point(397, 13);
             OutbreakIcon.Name = "OutbreakIcon";
             OutbreakIcon.Size = new Size(44, 34);
             OutbreakIcon.SizeMode = PictureBoxSizeMode.Zoom;
@@ -784,7 +814,7 @@
             // ClearList
             // 
             ClearList.BackColor = Color.Transparent;
-            ClearList.Location = new Point(101, 18);
+            ClearList.Location = new Point(310, 21);
             ClearList.Name = "ClearList";
             ClearList.Size = new Size(74, 23);
             ClearList.TabIndex = 48;
@@ -795,7 +825,7 @@
             // ViewList
             // 
             ViewList.BackColor = Color.Transparent;
-            ViewList.Location = new Point(7, 18);
+            ViewList.Location = new Point(216, 21);
             ViewList.Name = "ViewList";
             ViewList.Size = new Size(86, 23);
             ViewList.TabIndex = 42;
@@ -806,7 +836,7 @@
             // AddSpecies
             // 
             AddSpecies.BackColor = Color.Transparent;
-            AddSpecies.Location = new Point(7, 75);
+            AddSpecies.Location = new Point(216, 78);
             AddSpecies.Name = "AddSpecies";
             AddSpecies.Size = new Size(107, 23);
             AddSpecies.TabIndex = 44;
@@ -817,7 +847,7 @@
             // SpeciesBox
             // 
             SpeciesBox.FormattingEnabled = true;
-            SpeciesBox.Location = new Point(49, 47);
+            SpeciesBox.Location = new Point(258, 50);
             SpeciesBox.Name = "SpeciesBox";
             SpeciesBox.Size = new Size(91, 23);
             SpeciesBox.TabIndex = 45;
@@ -826,7 +856,7 @@
             // RemoveSpecies
             // 
             RemoveSpecies.BackColor = Color.Transparent;
-            RemoveSpecies.Location = new Point(120, 75);
+            RemoveSpecies.Location = new Point(329, 78);
             RemoveSpecies.Name = "RemoveSpecies";
             RemoveSpecies.Size = new Size(112, 23);
             RemoveSpecies.TabIndex = 46;
@@ -837,7 +867,7 @@
             // label21
             // 
             label21.AutoSize = true;
-            label21.Location = new Point(2, 50);
+            label21.Location = new Point(211, 53);
             label21.Name = "label21";
             label21.Size = new Size(46, 15);
             label21.TabIndex = 16;
@@ -1485,21 +1515,14 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(943, 506);
+            ClientSize = new Size(943, 512);
             Controls.Add(NextBtn);
             Controls.Add(PrevBtn);
             Controls.Add(LocationCombo);
-            Controls.Add(MapGroup);
             Controls.Add(UptimeLabel);
             Controls.Add(DaySkipTotal);
             Controls.Add(StatusLabel);
-            Controls.Add(Apply0To64);
-            Controls.Add(EnableWebhook);
-            Controls.Add(HardStopOutbreak);
-            Controls.Add(OutbreakSearch);
-            Controls.Add(OutbreakScan);
             Controls.Add(progressBar1);
-            Controls.Add(ScanForEventOutbreak);
             Controls.Add(SearchListGroup);
             Controls.Add(PaldeaMap);
             Controls.Add(BlueberryMap);
@@ -1538,6 +1561,7 @@
             ((System.ComponentModel.ISupportInitialize)PaldeaMap).EndInit();
             SearchListGroup.ResumeLayout(false);
             SearchListGroup.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)ResetGameNumeric).EndInit();
             ((System.ComponentModel.ISupportInitialize)OutbreakIcon).EndInit();
             KitakamiGroup.ResumeLayout(false);
             KitakamiGroup.PerformLayout();
@@ -1566,6 +1590,7 @@
             ((System.ComponentModel.ISupportInitialize)BSpr2).EndInit();
             ((System.ComponentModel.ISupportInitialize)BSpr3).EndInit();
             ((System.ComponentModel.ISupportInitialize)BSpr4).EndInit();
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.OutbreakView_Closed);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -1699,5 +1724,7 @@
         private Label BlueName2;
         private Label BlueName3;
         private Label BlueName4;
+        private NumericUpDown ResetGameNumeric;
+        private Label ResetGameLabel;
     }
 }

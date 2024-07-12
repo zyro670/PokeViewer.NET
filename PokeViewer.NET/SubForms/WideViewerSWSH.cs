@@ -145,9 +145,9 @@ namespace PokeViewer.NET.WideViewForms
                 offset = Offsets.FishingOffset;
                 max = 3;
             }
-            List<string> spriteBox = new();
-            List<string> textBox = new();
-            List<string> markBox = new();
+            List<string> spriteBox = [];
+            List<string> textBox = [];
+            List<string> markBox = [];
             for (uint i = 0; i < max; i++)
             {
                 var newoffset = offset + i * Offsets.KCoordIncrement;
@@ -163,8 +163,8 @@ namespace PokeViewer.NET.WideViewForms
                 PK8 pk = new();
                 pk.Species = (ushort)species;
                 pk.Form = (byte)BitConverter.ToUInt16(data.AsSpan(0x2, 2));
-                pk.Gender = BitConverter.ToUInt16(data.AsSpan(0x10, 2));
-                pk.SetNature(data[8]);
+                pk.Gender = (byte)BitConverter.ToUInt16(data.AsSpan(0x10, 2));
+                pk.SetNature((Nature)data[8]);
                 pk.SetAbility(data[12] - 1);
                 if (data[22] != 255)
                     pk.SetRibbonIndex((RibbonIndex)data[22]);

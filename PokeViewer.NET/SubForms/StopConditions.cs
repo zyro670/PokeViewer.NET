@@ -71,6 +71,8 @@ namespace PokeViewer.NET.SubForms
             SPDCon.ForeColor = color.Item2;
             SPECon.BackColor = color.Item1;
             SPECon.ForeColor = color.Item2;
+            MatchShinyIV.BackColor = color.Item1;
+            MatchShinyIV.ForeColor = color.Item2;
         }
 
         private void SaveButton_Click(object sender, EventArgs e)
@@ -94,6 +96,7 @@ namespace PokeViewer.NET.SubForms
             Settings.Default.SpaCon = SPACon.SelectedIndex;
             Settings.Default.SpdCon = SPDCon.SelectedIndex;
             Settings.Default.SpeCon = SPECon.SelectedIndex;
+            Settings.Default.MatchShinyIV = MatchShinyIV.Checked;
 
             Settings.Default.Save();
             Close();
@@ -142,6 +145,7 @@ namespace PokeViewer.NET.SubForms
             SPECon.SelectedIndex = Settings.Default.SpeCon;
             ScaleBox.Checked = Settings.Default.MinMaxOnly;
             ApplyIVFilter.Checked = Settings.Default.ApplyIVFilter;
+            MatchShinyIV.Checked = Settings.Default.MatchShinyIV;
         }
 
         private void ShinyBox_SelectedIndexChanged(object sender, EventArgs e)

@@ -478,5 +478,17 @@ namespace PokeViewer.NET.Properties {
                 this["GameConnected"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool MatchShinyIV {
+            get {
+                return ((bool)(this["MatchShinyIV"]));
+            }
+            set {
+                this["MatchShinyIV"] = value;
+            }
+        }
     }
 }

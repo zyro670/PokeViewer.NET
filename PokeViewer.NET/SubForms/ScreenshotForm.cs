@@ -26,7 +26,7 @@
             {
                 var token = CancellationToken.None;
                 var fn = "screenshot.jpg";
-                var bytes = Executor.SwitchConnection.Screengrab(token).Result;
+                var bytes = Executor.SwitchConnection.PixelPeek(token).Result;
                 File.WriteAllBytes(fn, bytes);
                 FileStream stream = new(fn, FileMode.Open);
                 var img = Image.FromStream(stream);

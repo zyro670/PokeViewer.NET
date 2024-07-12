@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             StopConditionsGroup = new GroupBox();
+            MatchShinyIV = new CheckBox();
             ResetButton = new Button();
             SPACon = new ComboBox();
             SaveButton = new Button();
@@ -69,6 +70,7 @@
             // 
             // StopConditionsGroup
             // 
+            StopConditionsGroup.Controls.Add(MatchShinyIV);
             StopConditionsGroup.Controls.Add(ResetButton);
             StopConditionsGroup.Controls.Add(SPACon);
             StopConditionsGroup.Controls.Add(SaveButton);
@@ -105,10 +107,22 @@
             StopConditionsGroup.TabStop = false;
             StopConditionsGroup.Text = "Stop Conditions";
             // 
+            // MatchShinyIV
+            // 
+            MatchShinyIV.AutoSize = true;
+            MatchShinyIV.Checked = true;
+            MatchShinyIV.CheckState = CheckState.Checked;
+            MatchShinyIV.Location = new Point(16, 203);
+            MatchShinyIV.Name = "MatchShinyIV";
+            MatchShinyIV.Size = new Size(140, 19);
+            MatchShinyIV.TabIndex = 75;
+            MatchShinyIV.Text = "Match Shiny And IVs?";
+            MatchShinyIV.UseVisualStyleBackColor = true;
+            // 
             // ResetButton
             // 
             ResetButton.BackColor = Color.Transparent;
-            ResetButton.Location = new Point(194, 204);
+            ResetButton.Location = new Point(285, 206);
             ResetButton.Name = "ResetButton";
             ResetButton.Size = new Size(75, 23);
             ResetButton.TabIndex = 65;
@@ -129,7 +143,7 @@
             // SaveButton
             // 
             SaveButton.BackColor = Color.Transparent;
-            SaveButton.Location = new Point(113, 204);
+            SaveButton.Location = new Point(204, 206);
             SaveButton.Name = "SaveButton";
             SaveButton.Size = new Size(75, 23);
             SaveButton.TabIndex = 64;
@@ -439,5 +453,6 @@
         private ComboBox HPCon;
         private ComboBox SPDCon;
         private Label TargetSPE;
+        private CheckBox MatchShinyIV;
     }
 }

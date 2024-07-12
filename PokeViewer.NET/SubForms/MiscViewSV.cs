@@ -1,7 +1,11 @@
-﻿using PKHeX.Core;
+﻿using Newtonsoft.Json.Linq;
+using Octokit;
+using PKHeX.Core;
 using PKHeX.Drawing.Misc;
 using RaidCrawler.Core.Structures;
 using SysBot.Base;
+using System;
+using System.Text;
 using static PokeViewer.NET.RoutineExecutor;
 using static SysBot.Base.SwitchButton;
 
@@ -11,6 +15,8 @@ namespace PokeViewer.NET.SubForms
     {
         private readonly ViewerExecutor Executor;
         private (Color, Color) FormColor;
+        OutbreakViewSV? OutbreakForm;
+        public static bool OutbreakFormOpen = false;
 
         protected ViewerOffsets Offsets { get; } = new();
         public MiscViewSV(ViewerExecutor executor, (Color, Color) color)
@@ -19,6 +25,7 @@ namespace PokeViewer.NET.SubForms
             Executor = executor;
             SetColors(color);
             FormColor = color;
+            UptimeOnLoad();
         }
 
         private void SetColors((Color, Color) color)
@@ -29,8 +36,8 @@ namespace PokeViewer.NET.SubForms
             ChangeFormButton.ForeColor = color.Item2;
             ReadValues.BackColor = color.Item1;
             ReadValues.ForeColor = color.Item2;
-            OutbreakGroup.BackColor = color.Item1;
-            OutbreakGroup.ForeColor = color.Item2;
+            MiscGroup.BackColor = color.Item1;
+            MiscGroup.ForeColor = color.Item2;
             OutbreakBtn.BackColor = color.Item1;
             OutbreakBtn.ForeColor = color.Item2;
             FwdButton.BackColor = color.Item1;
@@ -67,6 +74,28 @@ namespace PokeViewer.NET.SubForms
             SeedLabel.ForeColor = color.Item2;
             RaidNumeric.BackColor = color.Item1;
             RaidNumeric.ForeColor = color.Item2;
+            OutbreakGroup.BackColor = color.Item1;
+            OutbreakGroup.ForeColor = color.Item2;
+            WildSpawnGroup.BackColor = color.Item1;
+            WildSpawnGroup.ForeColor = color.Item2;
+            SnackGroup.BackColor = color.Item1;
+            SnackGroup.ForeColor = color.Item2;
+            SetSwitchTimeButton.BackColor = color.Item1;
+            SetSwitchTimeButton.ForeColor = color.Item2;
+            CurrentTimeLabel.BackColor = color.Item1;
+            CurrentTimeLabel.ForeColor = color.Item2;
+            HoursLabel.BackColor = color.Item1;
+            HoursLabel.ForeColor = color.Item2;
+        }
+
+        private void UptimeOnLoad()
+        {
+            var timer = new System.Timers.Timer { Interval = 1000 };
+            timer.Elapsed += (o, args) =>
+            {
+                CurrentTimeLabel.Text = $"Current Local Time: {DateTime.Now}";
+            };
+            timer.Start();
         }
 
         public new async Task Click(SwitchButton b, int delay, CancellationToken token)
@@ -129,7 +158,7 @@ namespace PokeViewer.NET.SubForms
             }
             var strokes = FCETextBox.Text.ToUpper().ToArray();
             var number = $"NumPad";
-            string[] badVals = { "@", "I", "O", "=", "&", ";", "Z", "*", "#", "!", "?" };
+            string[] badVals = ["@", "I", "O", "=", "&", ";", "Z", "*", "#", "!", "?"];
             List<HidKeyboardKey> keystopress = [];
             foreach (var str in strokes)
             {
@@ -147,7 +176,6 @@ namespace PokeViewer.NET.SubForms
             await Executor.SwitchConnection.SendAsync(SwitchCommand.TypeMultipleKeys(keystopress, true), token).ConfigureAwait(false);
             await Click(PLUS, 0_500, token).ConfigureAwait(false);
             await Click(PLUS, 0_500, token).ConfigureAwait(false);
-
         }
 
         private async void AutoPaste_Click(object sender, EventArgs e)
@@ -465,8 +493,124 @@ namespace PokeViewer.NET.SubForms
 
         private void button2_Click(object sender, EventArgs e)
         {
-            OutbreakViewSV form = new(Executor, FormColor);
+            if (!OutbreakFormOpen)
+            {
+                OutbreakFormOpen = true;
+                OutbreakForm = new(Executor, FormColor, OutbreakFormOpen);
+                OutbreakForm!.Show();
+            }
+            else
+                OutbreakForm!.Focus();
+        }
+
+        private async void WildSpawnBtn_ClickAsync(object sender, EventArgs e)
+        {
+            var wildstatus = await ReadEncryptedBlockBool(Blocks.KWildSpawnsEnabled, CancellationToken.None).ConfigureAwait(false);
+            if (WildEnable.Checked)
+            {
+                if (wildstatus)
+                {
+                    wildstatus = await ReadEncryptedBlockBool(Blocks.KWildSpawnsEnabled, CancellationToken.None).ConfigureAwait(false);
+                    MessageBox.Show($"Wild Spawns Status: {wildstatus}");
+                }
+                else
+                {
+                    await WriteEncryptedBlockBool(Blocks.KWildSpawnsEnabled, false, true, CancellationToken.None).ConfigureAwait(false);
+                    wildstatus = await ReadEncryptedBlockBool(Blocks.KWildSpawnsEnabled, CancellationToken.None).ConfigureAwait(false);
+                    MessageBox.Show($"Wild Spawns Status: {wildstatus}");
+                }
+            }
+            if (WildDisable.Checked)
+            {
+                if (wildstatus)
+                {
+                    await WriteEncryptedBlockBool(Blocks.KWildSpawnsEnabled, true, false, CancellationToken.None).ConfigureAwait(false);
+                    wildstatus = await ReadEncryptedBlockBool(Blocks.KWildSpawnsEnabled, CancellationToken.None).ConfigureAwait(false);
+                    MessageBox.Show($"Wild Spawns Status: {wildstatus}");
+                }
+                else
+                {
+                    wildstatus = await ReadEncryptedBlockBool(Blocks.KWildSpawnsEnabled, CancellationToken.None).ConfigureAwait(false);
+                    MessageBox.Show($"Wild Spawns Status: {wildstatus}");
+                }
+            }
+        }
+
+        private void SnackworthBtn_Click(object sender, EventArgs e)
+        {
+            SnackworthViewer form = new(Executor);
             form.ShowDialog();
+        }
+
+        public async Task<bool> ReadEncryptedBlockBool(DataBlock block, CancellationToken token)
+        {
+            var address = await SearchSaveKey(block.Key, token).ConfigureAwait(false);
+            address = BitConverter.ToUInt64(await Executor.SwitchConnection.ReadBytesAbsoluteAsync(address + 8, 0x8, token).ConfigureAwait(false), 0);
+            var data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(address, block.Size, token).ConfigureAwait(false);
+            var res = DecryptBlock(block.Key, data);
+            return res[0] == 2;
+        }
+
+        public async Task<ulong> SearchSaveKey(uint key, CancellationToken token)
+        {
+            var BaseBlockKeyPointer = await Executor.SwitchConnection.PointerAll(Offsets.BlockKeyPointer, token).ConfigureAwait(false);
+            var data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(BaseBlockKeyPointer + 8, 16, token).ConfigureAwait(false);
+            var start = BitConverter.ToUInt64(data.AsSpan()[..8]);
+            var end = BitConverter.ToUInt64(data.AsSpan()[8..]);
+
+            while (start < end)
+            {
+                var block_ct = (end - start) / 48;
+                var mid = start + (block_ct >> 1) * 48;
+
+                data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(mid, 4, token).ConfigureAwait(false);
+                var found = BitConverter.ToUInt32(data);
+                if (found == key)
+                    return mid;
+
+                if (found >= key)
+                    end = mid;
+                else start = mid + 48;
+            }
+            return start;
+        }
+
+        public async Task<bool> WriteEncryptedBlockBool(DataBlock block, bool valueToExpect, bool valueToInject, CancellationToken token)
+        {
+            ulong address;
+            try
+            {
+                address = await SearchSaveKey(block.Key, token).ConfigureAwait(false);
+                address = BitConverter.ToUInt64(await Executor.SwitchConnection.ReadBytesAbsoluteAsync(address + 8, 0x8, token).ConfigureAwait(false), 0);
+            }
+            catch (Exception) { return false; }
+            //If we get there without exceptions, the block address is valid
+            var data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(address, block.Size, token).ConfigureAwait(false);
+            data = DecryptBlock(block.Key, data);
+            //Validate ram data
+            var ram = data[0] == 2;
+            if (ram != valueToExpect) return false;
+            //If we get there then both block address and block data are valid, we can safely inject
+            data[0] = valueToInject ? (byte)2 : (byte)1;
+            data = EncryptBlock(block.Key, data);
+            await Executor.SwitchConnection.WriteBytesAbsoluteAsync(data, address, token).ConfigureAwait(false);
+
+            return true;
+        }
+
+        public static byte[] EncryptBlock(uint key, byte[] block) => DecryptBlock(key, block);
+
+        private async void button2_Click_1(object sender, EventArgs e)
+        {
+            DateTime dateTime = DateTime.Now;
+            var unixTimeSeconds = new DateTimeOffset(dateTime).ToUnixTimeSeconds();
+            await SetDateTime((ulong)unixTimeSeconds, CancellationToken.None).ConfigureAwait(false);
+        }
+
+        public async Task SetDateTime(ulong date, CancellationToken token)
+        {
+            var command = Encoding.ASCII.GetBytes($"setCurrentTime {date}{(true ? "\r\n" : "")}");
+            await Executor.SwitchConnection.SendAsync(command, token).ConfigureAwait(false);
         }
     }
 }

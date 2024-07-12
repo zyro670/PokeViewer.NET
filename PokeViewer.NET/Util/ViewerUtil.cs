@@ -27,7 +27,7 @@ namespace PokeViewer.NET
             string marktype = string.Empty;
             if (pk.IsShiny)
             {
-                if (pk.Format >= 8 && (pk.ShinyXor == 0 || pk.FatefulEncounter || pk.Version == (int)GameVersion.GO))
+                if (pk.Format >= 8 && (pk.ShinyXor == 0 || pk.FatefulEncounter || pk.Version == GameVersion.GO))
                     shinytype = " ■";
                 else
                     shinytype = " ★";
@@ -44,7 +44,7 @@ namespace PokeViewer.NET
             if (pk is IGigantamax gmax && gmax.CanGigantamax)
                 speciesName += "-Gmax";
 
-            string OTInfo = string.IsNullOrEmpty(pk.OT_Name) ? "" : $" - {pk.OT_Name} - {TIDFormatted}{ballFormatted}";
+            string OTInfo = string.IsNullOrEmpty(pk.OriginalTrainerName) ? "" : $" - {pk.OriginalTrainerName} - {TIDFormatted}{ballFormatted}";
             OTInfo = string.Concat(OTInfo.Split(Path.GetInvalidFileNameChars())).Trim();
 
             if (pk is PK8)
@@ -2090,5 +2090,249 @@ namespace PokeViewer.NET
             Size = 12,
         };
         #endregion
+        #region Statics
+        public static DataBlock KShrineStateTinglu = new()
+        {
+            Name = "KShrineStateTinglu",
+            Key = 0xA3B2E1E8,
+            Type = SCTypeCode.Int32,
+            IsEncrypted = true,
+        };
+        public static DataBlock KShrineStateChienPao = new()
+        {
+            Name = "KShrineStateChienPao",
+            Key = 0xB6D28884,
+            Type = SCTypeCode.Int32,
+            IsEncrypted = true,
+        };
+        public static DataBlock KShrineStateWoChien = new()
+        {
+            Name = "KShrineStateWoChien",
+            Key = 0x8FC1AFF5,
+            Type = SCTypeCode.Int32,
+            IsEncrypted = true,
+        };
+        public static DataBlock KShrineStateChiYu = new()
+        {
+            Name = "KShrineStateChiYu",
+            Key = 0x0FD2F9E2,
+            Type = SCTypeCode.Int32,
+            IsEncrypted = true,
+        };
+        public static DataBlock KCapturedOkidogi = new()
+        {
+            Name = "KCapturedOkidogi",
+            Key = 0x7042479E,
+            Type = SCTypeCode.Bool1,
+            IsEncrypted = true,
+            Size = 1,
+        };
+        public static DataBlock KCapturedMunkidori = new()
+        {
+            Name = "KCapturedMunkidori",
+            Key = 0x9F5556DD,
+            Type = SCTypeCode.Bool1,
+            IsEncrypted = true,
+            Size = 1,
+        };
+        public static DataBlock KCapturedFezandipiti = new()
+        {
+            Name = "KCapturedFezandipiti",
+            Key = 0xFF7CAD99,
+            Type = SCTypeCode.Bool1,
+            IsEncrypted = true,
+            Size = 1,
+        };
+        public static DataBlock KMeloettaStatus = new()
+        {
+            Name = "KMeloettaStatus",
+            Key = 0x3B43EC45,
+            Type = SCTypeCode.Int32,
+            IsEncrypted = true,
+        };
+        public static DataBlock KLegendaryStateArticuno = new()
+        {
+            Name = "KLegendaryStateArticuno",
+            Key = 0x89CA5245,
+            Type = SCTypeCode.Int32,
+            IsEncrypted = true,
+        };
+        public static DataBlock KLegendaryStateZapdos = new()
+        {
+            Name = "KLegendaryStateZapdos",
+            Key = 0xCBDBC66C,
+            Type = SCTypeCode.Int32,
+            IsEncrypted = true,
+        };
+        public static DataBlock KLegendaryStateMoltres = new()
+        {
+            Name = "KLegendaryStateMoltres",
+            Key = 0xC07011C7,
+            Type = SCTypeCode.Int32,
+            IsEncrypted = true,
+        };
+        public static DataBlock KLegendaryStateRaikou = new()
+        {
+            Name = "KLegendaryStateRaikou",
+            Key = 0x92625C3E,
+            Type = SCTypeCode.Int32,
+            IsEncrypted = true,
+        };
+        public static DataBlock KLegendaryStateEntei = new()
+        {
+            Name = "KLegendaryStateEntei",
+            Key = 0xE53A43E9,
+            Type = SCTypeCode.Int32,
+            IsEncrypted = true,
+        };
+        public static DataBlock KLegendaryStateSuicune = new()
+        {
+            Name = "KLegendaryStateSuicune",
+            Key = 0xA3009C30,
+            Type = SCTypeCode.Int32,
+            IsEncrypted = true,
+        };
+        public static DataBlock KLegendaryStateLugia = new()
+        {
+            Name = "KLegendaryStateLugia",
+            Key = 0x408FD5EB,
+            Type = SCTypeCode.Int32,
+            IsEncrypted = true,
+        };
+        public static DataBlock KLegendaryStateHoOh = new()
+        {
+            Name = "KLegendaryStateHoOh",
+            Key = 0x9A4C4C57,
+            Type = SCTypeCode.Int32,
+            IsEncrypted = true,
+        };
+        public static DataBlock KLegendaryStateLatias = new()
+        {
+            Name = "KLegendaryStateLatias",
+            Key = 0x50E4FDFC,
+            Type = SCTypeCode.Int32,
+            IsEncrypted = true,
+        };
+        public static DataBlock KLegendaryStateLatios = new()
+        {
+            Name = "KLegendaryStateLatios",
+            Key = 0xF5E6BCF9,
+            Type = SCTypeCode.Int32,
+            IsEncrypted = true,
+        };
+        public static DataBlock KLegendaryStateKyogre = new()
+        {
+            Name = "KLegendaryStateKyogre",
+            Key = 0xAFCF960E,
+            Type = SCTypeCode.Int32,
+            IsEncrypted = true,
+        };
+        public static DataBlock KLegendaryStateGroudon = new()
+        {
+            Name = "KLegendaryStateGroudon",
+            Key = 0x58A26DB3,
+            Type = SCTypeCode.Int32,
+            IsEncrypted = true,
+        };
+        public static DataBlock KLegendaryStateRayquaza = new()
+        {
+            Name = "KLegendaryStateRayquaza",
+            Key = 0x6623B5F8,
+            Type = SCTypeCode.Int32,
+            IsEncrypted = true,
+        };
+        public static DataBlock KLegendaryStateCobalion = new()
+        {
+            Name = "KLegendaryStateCobalion",
+            Key = 0xED5D6C15,
+            Type = SCTypeCode.Int32,
+            IsEncrypted = true,
+        };
+        public static DataBlock KLegendaryStateTerrakion = new()
+        {
+            Name = "KLegendaryStateTerrakion",
+            Key = 0x6DAB710A,
+            Type = SCTypeCode.Int32,
+            IsEncrypted = true,
+        };
+        public static DataBlock KLegendaryStateVirizion = new()
+        {
+            Name = "KLegendaryStateVirizion",
+            Key = 0x29D699FF,
+            Type = SCTypeCode.Int32,
+            IsEncrypted = true,
+        };
+        public static DataBlock KLegendaryStateReshiram = new()
+        {
+            Name = "KLegendaryStateReshiram",
+            Key = 0xD13DFD64,
+            Type = SCTypeCode.Int32,
+            IsEncrypted = true,
+        };
+        public static DataBlock KLegendaryStateZekrom = new()
+        {
+            Name = "KLegendaryStateZekrom",
+            Key = 0x82D45B5E,
+            Type = SCTypeCode.Int32,
+            IsEncrypted = true,
+        };
+        public static DataBlock KLegendaryStateKyurem = new()
+        {
+            Name = "KLegendaryStateKyurem",
+            Key = 0x0D598609,
+            Type = SCTypeCode.Int32,
+            IsEncrypted = true,
+        };
+        public static DataBlock KLegendaryStateSolgaleo = new()
+        {
+            Name = "KLegendaryStateSolgaleo",
+            Key = 0x3FC0D18C,
+            Type = SCTypeCode.Int32,
+            IsEncrypted = true,
+        };
+        public static DataBlock KLegendaryStateLunala = new()
+        {
+            Name = "KLegendaryStateLunala",
+            Key = 0x651DFAE7,
+            Type = SCTypeCode.Int32,
+            IsEncrypted = true,
+        };
+        public static DataBlock KLegendaryStateNecrozma = new()
+        {
+            Name = "KLegendaryStateNecrozma",
+            Key = 0xD3877C9A,
+            Type = SCTypeCode.Int32,
+            IsEncrypted = true,
+        };
+        public static DataBlock KLegendaryStateKubfu = new()
+        {
+            Name = "KLegendaryStateKubfu",
+            Key = 0x04CC40E5,
+            Type = SCTypeCode.Int32,
+            IsEncrypted = true,
+        };
+        public static DataBlock KLegendaryStateGlastrier = new()
+        {
+            Name = "KLegendaryStateGlastrier",
+            Key = 0x41D6BB48,
+            Type = SCTypeCode.Int32,
+            IsEncrypted = true,
+        };
+        public static DataBlock KLegendaryStateSpectrier = new()
+        {
+            Name = "KLegendaryStateSpectrier",
+            Key = 0xF5E78743,
+            Type = SCTypeCode.Int32,
+            IsEncrypted = true,
+        };
+        #endregion
+        public static DataBlock KWildSpawnsEnabled = new()
+        {
+            Name = "KWildSpawnsEnabled",
+            Key = 0xC812EDC7,
+            Type = SCTypeCode.Bool2,
+            IsEncrypted = true,
+            Size = 1,
+        };
     }
 }

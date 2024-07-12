@@ -156,7 +156,7 @@ namespace PokeViewer.NET.CommandsUtil
         {
             Executor = CheckExecutor();
             var token = CancellationToken.None;
-            var bytes = await Executor.SwitchConnection.Screengrab(token).ConfigureAwait(false) ?? Array.Empty<byte>();
+            var bytes = await Executor.SwitchConnection.PixelPeek(token).ConfigureAwait(false) ?? Array.Empty<byte>();
             if (bytes.Length == 1)
             {
                 await ReplyAsync($"Failed to take a screenshot. Is the bot connected?").ConfigureAwait(false);
@@ -532,7 +532,7 @@ namespace PokeViewer.NET.CommandsUtil
             var sav = new SAV9SV();
             var info = sav.MyStatus;
             var read = await Executor.SwitchConnection.PointerPeek(info.Data.Length, Offsets.TradePartnerSV, token).ConfigureAwait(false);
-            read.CopyTo(info.Data, 0);
+            read.CopyTo(info.Data);
             var nidOffset = await Executor.SwitchConnection.PointerAll(Offsets.TradePartnerNIDSV, token).ConfigureAwait(false);
             var data = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(nidOffset, 8, token).ConfigureAwait(false);
             var nid = BitConverter.ToUInt64(data, 0);
@@ -726,7 +726,7 @@ namespace PokeViewer.NET.CommandsUtil
             string marktype = string.Empty;
             if (pkm.IsShiny)
             {
-                if (pkm.Format >= 8 && (pkm.ShinyXor == 0 || pkm.FatefulEncounter || pkm.Version == (int)GameVersion.GO))
+                if (pkm.Format >= 8 && (pkm.ShinyXor == 0 || pkm.FatefulEncounter || pkm.Version == GameVersion.GO))
                     shinytype = " ■";
                 else
                     shinytype = " ★";
@@ -743,7 +743,7 @@ namespace PokeViewer.NET.CommandsUtil
             if (pkm is IGigantamax gmax && gmax.CanGigantamax)
                 speciesName += "-Gmax";
 
-            string OTInfo = string.IsNullOrEmpty(pkm.OT_Name) ? "" : $" - {pkm.OT_Name} - {TIDFormatted}{ballFormatted}";
+            string OTInfo = string.IsNullOrEmpty(pkm.OriginalTrainerName) ? "" : $" - {pkm.OriginalTrainerName} - {TIDFormatted}{ballFormatted}";
 
             if (pkm is PK9)
             {

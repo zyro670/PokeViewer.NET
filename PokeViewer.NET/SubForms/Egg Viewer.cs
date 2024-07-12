@@ -459,12 +459,11 @@ namespace PokeViewer.NET.SubForms
         private async Task<(bool, PK9)> RetrieveEgg(CancellationToken token)
         {
             bool match = false;
-            PK9 pk = new();
             for (int a = 0; a < 4; a++)
                 await Click(A, 1_500, token).ConfigureAwait(false);
 
             await Task.Delay(0_500, token).ConfigureAwait(false);
-            pk = await ReadBoxPokemonSV(BoxStartOffset, 344, token).ConfigureAwait(false);
+            PK9 pk = await ReadBoxPokemonSV(BoxStartOffset, 344, token).ConfigureAwait(false);
             if ((Species)pk.Species != Species.None)
             {
                 BasketCount.Text = "Status: Egg found!";
@@ -490,6 +489,7 @@ namespace PokeViewer.NET.SubForms
 
         private bool ValidateEncounter(PK9 pk)
         {
+            bool IVmatches = false;
             if (pk.IsShiny)
             {
                 if (pk.ShinyXor == 0)
@@ -502,6 +502,9 @@ namespace PokeViewer.NET.SubForms
 
             if (Settings.Default.ApplyIVFilter)
             {
+                if (Settings.Default.MatchShinyIV is false && pk.IsShiny && Settings.Default.ShinyFilter != 0 && Settings.Default.ShinyFilter != 1 && IVmatches == false)
+                    return true;
+
                 if (Settings.Default.HpCon is 0 && pk.IV_HP != Settings.Default.HPFilter || Settings.Default.AtkCon is 0 && pk.IV_ATK != Settings.Default.AtkFilter || Settings.Default.DefCon is 0 && pk.IV_DEF != Settings.Default.DefFilter ||
                     Settings.Default.SpaCon is 0 && pk.IV_SPA != Settings.Default.SpaFilter || Settings.Default.SpdCon is 0 && pk.IV_SPD != Settings.Default.SpdFilter || Settings.Default.SpeCon is 0 && pk.IV_SPE != Settings.Default.SpeFilter)
                     return false;
@@ -513,16 +516,21 @@ namespace PokeViewer.NET.SubForms
                 if (Settings.Default.HpCon is 2 && pk.IV_HP < Settings.Default.HPFilter || Settings.Default.AtkCon is 2 && pk.IV_ATK < Settings.Default.AtkFilter || Settings.Default.DefCon is 2 && pk.IV_DEF < Settings.Default.DefFilter ||
                     Settings.Default.SpaCon is 2 && pk.IV_SPA < Settings.Default.SpaFilter || Settings.Default.SpdCon is 2 && pk.IV_SPD < Settings.Default.SpdFilter || Settings.Default.SpeCon is 2 && pk.IV_SPE < Settings.Default.SpeFilter)
                     return false;
+
+                IVmatches = true;
             }
 
             if (pk.Gender != Settings.Default.GenderFilter && Settings.Default.GenderFilter != 3)
                 return false; // gender != gender filter when gender is not Any
 
-            if (pk.Nature != Settings.Default.NatureFilter && Settings.Default.NatureFilter != 25)
+            if (pk.Nature != (Nature)Settings.Default.NatureFilter && Settings.Default.NatureFilter != 25)
                 return false; // nature != nature filter when nature is not Random
 
             if (Settings.Default.MinMaxOnly && pk.Scale > 0 && pk.Scale < 255) // Mini/Jumbo Only
                 return false;
+
+            if (Settings.Default.MatchShinyIV is false && !pk.IsShiny && Settings.Default.ShinyFilter != 0 && Settings.Default.ShinyFilter != 1 && IVmatches == true)
+                return true;
 
             if (!pk.IsShiny && Settings.Default.ShinyFilter != 0 && Settings.Default.ShinyFilter != 1)
                 return false;
@@ -544,6 +552,7 @@ namespace PokeViewer.NET.SubForms
                 if ((Species)pk.Species is Species.Dunsparce or Species.Tandemaus && pk.EncryptionConstant % 100 == 0 && Settings.Default.SegmentOrFamily)
                     return true;
             }
+
             return true;
         }
 

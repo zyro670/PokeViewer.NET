@@ -354,3 +354,6 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 PokeViewer.NET/Properties/launchSettings.json
+PokeViewer.NET/SubForms/VivillonViewer.cs
+PokeViewer.NET/SubForms/VivillonViewer.Designer.cs
+PokeViewer.NET/SubForms/VivillonViewer.resx

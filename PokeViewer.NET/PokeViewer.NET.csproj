@@ -18,6 +18,15 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="SubForms\VivillonViewer.cs" />
+	  <Compile Remove="SubForms\VivillonViewer.Designer.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Remove="SubForms\VivillonViewer.resx" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Discord.Net" Version="3.13.0" />
 		<PackageReference Include="FlatSharp.Runtime" Version="7.4.0" />
 		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
@@ -36,9 +45,6 @@
 		</Reference>
 		<Reference Include="PKHeX.Drawing.PokeSprite">
 			<HintPath>deps\PKHeX.Drawing.PokeSprite.dll</HintPath>
-		</Reference>
-		<Reference Include="HomeLive.Core">
-			<HintPath>deps\HomeLive.Core.dll</HintPath>
 		</Reference>
 		<Reference Include="RaidCrawler.Core">
 			<HintPath>deps\RaidCrawler.Core.dll</HintPath>

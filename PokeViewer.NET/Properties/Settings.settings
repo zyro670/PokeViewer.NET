@@ -1,4 +1,5 @@
-﻿<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="PokeViewer.NET.Properties" GeneratedClassName="Settings">
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="PokeViewer.NET.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
     <Setting Name="SwitchIP" Type="System.String" Scope="User">
@@ -114,6 +115,9 @@
     </Setting>
     <Setting Name="GameConnected" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="MatchShinyIV" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>
 </SettingsFile>

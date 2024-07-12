@@ -431,9 +431,9 @@
             BasketCount.AutoSize = true;
             BasketCount.Location = new Point(257, 285);
             BasketCount.Name = "BasketCount";
-            BasketCount.Size = new Size(77, 15);
+            BasketCount.Size = new Size(80, 15);
             BasketCount.TabIndex = 78;
-            BasketCount.Text = "BasketCount:";
+            BasketCount.Text = "Basket Count:";
             // 
             // ForceDumpCheck
             // 

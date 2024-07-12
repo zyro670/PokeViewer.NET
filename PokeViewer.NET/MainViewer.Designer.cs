@@ -49,7 +49,6 @@
             UniqueBox = new CheckBox();
             UniqueBox2 = new CheckBox();
             InGameScreenshot = new Button();
-            ToggleSwitchProtocol = new CheckBox();
             ViewerControl = new TabControl();
             ConnectionPage = new TabPage();
             ScreenLabel = new Label();
@@ -62,26 +61,16 @@
             TIDSID = new Label();
             TrainerLabel = new Label();
             ExtrasGroup = new GroupBox();
+            DiscordUtilButton = new Button();
             WideButton = new Button();
-            PrefixBox = new ComboBox();
             ControllerButton = new Button();
-            BotPrefixLabel = new Label();
             BackColorLabel = new Label();
-            BotTokenLabel = new Label();
             ForeColorLabel = new Label();
-            BotToken = new TextBox();
             AltBackCombo = new ComboBox();
-            MessageText = new TextBox();
             AltForeCombo = new ComboBox();
-            PingLabel = new Label();
             SetMoodButton = new Button();
             DefaultMoodRadio = new RadioButton();
             AltMoodRadio = new RadioButton();
-            DiscordIDText = new TextBox();
-            WebhookURLText = new TextBox();
-            DiscordID = new Label();
-            WebHookURL = new Label();
-            SaveButton = new Button();
             ConnectionGroupBox = new GroupBox();
             VersionLabel = new Label();
             ConnectionSpriteBox = new PictureBox();
@@ -308,17 +297,6 @@
             InGameScreenshot.UseVisualStyleBackColor = true;
             InGameScreenshot.Click += InGameScreenshot_Click;
             // 
-            // ToggleSwitchProtocol
-            // 
-            ToggleSwitchProtocol.AutoSize = true;
-            ToggleSwitchProtocol.Location = new Point(15, 19);
-            ToggleSwitchProtocol.Name = "ToggleSwitchProtocol";
-            ToggleSwitchProtocol.Size = new Size(52, 19);
-            ToggleSwitchProtocol.TabIndex = 32;
-            ToggleSwitchProtocol.Text = "USB?";
-            ToggleSwitchProtocol.UseVisualStyleBackColor = true;
-            ToggleSwitchProtocol.CheckedChanged += CheckForUSBChecked;
-            // 
             // ViewerControl
             // 
             ViewerControl.Controls.Add(ConnectionPage);
@@ -448,27 +426,16 @@
             // ExtrasGroup
             // 
             ExtrasGroup.BackColor = Color.Transparent;
+            ExtrasGroup.Controls.Add(DiscordUtilButton);
             ExtrasGroup.Controls.Add(WideButton);
-            ExtrasGroup.Controls.Add(PrefixBox);
             ExtrasGroup.Controls.Add(ControllerButton);
-            ExtrasGroup.Controls.Add(BotPrefixLabel);
             ExtrasGroup.Controls.Add(BackColorLabel);
-            ExtrasGroup.Controls.Add(BotTokenLabel);
             ExtrasGroup.Controls.Add(ForeColorLabel);
-            ExtrasGroup.Controls.Add(BotToken);
             ExtrasGroup.Controls.Add(AltBackCombo);
-            ExtrasGroup.Controls.Add(MessageText);
             ExtrasGroup.Controls.Add(AltForeCombo);
-            ExtrasGroup.Controls.Add(PingLabel);
             ExtrasGroup.Controls.Add(SetMoodButton);
             ExtrasGroup.Controls.Add(DefaultMoodRadio);
             ExtrasGroup.Controls.Add(AltMoodRadio);
-            ExtrasGroup.Controls.Add(DiscordIDText);
-            ExtrasGroup.Controls.Add(WebhookURLText);
-            ExtrasGroup.Controls.Add(DiscordID);
-            ExtrasGroup.Controls.Add(ToggleSwitchProtocol);
-            ExtrasGroup.Controls.Add(WebHookURL);
-            ExtrasGroup.Controls.Add(SaveButton);
             ExtrasGroup.Location = new Point(7, 283);
             ExtrasGroup.Name = "ExtrasGroup";
             ExtrasGroup.Size = new Size(484, 157);
@@ -476,46 +443,37 @@
             ExtrasGroup.TabStop = false;
             ExtrasGroup.Text = "Extras";
             // 
+            // DiscordUtilButton
+            // 
+            DiscordUtilButton.Location = new Point(12, 28);
+            DiscordUtilButton.Name = "DiscordUtilButton";
+            DiscordUtilButton.Size = new Size(113, 45);
+            DiscordUtilButton.TabIndex = 55;
+            DiscordUtilButton.Text = "Settings";
+            DiscordUtilButton.UseVisualStyleBackColor = true;
+            DiscordUtilButton.Click += DiscordUtilButton_Click;
+            // 
             // WideButton
             // 
-            WideButton.Location = new Point(177, 15);
+            WideButton.Enabled = false;
+            WideButton.Location = new Point(131, 28);
             WideButton.Name = "WideButton";
-            WideButton.Size = new Size(75, 23);
+            WideButton.Size = new Size(105, 45);
             WideButton.TabIndex = 54;
             WideButton.Text = "Wide View";
             WideButton.UseVisualStyleBackColor = true;
             WideButton.Click += WideButton_Click;
             // 
-            // PrefixBox
-            // 
-            PrefixBox.FormattingEnabled = true;
-            PrefixBox.Items.AddRange(new object[] { "$", "!", "%", "^", "&", "*", ".", ",", ";", "-", "_" });
-            PrefixBox.Location = new Point(217, 130);
-            PrefixBox.Name = "PrefixBox";
-            PrefixBox.Size = new Size(35, 23);
-            PrefixBox.TabIndex = 53;
-            PrefixBox.Text = "$";
-            PrefixBox.SelectedIndexChanged += Prefix_CheckedChanged;
-            // 
             // ControllerButton
             // 
             ControllerButton.Enabled = false;
-            ControllerButton.Location = new Point(270, 124);
+            ControllerButton.Location = new Point(12, 79);
             ControllerButton.Name = "ControllerButton";
-            ControllerButton.Size = new Size(197, 23);
+            ControllerButton.Size = new Size(224, 53);
             ControllerButton.TabIndex = 50;
             ControllerButton.Text = "Controller Assist";
             ControllerButton.UseVisualStyleBackColor = true;
             ControllerButton.Click += button1_Click_1;
-            // 
-            // BotPrefixLabel
-            // 
-            BotPrefixLabel.AutoSize = true;
-            BotPrefixLabel.Location = new Point(157, 133);
-            BotPrefixLabel.Name = "BotPrefixLabel";
-            BotPrefixLabel.Size = new Size(58, 15);
-            BotPrefixLabel.TabIndex = 52;
-            BotPrefixLabel.Text = "Bot Prefix";
             // 
             // BackColorLabel
             // 
@@ -526,15 +484,6 @@
             BackColorLabel.TabIndex = 50;
             BackColorLabel.Text = "BackColor";
             // 
-            // BotTokenLabel
-            // 
-            BotTokenLabel.AutoSize = true;
-            BotTokenLabel.Location = new Point(1, 133);
-            BotTokenLabel.Name = "BotTokenLabel";
-            BotTokenLabel.Size = new Size(59, 15);
-            BotTokenLabel.TabIndex = 51;
-            BotTokenLabel.Text = "Bot Token";
-            // 
             // ForeColorLabel
             // 
             ForeColorLabel.AutoSize = true;
@@ -543,13 +492,6 @@
             ForeColorLabel.Size = new Size(59, 15);
             ForeColorLabel.TabIndex = 49;
             ForeColorLabel.Text = "ForeColor";
-            // 
-            // BotToken
-            // 
-            BotToken.Location = new Point(68, 130);
-            BotToken.Name = "BotToken";
-            BotToken.Size = new Size(84, 23);
-            BotToken.TabIndex = 51;
             // 
             // AltBackCombo
             // 
@@ -560,13 +502,6 @@
             AltBackCombo.TabIndex = 48;
             AltBackCombo.SelectedIndexChanged += AltBackCombo_SelectedIndexChanged;
             // 
-            // MessageText
-            // 
-            MessageText.Location = new Point(68, 100);
-            MessageText.Name = "MessageText";
-            MessageText.Size = new Size(185, 23);
-            MessageText.TabIndex = 51;
-            // 
             // AltForeCombo
             // 
             AltForeCombo.FormattingEnabled = true;
@@ -575,15 +510,6 @@
             AltForeCombo.Size = new Size(132, 23);
             AltForeCombo.TabIndex = 37;
             AltForeCombo.SelectedIndexChanged += ColorComboBox_SelectedIndexChanged;
-            // 
-            // PingLabel
-            // 
-            PingLabel.AutoSize = true;
-            PingLabel.Location = new Point(1, 103);
-            PingLabel.Name = "PingLabel";
-            PingLabel.Size = new Size(53, 15);
-            PingLabel.TabIndex = 39;
-            PingLabel.Text = "Message";
             // 
             // SetMoodButton
             // 
@@ -618,50 +544,6 @@
             AltMoodRadio.Text = "Alternate Mood";
             AltMoodRadio.UseVisualStyleBackColor = true;
             AltMoodRadio.CheckedChanged += AltMoodRadio_CheckedChanged;
-            // 
-            // DiscordIDText
-            // 
-            DiscordIDText.Location = new Point(68, 70);
-            DiscordIDText.Name = "DiscordIDText";
-            DiscordIDText.Size = new Size(185, 23);
-            DiscordIDText.TabIndex = 4;
-            DiscordIDText.TextAlign = HorizontalAlignment.Center;
-            // 
-            // WebhookURLText
-            // 
-            WebhookURLText.Location = new Point(68, 40);
-            WebhookURLText.Name = "WebhookURLText";
-            WebhookURLText.Size = new Size(185, 23);
-            WebhookURLText.TabIndex = 3;
-            WebhookURLText.TextAlign = HorizontalAlignment.Center;
-            // 
-            // DiscordID
-            // 
-            DiscordID.AutoSize = true;
-            DiscordID.Location = new Point(1, 73);
-            DiscordID.Name = "DiscordID";
-            DiscordID.Size = new Size(61, 15);
-            DiscordID.TabIndex = 2;
-            DiscordID.Text = "Discord ID";
-            // 
-            // WebHookURL
-            // 
-            WebHookURL.AutoSize = true;
-            WebHookURL.Location = new Point(1, 44);
-            WebHookURL.Name = "WebHookURL";
-            WebHookURL.Size = new Size(58, 15);
-            WebHookURL.TabIndex = 1;
-            WebHookURL.Text = "Webhook";
-            // 
-            // SaveButton
-            // 
-            SaveButton.Location = new Point(67, 15);
-            SaveButton.Name = "SaveButton";
-            SaveButton.Size = new Size(104, 23);
-            SaveButton.TabIndex = 0;
-            SaveButton.Text = "Save";
-            SaveButton.UseVisualStyleBackColor = true;
-            SaveButton.Click += SaveButton_Click;
             // 
             // ConnectionGroupBox
             // 
@@ -839,7 +721,6 @@
         private CheckBox UniqueBox;
         private CheckBox UniqueBox2;
         private Button InGameScreenshot;
-        private CheckBox ToggleSwitchProtocol;
         private TabControl ViewerControl;
         private TabPage ConnectionPage;
         private TabPage ViewPage;
@@ -853,11 +734,6 @@
         private TabPage PartyPage;
         private TabPage OutbreakPage;
         private GroupBox ExtrasGroup;
-        private Button SaveButton;
-        private TextBox WebhookURLText;
-        private Label DiscordID;
-        private Label WebHookURL;
-        private TextBox DiscordIDText;
         private Label TrainerLabel;
         private GroupBox TrainerPassportGroup;
         private Label TIDSID;
@@ -875,12 +751,7 @@
         private Label ForeColorLabel;
         private Button EventRedeemButton;
         private Button ControllerButton;
-        private Label PingLabel;
-        private TextBox MessageText;
-        private TextBox BotToken;
-        private Label BotTokenLabel;
-        private Label BotPrefixLabel;
-        private ComboBox PrefixBox;
         private Button WideButton;
+        private Button DiscordUtilButton;
     }
 }

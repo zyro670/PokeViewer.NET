@@ -30,8 +30,22 @@ namespace PokeViewer.NET.SubForms
         /// </summary>
         private void InitializeComponent()
         {
+            MiscGroup = new GroupBox();
+            SnackGroup = new GroupBox();
+            SnackworthBtn = new Button();
+            TimeGroup = new GroupBox();
+            SetSwitchTimeButton = new Button();
+            CurrentTimeLabel = new Label();
+            FwdButton = new Button();
+            TimeNumeric = new NumericUpDown();
+            BwdButton = new Button();
+            ResetButton = new Button();
             OutbreakGroup = new GroupBox();
             OutbreakBtn = new Button();
+            WildSpawnGroup = new GroupBox();
+            WildDisable = new RadioButton();
+            WildSpawnBtn = new Button();
+            WildEnable = new RadioButton();
             SeedToPokemonGroup = new GroupBox();
             RaidDifficultyLabel = new Label();
             CaptureRaidButton = new Button();
@@ -42,11 +56,6 @@ namespace PokeViewer.NET.SubForms
             GoButton = new Button();
             SeedLabel = new Label();
             RaidSensCheck = new CheckBox();
-            TimeGroup = new GroupBox();
-            FwdButton = new Button();
-            TimeNumeric = new NumericUpDown();
-            BwdButton = new Button();
-            ResetButton = new Button();
             groupBox2 = new GroupBox();
             FCETextBox = new TextBox();
             ClearFCE = new Button();
@@ -57,39 +66,193 @@ namespace PokeViewer.NET.SubForms
             ChangeFormButton = new Button();
             V_ComboBox = new ComboBox();
             button1 = new Button();
+            HoursLabel = new Label();
+            MiscGroup.SuspendLayout();
+            SnackGroup.SuspendLayout();
+            TimeGroup.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)TimeNumeric).BeginInit();
             OutbreakGroup.SuspendLayout();
+            WildSpawnGroup.SuspendLayout();
             SeedToPokemonGroup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)TeraIcon).BeginInit();
             ((System.ComponentModel.ISupportInitialize)RaidIcon).BeginInit();
             ((System.ComponentModel.ISupportInitialize)RaidNumeric).BeginInit();
-            TimeGroup.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)TimeNumeric).BeginInit();
             groupBox2.SuspendLayout();
             SuspendLayout();
+            // 
+            // MiscGroup
+            // 
+            MiscGroup.Controls.Add(SnackGroup);
+            MiscGroup.Controls.Add(TimeGroup);
+            MiscGroup.Controls.Add(OutbreakGroup);
+            MiscGroup.Controls.Add(WildSpawnGroup);
+            MiscGroup.Controls.Add(SeedToPokemonGroup);
+            MiscGroup.Controls.Add(groupBox2);
+            MiscGroup.Location = new Point(15, 3);
+            MiscGroup.Name = "MiscGroup";
+            MiscGroup.Size = new Size(468, 435);
+            MiscGroup.TabIndex = 18;
+            MiscGroup.TabStop = false;
+            MiscGroup.Text = "Misc Tools";
+            // 
+            // SnackGroup
+            // 
+            SnackGroup.Controls.Add(SnackworthBtn);
+            SnackGroup.Location = new Point(227, 256);
+            SnackGroup.Name = "SnackGroup";
+            SnackGroup.Size = new Size(233, 74);
+            SnackGroup.TabIndex = 88;
+            SnackGroup.TabStop = false;
+            SnackGroup.Text = "One Per Save";
+            // 
+            // SnackworthBtn
+            // 
+            SnackworthBtn.Location = new Point(55, 27);
+            SnackworthBtn.Name = "SnackworthBtn";
+            SnackworthBtn.Size = new Size(123, 30);
+            SnackworthBtn.TabIndex = 82;
+            SnackworthBtn.Text = "Snackworth";
+            SnackworthBtn.UseVisualStyleBackColor = true;
+            SnackworthBtn.Click += SnackworthBtn_Click;
+            // 
+            // TimeGroup
+            // 
+            TimeGroup.Controls.Add(HoursLabel);
+            TimeGroup.Controls.Add(SetSwitchTimeButton);
+            TimeGroup.Controls.Add(CurrentTimeLabel);
+            TimeGroup.Controls.Add(FwdButton);
+            TimeGroup.Controls.Add(TimeNumeric);
+            TimeGroup.Controls.Add(BwdButton);
+            TimeGroup.Controls.Add(ResetButton);
+            TimeGroup.Location = new Point(8, 336);
+            TimeGroup.Name = "TimeGroup";
+            TimeGroup.Size = new Size(452, 93);
+            TimeGroup.TabIndex = 74;
+            TimeGroup.TabStop = false;
+            TimeGroup.Text = "Time Conditions";
+            // 
+            // SetSwitchTimeButton
+            // 
+            SetSwitchTimeButton.Location = new Point(219, 37);
+            SetSwitchTimeButton.Name = "SetSwitchTimeButton";
+            SetSwitchTimeButton.Size = new Size(208, 44);
+            SetSwitchTimeButton.TabIndex = 77;
+            SetSwitchTimeButton.Text = "Set Switch System Time To Match Current Local Time";
+            SetSwitchTimeButton.UseVisualStyleBackColor = true;
+            SetSwitchTimeButton.Click += button2_Click_1;
+            // 
+            // CurrentTimeLabel
+            // 
+            CurrentTimeLabel.AutoSize = true;
+            CurrentTimeLabel.Location = new Point(219, 19);
+            CurrentTimeLabel.Name = "CurrentTimeLabel";
+            CurrentTimeLabel.Size = new Size(110, 15);
+            CurrentTimeLabel.TabIndex = 76;
+            CurrentTimeLabel.Text = "Current Local Time:";
+            // 
+            // FwdButton
+            // 
+            FwdButton.Location = new Point(28, 29);
+            FwdButton.Name = "FwdButton";
+            FwdButton.Size = new Size(70, 23);
+            FwdButton.TabIndex = 71;
+            FwdButton.Text = "Forward";
+            FwdButton.UseVisualStyleBackColor = true;
+            FwdButton.Click += FwdButton_Click;
+            // 
+            // TimeNumeric
+            // 
+            TimeNumeric.Location = new Point(104, 31);
+            TimeNumeric.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            TimeNumeric.Name = "TimeNumeric";
+            TimeNumeric.Size = new Size(52, 23);
+            TimeNumeric.TabIndex = 73;
+            TimeNumeric.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            // 
+            // BwdButton
+            // 
+            BwdButton.Location = new Point(28, 58);
+            BwdButton.Name = "BwdButton";
+            BwdButton.Size = new Size(70, 23);
+            BwdButton.TabIndex = 70;
+            BwdButton.Text = "Backward";
+            BwdButton.UseVisualStyleBackColor = true;
+            BwdButton.Click += BwdButton_Click;
+            // 
+            // ResetButton
+            // 
+            ResetButton.Location = new Point(104, 58);
+            ResetButton.Name = "ResetButton";
+            ResetButton.Size = new Size(69, 23);
+            ResetButton.TabIndex = 72;
+            ResetButton.Text = "Reset";
+            ResetButton.UseVisualStyleBackColor = true;
+            ResetButton.Click += ResetButton_Click;
             // 
             // OutbreakGroup
             // 
             OutbreakGroup.Controls.Add(OutbreakBtn);
-            OutbreakGroup.Controls.Add(SeedToPokemonGroup);
-            OutbreakGroup.Controls.Add(TimeGroup);
-            OutbreakGroup.Controls.Add(groupBox2);
-            OutbreakGroup.Location = new Point(15, 3);
+            OutbreakGroup.Location = new Point(8, 22);
             OutbreakGroup.Name = "OutbreakGroup";
-            OutbreakGroup.Size = new Size(468, 432);
-            OutbreakGroup.TabIndex = 18;
+            OutbreakGroup.Size = new Size(200, 85);
+            OutbreakGroup.TabIndex = 87;
             OutbreakGroup.TabStop = false;
-            OutbreakGroup.Text = "Misc Tools";
+            OutbreakGroup.Text = "Outbreaks";
             // 
             // OutbreakBtn
             // 
-            OutbreakBtn.Font = new Font("Segoe UI", 24F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            OutbreakBtn.Location = new Point(36, 269);
+            OutbreakBtn.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            OutbreakBtn.Location = new Point(49, 31);
             OutbreakBtn.Name = "OutbreakBtn";
-            OutbreakBtn.Size = new Size(397, 144);
+            OutbreakBtn.Size = new Size(123, 30);
             OutbreakBtn.TabIndex = 81;
-            OutbreakBtn.Text = "Outbreaks";
+            OutbreakBtn.Text = "View";
             OutbreakBtn.UseVisualStyleBackColor = true;
             OutbreakBtn.Click += button2_Click;
+            // 
+            // WildSpawnGroup
+            // 
+            WildSpawnGroup.Controls.Add(WildDisable);
+            WildSpawnGroup.Controls.Add(WildSpawnBtn);
+            WildSpawnGroup.Controls.Add(WildEnable);
+            WildSpawnGroup.Location = new Point(8, 256);
+            WildSpawnGroup.Name = "WildSpawnGroup";
+            WildSpawnGroup.Size = new Size(200, 74);
+            WildSpawnGroup.TabIndex = 86;
+            WildSpawnGroup.TabStop = false;
+            WildSpawnGroup.Text = "Wild Spawns";
+            // 
+            // WildDisable
+            // 
+            WildDisable.AutoSize = true;
+            WildDisable.Location = new Point(115, 19);
+            WildDisable.Name = "WildDisable";
+            WildDisable.Size = new Size(63, 19);
+            WildDisable.TabIndex = 85;
+            WildDisable.Text = "Disable";
+            WildDisable.UseVisualStyleBackColor = true;
+            // 
+            // WildSpawnBtn
+            // 
+            WildSpawnBtn.Location = new Point(63, 44);
+            WildSpawnBtn.Name = "WildSpawnBtn";
+            WildSpawnBtn.Size = new Size(93, 23);
+            WildSpawnBtn.TabIndex = 83;
+            WildSpawnBtn.Text = "Modify";
+            WildSpawnBtn.UseVisualStyleBackColor = true;
+            WildSpawnBtn.Click += WildSpawnBtn_ClickAsync;
+            // 
+            // WildEnable
+            // 
+            WildEnable.AutoSize = true;
+            WildEnable.Checked = true;
+            WildEnable.Location = new Point(49, 19);
+            WildEnable.Name = "WildEnable";
+            WildEnable.Size = new Size(60, 19);
+            WildEnable.TabIndex = 84;
+            WildEnable.TabStop = true;
+            WildEnable.Text = "Enable";
+            WildEnable.UseVisualStyleBackColor = true;
             // 
             // SeedToPokemonGroup
             // 
@@ -202,65 +365,13 @@ namespace PokeViewer.NET.SubForms
             RaidSensCheck.Text = "Hide Sensitive Info?";
             RaidSensCheck.UseVisualStyleBackColor = true;
             // 
-            // TimeGroup
-            // 
-            TimeGroup.Controls.Add(FwdButton);
-            TimeGroup.Controls.Add(TimeNumeric);
-            TimeGroup.Controls.Add(BwdButton);
-            TimeGroup.Controls.Add(ResetButton);
-            TimeGroup.Location = new Point(8, 22);
-            TimeGroup.Name = "TimeGroup";
-            TimeGroup.Size = new Size(200, 100);
-            TimeGroup.TabIndex = 74;
-            TimeGroup.TabStop = false;
-            TimeGroup.Text = "Time Conditions";
-            // 
-            // FwdButton
-            // 
-            FwdButton.Location = new Point(28, 29);
-            FwdButton.Name = "FwdButton";
-            FwdButton.Size = new Size(70, 23);
-            FwdButton.TabIndex = 71;
-            FwdButton.Text = "Forward";
-            FwdButton.UseVisualStyleBackColor = true;
-            FwdButton.Click += FwdButton_Click;
-            // 
-            // TimeNumeric
-            // 
-            TimeNumeric.Location = new Point(104, 31);
-            TimeNumeric.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
-            TimeNumeric.Name = "TimeNumeric";
-            TimeNumeric.Size = new Size(69, 23);
-            TimeNumeric.TabIndex = 73;
-            TimeNumeric.Value = new decimal(new int[] { 1, 0, 0, 0 });
-            // 
-            // BwdButton
-            // 
-            BwdButton.Location = new Point(28, 58);
-            BwdButton.Name = "BwdButton";
-            BwdButton.Size = new Size(70, 23);
-            BwdButton.TabIndex = 70;
-            BwdButton.Text = "Backward";
-            BwdButton.UseVisualStyleBackColor = true;
-            BwdButton.Click += BwdButton_Click;
-            // 
-            // ResetButton
-            // 
-            ResetButton.Location = new Point(104, 58);
-            ResetButton.Name = "ResetButton";
-            ResetButton.Size = new Size(69, 23);
-            ResetButton.TabIndex = 72;
-            ResetButton.Text = "Reset";
-            ResetButton.UseVisualStyleBackColor = true;
-            ResetButton.Click += ResetButton_Click;
-            // 
             // groupBox2
             // 
             groupBox2.Controls.Add(FCETextBox);
             groupBox2.Controls.Add(ClearFCE);
             groupBox2.Controls.Add(AutoPaste);
             groupBox2.Controls.Add(EnterButton);
-            groupBox2.Location = new Point(8, 128);
+            groupBox2.Location = new Point(8, 122);
             groupBox2.Name = "groupBox2";
             groupBox2.Size = new Size(200, 122);
             groupBox2.TabIndex = 80;
@@ -344,31 +455,45 @@ namespace PokeViewer.NET.SubForms
             button1.Size = new Size(75, 23);
             button1.TabIndex = 0;
             // 
+            // HoursLabel
+            // 
+            HoursLabel.AutoSize = true;
+            HoursLabel.Location = new Point(156, 39);
+            HoursLabel.Name = "HoursLabel";
+            HoursLabel.Size = new Size(25, 15);
+            HoursLabel.TabIndex = 78;
+            HoursLabel.Text = "Hrs";
+            // 
             // MiscViewSV
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ControlLightLight;
-            ClientSize = new Size(482, 442);
-            Controls.Add(OutbreakGroup);
+            ClientSize = new Size(496, 451);
+            Controls.Add(MiscGroup);
             FormBorderStyle = FormBorderStyle.None;
             Name = "MiscViewSV";
             Text = "MiscView";
+            MiscGroup.ResumeLayout(false);
+            SnackGroup.ResumeLayout(false);
+            TimeGroup.ResumeLayout(false);
+            TimeGroup.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)TimeNumeric).EndInit();
             OutbreakGroup.ResumeLayout(false);
+            WildSpawnGroup.ResumeLayout(false);
+            WildSpawnGroup.PerformLayout();
             SeedToPokemonGroup.ResumeLayout(false);
             SeedToPokemonGroup.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)TeraIcon).EndInit();
             ((System.ComponentModel.ISupportInitialize)RaidIcon).EndInit();
             ((System.ComponentModel.ISupportInitialize)RaidNumeric).EndInit();
-            TimeGroup.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)TimeNumeric).EndInit();
             groupBox2.ResumeLayout(false);
             groupBox2.PerformLayout();
             ResumeLayout(false);
         }
 
         #endregion
-        private GroupBox OutbreakGroup;
+        private GroupBox MiscGroup;
         private Button ChangeFormButton;
         private Label VivForm;
         private Button ReadValues;
@@ -395,5 +520,15 @@ namespace PokeViewer.NET.SubForms
         private Button CaptureRaidButton;
         private Label RaidDifficultyLabel;
         private Button OutbreakBtn;
+        private Button SnackworthBtn;
+        private Button WildSpawnBtn;
+        private GroupBox SnackGroup;
+        private GroupBox OutbreakGroup;
+        private GroupBox WildSpawnGroup;
+        private RadioButton WildDisable;
+        private RadioButton WildEnable;
+        private Button SetSwitchTimeButton;
+        private Label CurrentTimeLabel;
+        private Label HoursLabel;
     }
 }

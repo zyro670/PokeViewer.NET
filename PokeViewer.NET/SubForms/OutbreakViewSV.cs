@@ -59,7 +59,7 @@ namespace PokeViewer.NET.SubForms
         private readonly string[] GenderList = null!;
 
         protected ViewerOffsets Offsets { get; } = new();
-        public OutbreakViewSV(ViewerExecutor executor, (Color, Color) color)
+        public OutbreakViewSV(ViewerExecutor executor, (Color, Color) color, bool OutbreakFormOpen)
         {
             InitializeComponent();
             Executor = executor;
@@ -157,6 +157,10 @@ namespace PokeViewer.NET.SubForms
             Apply0To64.ForeColor = color.Item2;
             HardStopOutbreak.BackColor = color.Item1;
             HardStopOutbreak.ForeColor = color.Item2;
+            ResetGameLabel.BackColor = color.Item1;
+            ResetGameLabel.ForeColor = color.Item2;
+            ResetGameNumeric.BackColor = color.Item1;
+            ResetGameNumeric.ForeColor = color.Item2;
         }
 
         public void LoadOutbreakCache()
@@ -287,6 +291,7 @@ namespace PokeViewer.NET.SubForms
 
             DisableAssets();
             int dayskip = 0;
+            int resetcount = 0;
             int OutbreaktotalP = 0;
             int OutbreaktotalK = 0;
             int OutbreaktotalB = 0;
@@ -297,9 +302,24 @@ namespace PokeViewer.NET.SubForms
             while (!token.IsCancellationRequested)
             {
                 dayskip++;
+                resetcount++;
 
                 if (dayskip % 2 == 0)
                     await ResetTime(token).ConfigureAwait(false);
+
+                if (resetcount == ResetGameNumeric.Value)
+                {
+                    OutbreakCache = [];
+                    LoadOutbreakCache();
+                    CountCacheP = 0;
+                    CountCacheK = 0;
+                    CountCacheB = 0;
+                    CountCacheBCP = 0;
+                    CountCacheBCK = 0;
+                    CountCacheBCB = 0;
+                    resetcount = 0;
+                    await ResetGame(token, false).ConfigureAwait(false);
+                }
 
                 if (HardStopOutbreak.Checked)
                 {
@@ -394,7 +414,7 @@ namespace PokeViewer.NET.SubForms
                     {
                         BaseBlockKeyPointer = await Executor.SwitchConnection.PointerAll(Offsets.BlockKeyPointer, token).ConfigureAwait(false);
                         // Rerun in case of bad pointer
-                        OutbreakCache = new();
+                        OutbreakCache = [];
                         LoadOutbreakCache();
                         CountCacheK = 0;
                         continue;
@@ -1330,6 +1350,19 @@ namespace PokeViewer.NET.SubForms
         public async Task TimeSkipBwd(CancellationToken token) => await Executor.Connection.SendAsync(SwitchCommand.TimeSkipBack(true), token).ConfigureAwait(false);
         public async Task ResetTime(CancellationToken token) => await Executor.Connection.SendAsync(SwitchCommand.ResetTime(true), token).ConfigureAwait(false);
 
+        public async Task ResetTimeNTP(CancellationToken token) => await Executor.Connection.SendAsync(ResetTimeNTP(true), token).ConfigureAwait(false);
+
+        private static readonly Encoding Encoder = Encoding.ASCII;
+
+        private static byte[] Encode(string command, bool crlf = true)
+        {
+            if (crlf)
+                command += "\r\n";
+            return Encoder.GetBytes(command);
+        }
+
+        public static byte[] ResetTimeNTP(bool crlf = true) => Encode("resetTimeNTP", crlf);
+
         private static HttpClient? _client;
         private static HttpClient Client
         {
@@ -1391,13 +1424,13 @@ namespace PokeViewer.NET.SubForms
             return block;
         }
 
-        private async Task<(byte, ulong)> ReadEncryptedBlockByte(DataBlock block, ulong init, CancellationToken token)
+        public async Task<(byte, ulong)> ReadEncryptedBlockByte(DataBlock block, ulong init, CancellationToken token)
         {
             var (header, address) = await ReadEncryptedBlockHeader(block, init, token).ConfigureAwait(false);
             return (header[1], address);
         }
 
-        private async Task<(byte[], ulong)> ReadEncryptedBlockHeader(DataBlock block, ulong init, CancellationToken token)
+        public async Task<(byte[], ulong)> ReadEncryptedBlockHeader(DataBlock block, ulong init, CancellationToken token)
         {
             if (init == 0)
             {
@@ -1412,7 +1445,7 @@ namespace PokeViewer.NET.SubForms
             return (header, init);
         }
 
-        private async Task<(byte[]?, ulong)> ReadEncryptedBlockArray(DataBlock block, ulong init, CancellationToken token)
+        public async Task<(byte[]?, ulong)> ReadEncryptedBlockArray(DataBlock block, ulong init, CancellationToken token)
         {
             if (init == 0)
             {
@@ -1427,19 +1460,19 @@ namespace PokeViewer.NET.SubForms
             return (data[6..], init);
         }
 
-        private async Task<(uint, ulong)> ReadEncryptedBlockUint(DataBlock block, ulong init, CancellationToken token)
+        public async Task<(uint, ulong)> ReadEncryptedBlockUint(DataBlock block, ulong init, CancellationToken token)
         {
             var (header, address) = await ReadEncryptedBlockHeader(block, init, token).ConfigureAwait(false);
             return (ReadUInt32LittleEndian(header.AsSpan()[1..]), address);
         }
 
-        private async Task<(int, ulong)> ReadEncryptedBlockInt32(DataBlock block, ulong init, CancellationToken token)
+        public async Task<(int, ulong)> ReadEncryptedBlockInt32(DataBlock block, ulong init, CancellationToken token)
         {
             var (header, address) = await ReadEncryptedBlockHeader(block, init, token).ConfigureAwait(false);
             return (ReadInt32LittleEndian(header.AsSpan()[1..]), address);
         }
 
-        private async Task<bool> ReadEncryptedBlockBool(DataBlock block, CancellationToken token)
+        public async Task<bool> ReadEncryptedBlockBool(DataBlock block, CancellationToken token)
         {
             var address = await SearchSaveKey(block.Key, token).ConfigureAwait(false);
             address = BitConverter.ToUInt64(await Executor.SwitchConnection.ReadBytesAbsoluteAsync(address + 8, 0x8, token).ConfigureAwait(false), 0);
@@ -1448,7 +1481,7 @@ namespace PokeViewer.NET.SubForms
             return res[0] == 2;
         }
 
-        private async Task<byte[]> ReadEncryptedBlock(DataBlock block, CancellationToken token)
+        public async Task<byte[]> ReadEncryptedBlock(DataBlock block, CancellationToken token)
         {
             var address = await SearchSaveKey(block.Key, token).ConfigureAwait(false);
             address = BitConverter.ToUInt64(await Executor.SwitchConnection.ReadBytesAbsoluteAsync(address + 8, 0x8, token).ConfigureAwait(false), 0);
@@ -1458,7 +1491,7 @@ namespace PokeViewer.NET.SubForms
             return data[6..];
         }
 
-        private async Task<byte[]?> ReadEncryptedBlockObject(DataBlock block, CancellationToken token)
+        public async Task<byte[]?> ReadEncryptedBlockObject(DataBlock block, CancellationToken token)
         {
             var address = await SearchSaveKey(block.Key, token).ConfigureAwait(false);
             address = BitConverter.ToUInt64(await Executor.SwitchConnection.ReadBytesAbsoluteAsync(address + 8, 0x8, token).ConfigureAwait(false), 0);
@@ -1479,14 +1512,14 @@ namespace PokeViewer.NET.SubForms
                 return await WriteDecryptedBlock((byte[])data!, block, token).ConfigureAwait(false);
         }
 
-        private async Task<bool> WriteDecryptedBlock(byte[] data, DataBlock block, CancellationToken token)
+        public async Task<bool> WriteDecryptedBlock(byte[] data, DataBlock block, CancellationToken token)
         {
             await Executor.SwitchConnection.PointerPoke(data, block.Pointer!, token).ConfigureAwait(false);
 
             return true;
         }
 
-        private async Task<bool> WriteEncryptedBlockSafe(DataBlock block, object? toExpect, object toWrite, CancellationToken token)
+        public async Task<bool> WriteEncryptedBlockSafe(DataBlock block, object? toExpect, object toWrite, CancellationToken token)
         {
             if (toExpect == default || toWrite == default)
                 return false;
@@ -1502,7 +1535,7 @@ namespace PokeViewer.NET.SubForms
             };
         }
 
-        private async Task<bool> WriteEncryptedBlockUint(DataBlock block, uint valueToExpect, uint valueToInject, CancellationToken token)
+        public async Task<bool> WriteEncryptedBlockUint(DataBlock block, uint valueToExpect, uint valueToInject, CancellationToken token)
         {
             ulong address;
             try
@@ -1525,7 +1558,7 @@ namespace PokeViewer.NET.SubForms
             return true;
         }
 
-        private async Task<bool> WriteEncryptedBlockInt32(DataBlock block, int valueToExpect, int valueToInject, CancellationToken token)
+        public async Task<bool> WriteEncryptedBlockInt32(DataBlock block, int valueToExpect, int valueToInject, CancellationToken token)
         {
             ulong address;
             try
@@ -1548,7 +1581,7 @@ namespace PokeViewer.NET.SubForms
             return true;
         }
 
-        private async Task<bool> WriteEncryptedBlockByte(DataBlock block, byte valueToExpect, byte valueToInject, CancellationToken token)
+        public async Task<bool> WriteEncryptedBlockByte(DataBlock block, byte valueToExpect, byte valueToInject, CancellationToken token)
         {
             ulong address;
             try
@@ -1571,7 +1604,7 @@ namespace PokeViewer.NET.SubForms
             return true;
         }
 
-        private async Task<bool> WriteEncryptedBlockArray(DataBlock block, byte[] arrayToExpect, byte[] arrayToInject, CancellationToken token)
+        public async Task<bool> WriteEncryptedBlockArray(DataBlock block, byte[] arrayToExpect, byte[] arrayToInject, CancellationToken token)
         {
             ulong address;
             try
@@ -1594,7 +1627,7 @@ namespace PokeViewer.NET.SubForms
             return true;
         }
 
-        private async Task<bool> WriteEncryptedBlockBool(DataBlock block, bool valueToExpect, bool valueToInject, CancellationToken token)
+        public async Task<bool> WriteEncryptedBlockBool(DataBlock block, bool valueToExpect, bool valueToInject, CancellationToken token)
         {
             ulong address;
             try
@@ -1907,6 +1940,7 @@ namespace PokeViewer.NET.SubForms
 
         private void EnableAssets(PictureBox mainmap, int map, List<Image> sprite, List<byte[]?> pos, List<string> count, List<string> strings, List<Image> spriteob, List<string> countob, List<string> stringsob, List<byte[]?> pos2)
         {
+            HideAssets();
             switch (map)
             {
                 case 0:
@@ -1915,25 +1949,51 @@ namespace PokeViewer.NET.SubForms
                     {
                         switch (i)
                         {
-                            case 0: OBSprite1.Image = sprite[i]; Ob1Results.Text = count[i]; ObCount1.Text = strings[i]; break;
-                            case 1: OBSprite2.Image = sprite[i]; Ob2Results.Text = count[i]; ObCount2.Text = strings[i]; break;
-                            case 2: OBSprite3.Image = sprite[i]; Ob3Results.Text = count[i]; ObCount3.Text = strings[i]; break;
-                            case 3: OBSprite4.Image = sprite[i]; Ob4Results.Text = count[i]; ObCount4.Text = strings[i]; break;
-                            case 4: OBSprite5.Image = sprite[i]; Ob5Results.Text = count[i]; ObCount5.Text = strings[i]; break;
-                            case 5: OBSprite6.Image = sprite[i]; Ob6Results.Text = count[i]; ObCount6.Text = strings[i]; break;
-                            case 6: OBSprite7.Image = sprite[i]; Ob7Results.Text = count[i]; ObCount7.Text = strings[i]; break;
-                            case 7: OBSprite8.Image = sprite[i]; Ob8Results.Text = count[i]; ObCount8.Text = strings[i]; break;
+                            case 0:
+                                OBSprite1.Image = sprite[i]; Ob1Results.Text = count[i]; ObCount1.Text = strings[i];
+                                OBSprite8.Visible = true; Ob8Results.Visible = true; ObCount8.Visible = true; break;
+                            case 1:
+                                OBSprite2.Image = sprite[i]; Ob2Results.Text = count[i]; ObCount2.Text = strings[i];
+                                OBSprite8.Visible = true; Ob8Results.Visible = true; ObCount8.Visible = true; break;
+                            case 2:
+                                OBSprite3.Image = sprite[i]; Ob3Results.Text = count[i]; ObCount3.Text = strings[i];
+                                OBSprite8.Visible = true; Ob8Results.Visible = true; ObCount8.Visible = true; break;
+                            case 3:
+                                OBSprite4.Image = sprite[i]; Ob4Results.Text = count[i]; ObCount4.Text = strings[i];
+                                OBSprite8.Visible = true; Ob8Results.Visible = true; ObCount8.Visible = true; break;
+                            case 4:
+                                OBSprite5.Image = sprite[i]; Ob5Results.Text = count[i]; ObCount5.Text = strings[i];
+                                OBSprite8.Visible = true; Ob8Results.Visible = true; ObCount8.Visible = true; break;
+                            case 5:
+                                OBSprite6.Image = sprite[i]; Ob6Results.Text = count[i]; ObCount6.Text = strings[i];
+                                OBSprite8.Visible = true; Ob8Results.Visible = true; ObCount8.Visible = true; break;
+                            case 6:
+                                OBSprite7.Image = sprite[i]; Ob7Results.Text = count[i]; ObCount7.Text = strings[i];
+                                OBSprite8.Visible = true; Ob8Results.Visible = true; ObCount8.Visible = true; break;
+                            case 7:
+                                OBSprite8.Image = sprite[i]; Ob8Results.Text = count[i]; ObCount8.Text = strings[i];
+                                OBSprite8.Visible = true; Ob8Results.Visible = true; ObCount8.Visible = true; break;
                         }
                     }
                     for (int i = 0; i < spriteob.Count; i++)
                     {
                         switch (i)
                         {
-                            case 0: PaldeaEventSpr1.Image = spriteob[i]; PaldeaEventName1.Text = countob[i]; PaldeaEventCount1.Text = stringsob[i]; break;
-                            case 1: PaldeaEventSpr2.Image = spriteob[i]; PaldeaEventName2.Text = countob[i]; PaldeaEventCount2.Text = stringsob[i]; break;
-                            case 2: PaldeaEventSpr3.Image = spriteob[i]; PaldeaEventName3.Text = countob[i]; PaldeaEventCount3.Text = stringsob[i]; break;
-                            case 3: PaldeaEventSpr4.Image = spriteob[i]; PaldeaEventName4.Text = countob[i]; PaldeaEventCount4.Text = stringsob[i]; break;
-                            case 4: PaldeaEventSpr5.Image = spriteob[i]; PaldeaEventName5.Text = countob[i]; PaldeaEventCount5.Text = stringsob[i]; break;
+                            case 0:
+                                PaldeaEventSpr1.Image = spriteob[i]; PaldeaEventName1.Text = countob[i]; PaldeaEventCount1.Text = stringsob[i];
+                                PaldeaEventSpr1.Visible = true; PaldeaEventName1.Visible = true; PaldeaEventCount1.Visible = true; break;
+                            case 1:
+                                PaldeaEventSpr2.Image = spriteob[i]; PaldeaEventName2.Text = countob[i]; PaldeaEventCount2.Text = stringsob[i];
+                                PaldeaEventSpr2.Visible = true; PaldeaEventName2.Visible = true; PaldeaEventCount2.Visible = true; break;
+                            case 2:
+                                PaldeaEventSpr3.Image = spriteob[i]; PaldeaEventName3.Text = countob[i]; PaldeaEventCount3.Text = stringsob[i];
+                                PaldeaEventSpr3.Visible = true; PaldeaEventName3.Visible = true; PaldeaEventCount3.Visible = true; break;
+                            case 3:
+                                PaldeaEventSpr4.Image = spriteob[i]; PaldeaEventName4.Text = countob[i]; PaldeaEventCount4.Text = stringsob[i];
+                                PaldeaEventSpr4.Visible = true; PaldeaEventName4.Visible = true; PaldeaEventCount4.Visible = true; break;
+                            case 4:
+                                PaldeaEventSpr5.Image = spriteob[i]; PaldeaEventName5.Text = countob[i]; PaldeaEventCount5.Text = stringsob[i];
+                                PaldeaEventSpr5.Visible = true; PaldeaEventName5.Visible = true; PaldeaEventCount5.Visible = true; break;
                         }
                     }
                     break;
@@ -1943,21 +2003,39 @@ namespace PokeViewer.NET.SubForms
                     {
                         switch (i)
                         {
-                            case 0: KSpr1.Image = sprite[i]; KitaName1.Text = count[i]; KitaCount1.Text = strings[i]; break;
-                            case 1: KSpr2.Image = sprite[i]; KitaName2.Text = count[i]; KitaCount2.Text = strings[i]; break;
-                            case 2: KSpr3.Image = sprite[i]; KitaName3.Text = count[i]; KitaCount3.Text = strings[i]; break;
-                            case 3: KSpr4.Image = sprite[i]; KitaName4.Text = count[i]; KitaCount4.Text = strings[i]; break;
+                            case 0:
+                                KSpr1.Image = sprite[i]; KitaName1.Text = count[i]; KitaCount1.Text = strings[i];
+                                KSpr1.Visible = true; KitaName1.Visible = true; KitaCount1.Visible = true; break;
+                            case 1:
+                                KSpr2.Image = sprite[i]; KitaName2.Text = count[i]; KitaCount2.Text = strings[i];
+                                KSpr2.Visible = true; KitaName2.Visible = true; KitaCount2.Visible = true; break;
+                            case 2:
+                                KSpr3.Image = sprite[i]; KitaName3.Text = count[i]; KitaCount3.Text = strings[i];
+                                KSpr3.Visible = true; KitaName3.Visible = true; KitaCount3.Visible = true; break;
+                            case 3:
+                                KSpr4.Image = sprite[i]; KitaName4.Text = count[i]; KitaCount4.Text = strings[i];
+                                KSpr4.Visible = true; KitaName4.Visible = true; KitaCount4.Visible = true; break;
                         }
                     }
                     for (int i = 0; i < spriteob.Count; i++)
                     {
                         switch (i)
                         {
-                            case 0: KSprEvent1.Image = spriteob[i]; Event1Results.Text = countob[i]; EventCount1.Text = stringsob[i]; break;
-                            case 1: KSprEvent2.Image = spriteob[i]; Event2Results.Text = countob[i]; EventCount2.Text = stringsob[i]; break;
-                            case 2: KSprEvent3.Image = spriteob[i]; Event3Results.Text = countob[i]; EventCount3.Text = stringsob[i]; break;
-                            case 3: KSprEvent4.Image = spriteob[i]; Event4Results.Text = countob[i]; EventCount4.Text = stringsob[i]; break;
-                            case 4: KSprEvent5.Image = spriteob[i]; Event5Results.Text = countob[i]; EventCount5.Text = stringsob[i]; break;
+                            case 0:
+                                KSprEvent1.Image = spriteob[i]; Event1Results.Text = countob[i]; EventCount1.Text = stringsob[i];
+                                KSprEvent1.Visible = true; Event1Results.Visible = true; EventCount1.Visible = true; break;
+                            case 1:
+                                KSprEvent2.Image = spriteob[i]; Event2Results.Text = countob[i]; EventCount2.Text = stringsob[i];
+                                KSprEvent2.Visible = true; Event2Results.Visible = true; EventCount2.Visible = true; break;
+                            case 2:
+                                KSprEvent3.Image = spriteob[i]; Event3Results.Text = countob[i]; EventCount3.Text = stringsob[i];
+                                KSprEvent3.Visible = true; Event3Results.Visible = true; EventCount3.Visible = true; break;
+                            case 3:
+                                KSprEvent4.Image = spriteob[i]; Event4Results.Text = countob[i]; EventCount4.Text = stringsob[i];
+                                KSprEvent4.Visible = true; Event4Results.Visible = true; EventCount4.Visible = true; break;
+                            case 4:
+                                KSprEvent5.Image = spriteob[i]; Event5Results.Text = countob[i]; EventCount5.Text = stringsob[i];
+                                KSprEvent5.Visible = true; Event5Results.Visible = true; EventCount5.Visible = true; break;
                         }
                     }
                     break;
@@ -1967,26 +2045,87 @@ namespace PokeViewer.NET.SubForms
                     {
                         switch (i)
                         {
-                            case 0: BSpr1.Image = sprite[i]; BlueName1.Text = count[i]; BlueCount1.Text = strings[i]; break;
-                            case 1: BSpr2.Image = sprite[i]; BlueName2.Text = count[i]; BlueCount2.Text = strings[i]; break;
-                            case 2: BSpr3.Image = sprite[i]; BlueName3.Text = count[i]; BlueCount3.Text = strings[i]; break;
-                            case 3: BSpr4.Image = sprite[i]; BlueName4.Text = count[i]; BlueCount4.Text = strings[i]; break;
-                            case 4: BSpr5.Image = sprite[i]; BlueName5.Text = count[i]; BlueCount5.Text = strings[i]; break;
+                            case 0:
+                                BSpr1.Image = sprite[i]; BlueName1.Text = count[i]; BlueCount1.Text = strings[i];
+                                BSpr1.Visible = true; BlueName1.Visible = true; BlueCount1.Visible = true; break;
+                            case 1:
+                                BSpr2.Image = sprite[i]; BlueName2.Text = count[i]; BlueCount2.Text = strings[i];
+                                BSpr2.Visible = true; BlueName2.Visible = true; BlueCount2.Visible = true; break;
+                            case 2:
+                                BSpr3.Image = sprite[i]; BlueName3.Text = count[i]; BlueCount3.Text = strings[i];
+                                BSpr3.Visible = true; BlueName3.Visible = true; BlueCount3.Visible = true; break;
+                            case 3:
+                                BSpr4.Image = sprite[i]; BlueName4.Text = count[i]; BlueCount4.Text = strings[i];
+                                BSpr4.Visible = true; BlueName4.Visible = true; BlueCount4.Visible = true; break;
+                            case 4:
+                                BSpr5.Image = sprite[i]; BlueName5.Text = count[i]; BlueCount5.Text = strings[i];
+                                BSpr5.Visible = true; BlueName5.Visible = true; BlueCount5.Visible = true; break;
                         }
                     }
                     for (int i = 0; i < spriteob.Count; i++)
                     {
                         switch (i)
                         {
-                            case 0: BlueberrySpr1.Image = spriteob[i]; BlueberryName1.Text = countob[i]; BlueberryEventCount1.Text = stringsob[i]; break;
-                            case 1: BlueberrySpr2.Image = spriteob[i]; BlueberryName2.Text = countob[i]; BlueberryEventCount2.Text = stringsob[i]; break;
-                            case 2: BlueberrySpr3.Image = spriteob[i]; BlueberryName3.Text = countob[i]; BlueberryEventCount3.Text = stringsob[i]; break;
-                            case 3: BlueberrySpr4.Image = spriteob[i]; BlueberryName4.Text = countob[i]; BlueberryEventCount4.Text = stringsob[i]; break;
-                            case 4: BlueberrySpr5.Image = spriteob[i]; BlueberryName5.Text = countob[i]; BlueberryEventCount5.Text = stringsob[i]; break;
+                            case 0:
+                                BlueberrySpr1.Image = spriteob[i]; BlueberryName1.Text = countob[i]; BlueberryEventCount1.Text = stringsob[i];
+                                BlueberrySpr1.Visible = true; BlueberryName1.Visible = true; BlueberryEventCount1.Visible = true; break;
+                            case 1:
+                                BlueberrySpr2.Image = spriteob[i]; BlueberryName2.Text = countob[i]; BlueberryEventCount2.Text = stringsob[i];
+                                BlueberrySpr2.Visible = true; BlueberryName2.Visible = true; BlueberryEventCount2.Visible = true; break;
+                            case 2:
+                                BlueberrySpr3.Image = spriteob[i]; BlueberryName3.Text = countob[i]; BlueberryEventCount3.Text = stringsob[i];
+                                BlueberrySpr3.Visible = true; BlueberryName3.Visible = true; BlueberryEventCount3.Visible = true; break;
+                            case 3:
+                                BlueberrySpr4.Image = spriteob[i]; BlueberryName4.Text = countob[i]; BlueberryEventCount4.Text = stringsob[i];
+                                BlueberrySpr4.Visible = true; BlueberryName4.Visible = true; BlueberryEventCount4.Visible = true; break;
+                            case 4:
+                                BlueberrySpr5.Image = spriteob[i]; BlueberryName5.Text = countob[i]; BlueberryEventCount5.Text = stringsob[i];
+                                BlueberrySpr5.Visible = true; BlueberryName5.Visible = true; BlueberryEventCount5.Visible = true; break;
                         }
                     }
                     break;
             }
+        }
+
+        private void HideAssets()
+        {
+            OBSprite1.Visible = false; Ob1Results.Visible = false; ObCount1.Visible = false;
+            OBSprite2.Visible = false; Ob2Results.Visible = false; ObCount2.Visible = false;
+            OBSprite3.Visible = false; Ob3Results.Visible = false; ObCount3.Visible = false;
+            OBSprite4.Visible = false; Ob4Results.Visible = false; ObCount4.Visible = false;
+            OBSprite5.Visible = false; Ob5Results.Visible = false; ObCount5.Visible = false;
+            OBSprite6.Visible = false; Ob6Results.Visible = false; ObCount6.Visible = false;
+            OBSprite7.Visible = false; Ob7Results.Visible = false; ObCount7.Visible = false;
+            OBSprite8.Visible = false; Ob8Results.Visible = false; ObCount8.Visible = false;
+            PaldeaEventSpr1.Visible = false; PaldeaEventName1.Visible = false; PaldeaEventCount1.Visible = false;
+            PaldeaEventSpr2.Visible = false; PaldeaEventName2.Visible = false; PaldeaEventCount2.Visible = false;
+            PaldeaEventSpr3.Visible = false; PaldeaEventName3.Visible = false; PaldeaEventCount3.Visible = false;
+            PaldeaEventSpr4.Visible = false; PaldeaEventName4.Visible = false; PaldeaEventCount4.Visible = false;
+            PaldeaEventSpr5.Visible = false; PaldeaEventName5.Visible = false; PaldeaEventCount5.Visible = false;
+            KSpr1.Visible = false; KitaName1.Visible = false; KitaCount1.Visible = false;
+            KSpr2.Visible = false; KitaName2.Visible = false; KitaCount2.Visible = false;
+            KSpr3.Visible = false; KitaName3.Visible = false; KitaCount3.Visible = false;
+            KSpr4.Visible = false; KitaName4.Visible = false; KitaCount4.Visible = false;
+            KSprEvent1.Visible = false; Event1Results.Visible = false; EventCount1.Visible = false;
+            KSprEvent2.Visible = false; Event2Results.Visible = false; EventCount2.Visible = false;
+            KSprEvent3.Visible = false; Event3Results.Visible = false; EventCount3.Visible = false;
+            KSprEvent4.Visible = false; Event4Results.Visible = false; EventCount4.Visible = false;
+            KSprEvent5.Visible = false; Event5Results.Visible = false; EventCount5.Visible = false;
+            BSpr1.Visible = false; BlueName1.Visible = false; BlueCount1.Visible = false;
+            BSpr2.Visible = false; BlueName2.Visible = false; BlueCount2.Visible = false;
+            BSpr3.Visible = false; BlueName3.Visible = false; BlueCount3.Visible = false;
+            BSpr4.Visible = false; BlueName4.Visible = false; BlueCount4.Visible = false;
+            BSpr5.Visible = false; BlueName5.Visible = false; BlueCount5.Visible = false;
+            BlueberrySpr1.Visible = false; BlueberryName1.Visible = false; BlueberryEventCount1.Visible = false;
+            BlueberrySpr2.Visible = false; BlueberryName2.Visible = false; BlueberryEventCount2.Visible = false;
+            BlueberrySpr3.Visible = false; BlueberryName3.Visible = false; BlueberryEventCount3.Visible = false;
+            BlueberrySpr4.Visible = false; BlueberryName4.Visible = false; BlueberryEventCount4.Visible = false;
+            BlueberrySpr5.Visible = false; BlueberryName5.Visible = false; BlueberryEventCount5.Visible = false;
+        }
+
+        private void OutbreakView_Closed(object sender, FormClosedEventArgs e)
+        {
+            MiscViewSV.OutbreakFormOpen = false;
         }
     }
 }

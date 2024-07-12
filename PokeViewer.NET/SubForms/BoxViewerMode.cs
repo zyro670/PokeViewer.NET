@@ -1,5 +1,4 @@
-﻿using HomeLive.Core;
-using PKHeX.Core;
+﻿using PKHeX.Core;
 using PKHeX.Drawing;
 using PKHeX.Drawing.Misc;
 using PKHeX.Drawing.PokeSprite;
@@ -15,15 +14,15 @@ namespace PokeViewer.NET
         private readonly int GameType;
         private ToolTip tt = new();
         private bool ReadInProgress;
-        private List<string> CurrentSlotStats = new();
-        private List<string> CurrentSlotSpecies = new();
-        private List<string> CurrentSlotNature = new();
-        private List<string> CurrentSlotAbility = new();
-        private List<string> CurrentSlotIVs = new();
-        private List<string> CurrentSlotScale = new();
-        private List<string> CurrentSlotMark = new();
-        private List<string> CurrentSlotBall = new();
-        private List<PKM> PKMs = new();
+        private List<string> CurrentSlotStats = [];
+        private List<string> CurrentSlotSpecies = [];
+        private List<string> CurrentSlotNature = [];
+        private List<string> CurrentSlotAbility = [];
+        private List<string> CurrentSlotIVs = [];
+        private List<string> CurrentSlotScale = [];
+        private List<string> CurrentSlotMark = [];
+        private List<string> CurrentSlotBall = [];
+        private List<PKM> PKMs = [];
         private readonly ViewerExecutor Executor;
         private ulong AbsoluteBoxOffset;
         private uint BoxOffset = 0;
@@ -581,7 +580,7 @@ namespace PokeViewer.NET
             {
                 case (int)GameSelected.HOME:
                     {
-                        BoxSlotSize = HomeDataOffsets.HomeSlotSize; BoxOffset = 0x12B90; break;
+                        BoxSlotSize = 0x2D0; BoxOffset = 0x12B90; break;
                     }
                 case (int)GameSelected.Scarlet or (int)GameSelected.Violet:
                     {
