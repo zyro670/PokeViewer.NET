@@ -490,5 +490,17 @@ namespace PokeViewer.NET.Properties {
                 this["MatchShinyIV"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string BotPrefixString {
+            get {
+                return ((string)(this["BotPrefixString"]));
+            }
+            set {
+                this["BotPrefixString"] = value;
+            }
+        }
     }
 }

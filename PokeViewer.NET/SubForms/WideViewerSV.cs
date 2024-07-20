@@ -72,9 +72,9 @@ namespace PokeViewer.NET.SubForms
 
         private async Task ScanOverworld(CancellationToken token)
         {
-            PictureBox[] boxes = { pictureBox1, pictureBox3, pictureBox5, pictureBox7, pictureBox9, pictureBox11, pictureBox13, pictureBox15, pictureBox17, pictureBox19, pictureBox21, pictureBox23, pictureBox25, pictureBox27, pictureBox29 };
-            TextBox[] outputBox = { textBox1, textBox2, textBox3, textBox4, textBox5, textBox6, textBox7, textBox8, textBox9, textBox10, textBox11, textBox12, textBox13, textBox14, textBox15 };
-            PictureBox[] markboxes = { pictureBox2, pictureBox4, pictureBox6, pictureBox8, pictureBox10, pictureBox12, pictureBox14, pictureBox16, pictureBox18, pictureBox20, pictureBox22, pictureBox24, pictureBox26, pictureBox28, pictureBox30 };
+            PictureBox[] boxes = [pictureBox1, pictureBox3, pictureBox5, pictureBox7, pictureBox9, pictureBox11, pictureBox13, pictureBox15, pictureBox17, pictureBox19, pictureBox21, pictureBox23, pictureBox25, pictureBox27, pictureBox29];
+            TextBox[] outputBox = [textBox1, textBox2, textBox3, textBox4, textBox5, textBox6, textBox7, textBox8, textBox9, textBox10, textBox11, textBox12, textBox13, textBox14, textBox15];
+            PictureBox[] markboxes = [pictureBox2, pictureBox4, pictureBox6, pictureBox8, pictureBox10, pictureBox12, pictureBox14, pictureBox16, pictureBox18, pictureBox20, pictureBox22, pictureBox24, pictureBox26, pictureBox28, pictureBox30];
             string? url;
             string? sprite;
 
@@ -115,7 +115,7 @@ namespace PokeViewer.NET.SubForms
                 var hasMark = HasMark(pk, out RibbonIndex mark);
                 string msg = hasMark ? $"{Environment.NewLine}Mark: {mark.ToString().Replace("Mark", "")}" : "";
                 string scale = $"{Environment.NewLine}Scale: {PokeSizeDetailedUtil.GetSizeRating(pk.Scale)} ({pk.Scale})";
-                string output = $"{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{(Species)pk.Species}{form}{gender}{pid}{ec}{Environment.NewLine}Nature: {(Nature)pk.Nature}{Environment.NewLine}Ability: {GameInfo.GetStrings(1).Ability[pk.Ability]}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}{Environment.NewLine}Level: {pk.MetLevel}{scale}{msg}";
+                string output = $"{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{(Species)pk.Species}{form}{gender}{pid}{ec}{Environment.NewLine}Nature: {pk.Nature}{Environment.NewLine}Ability: {GameInfo.GetStrings(1).Ability[pk.Ability]}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}{Environment.NewLine}Level: {pk.MetLevel}{scale}{msg}";
                 outputBox[i].Text = output;
                 sprite = PokeImg(pk, false);
                 boxes[i].Load(sprite);
@@ -127,7 +127,7 @@ namespace PokeViewer.NET.SubForms
                 }
                 if (pk.IsShiny)
                 {
-                    MessageBox.Show($"Shiny {(Species)pk.Species} is in the overworld!");
+                    MessageBox.Show(this, $"Shiny {(Species)pk.Species} is in the overworld!");
                 }
             }
             await Click(B, 1_000, token).ConfigureAwait(false);

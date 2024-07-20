@@ -77,8 +77,8 @@ namespace PokeViewer.NET.SubForms
         private void Prefix_CheckedChanged(object sender, EventArgs e)
         {
             Settings.Default.BotPrefix = PrefixBox.SelectedIndex;
+            Settings.Default.BotPrefixString = SetBotPrefix(Settings.Default.BotPrefix);
             Settings.Default.Save();
-            BotPrefix = SetBotPrefix(Settings.Default.BotPrefix);
         }
 
         private void SaveButton_Click(object sender, EventArgs e)
@@ -96,6 +96,7 @@ namespace PokeViewer.NET.SubForms
                 Settings.Default.BotToken = BotToken.Text;
 
             Settings.Default.BotPrefix = PrefixBox.SelectedIndex;
+            Settings.Default.BotPrefixString = SetBotPrefix(Settings.Default.BotPrefix);
             Settings.Default.UseWiFiProtocol = !UseWiFiProtocol.Checked;
             Settings.Default.Save();
             this.Close();

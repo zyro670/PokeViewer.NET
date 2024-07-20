@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Octokit;
 using PKHeX.Core;
 using PKHeX.Drawing.Misc;
+using PokeViewer.NET.Properties;
 using PokeViewer.NET.SubForms;
 using PokeViewer.NET.WideViewForms;
 using SysBot.Base;
@@ -25,17 +26,16 @@ namespace PokeViewer.NET
     public partial class MainViewer : Form
     {
         public ViewerExecutor Executor = null!;
-        private const string ViewerVersion = "3.1.0";
+        private const string ViewerVersion = "3.1.1";
         private readonly bool[] FormLoaded = new bool[8];
         private int GameType;
         private SimpleTrainerInfo TrainerInfo = new();
-        private readonly string RefreshTime = Properties.Settings.Default.RefreshRate;
+        private readonly string RefreshTime = Settings.Default.RefreshRate;
         private readonly List<Color> UIColors = [];
         protected ViewerOffsets Offsets { get; } = new();
         public DiscordSocketClient client;
         public CommandService commands;
         public IServiceProvider services;
-        private string BotPrefix = string.Empty;
         public MainViewer()
         {
             InitializeComponent();
@@ -66,6 +66,28 @@ namespace PokeViewer.NET
             services = map.BuildServiceProvider();
         }
 
+        private async Task<bool> CheckBotBaseReq(CancellationToken token)
+        {
+            HttpClient httpClient = new();
+            GitHubClient client = new(new ProductHeaderValue("usb-botbase"));
+            Release releases = await client.Repository.Release.GetLatest("zyro670", "usb-botbase");
+            var sbb = await Executor.SwitchConnection.GetBotbaseVersion(token).ConfigureAwait(false);
+            if (!sbb.Equals("2.353\n"))
+            {
+                DialogResult dialogResult = MessageBox.Show($"Current version of sysbot-base v{sbb.ToString().TrimEnd('\r', '\n')} does not match minimum required version. Download latest?", "An update is available", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    var file = await httpClient.GetByteArrayAsync($"https://github.com/zyro670/usb-botbase/releases/download/{releases.TagName}/usb-botbaseZ.zip");
+                    File.WriteAllBytes($"usb-botbaseZ.zip", file);
+                    MessageBox.Show(this, $"Download complete.\nThe zip file can be found in the PokeViewer.NET folder.");
+                    System.Windows.Forms.Application.Exit();
+                }
+
+                return false;
+            }
+            return true;
+        }
+
         private static void CheckForOutbreakFilter()
         {
             var path = "outbreakfilters.txt";
@@ -78,7 +100,7 @@ namespace PokeViewer.NET
         {
             var path = "refs\\sudo.txt";
             if (!File.Exists(path))
-                File.WriteAllText(path, $"{Properties.Settings.Default.UserDiscordID},");
+                File.WriteAllText(path, $"{Settings.Default.UserDiscordID},");
         }
 
         private static void CreateCustomSequenceJson()
@@ -86,15 +108,15 @@ namespace PokeViewer.NET
             var path = "refs\\customsequence.json";
             if (!File.Exists(path))
             {
-                List<CustomSequence> _data = new()
-            {
+                List<CustomSequence> _data =
+            [
                 new CustomSequence()
                 {
                     Name = "Template",
-                    Click = Array.Empty<SwitchButton>(),
-                    Delay = Array.Empty<int>(),
+                    Click = [],
+                    Delay = [],
                 }
-            };
+            ];
 
                 string json = JsonConvert.SerializeObject(_data.ToArray());
                 File.WriteAllText(path, json);
@@ -104,13 +126,13 @@ namespace PokeViewer.NET
         private void MoodChecker()
         {
             SetMoodOnStart();
-            var colors = CheckForColors(Properties.Settings.Default.DarkMode);
+            var colors = CheckForColors(Settings.Default.DarkMode);
             SetColorsConnection(colors.Item1, colors.Item2);
         }
 
         private void PokeViewerForm_Load(object sender, EventArgs e)
         {
-            SwitchIP.Text = Properties.Settings.Default.SwitchIP;
+            SwitchIP.Text = Settings.Default.SwitchIP;
             LoadOriginDefault();
             LoadDateTime(sender, e);
         }
@@ -164,9 +186,9 @@ namespace PokeViewer.NET
         {
             TextBox textBox = (TextBox)sender;
             if (textBox.Text != "192.168.0.0")
-                Properties.Settings.Default.SwitchIP = textBox.Text;
+                Settings.Default.SwitchIP = textBox.Text;
 
-            Properties.Settings.Default.Save();
+            Settings.Default.Save();
         }
 
         private void CheckForHide(object sender, EventArgs e)
@@ -174,20 +196,20 @@ namespace PokeViewer.NET
             CheckBox checkBox = (CheckBox)sender;
             if (checkBox.Checked == true)
             {
-                Properties.Settings.Default.HidePIDEC = HidePIDEC.Checked;
+                Settings.Default.HidePIDEC = HidePIDEC.Checked;
                 HidePIDEC.Checked = true;
             }
             else
             {
-                Properties.Settings.Default.HidePIDEC = false;
+                Settings.Default.HidePIDEC = false;
                 HidePIDEC.Checked = false;
             }
-            Properties.Settings.Default.Save();
+            Settings.Default.Save();
         }
 
         private void CheckForUSBChecked(object sender, EventArgs e)
         {
-            if (!Properties.Settings.Default.UseWiFiProtocol)
+            if (!Settings.Default.UseWiFiProtocol)
                 ConnectionGroupBox.Text = "Switch Port";
             else
                 ConnectionGroupBox.Text = "Switch IP";
@@ -200,7 +222,7 @@ namespace PokeViewer.NET
 
         private SwitchProtocol GetProtocol()
         {
-            if (!Properties.Settings.Default.UseWiFiProtocol)
+            if (!Settings.Default.UseWiFiProtocol)
                 return SwitchProtocol.USB;
             return SwitchProtocol.WiFi;
         }
@@ -214,8 +236,8 @@ namespace PokeViewer.NET
                 {
                     var config = GetProtocol() switch
                     {
-                        SwitchProtocol.USB => new SwitchConnectionConfig { Port = int.Parse(Properties.Settings.Default.SwitchIP), Protocol = SwitchProtocol.USB },
-                        SwitchProtocol.WiFi => new SwitchConnectionConfig { IP = Properties.Settings.Default.SwitchIP, Port = 6000, Protocol = SwitchProtocol.WiFi },
+                        SwitchProtocol.USB => new SwitchConnectionConfig { Port = int.Parse(Settings.Default.SwitchIP), Protocol = SwitchProtocol.USB },
+                        SwitchProtocol.WiFi => new SwitchConnectionConfig { IP = Settings.Default.SwitchIP, Port = 6000, Protocol = SwitchProtocol.WiFi },
                         _ => throw new NotImplementedException(),
                     };
                     var state = new ViewerState
@@ -230,19 +252,27 @@ namespace PokeViewer.NET
                         Connect.Text = "Disconnect";
                         SwitchIP.Enabled = false;
                         await Executor.Connect(token).ConfigureAwait(false);
+                        bool pass = await CheckBotBaseReq(token).ConfigureAwait(false);
+                        if (!pass)
+                        {
+                            await Executor.SwitchConnection.SendAsync(SwitchCommand.DetachController(true), token).ConfigureAwait(false);
+                            Executor.Disconnect();
+                            await client.StopAsync().ConfigureAwait(false);
+                            System.Windows.Forms.Application.Exit();
+                        }
                         ScreenTrackBar.Enabled = true;
                         Window_Loaded(token);
                     });
-                    if (!string.IsNullOrEmpty(Properties.Settings.Default.BotToken))
+                    if (!string.IsNullOrEmpty(Settings.Default.BotToken))
                     {
                         await RegisterCommandsAsync().ConfigureAwait(false);
-                        await client.LoginAsync(TokenType.Bot, Properties.Settings.Default.BotToken, true).ConfigureAwait(false);
+                        await client.LoginAsync(TokenType.Bot, Settings.Default.BotToken, true).ConfigureAwait(false);
                         await client.StartAsync().ConfigureAwait(false);
                     }
                 }
                 catch (SocketException err)
                 {
-                    string port = Properties.Settings.Default.UseWiFiProtocol ? "Port" : "IP address";
+                    string port = Settings.Default.UseWiFiProtocol ? "Port" : "IP address";
                     MessageBox.Show($"{err.Message}{Environment.NewLine}Ensure {port} is correct before attempting to connect!");
                 }
             }
@@ -796,11 +826,11 @@ namespace PokeViewer.NET
         {
             CheckBox chextBox = (CheckBox)sender;
             if (chextBox.Checked)
-                Properties.Settings.Default.RefreshStats = true;
+                Settings.Default.RefreshStats = true;
             else
-                Properties.Settings.Default.RefreshStats = false;
+                Settings.Default.RefreshStats = false;
 
-            Properties.Settings.Default.Save();
+            Settings.Default.Save();
         }
 
         private void InGameScreenshot_Click(object sender, EventArgs e)
@@ -925,7 +955,7 @@ namespace PokeViewer.NET
 
         private static bool CheckForMood()
         {
-            if (Properties.Settings.Default.DarkMode == true)
+            if (Settings.Default.DarkMode == true)
                 return true;
             else
                 return false;
@@ -934,7 +964,7 @@ namespace PokeViewer.NET
         private static (Color, Color) CheckForColors(bool mode)
         {
             if (mode is true)
-                return (Properties.Settings.Default.DefaultBackColor, Properties.Settings.Default.DefaultForeColor);
+                return (Settings.Default.DefaultBackColor, Settings.Default.DefaultForeColor);
             else
                 return (Color.White, Color.Navy);
         }
@@ -953,7 +983,7 @@ namespace PokeViewer.NET
         private void WideButton_Click(object sender, EventArgs e)
         {
             Form form = new();
-            var colors = CheckForColors(Properties.Settings.Default.DarkMode);
+            var colors = CheckForColors(Settings.Default.DarkMode);
             switch (GameType)
             {
                 case (int)GameSelected.Scarlet or (int)GameSelected.Violet:
@@ -1007,10 +1037,10 @@ namespace PokeViewer.NET
             else if (!AltMoodRadio.Checked)
                 darkmode = false;
 
-            Properties.Settings.Default.DarkMode = darkmode;
-            Properties.Settings.Default.DefaultForeVal = AltForeCombo.SelectedIndex;
-            Properties.Settings.Default.DefaultBackVal = AltBackCombo.SelectedIndex;
-            Properties.Settings.Default.Save();
+            Settings.Default.DarkMode = darkmode;
+            Settings.Default.DefaultForeVal = AltForeCombo.SelectedIndex;
+            Settings.Default.DefaultBackVal = AltBackCombo.SelectedIndex;
+            Settings.Default.Save();
 
             var owner = new Form { Visible = false };
             var handle = owner.Handle;
@@ -1026,15 +1056,15 @@ namespace PokeViewer.NET
 
         private void SetMoodOnStart()
         {
-            if (Properties.Settings.Default.DarkMode == true)
+            if (Settings.Default.DarkMode == true)
             {
                 AltMoodRadio.Checked = true;
             }
             else
             {
                 DefaultMoodRadio.Checked = true;
-                Properties.Settings.Default.DefaultForeColor = Color.Navy;
-                Properties.Settings.Default.DefaultBackColor = Color.White;
+                Settings.Default.DefaultForeColor = Color.Navy;
+                Settings.Default.DefaultBackColor = Color.White;
             }
         }
 
@@ -1128,8 +1158,8 @@ namespace PokeViewer.NET
                 AltForeCombo.Items.Add($"{UIColors[i].ToString().Replace("Color", "").Replace("[", "").Replace("]", "").Trim()}");
                 AltBackCombo.Items.Add($"{UIColors[i].ToString().Replace("Color", "").Replace("[", "").Replace("]", "").Trim()}");
             }
-            AltForeCombo.SelectedIndex = Properties.Settings.Default.DefaultForeVal;
-            AltBackCombo.SelectedIndex = Properties.Settings.Default.DefaultBackVal;
+            AltForeCombo.SelectedIndex = Settings.Default.DefaultForeVal;
+            AltBackCombo.SelectedIndex = Settings.Default.DefaultBackVal;
         }
 
         private void GetAllColors()
@@ -1162,32 +1192,32 @@ namespace PokeViewer.NET
         private void ColorComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             var selection = AltForeCombo.SelectedIndex;
-            Properties.Settings.Default.DefaultForeColor = UIColors[selection];
+            Settings.Default.DefaultForeColor = UIColors[selection];
         }
 
         private void AltBackCombo_SelectedIndexChanged(object sender, EventArgs e)
         {
             var selection = AltBackCombo.SelectedIndex;
-            Properties.Settings.Default.DefaultBackColor = UIColors[selection];
+            Settings.Default.DefaultBackColor = UIColors[selection];
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            var colors = CheckForColors(Properties.Settings.Default.DarkMode);
+            var colors = CheckForColors(Settings.Default.DarkMode);
             EventCodeEntry form = new(Executor, colors);
             form.ShowDialog();
         }
 
         private void button1_Click_1(object sender, EventArgs e)
         {
-            var colors = CheckForColors(Properties.Settings.Default.DarkMode);
+            var colors = CheckForColors(Settings.Default.DarkMode);
             ControllerView form = new(Executor, colors);
             form.ShowDialog();
         }
 
         private void DiscordUtilButton_Click(object sender, EventArgs e)
         {
-            var colors = CheckForColors(Properties.Settings.Default.DarkMode);
+            var colors = CheckForColors(Settings.Default.DarkMode);
             DiscordUtilForm form = new(colors);
             form.ShowDialog();
         }
@@ -1232,7 +1262,7 @@ namespace PokeViewer.NET
                 return;
 
             int pos = 0;
-            if (msg.HasStringPrefix(BotPrefix, ref pos))
+            if (msg.HasStringPrefix(Settings.Default.BotPrefixString, ref pos))
             {
                 bool handled = await TryHandleCommand(msg, pos).ConfigureAwait(false);
                 if (handled)
@@ -1246,7 +1276,7 @@ namespace PokeViewer.NET
             var context = new SocketCommandContext(client, msg);
             if (!CanUseCommandSudo(msg.Author.Id))
             {
-                //await msg.Channel.SendMessageAsync("You do not have permission to use commands.").ConfigureAwait(false);
+                await msg.Channel.SendMessageAsync("You do not have permission to use commands.").ConfigureAwait(false);
                 return false;
             }
             else
@@ -1259,25 +1289,6 @@ namespace PokeViewer.NET
                     return false;
             }
             return true;
-        }
-
-        private string SetBotPrefix(int value)
-        {
-            switch (value)
-            {
-                case 0: BotPrefix = "$"; break;
-                case 1: BotPrefix = "!"; break;
-                case 2: BotPrefix = "%"; break;
-                case 3: BotPrefix = "^"; break;
-                case 4: BotPrefix = "&"; break;
-                case 5: BotPrefix = "*"; break;
-                case 6: BotPrefix = "."; break;
-                case 7: BotPrefix = ","; break;
-                case 8: BotPrefix = ";"; break;
-                case 9: BotPrefix = "-"; break;
-                case 10: BotPrefix = "_"; break;
-            }
-            return BotPrefix;
         }
     }
 }

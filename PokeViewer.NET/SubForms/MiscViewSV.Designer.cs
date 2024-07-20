@@ -34,6 +34,7 @@ namespace PokeViewer.NET.SubForms
             SnackGroup = new GroupBox();
             SnackworthBtn = new Button();
             TimeGroup = new GroupBox();
+            HoursLabel = new Label();
             SetSwitchTimeButton = new Button();
             CurrentTimeLabel = new Label();
             FwdButton = new Button();
@@ -66,7 +67,6 @@ namespace PokeViewer.NET.SubForms
             ChangeFormButton = new Button();
             V_ComboBox = new ComboBox();
             button1 = new Button();
-            HoursLabel = new Label();
             MiscGroup.SuspendLayout();
             SnackGroup.SuspendLayout();
             TimeGroup.SuspendLayout();
@@ -130,6 +130,15 @@ namespace PokeViewer.NET.SubForms
             TimeGroup.TabIndex = 74;
             TimeGroup.TabStop = false;
             TimeGroup.Text = "Time Conditions";
+            // 
+            // HoursLabel
+            // 
+            HoursLabel.AutoSize = true;
+            HoursLabel.Location = new Point(156, 39);
+            HoursLabel.Name = "HoursLabel";
+            HoursLabel.Size = new Size(25, 15);
+            HoursLabel.TabIndex = 78;
+            HoursLabel.Text = "Hrs";
             // 
             // SetSwitchTimeButton
             // 
@@ -202,9 +211,9 @@ namespace PokeViewer.NET.SubForms
             // OutbreakBtn
             // 
             OutbreakBtn.Font = new Font("Segoe UI", 9F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            OutbreakBtn.Location = new Point(49, 31);
+            OutbreakBtn.Location = new Point(20, 25);
             OutbreakBtn.Name = "OutbreakBtn";
-            OutbreakBtn.Size = new Size(123, 30);
+            OutbreakBtn.Size = new Size(162, 46);
             OutbreakBtn.TabIndex = 81;
             OutbreakBtn.Text = "View";
             OutbreakBtn.UseVisualStyleBackColor = true;
@@ -225,7 +234,7 @@ namespace PokeViewer.NET.SubForms
             // WildDisable
             // 
             WildDisable.AutoSize = true;
-            WildDisable.Location = new Point(115, 19);
+            WildDisable.Location = new Point(105, 19);
             WildDisable.Name = "WildDisable";
             WildDisable.Size = new Size(63, 19);
             WildDisable.TabIndex = 85;
@@ -234,7 +243,7 @@ namespace PokeViewer.NET.SubForms
             // 
             // WildSpawnBtn
             // 
-            WildSpawnBtn.Location = new Point(63, 44);
+            WildSpawnBtn.Location = new Point(54, 43);
             WildSpawnBtn.Name = "WildSpawnBtn";
             WildSpawnBtn.Size = new Size(93, 23);
             WildSpawnBtn.TabIndex = 83;
@@ -246,7 +255,7 @@ namespace PokeViewer.NET.SubForms
             // 
             WildEnable.AutoSize = true;
             WildEnable.Checked = true;
-            WildEnable.Location = new Point(49, 19);
+            WildEnable.Location = new Point(39, 19);
             WildEnable.Name = "WildEnable";
             WildEnable.Size = new Size(60, 19);
             WildEnable.TabIndex = 84;
@@ -454,15 +463,6 @@ namespace PokeViewer.NET.SubForms
             button1.Name = "button1";
             button1.Size = new Size(75, 23);
             button1.TabIndex = 0;
-            // 
-            // HoursLabel
-            // 
-            HoursLabel.AutoSize = true;
-            HoursLabel.Location = new Point(156, 39);
-            HoursLabel.Name = "HoursLabel";
-            HoursLabel.Size = new Size(25, 15);
-            HoursLabel.TabIndex = 78;
-            HoursLabel.Text = "Hrs";
             // 
             // MiscViewSV
             // 
