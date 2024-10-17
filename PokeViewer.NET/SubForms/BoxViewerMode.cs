@@ -441,7 +441,7 @@ namespace PokeViewer.NET
             if (!string.IsNullOrEmpty(pid) && !string.IsNullOrEmpty(ec))
                 sens = pid + ec;
             CurrentSlotSpecies.Add($"{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{gMax}{alpha}{(Species)pk.Species}{form}{gender}{Environment.NewLine}{sens}");
-            CurrentSlotNature.Add($"Nature: {(Nature)pk.Nature}");
+            CurrentSlotNature.Add($"Nature: {pk.Nature}");
             CurrentSlotAbility.Add($"Ability: {(Ability)pk.Ability}");
             CurrentSlotIVs.Add($"IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}");
             CurrentSlotScale.Add(scale);

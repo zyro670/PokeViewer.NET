@@ -14,6 +14,7 @@ using System.Diagnostics;
 using System.IO.Compression;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using static PokeViewer.NET.CommandsUtil.CommandsUtil;
 using static PokeViewer.NET.RoutineExecutor;
 using static PokeViewer.NET.ViewerUtil;
@@ -26,7 +27,7 @@ namespace PokeViewer.NET
     public partial class MainViewer : Form
     {
         public ViewerExecutor Executor = null!;
-        private const string ViewerVersion = "3.1.1";
+        private const string ViewerVersion = "3.2";
         private readonly bool[] FormLoaded = new bool[8];
         private int GameType;
         private SimpleTrainerInfo TrainerInfo = new();
@@ -72,7 +73,10 @@ namespace PokeViewer.NET
             GitHubClient client = new(new ProductHeaderValue("usb-botbase"));
             Release releases = await client.Repository.Release.GetLatest("zyro670", "usb-botbase");
             var sbb = await Executor.SwitchConnection.GetBotbaseVersion(token).ConfigureAwait(false);
-            if (!sbb.Equals("2.353\n"))
+            string replacement = Regex.Replace(sbb, @"\t|\n|\r", "");
+            string vIn = replacement.Replace('"', ' ').Trim();
+            var vOut = Convert.ToDouble(vIn);
+            if (vOut < 2.4)
             {
                 DialogResult dialogResult = MessageBox.Show($"Current version of sysbot-base v{sbb.ToString().TrimEnd('\r', '\n')} does not match minimum required version. Download latest?", "An update is available", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (dialogResult == DialogResult.Yes)
@@ -344,7 +348,7 @@ namespace PokeViewer.NET
                 case 1: gender = " (F)"; break;
                 case 2: break;
             }
-            string output = $"{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{isAlpha}{(Species)pk.Species}{form}{gender}{ec}{pid}{Environment.NewLine}Nature: {(Nature)pk.Nature}{Environment.NewLine}Ability: {GameInfo.GetStrings(1).Ability[pk.Ability]}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}{Environment.NewLine}{scale}{msg}";
+            string output = $"{(pk.ShinyXor == 0 ? "■ - " : pk.ShinyXor <= 16 ? "★ - " : "")}{isAlpha}{(Species)pk.Species}{form}{gender}{ec}{pid}{Environment.NewLine}Nature: {pk.Nature}{Environment.NewLine}Ability: {GameInfo.GetStrings(1).Ability[pk.Ability]}{Environment.NewLine}IVs: {pk.IV_HP}/{pk.IV_ATK}/{pk.IV_DEF}/{pk.IV_SPA}/{pk.IV_SPD}/{pk.IV_SPE}{Environment.NewLine}{scale}{msg}";
             LiveStats.Text = $"{GameInfo.GetStrings(1).Move[pk.Move1]} - {pk.Move1_PP}PP{Environment.NewLine}{GameInfo.GetStrings(1).Move[pk.Move2]} - {pk.Move2_PP}PP{Environment.NewLine}{GameInfo.GetStrings(1).Move[pk.Move3]} - {pk.Move3_PP}PP{Environment.NewLine}{GameInfo.GetStrings(1).Move[pk.Move4]} - {pk.Move4_PP}PP";
             ViewBox.Text = output;
             sprite = PokeImg(pk, isGmax);
