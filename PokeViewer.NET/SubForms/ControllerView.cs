@@ -56,7 +56,7 @@ namespace PokeViewer.NET.SubForms
 
         private static List<int> ReturnCommands(string[] cmds)
         {
-            List<int> values = new();
+            List<int> values = [];
             for (int i = 0; i < cmds.Length; i++)
             {
                 switch (cmds[i].ToUpper())

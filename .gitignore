@@ -357,3 +357,6 @@ PokeViewer.NET/Properties/launchSettings.json
 PokeViewer.NET/SubForms/VivillonViewer.cs
 PokeViewer.NET/SubForms/VivillonViewer.Designer.cs
 PokeViewer.NET/SubForms/VivillonViewer.resx
+/PokeViewer.NET/SubForms/HOMEViewerUtil.cs
+/PokeViewer.NET/SubForms/HOMEViewerUtil.Designer.cs
+/PokeViewer.NET/SubForms/HOMEViewerUtil.resx

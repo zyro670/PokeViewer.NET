@@ -1951,25 +1951,25 @@ namespace PokeViewer.NET.SubForms
                         {
                             case 0:
                                 OBSprite1.Image = sprite[i]; Ob1Results.Text = count[i]; ObCount1.Text = strings[i];
-                                OBSprite8.Visible = true; Ob8Results.Visible = true; ObCount8.Visible = true; break;
+                                OBSprite1.Visible = true; Ob1Results.Visible = true; ObCount1.Visible = true; break;
                             case 1:
                                 OBSprite2.Image = sprite[i]; Ob2Results.Text = count[i]; ObCount2.Text = strings[i];
-                                OBSprite8.Visible = true; Ob8Results.Visible = true; ObCount8.Visible = true; break;
+                                OBSprite2.Visible = true; Ob2Results.Visible = true; ObCount2.Visible = true; break;
                             case 2:
                                 OBSprite3.Image = sprite[i]; Ob3Results.Text = count[i]; ObCount3.Text = strings[i];
-                                OBSprite8.Visible = true; Ob8Results.Visible = true; ObCount8.Visible = true; break;
+                                OBSprite3.Visible = true; Ob3Results.Visible = true; ObCount3.Visible = true; break;
                             case 3:
                                 OBSprite4.Image = sprite[i]; Ob4Results.Text = count[i]; ObCount4.Text = strings[i];
-                                OBSprite8.Visible = true; Ob8Results.Visible = true; ObCount8.Visible = true; break;
+                                OBSprite4.Visible = true; Ob4Results.Visible = true; ObCount4.Visible = true; break;
                             case 4:
                                 OBSprite5.Image = sprite[i]; Ob5Results.Text = count[i]; ObCount5.Text = strings[i];
-                                OBSprite8.Visible = true; Ob8Results.Visible = true; ObCount8.Visible = true; break;
+                                OBSprite5.Visible = true; Ob5Results.Visible = true; ObCount5.Visible = true; break;
                             case 5:
                                 OBSprite6.Image = sprite[i]; Ob6Results.Text = count[i]; ObCount6.Text = strings[i];
-                                OBSprite8.Visible = true; Ob8Results.Visible = true; ObCount8.Visible = true; break;
+                                OBSprite6.Visible = true; Ob6Results.Visible = true; ObCount6.Visible = true; break;
                             case 6:
                                 OBSprite7.Image = sprite[i]; Ob7Results.Text = count[i]; ObCount7.Text = strings[i];
-                                OBSprite8.Visible = true; Ob8Results.Visible = true; ObCount8.Visible = true; break;
+                                OBSprite7.Visible = true; Ob7Results.Visible = true; ObCount7.Visible = true; break;
                             case 7:
                                 OBSprite8.Image = sprite[i]; Ob8Results.Text = count[i]; ObCount8.Text = strings[i];
                                 OBSprite8.Visible = true; Ob8Results.Visible = true; ObCount8.Visible = true; break;

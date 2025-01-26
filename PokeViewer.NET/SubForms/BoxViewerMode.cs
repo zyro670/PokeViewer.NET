@@ -149,8 +149,8 @@ namespace PokeViewer.NET
             var box = boxnumber;
             ViewButton.Text = "Reading...";
             DisableAssets();
-            List<Image> images = new();
-            List<Color> colors = new();
+            List<Image> images = [];
+            List<Color> colors = [];
             PKM pk = new PK9();
             var folder = $"BoxViewer";
             if (!Directory.Exists(folder))
@@ -192,7 +192,7 @@ namespace PokeViewer.NET
                     await BoxRoutine(box, boxes, images, colors, pk, false, token).ConfigureAwait(false);
             }
             catch (Exception ex) { MessageBox.Show($"{ex}"); }
-            PKMs = new();
+            PKMs = [];
             ViewButton.Text = "View";
             EnableAssets();
             CSVCheck.Enabled = true;
@@ -201,14 +201,14 @@ namespace PokeViewer.NET
 
         public async Task BoxRoutine(int box, PictureBox[] boxes, List<Image> images, List<Color> colors, PKM pk, bool dumpall, CancellationToken token)
         {
-            CurrentSlotStats = new();
-            CurrentSlotSpecies = new();
-            CurrentSlotNature = new();
-            CurrentSlotAbility = new();
-            CurrentSlotIVs = new();
-            CurrentSlotScale = new();
-            CurrentSlotMark = new();
-            CurrentSlotBall = new();
+            CurrentSlotStats = [];
+            CurrentSlotSpecies = [];
+            CurrentSlotNature = [];
+            CurrentSlotAbility = [];
+            CurrentSlotIVs = [];
+            CurrentSlotScale = [];
+            CurrentSlotMark = [];
+            CurrentSlotBall = [];
             if (GameType is (int)GameSelected.Scarlet or (int)GameSelected.Violet && AbsoluteBoxOffset == 0)
             {
                 var SVptr = new long[] { 0x47350D8, 0xD8, 0x8, 0xB8, 0x30, 0x9D0, 0x0 };
@@ -613,7 +613,7 @@ namespace PokeViewer.NET
             tt.RemoveAll();
             tt.Dispose();
             tt = new();
-            CurrentSlotStats = new();
+            CurrentSlotStats = [];
             if (BoxSlotSize == 0 && BoxOffset == 0)
                 PrepareSlots();
             var currentbox = comboBox1.SelectedIndex;
@@ -627,7 +627,7 @@ namespace PokeViewer.NET
         {
             var token = CancellationToken.None;
             ReadInProgress = true;
-            CurrentSlotStats = new();
+            CurrentSlotStats = [];
             if (BoxSlotSize == 0 && BoxOffset == 0)
                 PrepareSlots();
             var currentbox = comboBox1.SelectedIndex;
@@ -644,7 +644,7 @@ namespace PokeViewer.NET
         {
             var token = CancellationToken.None;
             ReadInProgress = true;
-            CurrentSlotStats = new();
+            CurrentSlotStats = [];
             if (BoxSlotSize == 0 && BoxOffset == 0)
                 PrepareSlots();
             var currentbox = comboBox1.SelectedIndex;

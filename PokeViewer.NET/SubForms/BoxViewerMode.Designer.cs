@@ -527,7 +527,7 @@
             // DumpCheck
             // 
             DumpCheck.AutoSize = true;
-            DumpCheck.Font = new Font("Segoe UI", 9F, FontStyle.Italic, GraphicsUnit.Point);
+            DumpCheck.Font = new Font("Segoe UI", 9F, FontStyle.Italic);
             DumpCheck.Location = new Point(87, 376);
             DumpCheck.Name = "DumpCheck";
             DumpCheck.Size = new Size(85, 19);
@@ -545,7 +545,7 @@
             // FlexButton
             // 
             FlexButton.BackColor = Color.Transparent;
-            FlexButton.Font = new Font("Segoe UI", 9F, FontStyle.Italic, GraphicsUnit.Point);
+            FlexButton.Font = new Font("Segoe UI", 9F, FontStyle.Italic);
             FlexButton.Location = new Point(338, 372);
             FlexButton.Name = "FlexButton";
             FlexButton.Size = new Size(44, 23);
@@ -566,7 +566,7 @@
             // CSVCheck
             // 
             CSVCheck.AutoSize = true;
-            CSVCheck.Font = new Font("Segoe UI", 9F, FontStyle.Italic, GraphicsUnit.Point);
+            CSVCheck.Font = new Font("Segoe UI", 9F, FontStyle.Italic);
             CSVCheck.Location = new Point(12, 376);
             CSVCheck.Name = "CSVCheck";
             CSVCheck.Size = new Size(74, 19);
@@ -577,7 +577,7 @@
             // ViewAllCheck
             // 
             ViewAllCheck.AutoSize = true;
-            ViewAllCheck.Font = new Font("Segoe UI", 9F, FontStyle.Italic, GraphicsUnit.Point);
+            ViewAllCheck.Font = new Font("Segoe UI", 9F, FontStyle.Italic);
             ViewAllCheck.Location = new Point(12, 397);
             ViewAllCheck.Name = "ViewAllCheck";
             ViewAllCheck.Size = new Size(163, 19);
@@ -588,7 +588,7 @@
             // CurrentBox
             // 
             CurrentBox.AutoSize = true;
-            CurrentBox.Font = new Font("Segoe UI", 27.75F, FontStyle.Regular, GraphicsUnit.Point);
+            CurrentBox.Font = new Font("Segoe UI", 27.75F);
             CurrentBox.Location = new Point(409, 368);
             CurrentBox.Name = "CurrentBox";
             CurrentBox.Size = new Size(42, 50);
