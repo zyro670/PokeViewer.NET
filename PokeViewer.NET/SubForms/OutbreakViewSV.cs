@@ -1724,7 +1724,7 @@ namespace PokeViewer.NET.SubForms
             FormCombo.Text = string.Empty;
             var formlist = FormConverter.GetFormList((ushort)(Species)SpeciesBox.SelectedIndex, TypesList, FormsList, GenderList, EntityContext.Gen9);
             if ((Species)SpeciesBox.SelectedIndex == Species.Minior)
-                formlist = formlist.Take((formlist.Length + 1) / 2).ToArray();
+                formlist = [.. formlist.Take((formlist.Length + 1) / 2)];
 
             if (formlist.Length == 0 || (formlist.Length == 1 && formlist[0].Equals("")))
                 FormCombo.Visible = false;

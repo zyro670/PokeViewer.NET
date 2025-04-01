@@ -381,7 +381,7 @@
             EventRedeemButton.Text = "Event";
             EventRedeemButton.UseVisualStyleBackColor = true;
             EventRedeemButton.Visible = false;
-            EventRedeemButton.Click += button1_Click;
+            EventRedeemButton.Click += EventRedeem_Click;
             // 
             // TrainerPassportGroup
             // 
