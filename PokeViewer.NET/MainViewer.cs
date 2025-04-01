@@ -28,7 +28,7 @@ namespace PokeViewer.NET
     public partial class MainViewer : Form
     {
         public ViewerExecutor Executor = null!;
-        private const string ViewerVersion = "3.2";
+        private const string ViewerVersion = "3.2.2";
         private readonly bool[] FormLoaded = new bool[8];
         private int GameType;
         private SimpleTrainerInfo TrainerInfo = new();
@@ -144,25 +144,32 @@ namespace PokeViewer.NET
 
         private static async void CheckReleaseLabel()
         {
-            GitHubClient client = new(new ProductHeaderValue("PokeViewer.NET"));
-            Release releases = await client.Repository.Release.GetLatest("zyro670", "PokeViewer.NET");
-            Version latestGitHubVersion = new(releases.TagName);
-            Version localVersion = new(ViewerVersion);
-            int versionComparison = localVersion.CompareTo(latestGitHubVersion);
-            if (versionComparison < 0)
+            try
             {
-                DialogResult dialogResult = MessageBox.Show("A new PokeViewer.NET release is available. Download?", "An update is available", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (dialogResult == DialogResult.Yes)
+                GitHubClient client = new(new ProductHeaderValue("PokeViewer.NET"));
+                Release releases = await client.Repository.Release.GetLatest("zyro670", "PokeViewer.NET");
+                Version latestGitHubVersion = new(releases.TagName);
+                Version localVersion = new(ViewerVersion);
+                int versionComparison = localVersion.CompareTo(latestGitHubVersion);
+                if (versionComparison < 0)
                 {
-                    HttpClient httpClient = new();
-                    var file = await httpClient.GetByteArrayAsync($"https://github.com/zyro670/PokeViewer.NET/releases/download/{releases.TagName}/v{releases.TagName}.zip");
-                    File.WriteAllBytes($"PokeViewer.NET-{releases.TagName}.zip", file);
-                    ZipFile.ExtractToDirectory($"PokeViewer.NET-{releases.TagName}.zip", AppDomain.CurrentDomain.BaseDirectory);
-                    await Task.Delay(1_000, CancellationToken.None).ConfigureAwait(false);
-                    File.Delete($"PokeViewer.NET-{releases.TagName}.zip");
-                    MessageBox.Show($"Download complete. Please replace the PokeViewer.exe with the new one found in the v{releases.TagName} folder after you click Ok.", "Update Message");
-                    System.Windows.Forms.Application.Exit();
+                    DialogResult dialogResult = MessageBox.Show("A new PokeViewer.NET release is available. Download?", "An update is available", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (dialogResult == DialogResult.Yes)
+                    {
+                        HttpClient httpClient = new();
+                        var file = await httpClient.GetByteArrayAsync($"https://github.com/zyro670/PokeViewer.NET/releases/download/{releases.TagName}/v{releases.TagName}.zip");
+                        File.WriteAllBytes($"PokeViewer.NET-{releases.TagName}.zip", file);
+                        ZipFile.ExtractToDirectory($"PokeViewer.NET-{releases.TagName}.zip", AppDomain.CurrentDomain.BaseDirectory);
+                        await Task.Delay(1_000, CancellationToken.None).ConfigureAwait(false);
+                        File.Delete($"PokeViewer.NET-{releases.TagName}.zip");
+                        MessageBox.Show($"Download complete. Please replace the PokeViewer.exe with the new one found in the v{releases.TagName} folder after you click Ok.", "Update Message");
+                        System.Windows.Forms.Application.Exit();
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Unable to check version of PokeViewer.NET, please try again later.\n{ex}");
             }
         }
 
@@ -655,6 +662,8 @@ namespace PokeViewer.NET
                         {
                             ViewerControl.TabPages.Add(BoxPage);
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
+                            EventRedeemButton.Visible = true;
+                            EventRedeemButton.Text = "HOME Util";
                         });
                         break;
                     }
@@ -788,7 +797,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
                             WideButton.Enabled = true;
                         });
-                        strings = await GetFakeTrainerSAVLGPE(token).ConfigureAwait(false);
+                        strings = GetFakeTrainerSAVLGPE(token);
                         break;
                     }
                 case PikachuID:
@@ -802,7 +811,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
                             WideButton.Enabled = true;
                         });
-                        strings = await GetFakeTrainerSAVLGPE(token).ConfigureAwait(false);
+                        strings = GetFakeTrainerSAVLGPE(token);
                         break;
                     }
             }
@@ -1125,18 +1134,20 @@ namespace PokeViewer.NET
             TrainerInfo.SID16 = sav.SID16;
             return ($"Name: {sav.OT}", $"TID: {sav.TrainerTID7} | SID: {sav.TrainerSID7}");
         }
-        public async Task<(string, string)> GetFakeTrainerSAVLGPE(CancellationToken token)
+        public (string, string) GetFakeTrainerSAVLGPE(CancellationToken token)
         {
             var sav = new SAV7b();
-            byte[] bytes = sav.Blocks.Status.Data.ToArray();
-            int startofs = 0xB8800;
-            byte[]? data = await Executor.Connection.ReadBytesAsync(Offsets.TrainerDataLGPE, Offsets.TrainerSizeLGPE, token).ConfigureAwait(false);
-            data.CopyTo(bytes, startofs);
+            Span<byte> bytes = sav.Blocks.Status.Data;
+            byte[] data = ReadLGPEData;
+            data.CopyTo(bytes);
             TrainerInfo.OT = sav.OT;
             TrainerInfo.TID16 = sav.TID16;
             TrainerInfo.SID16 = sav.SID16;
             return ($"Name: {sav.OT}", $"TID: {sav.TrainerTID7} | SID: {sav.TrainerSID7}");
         }
+
+        private byte[] ReadLGPEData => Executor.Connection.ReadBytesAsync(Offsets.TrainerDataLGPE, Offsets.TrainerSizeLGPE, CancellationToken.None).Result;
+
         public static string ReadStringFromRAMObject(byte[] obj)
         {
             // 0x10 typeinfo/monitor, 0x4 len, char[len]
@@ -1206,11 +1217,20 @@ namespace PokeViewer.NET
             Settings.Default.DefaultBackColor = UIColors[selection];
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void EventRedeem_Click(object sender, EventArgs e)
         {
-            var colors = CheckForColors(Settings.Default.DarkMode);
-            EventCodeEntry form = new(Executor, colors);
-            form.ShowDialog();
+            if (GameType == (int)GameSelected.HOME)
+            {
+                var colors = CheckForColors(Settings.Default.DarkMode);
+                HOMEViewerUtil form = new(Executor, colors);
+                form.ShowDialog();
+            }
+            else
+            {
+                var colors = CheckForColors(Settings.Default.DarkMode);
+                EventCodeEntry form = new(Executor, colors);
+                form.ShowDialog();
+            }
         }
 
         private void button1_Click_1(object sender, EventArgs e)
