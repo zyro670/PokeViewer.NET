@@ -2,7 +2,7 @@
 
 This project was designed to make viewing Pokemon convenient through the use of a Windows app that supports all mainstream Nintendo Switch Pokémon games.
 
-[Support Server: Rosé Garden](https://discord.gg/G23Mx85Mdz)
+[Support Server: White Room](https://discord.gg/x5nfcaGYVH)
 
 ![](https://i.imgur.com/Ou6Ndtg.png)
 
