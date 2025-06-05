@@ -8,10 +8,10 @@ namespace PokeViewer.NET.SubForms
 {
     public partial class SnackworthViewer : Form
     {
-        private readonly ViewerExecutor Executor;
+        private readonly ViewerState Executor;
         private static ulong BaseBlockKeyPointer = 0;
         protected ViewerOffsets Offsets { get; } = new();
-        public SnackworthViewer(ViewerExecutor executor)
+        public SnackworthViewer(ViewerState executor)
         {
             InitializeComponent();
             Executor = executor;

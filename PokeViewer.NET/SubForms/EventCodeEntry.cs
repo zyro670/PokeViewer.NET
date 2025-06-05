@@ -6,9 +6,9 @@ namespace PokeViewer.NET.SubForms
 {
     public partial class EventCodeEntry : Form
     {
-        private readonly ViewerExecutor Executor;
+        private readonly ViewerState Executor;
         protected ViewerOffsets ViewerOffsets { get; } = new();
-        public EventCodeEntry(ViewerExecutor executor, (Color, Color) color)
+        public EventCodeEntry(ViewerState executor, (Color, Color) color)
         {
             InitializeComponent();
             Executor = executor;

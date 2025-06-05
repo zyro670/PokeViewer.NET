@@ -28,8 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             ViewButton = new Button();
             pictureBox1 = new PictureBox();
+            contextMenuStrip1 = new ContextMenuStrip(components);
             pictureBox2 = new PictureBox();
             pictureBox3 = new PictureBox();
             pictureBox4 = new PictureBox();
@@ -61,14 +63,15 @@
             pictureBox30 = new PictureBox();
             button2 = new Button();
             button3 = new Button();
-            DumpCheck = new CheckBox();
             progressBar1 = new ProgressBar();
             FlexButton = new Button();
             comboBox1 = new ComboBox();
             CSVCheck = new CheckBox();
-            ViewAllCheck = new CheckBox();
             CurrentBox = new Label();
             HidePIDECCheck = new CheckBox();
+            dumpToolStripMenuItem = new ToolStripMenuItem();
+            clearToolStripMenuItem = new ToolStripMenuItem();
+            injectToolStripMenuItem = new ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox2).BeginInit();
             ((System.ComponentModel.ISupportInitialize)pictureBox3).BeginInit();
@@ -116,6 +119,7 @@
             // 
             pictureBox1.BackColor = SystemColors.ButtonHighlight;
             pictureBox1.BorderStyle = BorderStyle.FixedSingle;
+            pictureBox1.ContextMenuStrip = contextMenuStrip1;
             pictureBox1.Location = new Point(12, 12);
             pictureBox1.Name = "pictureBox1";
             pictureBox1.Size = new Size(73, 66);
@@ -125,10 +129,16 @@
             pictureBox1.DoubleClick += PictureBox_DoubleClick;
             pictureBox1.MouseHover += pictureBox_MouseHover;
             // 
+            // contextMenuStrip1
+            // 
+            contextMenuStrip1.Name = "contextMenuStrip1";
+            contextMenuStrip1.Size = new Size(61, 4);
+            // 
             // pictureBox2
             // 
             pictureBox2.BackColor = SystemColors.ButtonHighlight;
             pictureBox2.BorderStyle = BorderStyle.FixedSingle;
+            pictureBox2.ContextMenuStrip = contextMenuStrip1;
             pictureBox2.Location = new Point(91, 12);
             pictureBox2.Name = "pictureBox2";
             pictureBox2.Size = new Size(73, 66);
@@ -142,6 +152,7 @@
             // 
             pictureBox3.BackColor = SystemColors.ButtonHighlight;
             pictureBox3.BorderStyle = BorderStyle.FixedSingle;
+            pictureBox3.ContextMenuStrip = contextMenuStrip1;
             pictureBox3.Location = new Point(170, 12);
             pictureBox3.Name = "pictureBox3";
             pictureBox3.Size = new Size(73, 66);
@@ -155,6 +166,7 @@
             // 
             pictureBox4.BackColor = SystemColors.ButtonHighlight;
             pictureBox4.BorderStyle = BorderStyle.FixedSingle;
+            pictureBox4.ContextMenuStrip = contextMenuStrip1;
             pictureBox4.Location = new Point(249, 12);
             pictureBox4.Name = "pictureBox4";
             pictureBox4.Size = new Size(73, 66);
@@ -168,6 +180,7 @@
             // 
             pictureBox5.BackColor = SystemColors.ButtonHighlight;
             pictureBox5.BorderStyle = BorderStyle.FixedSingle;
+            pictureBox5.ContextMenuStrip = contextMenuStrip1;
             pictureBox5.Location = new Point(328, 12);
             pictureBox5.Name = "pictureBox5";
             pictureBox5.Size = new Size(73, 66);
@@ -181,6 +194,7 @@
             // 
             pictureBox6.BackColor = SystemColors.ButtonHighlight;
             pictureBox6.BorderStyle = BorderStyle.FixedSingle;
+            pictureBox6.ContextMenuStrip = contextMenuStrip1;
             pictureBox6.Location = new Point(407, 12);
             pictureBox6.Name = "pictureBox6";
             pictureBox6.Size = new Size(73, 66);
@@ -194,6 +208,7 @@
             // 
             pictureBox7.BackColor = SystemColors.ButtonHighlight;
             pictureBox7.BorderStyle = BorderStyle.FixedSingle;
+            pictureBox7.ContextMenuStrip = contextMenuStrip1;
             pictureBox7.Location = new Point(12, 84);
             pictureBox7.Name = "pictureBox7";
             pictureBox7.Size = new Size(73, 66);
@@ -207,6 +222,7 @@
             // 
             pictureBox8.BackColor = SystemColors.ButtonHighlight;
             pictureBox8.BorderStyle = BorderStyle.FixedSingle;
+            pictureBox8.ContextMenuStrip = contextMenuStrip1;
             pictureBox8.Location = new Point(91, 84);
             pictureBox8.Name = "pictureBox8";
             pictureBox8.Size = new Size(73, 66);
@@ -220,6 +236,7 @@
             // 
             pictureBox9.BackColor = SystemColors.ButtonHighlight;
             pictureBox9.BorderStyle = BorderStyle.FixedSingle;
+            pictureBox9.ContextMenuStrip = contextMenuStrip1;
             pictureBox9.Location = new Point(170, 84);
             pictureBox9.Name = "pictureBox9";
             pictureBox9.Size = new Size(73, 66);
@@ -233,6 +250,7 @@
             // 
             pictureBox10.BackColor = SystemColors.ButtonHighlight;
             pictureBox10.BorderStyle = BorderStyle.FixedSingle;
+            pictureBox10.ContextMenuStrip = contextMenuStrip1;
             pictureBox10.Location = new Point(249, 84);
             pictureBox10.Name = "pictureBox10";
             pictureBox10.Size = new Size(73, 66);
@@ -246,6 +264,7 @@
             // 
             pictureBox11.BackColor = SystemColors.ButtonHighlight;
             pictureBox11.BorderStyle = BorderStyle.FixedSingle;
+            pictureBox11.ContextMenuStrip = contextMenuStrip1;
             pictureBox11.Location = new Point(328, 84);
             pictureBox11.Name = "pictureBox11";
             pictureBox11.Size = new Size(73, 66);
@@ -259,6 +278,7 @@
             // 
             pictureBox12.BackColor = SystemColors.ButtonHighlight;
             pictureBox12.BorderStyle = BorderStyle.FixedSingle;
+            pictureBox12.ContextMenuStrip = contextMenuStrip1;
             pictureBox12.Location = new Point(407, 84);
             pictureBox12.Name = "pictureBox12";
             pictureBox12.Size = new Size(73, 66);
@@ -272,6 +292,7 @@
             // 
             pictureBox13.BackColor = SystemColors.ButtonHighlight;
             pictureBox13.BorderStyle = BorderStyle.FixedSingle;
+            pictureBox13.ContextMenuStrip = contextMenuStrip1;
             pictureBox13.Location = new Point(12, 156);
             pictureBox13.Name = "pictureBox13";
             pictureBox13.Size = new Size(73, 66);
@@ -285,6 +306,7 @@
             // 
             pictureBox14.BackColor = SystemColors.ButtonHighlight;
             pictureBox14.BorderStyle = BorderStyle.FixedSingle;
+            pictureBox14.ContextMenuStrip = contextMenuStrip1;
             pictureBox14.Location = new Point(91, 156);
             pictureBox14.Name = "pictureBox14";
             pictureBox14.Size = new Size(73, 66);
@@ -298,6 +320,7 @@
             // 
             pictureBox15.BackColor = SystemColors.ButtonHighlight;
             pictureBox15.BorderStyle = BorderStyle.FixedSingle;
+            pictureBox15.ContextMenuStrip = contextMenuStrip1;
             pictureBox15.Location = new Point(170, 156);
             pictureBox15.Name = "pictureBox15";
             pictureBox15.Size = new Size(73, 66);
@@ -311,6 +334,7 @@
             // 
             pictureBox16.BackColor = SystemColors.ButtonHighlight;
             pictureBox16.BorderStyle = BorderStyle.FixedSingle;
+            pictureBox16.ContextMenuStrip = contextMenuStrip1;
             pictureBox16.Location = new Point(249, 156);
             pictureBox16.Name = "pictureBox16";
             pictureBox16.Size = new Size(73, 66);
@@ -324,6 +348,7 @@
             // 
             pictureBox17.BackColor = SystemColors.ButtonHighlight;
             pictureBox17.BorderStyle = BorderStyle.FixedSingle;
+            pictureBox17.ContextMenuStrip = contextMenuStrip1;
             pictureBox17.Location = new Point(328, 156);
             pictureBox17.Name = "pictureBox17";
             pictureBox17.Size = new Size(73, 66);
@@ -337,6 +362,7 @@
             // 
             pictureBox18.BackColor = SystemColors.ButtonHighlight;
             pictureBox18.BorderStyle = BorderStyle.FixedSingle;
+            pictureBox18.ContextMenuStrip = contextMenuStrip1;
             pictureBox18.Location = new Point(407, 156);
             pictureBox18.Name = "pictureBox18";
             pictureBox18.Size = new Size(73, 66);
@@ -350,6 +376,7 @@
             // 
             pictureBox19.BackColor = SystemColors.ButtonHighlight;
             pictureBox19.BorderStyle = BorderStyle.FixedSingle;
+            pictureBox19.ContextMenuStrip = contextMenuStrip1;
             pictureBox19.Location = new Point(12, 228);
             pictureBox19.Name = "pictureBox19";
             pictureBox19.Size = new Size(73, 66);
@@ -376,6 +403,7 @@
             // 
             pictureBox21.BackColor = SystemColors.ButtonHighlight;
             pictureBox21.BorderStyle = BorderStyle.FixedSingle;
+            pictureBox21.ContextMenuStrip = contextMenuStrip1;
             pictureBox21.Location = new Point(170, 228);
             pictureBox21.Name = "pictureBox21";
             pictureBox21.Size = new Size(73, 66);
@@ -389,6 +417,7 @@
             // 
             pictureBox22.BackColor = SystemColors.ButtonHighlight;
             pictureBox22.BorderStyle = BorderStyle.FixedSingle;
+            pictureBox22.ContextMenuStrip = contextMenuStrip1;
             pictureBox22.Location = new Point(249, 228);
             pictureBox22.Name = "pictureBox22";
             pictureBox22.Size = new Size(73, 66);
@@ -402,6 +431,7 @@
             // 
             pictureBox23.BackColor = SystemColors.ButtonHighlight;
             pictureBox23.BorderStyle = BorderStyle.FixedSingle;
+            pictureBox23.ContextMenuStrip = contextMenuStrip1;
             pictureBox23.Location = new Point(328, 228);
             pictureBox23.Name = "pictureBox23";
             pictureBox23.Size = new Size(73, 66);
@@ -415,6 +445,7 @@
             // 
             pictureBox24.BackColor = SystemColors.ButtonHighlight;
             pictureBox24.BorderStyle = BorderStyle.FixedSingle;
+            pictureBox24.ContextMenuStrip = contextMenuStrip1;
             pictureBox24.Location = new Point(407, 228);
             pictureBox24.Name = "pictureBox24";
             pictureBox24.Size = new Size(73, 66);
@@ -428,6 +459,7 @@
             // 
             pictureBox25.BackColor = SystemColors.ButtonHighlight;
             pictureBox25.BorderStyle = BorderStyle.FixedSingle;
+            pictureBox25.ContextMenuStrip = contextMenuStrip1;
             pictureBox25.Location = new Point(12, 300);
             pictureBox25.Name = "pictureBox25";
             pictureBox25.Size = new Size(73, 66);
@@ -441,6 +473,7 @@
             // 
             pictureBox26.BackColor = SystemColors.ButtonHighlight;
             pictureBox26.BorderStyle = BorderStyle.FixedSingle;
+            pictureBox26.ContextMenuStrip = contextMenuStrip1;
             pictureBox26.Location = new Point(91, 300);
             pictureBox26.Name = "pictureBox26";
             pictureBox26.Size = new Size(73, 66);
@@ -454,6 +487,7 @@
             // 
             pictureBox27.BackColor = SystemColors.ButtonHighlight;
             pictureBox27.BorderStyle = BorderStyle.FixedSingle;
+            pictureBox27.ContextMenuStrip = contextMenuStrip1;
             pictureBox27.Location = new Point(170, 300);
             pictureBox27.Name = "pictureBox27";
             pictureBox27.Size = new Size(73, 66);
@@ -467,6 +501,7 @@
             // 
             pictureBox28.BackColor = SystemColors.ButtonHighlight;
             pictureBox28.BorderStyle = BorderStyle.FixedSingle;
+            pictureBox28.ContextMenuStrip = contextMenuStrip1;
             pictureBox28.Location = new Point(249, 300);
             pictureBox28.Name = "pictureBox28";
             pictureBox28.Size = new Size(73, 66);
@@ -480,6 +515,7 @@
             // 
             pictureBox29.BackColor = SystemColors.ButtonHighlight;
             pictureBox29.BorderStyle = BorderStyle.FixedSingle;
+            pictureBox29.ContextMenuStrip = contextMenuStrip1;
             pictureBox29.Location = new Point(328, 300);
             pictureBox29.Name = "pictureBox29";
             pictureBox29.Size = new Size(73, 66);
@@ -493,6 +529,7 @@
             // 
             pictureBox30.BackColor = SystemColors.ButtonHighlight;
             pictureBox30.BorderStyle = BorderStyle.FixedSingle;
+            pictureBox30.ContextMenuStrip = contextMenuStrip1;
             pictureBox30.Location = new Point(407, 300);
             pictureBox30.Name = "pictureBox30";
             pictureBox30.Size = new Size(73, 66);
@@ -523,17 +560,6 @@
             button3.Text = "<=";
             button3.UseVisualStyleBackColor = false;
             button3.Click += button3_Click;
-            // 
-            // DumpCheck
-            // 
-            DumpCheck.AutoSize = true;
-            DumpCheck.Font = new Font("Segoe UI", 9F, FontStyle.Italic);
-            DumpCheck.Location = new Point(87, 376);
-            DumpCheck.Name = "DumpCheck";
-            DumpCheck.Size = new Size(85, 19);
-            DumpCheck.TabIndex = 36;
-            DumpCheck.Text = "Dump Box?";
-            DumpCheck.UseVisualStyleBackColor = true;
             // 
             // progressBar1
             // 
@@ -574,17 +600,6 @@
             CSVCheck.Text = "CSV Box?";
             CSVCheck.UseVisualStyleBackColor = true;
             // 
-            // ViewAllCheck
-            // 
-            ViewAllCheck.AutoSize = true;
-            ViewAllCheck.Font = new Font("Segoe UI", 9F, FontStyle.Italic);
-            ViewAllCheck.Location = new Point(12, 397);
-            ViewAllCheck.Name = "ViewAllCheck";
-            ViewAllCheck.Size = new Size(163, 19);
-            ViewAllCheck.TabIndex = 41;
-            ViewAllCheck.Text = "CSV And Dump All Boxes?";
-            ViewAllCheck.UseVisualStyleBackColor = true;
-            // 
             // CurrentBox
             // 
             CurrentBox.AutoSize = true;
@@ -599,12 +614,27 @@
             // HidePIDECCheck
             // 
             HidePIDECCheck.AutoSize = true;
-            HidePIDECCheck.Location = new Point(290, 397);
+            HidePIDECCheck.Location = new Point(12, 401);
             HidePIDECCheck.Name = "HidePIDECCheck";
             HidePIDECCheck.Size = new Size(96, 19);
             HidePIDECCheck.TabIndex = 43;
             HidePIDECCheck.Text = "Hide PID/EC?";
             HidePIDECCheck.UseVisualStyleBackColor = true;
+            // 
+            // dumpToolStripMenuItem
+            // 
+            dumpToolStripMenuItem.Name = "dumpToolStripMenuItem";
+            dumpToolStripMenuItem.Size = new Size(32, 19);
+            // 
+            // clearToolStripMenuItem
+            // 
+            clearToolStripMenuItem.Name = "clearToolStripMenuItem";
+            clearToolStripMenuItem.Size = new Size(32, 19);
+            // 
+            // injectToolStripMenuItem
+            // 
+            injectToolStripMenuItem.Name = "injectToolStripMenuItem";
+            injectToolStripMenuItem.Size = new Size(32, 19);
             // 
             // BoxViewerMode
             // 
@@ -614,7 +644,6 @@
             BackColor = SystemColors.ControlLightLight;
             ClientSize = new Size(492, 453);
             Controls.Add(HidePIDECCheck);
-            Controls.Add(ViewAllCheck);
             Controls.Add(CSVCheck);
             Controls.Add(comboBox1);
             Controls.Add(FlexButton);
@@ -653,7 +682,6 @@
             Controls.Add(pictureBox1);
             Controls.Add(ViewButton);
             Controls.Add(CurrentBox);
-            Controls.Add(DumpCheck);
             FormBorderStyle = FormBorderStyle.None;
             MaximizeBox = false;
             Name = "BoxViewerMode";
@@ -726,13 +754,15 @@
         private PictureBox pictureBox30;
         private Button button2;
         private Button button3;
-        private CheckBox DumpCheck;
         private ProgressBar progressBar1;
         private Button FlexButton;
         private ComboBox comboBox1;
         private CheckBox CSVCheck;
-        private CheckBox ViewAllCheck;
         private Label CurrentBox;
         private CheckBox HidePIDECCheck;
+        private ContextMenuStrip contextMenuStrip1;
+        private ToolStripMenuItem dumpToolStripMenuItem;
+        private ToolStripMenuItem clearToolStripMenuItem;
+        private ToolStripMenuItem injectToolStripMenuItem;
     }
 }

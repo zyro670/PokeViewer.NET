@@ -13,18 +13,13 @@ namespace PokeViewer.NET.SubForms
 {
     public partial class OutbreakViewSV : Form
     {
-        private readonly ViewerExecutor Executor;
+        private readonly ViewerState Executor;
         private static ulong BaseBlockKeyPointer = 0;
-        public ulong CountCacheP;
-        public ulong CountCacheK;
-        public ulong CountCacheB;
-        public ulong CountCacheBCP;
-        public ulong CountCacheBCK;
-        public ulong CountCacheBCB;
+        private ulong CountCacheP, CountCacheK, CountCacheB, CountCacheBCP, CountCacheBCK, CountCacheBCB;
         private DateTime StartTime;
         private System.Timers.Timer timer = new();
-        public List<OutbreakStash> OutbreakCache = [];
-        public List<OutbreakStash> BCATOutbreakCache = [];
+        private List<OutbreakStash> OutbreakCache = [];
+        private List<OutbreakStash> BCATOutbreakCache = [];
         private List<Image> MapSpritesP = [];
         private List<byte[]?> MapPOSP = [];
         private List<byte[]?> MapPOSObP = [];
@@ -53,13 +48,13 @@ namespace PokeViewer.NET.SubForms
         private Image PaldeaStored;
         private Image KitakamiStored;
         private Image BlueberryStored;
-        private readonly string[] SpeciesList = null!;
-        private readonly string[] FormsList = null!;
-        private readonly string[] TypesList = null!;
-        private readonly string[] GenderList = null!;
+        private string[] SpeciesList = null!;
+        private string[] FormsList = null!;
+        private string[] TypesList = null!;
+        private string[] GenderList = null!;
 
         protected ViewerOffsets Offsets { get; } = new();
-        public OutbreakViewSV(ViewerExecutor executor, (Color, Color) color, bool OutbreakFormOpen)
+        public OutbreakViewSV(ViewerState executor, (Color, Color) color, bool OutbreakFormOpen)
         {
             InitializeComponent();
             Executor = executor;
@@ -92,10 +87,10 @@ namespace PokeViewer.NET.SubForms
         private void LoadFilters(string data)
         {
             string contents = File.ReadAllText(data);
-            string[] monlist = contents.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] monlist = contents.Split([','], StringSplitOptions.RemoveEmptyEntries);
             foreach (string mons in monlist)
             {
-                string[] mon = mons.Split(new[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
+                string[] mon = mons.Split(['-'], StringSplitOptions.RemoveEmptyEntries);
                 PK9 pk = new()
                 {
                     Species = Convert.ToUInt16(mon[0]),
@@ -1347,10 +1342,10 @@ namespace PokeViewer.NET.SubForms
             public ulong SpeciesCenterPOSLoaded { get; set; } = 0;
         }
 
-        public async Task TimeSkipBwd(CancellationToken token) => await Executor.Connection.SendAsync(SwitchCommand.TimeSkipBack(true), token).ConfigureAwait(false);
-        public async Task ResetTime(CancellationToken token) => await Executor.Connection.SendAsync(SwitchCommand.ResetTime(true), token).ConfigureAwait(false);
+        public async Task TimeSkipBwd(CancellationToken token) => await Executor.SwitchConnection.SendAsync(SwitchCommand.TimeSkipBack(true), token).ConfigureAwait(false);
+        public async Task ResetTime(CancellationToken token) => await Executor.SwitchConnection.SendAsync(SwitchCommand.ResetTime(true), token).ConfigureAwait(false);
 
-        public async Task ResetTimeNTP(CancellationToken token) => await Executor.Connection.SendAsync(ResetTimeNTP(true), token).ConfigureAwait(false);
+        public async Task ResetTimeNTP(CancellationToken token) => await Executor.SwitchConnection.SendAsync(ResetTimeNTP(true), token).ConfigureAwait(false);
 
         private static readonly Encoding Encoder = Encoding.ASCII;
 
@@ -1678,7 +1673,7 @@ namespace PokeViewer.NET.SubForms
 
         public new async Task Click(SwitchButton b, int delay, CancellationToken token)
         {
-            await Executor.Connection.SendAsync(SwitchCommand.Click(b, true), token).ConfigureAwait(false);
+            await Executor.SwitchConnection.SendAsync(SwitchCommand.Click(b, true), token).ConfigureAwait(false);
             await Task.Delay(delay, token).ConfigureAwait(false);
         }
 
@@ -2125,7 +2120,7 @@ namespace PokeViewer.NET.SubForms
 
         private void OutbreakView_Closed(object sender, FormClosedEventArgs e)
         {
-            MiscViewSV.OutbreakFormOpen = false;
+            MiscView.OutbreakFormOpen = false;
         }
     }
 }

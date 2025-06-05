@@ -11,12 +11,10 @@ using PokeViewer.NET.SubForms;
 using PokeViewer.NET.WideViewForms;
 using SysBot.Base;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO.Compression;
 using System.Net.Sockets;
 using System.Reflection;
-using System.Text.RegularExpressions;
-using static PokeViewer.NET.CommandsUtil.CommandsUtil;
+using static PokéViewer.NET.Util.CommandsUtil;
 using static PokeViewer.NET.RoutineExecutor;
 using static PokeViewer.NET.ViewerUtil;
 using Color = System.Drawing.Color;
@@ -27,11 +25,12 @@ namespace PokeViewer.NET
 {
     public partial class MainViewer : Form
     {
-        public ViewerExecutor Executor = null!;
-        private const string ViewerVersion = "3.2.2";
+        public ViewerState Executor = null!;
+        private const string ViewerVersion = "3.3.0";
         private readonly bool[] FormLoaded = new bool[8];
         private int GameType;
-        private SimpleTrainerInfo TrainerInfo = new();
+        private SimpleTrainerInfo Trainer = new();
+        private readonly string[] trainerStrings = new string[3];
         private readonly string RefreshTime = Settings.Default.RefreshRate;
         private readonly List<Color> UIColors = [];
         protected ViewerOffsets Offsets { get; } = new();
@@ -68,31 +67,6 @@ namespace PokeViewer.NET
             services = map.BuildServiceProvider();
         }
 
-        private async Task<bool> CheckBotBaseReq(CancellationToken token)
-        {
-            HttpClient httpClient = new();
-            GitHubClient client = new(new ProductHeaderValue("usb-botbase"));
-            Release releases = await client.Repository.Release.GetLatest("zyro670", "usb-botbase");
-            var sbb = await Executor.SwitchConnection.GetBotbaseVersion(token).ConfigureAwait(false);
-            string replacement = Regex.Replace(sbb, @"\t|\n|\r", "");
-            string vIn = replacement.Replace('"', ' ').Trim();
-            var vOut = Convert.ToDouble(vIn, CultureInfo.InvariantCulture);
-            if (vOut < 2.4)
-            {
-                DialogResult dialogResult = MessageBox.Show($"Current version of sysbot-base v{sbb.ToString().TrimEnd('\r', '\n')} does not match minimum required version. Download latest?", "An update is available", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (dialogResult == DialogResult.Yes)
-                {
-                    var file = await httpClient.GetByteArrayAsync($"https://github.com/zyro670/usb-botbase/releases/download/{releases.TagName}/usb-botbaseZ.zip");
-                    File.WriteAllBytes($"usb-botbaseZ.zip", file);
-                    MessageBox.Show(this, $"Download complete.\nThe zip file can be found in the PokeViewer.NET folder.");
-                    System.Windows.Forms.Application.Exit();
-                }
-
-                return false;
-            }
-            return true;
-        }
-
         private static void CheckForOutbreakFilter()
         {
             var path = "outbreakfilters.txt";
@@ -127,7 +101,7 @@ namespace PokeViewer.NET
                 File.WriteAllText(path, json);
             }
         }
-
+       
         private void MoodChecker()
         {
             SetMoodOnStart();
@@ -188,7 +162,11 @@ namespace PokeViewer.NET
 
             var icon = "refs\\icon.png";
             if (File.Exists(icon))
+            {
+                var oldImage = TrainerPhoto.Image;
                 TrainerPhoto.Image = new Bitmap(icon);
+                oldImage?.Dispose();
+            }
             else
                 TrainerPhoto.ImageLocation = "https://i.imgur.com/rNSKg5n.png";
 
@@ -232,7 +210,7 @@ namespace PokeViewer.NET
             TodaysDate.Text = "Met Date: " + DateTime.Today.ToString("MM/dd/yyyy");
         }
 
-        private SwitchProtocol GetProtocol()
+        private static SwitchProtocol GetProtocol()
         {
             if (!Settings.Default.UseWiFiProtocol)
                 return SwitchProtocol.USB;
@@ -242,7 +220,7 @@ namespace PokeViewer.NET
         private async void Connect_Click(object sender, EventArgs e)
         {
             var token = new CancellationToken();
-            if (Executor is null || !Executor.Connection.Connected)
+            if (Executor is null || !Executor.SwitchConnection.Connected)
             {
                 try
                 {
@@ -252,28 +230,19 @@ namespace PokeViewer.NET
                         SwitchProtocol.WiFi => new SwitchConnectionConfig { IP = Settings.Default.SwitchIP, Port = 6000, Protocol = SwitchProtocol.WiFi },
                         _ => throw new NotImplementedException(),
                     };
-                    var state = new ViewerState
+                    var state = new ViewerExecutorBase
                     {
                         Connection = config,
                         InitialRoutine = RoutineType.Read,
                     };
-                    Executor = new ViewerExecutor(state);
-                    await Executor.RunAsync(token).ConfigureAwait(false);
+                    Executor = new ViewerState(state);
                     await Invoke(async () =>
                     {
                         Connect.Text = "Disconnect";
                         SwitchIP.Enabled = false;
-                        await Executor.Connect(token).ConfigureAwait(false);
-                        bool pass = await CheckBotBaseReq(token).ConfigureAwait(false);
-                        if (!pass)
-                        {
-                            await Executor.SwitchConnection.SendAsync(SwitchCommand.DetachController(true), token).ConfigureAwait(false);
-                            Executor.Disconnect();
-                            await client.StopAsync().ConfigureAwait(false);
-                            System.Windows.Forms.Application.Exit();
-                        }
                         ScreenTrackBar.Enabled = true;
-                        Window_Loaded(token);
+                        Executor.Connection.Connect();
+                        await Window_Loaded(token).ConfigureAwait(false);
                     });
                     if (!string.IsNullOrEmpty(Settings.Default.BotToken))
                     {
@@ -374,11 +343,9 @@ namespace PokeViewer.NET
             {
                 var url = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/OriginMarks/icon_alpha.png";
                 Image img = null!;
-                using (HttpClient client = new())
-                {
-                    using var response = await client.GetStreamAsync(url, token).ConfigureAwait(false);
-                    img = Image.FromStream(response);
-                }
+                using var client = new HttpClient();
+                using var response = await client.GetStreamAsync(url, token).ConfigureAwait(false);
+                img = Image.FromStream(response);
                 Specialty.Visible = true;
                 Specialty.Image = img;
             }
@@ -411,18 +378,16 @@ namespace PokeViewer.NET
             {
                 var url = $"https://raw.githubusercontent.com/zyro670/PokeTextures/main/OriginMarks/icon_daimax.png";
                 Image img = null!;
-                using (HttpClient client = new())
-                {
-                    using var response = await client.GetStreamAsync(url, token).ConfigureAwait(false);
-                    img = Image.FromStream(response);
-                }
+                using var client = new HttpClient();
+                using var response = await client.GetStreamAsync(url, token).ConfigureAwait(false);
+                img = Image.FromStream(response);
                 Specialty.Visible = true;
                 Specialty.Image = img;
             }
             if (RefreshStats.Checked)
             {
                 var StartingHP = pk.Stat_HPCurrent;
-                int.TryParse(RefreshTime, out var refr);
+                _ = int.TryParse(RefreshTime, out int refr);
                 while (pk.Stat_HPCurrent != 0)
                 {
                     if (!Executor.SwitchConnection.Connected)
@@ -488,12 +453,12 @@ namespace PokeViewer.NET
             if (UniqueBox2.Checked)
             {
                 IReadOnlyList<long>[] campers =
-                {
-                    new long[] { 0x2636120, 0x280, 0xD8, 0x78, 0x10, 0x98, 0x00 },
-                    new long[] { 0x2636170, 0x2F0, 0x58, 0x130, 0x138, 0xD0 },
-                    new long[] { 0x28ED668, 0x68, 0x1E8, 0x1D0, 0x128 },
-                    new long[] { 0x296C030, 0x60, 0x40, 0x1B0, 0x58, 0x00 }
-                };
+                [
+                    [0x2636120, 0x280, 0xD8, 0x78, 0x10, 0x98, 0x00],
+                    [0x2636170, 0x2F0, 0x58, 0x130, 0x138, 0xD0],
+                    [0x28ED668, 0x68, 0x1E8, 0x1D0, 0x128],
+                    [0x296C030, 0x60, 0x40, 0x1B0, 0x58, 0x00]
+                ];
 
                 for (int i = 0; i < campers.Length; i++)
                 {
@@ -614,7 +579,8 @@ namespace PokeViewer.NET
                             var pk = await ReadInBattlePokemonLA(ofs, size).ConfigureAwait(false);
                             SanityCheck(pk);
                             FillPokeData(pk, ofs, 0, size);
-                        }; break;
+                        }
+                        ; break;
                     case (int)GameSelected.BrilliantDiamond:
                         {
                             var ptr = new long[] { 0x4C59EF0, 0x20, 0x98, 0x00, 0x20 };
@@ -623,7 +589,8 @@ namespace PokeViewer.NET
                             var pk = await ReadInBattlePokemonBDSP(ofs, size).ConfigureAwait(false);
                             SanityCheck(pk);
                             FillPokeData(pk, ofs, 0, size);
-                        }; break;
+                        }
+                        ; break;
                     case (int)GameSelected.ShiningPearl:
                         {
                             var ptr = new long[] { 0x4E70FC8, 0x20, 0x98, 0x00, 0x20 };
@@ -632,7 +599,8 @@ namespace PokeViewer.NET
                             var pk = await ReadInBattlePokemonBDSP(ofs, size).ConfigureAwait(false);
                             SanityCheck(pk);
                             FillPokeData(pk, ofs, 0, size);
-                        }; break;
+                        }
+                        ; break;
                     case (int)GameSelected.LetsGoPikachu or (int)GameSelected.LetsGoEevee:
                         {
                             uint ufs = 0x163EDC0;
@@ -646,7 +614,7 @@ namespace PokeViewer.NET
             }
         }
 
-        private async void Window_Loaded(CancellationToken token)
+        private async Task Window_Loaded(CancellationToken token)
         {
             int type = 0;
             string url = "https://raw.githubusercontent.com/zyro670/PokeTextures/main/icon_version/64x64/icon_version_";
@@ -662,8 +630,7 @@ namespace PokeViewer.NET
                         {
                             ViewerControl.TabPages.Add(BoxPage);
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
-                            EventRedeemButton.Visible = true;
-                            EventRedeemButton.Text = "HOME Util";
+                            ViewerControl.TabPages.Add(MiscPage);
                         });
                         break;
                     }
@@ -677,7 +644,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(PartyPage);
                             ViewerControl.TabPages.Add(EggPage);
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
-                            ViewerControl.TabPages.Add(OutbreakPage);
+                            ViewerControl.TabPages.Add(MiscPage);
                             WideButton.Enabled = true;
                             EventRedeemButton.Visible = true;
                             ControllerButton.Enabled = true;
@@ -695,7 +662,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(PartyPage);
                             ViewerControl.TabPages.Add(EggPage);
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
-                            ViewerControl.TabPages.Add(OutbreakPage);
+                            ViewerControl.TabPages.Add(MiscPage);
                             WideButton.Enabled = true;
                             EventRedeemButton.Visible = true;
                             ControllerButton.Enabled = true;
@@ -712,6 +679,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(ViewPage);
                             ViewerControl.TabPages.Add(BoxPage);
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
+                            ViewerControl.TabPages.Add(MiscPage);
                             WideButton.Enabled = true;
                             ControllerButton.Enabled = true;
                         });
@@ -728,6 +696,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(BoxPage);
                             ViewerControl.TabPages.Add(NPCPage);
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
+                            ViewerControl.TabPages.Add(MiscPage);
                             WideButton.Enabled = true;
                             ControllerButton.Enabled = true;
                         });
@@ -744,6 +713,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(BoxPage);
                             ViewerControl.TabPages.Add(NPCPage);
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
+                            ViewerControl.TabPages.Add(MiscPage);
                             WideButton.Enabled = true;
                             ControllerButton.Enabled = true;
                         });
@@ -762,6 +732,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(BoxPage);
                             ViewerControl.TabPages.Add(NPCPage);
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
+                            ViewerControl.TabPages.Add(MiscPage);
                             WideButton.Enabled = true;
                             ControllerButton.Enabled = true;
                         });
@@ -780,6 +751,7 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(BoxPage);
                             ViewerControl.TabPages.Add(NPCPage);
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
+                            ViewerControl.TabPages.Add(MiscPage);
                             WideButton.Enabled = true;
                             ControllerButton.Enabled = true;
                         });
@@ -795,9 +767,10 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(BoxPage);
                             ViewerControl.TabPages.Add(NPCPage);
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
+                            ViewerControl.TabPages.Add(MiscPage);
                             WideButton.Enabled = true;
                         });
-                        strings = GetFakeTrainerSAVLGPE(token);
+                        strings = GetFakeTrainerSAVLGPE();
                         break;
                     }
                 case PikachuID:
@@ -809,22 +782,29 @@ namespace PokeViewer.NET
                             ViewerControl.TabPages.Add(BoxPage);
                             ViewerControl.TabPages.Add(NPCPage);
                             ViewerControl.TabPages.Add(InGameScreenshotPage);
+                            ViewerControl.TabPages.Add(MiscPage);
                             WideButton.Enabled = true;
                         });
-                        strings = GetFakeTrainerSAVLGPE(token);
+                        strings = GetFakeTrainerSAVLGPE();
                         break;
                     }
             }
-            OriginIcon.ImageLocation = url;
-            ConnectionSpriteBox.ImageLocation = url;
-            GameType = type;
-            Properties.Settings.Default.GameConnected = GameType;
-            Properties.Settings.Default.Save();
-            ViewBox.Text = "Click View!";
-            var bg = "https://raw.githubusercontent.com/kwsch/PKHeX/master/PKHeX.Drawing.PokeSprite/Resources/img/Pokemon%20Sprite%20Overlays/starter.png";
-            PokeSprite.ImageLocation = bg;
-            TrainerLabel.Text = strings.Item1;
-            TIDSID.Text = strings.Item2;
+            BeginInvoke((MethodInvoker)delegate ()
+            {
+                OriginIcon.ImageLocation = url;
+                ConnectionSpriteBox.ImageLocation = url;
+                GameType = type;
+                Settings.Default.GameConnected = GameType;
+                Settings.Default.Save();
+                ViewBox.Text = "Click View!";
+                var bg = "https://raw.githubusercontent.com/kwsch/PKHeX/master/PKHeX.Drawing.PokeSprite/Resources/img/Pokemon%20Sprite%20Overlays/starter.png";
+                PokeSprite.ImageLocation = bg;
+                TrainerLabel.Text = strings.Item1;
+                richTIDSID.Text = strings.Item2;
+                trainerStrings[0] = Trainer.OT!;
+                trainerStrings[1] = $"{Trainer.TID16}";
+                trainerStrings[2] = $"{Trainer.SID16}";
+            });
         }
 
         private void CaptureWindow_Click(object sender, EventArgs e)
@@ -912,12 +892,12 @@ namespace PokeViewer.NET
             {
                 case "Connection 🔌": FormLoaded[0] = true; return;
                 case "View 🔎": FormLoaded[1] = true; return;
-                case "Box 📦": form = new BoxViewerMode(GameType, Executor, colors, TrainerInfo) { TopLevel = false }; FormLoaded[2] = true; break;
+                case "Box 📦": form = new BoxViewerMode(GameType, Executor, colors, trainerStrings) { TopLevel = false }; FormLoaded[2] = true; break;
                 case "Party 👨‍👩‍👦‍👦": form = new PartyViewer(GameType, Executor, colors) { TopLevel = false }; FormLoaded[3] = true; break;
                 case "Egg 🥚": form = new Egg_Viewer(GameType, Executor, colors) { TopLevel = false }; FormLoaded[4] = true; break;
                 case "NPC 🤖": form = new NPCViewer(GameType, Executor, colors) { TopLevel = false }; FormLoaded[5] = true; break;
                 case "Screenshot 📷": form = new ScreenshotForm(Executor, colors) { TopLevel = false }; FormLoaded[6] = true; break;
-                case "Misc 📓": form = new MiscViewSV(Executor, colors) { TopLevel = false }; FormLoaded[7] = true; break;
+                case "Misc 📓": form = new MiscView(Executor, GameType, colors) { TopLevel = false }; FormLoaded[7] = true; break;
             }
 
             int curr = ViewerControl.SelectedIndex;
@@ -965,6 +945,8 @@ namespace PokeViewer.NET
             AltBackCombo.ForeColor = fore;
             EventRedeemButton.BackColor = back;
             EventRedeemButton.ForeColor = fore;
+            richTIDSID.BackColor = back;
+            richTIDSID.ForeColor = fore;
         }
 
         private static bool CheckForMood()
@@ -991,7 +973,7 @@ namespace PokeViewer.NET
             ViewerControl.TabPages.Remove(EggPage);
             ViewerControl.TabPages.Remove(NPCPage);
             ViewerControl.TabPages.Remove(InGameScreenshotPage);
-            ViewerControl.TabPages.Remove(OutbreakPage);
+            ViewerControl.TabPages.Remove(MiscPage);
         }
 
         private void WideButton_Click(object sender, EventArgs e)
@@ -1029,12 +1011,12 @@ namespace PokeViewer.NET
             form.ShowDialog();
         }
 
-        private async void ScreenTrackBar_Scroll(object sender, EventArgs e)
+        private void ScreenTrackBar_Scroll(object sender, EventArgs e)
         {
             if (ScreenTrackBar.Value != 1)
-                await SetScreen(ScreenState.Off, CancellationToken.None).ConfigureAwait(false);
+                SetScreen(ScreenState.Off, CancellationToken.None).ConfigureAwait(false);
             else
-                await SetScreen(ScreenState.On, CancellationToken.None).ConfigureAwait(false);
+                SetScreen(ScreenState.On, CancellationToken.None).ConfigureAwait(false);
         }
 
         private async Task SetScreen(ScreenState state, CancellationToken token)
@@ -1084,16 +1066,27 @@ namespace PokeViewer.NET
 
         #region TrainerSav
         // via SysBot.NET
+
+        public class TrainerInfo
+        {
+            public string? OT { get; set; }
+            public ushort? TID16 { get; set; }
+            public ushort? SID16 { get; set; }
+        }
+
         public async Task<(string, string)> GetFakeTrainerSAVSWSH(CancellationToken token)
         {
             var sav = new SAV8SWSH();
             var info = sav.MyStatus;
-            var read = await Executor.Connection.ReadBytesAsync(Offsets.TrainerDataOffsetSWSH, Offsets.TrainerDataLengthSWSH, token).ConfigureAwait(false);
+            var read = await Executor.SwitchConnection.ReadBytesAsync(Offsets.TrainerDataOffsetSWSH, Offsets.TrainerDataLengthSWSH, token).ConfigureAwait(false);
             read.CopyTo(info.Data);
-            TrainerInfo.OT = sav.OT;
-            TrainerInfo.TID16 = sav.TID16;
-            TrainerInfo.SID16 = sav.SID16;
-            return ($"Name: {sav.OT}", $"TID: {sav.TrainerTID7} | SID: {sav.TrainerSID7}");
+            var newInfo = new TrainerInfo
+            {
+                OT = sav.OT,
+                TID16 = sav.TID16,
+                SID16 = sav.SID16
+            };
+            return ($"Name: {newInfo.OT}", $"TID: {sav.TrainerTID7} ({sav.TID16})\nSID: {sav.TrainerSID7} ({sav.SID16})");
         }
         public async Task<(string, string)> GetFakeTrainerSAVSV(CancellationToken token)
         {
@@ -1101,10 +1094,13 @@ namespace PokeViewer.NET
             var info = sav.MyStatus;
             var read = await Executor.SwitchConnection.PointerPeek(info.Data.Length, Offsets.MyStatusPointerSV, token).ConfigureAwait(false);
             read.CopyTo(info.Data);
-            TrainerInfo.OT = sav.OT;
-            TrainerInfo.TID16 = sav.TID16;
-            TrainerInfo.SID16 = sav.SID16;
-            return ($"Name: {sav.OT}", $"TID: {sav.TrainerTID7} | SID: {sav.TrainerSID7}");
+            var newInfo = new TrainerInfo
+            {
+                OT = sav.OT,
+                TID16 = sav.TID16,
+                SID16 = sav.SID16
+            };
+            return ($"Name: {newInfo.OT}", $"TID: {sav.TrainerTID7} ({sav.TID16})\nSID: {sav.TrainerSID7} ({sav.SID16})");
         }
         public async Task<(string, string)> GetFakeTrainerSAVLA(CancellationToken token)
         {
@@ -1112,10 +1108,13 @@ namespace PokeViewer.NET
             var info = sav.MyStatus;
             var read = await Executor.SwitchConnection.PointerPeek(info.Data.Length, Offsets.MyStatusPointerLA, token).ConfigureAwait(false);
             read.CopyTo(info.Data);
-            TrainerInfo.OT = sav.OT;
-            TrainerInfo.TID16 = sav.TID16;
-            TrainerInfo.SID16 = sav.SID16;
-            return ($"Name: {sav.OT}", $"TID: {sav.TrainerTID7} | SID: {sav.TrainerSID7}");
+            var newInfo = new TrainerInfo
+            {
+                OT = sav.OT,
+                TID16 = sav.TID16,
+                SID16 = sav.SID16
+            };
+            return ($"Name: {newInfo.OT}", $"TID: {sav.TrainerTID7} ({sav.TID16})\nSID: {sav.TrainerSID7} ({sav.SID16})");
         }
         public const int MaxByteLengthStringObject = 0x14 + 0x1A;
         public async Task<(string, string)> GetFakeTrainerSAVBDSP(int type, CancellationToken token)
@@ -1129,24 +1128,30 @@ namespace PokeViewer.NET
             var sid = await Executor.SwitchConnection.ReadBytesAbsoluteAsync(offset + 2, 2, token).ConfigureAwait(false);
             info.TID16 = System.Buffers.Binary.BinaryPrimitives.ReadUInt16LittleEndian(tid);
             info.SID16 = System.Buffers.Binary.BinaryPrimitives.ReadUInt16LittleEndian(sid);
-            TrainerInfo.OT = sav.OT;
-            TrainerInfo.TID16 = sav.TID16;
-            TrainerInfo.SID16 = sav.SID16;
-            return ($"Name: {sav.OT}", $"TID: {sav.TrainerTID7} | SID: {sav.TrainerSID7}");
+            var newInfo = new TrainerInfo
+            {
+                OT = sav.OT,
+                TID16 = sav.TID16,
+                SID16 = sav.SID16
+            };
+            return ($"Name: {newInfo.OT}", $"TID: {sav.TrainerTID7} ({sav.TID16})\nSID: {sav.TrainerSID7} ({sav.SID16})");
         }
-        public (string, string) GetFakeTrainerSAVLGPE(CancellationToken token)
+        public (string, string) GetFakeTrainerSAVLGPE()
         {
             var sav = new SAV7b();
             Span<byte> bytes = sav.Blocks.Status.Data;
             byte[] data = ReadLGPEData;
             data.CopyTo(bytes);
-            TrainerInfo.OT = sav.OT;
-            TrainerInfo.TID16 = sav.TID16;
-            TrainerInfo.SID16 = sav.SID16;
-            return ($"Name: {sav.OT}", $"TID: {sav.TrainerTID7} | SID: {sav.TrainerSID7}");
+            var newInfo = new TrainerInfo
+            {
+                OT = sav.OT,
+                TID16 = sav.TID16,
+                SID16 = sav.SID16
+            };
+            return ($"Name: {newInfo.OT}", $"TID: {sav.TrainerTID7} ({sav.TID16})\nSID: {sav.TrainerSID7} ({sav.SID16})");
         }
 
-        private byte[] ReadLGPEData => Executor.Connection.ReadBytesAsync(Offsets.TrainerDataLGPE, Offsets.TrainerSizeLGPE, CancellationToken.None).Result;
+        private byte[] ReadLGPEData => Executor.SwitchConnection.ReadBytesAsync(Offsets.TrainerDataLGPE, Offsets.TrainerSizeLGPE, CancellationToken.None).Result;
 
         public static string ReadStringFromRAMObject(byte[] obj)
         {
@@ -1219,18 +1224,9 @@ namespace PokeViewer.NET
 
         private void EventRedeem_Click(object sender, EventArgs e)
         {
-            if (GameType == (int)GameSelected.HOME)
-            {
-                var colors = CheckForColors(Settings.Default.DarkMode);
-                HOMEViewerUtil form = new(Executor, colors);
-                form.ShowDialog();
-            }
-            else
-            {
-                var colors = CheckForColors(Settings.Default.DarkMode);
-                EventCodeEntry form = new(Executor, colors);
-                form.ShowDialog();
-            }
+            var colors = CheckForColors(Settings.Default.DarkMode);
+            EventCodeEntry form = new(Executor, colors);
+            form.ShowDialog();
         }
 
         private void button1_Click_1(object sender, EventArgs e)

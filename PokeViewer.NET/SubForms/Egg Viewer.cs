@@ -12,10 +12,10 @@ namespace PokeViewer.NET.SubForms
 {
     public partial class Egg_Viewer : Form
     {
-        private readonly ViewerExecutor Executor;
+        private readonly ViewerState Executor;
         public int GameType;
         protected ViewerOffsets Offsets { get; } = new();
-        public Egg_Viewer(int gametype, ViewerExecutor executor, (Color, Color) color)
+        public Egg_Viewer(int gametype, ViewerState executor, (Color, Color) color)
         {
             InitializeComponent();
             GameType = gametype;
@@ -843,7 +843,7 @@ namespace PokeViewer.NET.SubForms
             string title = pinguser ? $"Match Found!" : "Unwanted match..";
             var WebHook = new
             {
-                username = $"PokéViewer.NET",
+                username = $"PokeViewer.NET",
                 content = userContent,
                 embeds = new List<object>
                 {

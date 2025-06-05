@@ -5,11 +5,11 @@ namespace PokeViewer.NET.SubForms
 {
     public partial class PartyViewer : Form
     {
-        private readonly ViewerExecutor Executor;
+        private readonly ViewerState Executor;
         public int GameType;
         public ToolTip tt = new();
         public List<string> CurrentSlotStats = new();
-        public PartyViewer(int gametype, ViewerExecutor executor, (Color, Color) color)
+        public PartyViewer(int gametype, ViewerState executor, (Color, Color) color)
         {
             InitializeComponent();
             Executor = executor;

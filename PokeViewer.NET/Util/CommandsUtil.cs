@@ -1,21 +1,19 @@
-﻿// Discord Integration heavily reliant on SysCord.cs via SysBot.NET modified for this project
-using Discord;
+﻿using Discord;
 using Discord.Commands;
-using Discord.Rest;
 using Newtonsoft.Json;
 using PKHeX.Core;
+using PokeViewer.NET;
 using PokeViewer.NET.Properties;
 using SysBot.Base;
-using static PokeViewer.NET.RoutineExecutor;
 using static PokeViewer.NET.ViewerUtil;
 
-namespace PokeViewer.NET.CommandsUtil
+namespace PokéViewer.NET.Util
 {
     public class CommandsUtil : ModuleBase<SocketCommandContext>
     {
-        private ViewerExecutor? Executor = null;
+        private ViewerState? Executor;
         protected ViewerOffsets Offsets { get; } = new();
-        private ViewerExecutor CheckExecutor()
+        private ViewerState CheckExecutor()
         {
             if (Executor is null || !Executor.SwitchConnection.Connected)
             {
@@ -25,12 +23,12 @@ namespace PokeViewer.NET.CommandsUtil
                     SwitchProtocol.WiFi => new SwitchConnectionConfig { IP = Settings.Default.SwitchIP, Port = 6000, Protocol = SwitchProtocol.WiFi },
                     _ => throw new NotImplementedException(),
                 };
-                var state = new ViewerState
-                {
-                    Connection = config,
-                    InitialRoutine = RoutineType.Read,
-                };
-                Executor = new ViewerExecutor(state);
+				var state = new ViewerExecutorBase
+				{
+					Connection = config,
+					InitialRoutine = RoutineType.Read,
+				};
+				Executor = new ViewerState(state);
                 Executor.SwitchConnection.Connect();
             }
             return Executor;
@@ -156,7 +154,7 @@ namespace PokeViewer.NET.CommandsUtil
         {
             Executor = CheckExecutor();
             var token = CancellationToken.None;
-            var bytes = await Executor.SwitchConnection.PixelPeek(token).ConfigureAwait(false) ?? Array.Empty<byte>();
+            var bytes = await Executor.SwitchConnection.PixelPeek(token).ConfigureAwait(false) ?? [];
             if (bytes.Length == 1)
             {
                 await ReplyAsync($"Failed to take a screenshot. Is the bot connected?").ConfigureAwait(false);
@@ -167,341 +165,6 @@ namespace PokeViewer.NET.CommandsUtil
             var img = "cap.jpg";
             var embed = new EmbedBuilder { ImageUrl = $"attachment://{img}", Color = Discord.Color.Blue }.WithFooter(new EmbedFooterBuilder { Text = $"Captured image from bot at address {Settings.Default.SwitchIP}." });
             await Context.Channel.SendFileAsync(ms, img, "", false, embed: embed.Build());
-        }
-
-        [Command("dumpboxslot")]
-        [Alias("dbs")]
-        [Summary("Dumps the desired box slot to specified file type")]
-        public async Task DumpBoxSlot(int box, int slot)
-        {
-            Executor = CheckExecutor();
-            var token = CancellationToken.None;
-            BoxViewerMode? BoxAssist = new(Settings.Default.GameConnected, Executor, default, new SimpleTrainerInfo());
-            if (Settings.Default.GameConnected == (int)GameSelected.HOME)
-            {
-                await ReplyAsync("HOME dumping is not supported.").ConfigureAwait(false);
-                return;
-            }
-            var result = await BoxAssist.SlotAssist(box - 1, slot - 1, token).ConfigureAwait(false);
-            if (result.Item3.Species != (ushort)Species.None)
-                await SendDumpedPKMAsync(Context.Channel, result.Item3).ConfigureAwait(false);
-            else
-                await ReplyAsync("No data present.").ConfigureAwait(false);
-        }
-
-        [Command("clearboxslot")]
-        [Alias("cbs")]
-        [Summary("Clears the desired box slot to specified file type")]
-        public async Task ClearBoxSlot(int box, int slot)
-        {
-            Executor = CheckExecutor();
-            BoxViewerMode? BoxAssist = new(Settings.Default.GameConnected, Executor, default, new SimpleTrainerInfo());
-            if (Settings.Default.GameConnected == (int)GameSelected.HOME)
-            {
-                await ReplyAsync("HOME clearing is not supported.").ConfigureAwait(false);
-                return;
-            }
-            PKM pk = new PK9();
-            switch (Settings.Default.GameConnected)
-            {
-                case (int)GameSelected.Scarlet or (int)GameSelected.Violet: pk = new PK9(); break;
-                case (int)GameSelected.LegendsArceus: pk = new PA8(); break;
-                case (int)GameSelected.BrilliantDiamond or (int)GameSelected.ShiningPearl: pk = new PB8(); break;
-                case (int)GameSelected.Sword or (int)GameSelected.Shield: pk = new PK8(); break;
-                case (int)GameSelected.LetsGoPikachu or (int)GameSelected.LetsGoEevee: pk = new PB7(); break;
-            }
-            var offset = await BoxAssist.ReturnBoxSlot(box - 1, slot - 1).ConfigureAwait(false);
-            await Executor.SwitchConnection.WriteBytesAbsoluteAsync(pk.EncryptedBoxData, offset, CancellationToken.None).ConfigureAwait(false);
-            await ReplyAsync("Done.").ConfigureAwait(false);
-        }
-
-        [Command("clearbox")]
-        [Alias("cb")]
-        [Summary("Clears the desired box slot to specified file type")]
-        public async Task ClearBox(int box)
-        {
-            Executor = CheckExecutor();
-            BoxViewerMode? BoxAssist = new(Settings.Default.GameConnected, Executor, default, new SimpleTrainerInfo());
-            if (Settings.Default.GameConnected == (int)GameSelected.HOME)
-            {
-                await ReplyAsync("HOME clearing is not supported.").ConfigureAwait(false);
-                return;
-            }
-            PKM pk = new PK9();
-            switch (Settings.Default.GameConnected)
-            {
-                case (int)GameSelected.Scarlet or (int)GameSelected.Violet: pk = new PK9(); break;
-                case (int)GameSelected.LegendsArceus: pk = new PA8(); break;
-                case (int)GameSelected.BrilliantDiamond or (int)GameSelected.ShiningPearl: pk = new PB8(); break;
-                case (int)GameSelected.Sword or (int)GameSelected.Shield: pk = new PK8(); break;
-                case (int)GameSelected.LetsGoPikachu or (int)GameSelected.LetsGoEevee: pk = new PB7(); break;
-            }
-            for (int i = 0; i < 30; i++)
-            {
-                var offset = await BoxAssist.ReturnBoxSlot(box - 1, i).ConfigureAwait(false);
-                await Executor.SwitchConnection.WriteBytesAbsoluteAsync(pk.EncryptedBoxData, offset, CancellationToken.None).ConfigureAwait(false);
-                await Task.Delay(0_100, CancellationToken.None).ConfigureAwait(false);
-            }
-            await ReplyAsync("Done.").ConfigureAwait(false);
-        }
-
-        [Command("readboxslot")]
-        [Alias("rbs")]
-        [Summary("Reads the specified box slot")]
-        public async Task ReadSlot(int box, int slot)
-        {
-            Executor = CheckExecutor();
-            var token = CancellationToken.None;
-            BoxViewerMode? BoxAssist = new(Settings.Default.GameConnected, Executor, default, new SimpleTrainerInfo());
-            var result = await BoxAssist.SlotAssist(box - 1, slot - 1, token).ConfigureAwait(false);
-            if (result.Item3.Species != (ushort)Species.None)
-            {
-                var form = FormOutput(result.Item3.Species, result.Item3.Form, out _);
-                string gender = string.Empty;
-                var scaleS = (IScaledSize)result.Item3;
-                string scale = $"Scale: {PokeSizeDetailedUtil.GetSizeRating(scaleS.HeightScalar)} ({scaleS.HeightScalar})";
-                switch (result.Item3.Gender)
-                {
-                    case 0: gender = " (M)"; break;
-                    case 1: gender = " (F)"; break;
-                    case 2: break;
-                }
-                string msg = "";
-                bool hasMark = false;
-                if (result.Item3 is PK8 or PK9)
-                {
-                    if (result.Item3 is PK8)
-                    {
-                        hasMark = HasMark((PK8)result.Item3, out RibbonIndex mark);
-                        msg = hasMark ? $"{Environment.NewLine}Mark: {mark.ToString().Replace("Mark", "")}" : "";
-                    }
-                    if (result.Item3 is PK9)
-                    {
-                        hasMark = HasMark((PK9)result.Item3, out RibbonIndex mark);
-                        msg = hasMark ? $"{Environment.NewLine}Mark: {mark.ToString().Replace("Mark", "")}" : "";
-                    }
-                }
-                string egg = string.Empty;
-                if (result.Item3.IsEgg)
-                    egg = "\n**This Pokémon is an egg!**";
-                string output = $"Nature: {(Nature)result.Item3.Nature}{Environment.NewLine}Ability: {GameInfo.GetStrings(1).Ability[result.Item3.Ability]}{Environment.NewLine}IVs: {result.Item3.IV_HP}/{result.Item3.IV_ATK}/{result.Item3.IV_DEF}/{result.Item3.IV_SPA}/{result.Item3.IV_SPD}/{result.Item3.IV_SPE}{Environment.NewLine}Ball: {(Ball)result.Item3.Ball}{Environment.NewLine}{scale}{msg}{egg}";
-                var author = new EmbedAuthorBuilder
-                {
-                    IconUrl = result.Item2,
-                    Name = $"Box {box} Slot {slot}"
-                };
-                var embed = new EmbedBuilder
-                {
-                    Title = $"{(result.Item3.ShinyXor == 0 ? "■ - " : result.Item3.ShinyXor <= 16 ? "★ - " : "")}{(Species)result.Item3.Species}{form}{gender}",
-                    Color = Discord.Color.Blue,
-                    ThumbnailUrl = result.Item1,
-                    Description = output,
-                }.WithAuthor(author);
-                await Context.Channel.SendMessageAsync("", false, embed.Build());
-            }
-            else
-                await ReplyAsync($"No data present.").ConfigureAwait(false);
-        }
-
-        [Command("readbox")]
-        [Alias("rb")]
-        [Summary("Reads the specified box")]
-        public async Task ReadBox(int box)
-        {
-            Executor = CheckExecutor();
-            var token = CancellationToken.None;
-            BoxViewerMode? BoxAssist = new(Settings.Default.GameConnected, Executor, default, new SimpleTrainerInfo());
-            List<PKM> list = await BoxAssist.BoxRoutineAssist(box - 1, token).ConfigureAwait(false);
-
-            var embed = new EmbedBuilder
-            {
-                Title = $"Displaying Box {box}",
-                Color = Discord.Color.Blue
-            };
-
-            if (list.Count > 0)
-            {
-                for (int i = 0; i < 25; i++)
-                {
-                    if (list[i].Species == (ushort)Species.None)
-                        continue;
-
-                    var form = FormOutput(list[i].Species, list[i].Form, out _);
-                    string gender = string.Empty;
-                    var scaleS = (IScaledSize)list[i];
-                    string scale = $"Scale: {PokeSizeDetailedUtil.GetSizeRating(scaleS.HeightScalar)} ({scaleS.HeightScalar})";
-
-                    switch (list[i].Gender)
-                    {
-                        case 0: gender = " (M)"; break;
-                        case 1: gender = " (F)"; break;
-                        case 2: break;
-                    }
-
-                    string msg = "";
-                    if (list[i] is PK8 or PK9)
-                    {
-                        bool hasMark = false;
-                        if (list[i] is PK8)
-                        {
-                            HasMark((PK8)list[i], out RibbonIndex mark);
-                            msg = hasMark ? $"{Environment.NewLine}Mark: {mark.ToString().Replace("Mark", "")}" : "";
-                        }
-                        if (list[i] is PK9)
-                        {
-                            HasMark((PK9)list[i], out RibbonIndex mark);
-                            msg = hasMark ? $"{Environment.NewLine}Mark: {mark.ToString().Replace("Mark", "")}" : "";
-                        }
-                    }
-                    string egg = string.Empty;
-                    if (list[i].IsEgg)
-                        egg = "\n**This Pokémon is an egg!**";
-                    string output = $"{(list[i].ShinyXor == 0 ? "■ - " : list[i].ShinyXor <= 16 ? "★ - " : "")}{(Species)list[i].Species}{form}{gender}{Environment.NewLine}Nature: {(Nature)list[i].Nature}{Environment.NewLine}Ability: {GameInfo.GetStrings(1).Ability[list[i].Ability]}{Environment.NewLine}IVs: {list[i].IV_HP}/{list[i].IV_ATK}/{list[i].IV_DEF}/{list[i].IV_SPA}/{list[i].IV_SPD}/{list[i].IV_SPE}{Environment.NewLine}Ball: {(Ball)list[i].Ball}{Environment.NewLine}{scale}{msg}{egg}";
-
-                    embed.AddField($"Slot {i + 1}", output, true);
-                }
-                await Context.Channel.SendMessageAsync("", false, embed.Build());
-
-                if (list.Count >= 25)
-                {
-                    embed = new EmbedBuilder
-                    {
-                        Title = $"Displaying Box {box}",
-                        Color = Discord.Color.Blue
-                    };
-
-                    for (int i = 25; i < list.Count; i++)
-                    {
-                        if (list[i].Species == (ushort)Species.None)
-                            continue;
-
-                        var form = FormOutput(list[i].Species, list[i].Form, out _);
-                        string gender = string.Empty;
-                        var scaleS = (IScaledSize)list[i];
-                        string scale = $"Scale: {PokeSizeDetailedUtil.GetSizeRating(scaleS.HeightScalar)} ({scaleS.HeightScalar})";
-
-                        switch (list[i].Gender)
-                        {
-                            case 0: gender = " (M)"; break;
-                            case 1: gender = " (F)"; break;
-                            case 2: break;
-                        }
-
-                        string msg = "";
-                        if (list[i] is PK8 or PK9)
-                        {
-                            bool hasMark = false;
-                            if (list[i] is PK8)
-                            {
-                                HasMark((PK8)list[i], out RibbonIndex mark);
-                                msg = hasMark ? $"{Environment.NewLine}Mark: {mark.ToString().Replace("Mark", "")}" : "";
-                            }
-                            if (list[i] is PK9)
-                            {
-                                HasMark((PK9)list[i], out RibbonIndex mark);
-                                msg = hasMark ? $"{Environment.NewLine}Mark: {mark.ToString().Replace("Mark", "")}" : "";
-                            }
-                        }
-
-                        string egg = string.Empty;
-                        if (list[i].IsEgg)
-                            egg = "\n**This Pokémon is an egg!**";
-                        string output = $"{(list[i].ShinyXor == 0 ? "■ - " : list[i].ShinyXor <= 16 ? "★ - " : "")}{(Species)list[i].Species}{form}{gender}{Environment.NewLine}Nature: {(Nature)list[i].Nature}{Environment.NewLine}Ability: {GameInfo.GetStrings(1).Ability[list[i].Ability]}{Environment.NewLine}IVs: {list[i].IV_HP}/{list[i].IV_ATK}/{list[i].IV_DEF}/{list[i].IV_SPA}/{list[i].IV_SPD}/{list[i].IV_SPE}{Environment.NewLine}Ball: {(Ball)list[i].Ball}{Environment.NewLine}{scale}{msg}{egg}";
-
-                        embed.AddField($"Slot {i + 1}", output, true);
-                    }
-                    if (embed.Fields.Count > 0)
-                        await Context.Channel.SendMessageAsync("", false, embed.Build());
-                }
-            }
-            else
-                await ReplyAsync($"No data present.").ConfigureAwait(false);
-
-        }
-
-        [Command("injectboxslot", RunMode = RunMode.Async)]
-        [Alias("ibs")]
-        [Summary("Reads the specified box slot")]
-        public async Task InjectBoxSlot(int box, int slot)
-        {
-            Executor = CheckExecutor();
-            var token = CancellationToken.None;
-            BoxViewerMode? BoxAssist = new(Settings.Default.GameConnected, Executor, default, new SimpleTrainerInfo());
-            if (Settings.Default.GameConnected == (int)GameSelected.HOME)
-            {
-                await ReplyAsync("HOME injection is not supported.").ConfigureAwait(false);
-                return;
-            }
-            var result = await BoxAssist.SlotAssist(box - 1, slot - 1, token).ConfigureAwait(false);
-
-            if (result.Item3.Species != (ushort)Species.None)
-            {
-                RestUserMessage msg = await Context.Channel.SendMessageAsync($"Box {box} Slot {slot} contains a {(Species)result.Item3.Species}. Dump and continue with injection?").ConfigureAwait(false);
-                IEmote[] reaction = { new Emoji("👍") };
-                await msg.AddReactionsAsync(reaction).ConfigureAwait(false);
-                for (int i = 0; i < 8; i++)
-                {
-                    await Task.Delay(1_000).ConfigureAwait(false);
-                    await msg.UpdateAsync().ConfigureAwait(false);
-                    if (msg.Reactions.Count > 1)
-                        break;
-                }
-                if (msg.Reactions.Count < 1)
-                {
-                    await ReplyAsync("You did not reply before the timeout. Stopping execution.");
-                    return;
-                }
-                await msg.ModifyAsync(x => x.Content = "Done.").ConfigureAwait(false);
-                await SendDumpedPKMAsync(Context.Channel, result.Item3).ConfigureAwait(false);
-            }
-
-            var attachments = Context.Message.Attachments;
-            foreach (var att in attachments)
-            {
-                string filetype = att.Filename[^3..];
-                string url = att.Url;
-                HttpClient client = new();
-                var bytes = await client.GetByteArrayAsync(url).ConfigureAwait(false);
-                EntityContext context = new();
-                switch (filetype)
-                {
-                    case "PK9": context = EntityContext.Gen9; break;
-                    case "PA8": context = EntityContext.Gen8a; break;
-                    case "PB8": context = EntityContext.Gen8b; break;
-                    case "PK8": context = EntityContext.Gen8; break;
-                    case "PB7": context = EntityContext.Gen7b; break;
-                }
-                var pkm = EntityFormat.GetFromBytes(bytes, context);
-                if (pkm == null)
-                    await ReplyAsync($"The attachment failed to download.").ConfigureAwait(false);
-                if (pkm != null)
-                {
-                    var la = new LegalityAnalysis(pkm!);
-                    if (!la.Valid)
-                    {
-                        await ReplyAsync($"The attached {(Species)pkm.Species} is illegal.").ConfigureAwait(false);
-                        RestUserMessage msg = await Context.Channel.SendMessageAsync($"The attached {(Species)pkm.Species} is illegal. Continue with injection?").ConfigureAwait(false);
-                        IEmote[] reaction = { new Emoji("👍") };
-                        await msg.AddReactionsAsync(reaction).ConfigureAwait(false);
-                        for (int i = 0; i < 8; i++)
-                        {
-                            await Task.Delay(1_000).ConfigureAwait(false);
-                            await msg.UpdateAsync().ConfigureAwait(false);
-                            if (msg.Reactions.Count > 1)
-                                break;
-                        }
-                        if (msg.Reactions.Count < 1)
-                        {
-                            await ReplyAsync("You did not reply before the timeout. Stopping execution.");
-                            return;
-                        }
-                    }
-                    var offset = await BoxAssist.ReturnBoxSlot(box - 1, slot - 1).ConfigureAwait(false);
-                    await Executor.SwitchConnection.WriteBytesAbsoluteAsync(pkm.EncryptedBoxData, offset, CancellationToken.None).ConfigureAwait(false);
-                    await ReplyAsync($"Done.").ConfigureAwait(false);
-                    return;
-                }
-            }
         }
 
         [Command("sleep")]
@@ -551,8 +214,8 @@ namespace PokeViewer.NET.CommandsUtil
             var sequenceclicks = clicks.Split(',');
             var sc = ReturnCommands(sequenceclicks);
             var sequencedelays = delays.Split(',');
-            List<SwitchButton> Clicks = new();
-            List<int> Delays = new();
+            List<SwitchButton> Clicks = [];
+            List<int> Delays = [];
             foreach (var sequence in sc)
             {
                 Clicks.Add(sequence);
@@ -568,14 +231,14 @@ namespace PokeViewer.NET.CommandsUtil
 
             foreach (var j in jsonData)
             {
-                if (j.Name.ToUpper() == newseq.Name.ToUpper())
+                if (j.Name.Equals(newseq.Name, StringComparison.CurrentCultureIgnoreCase))
                 {
                     await ReplyAsync("A custom sequence with this name already exists.");
                     return;
                 }
             }
-            newseq.Click = Clicks.ToArray();
-            newseq.Delay = Delays.ToArray();
+            newseq.Click = [.. Clicks];
+            newseq.Delay = [.. Delays];
             jsonData.Add(newseq);
             json = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
             File.WriteAllText(path, json);
@@ -593,7 +256,7 @@ namespace PokeViewer.NET.CommandsUtil
 
             foreach (var j in jsonData)
             {
-                if (j.Name.ToUpper() == name.ToUpper())
+                if (j.Name.Equals(name, StringComparison.CurrentCultureIgnoreCase))
                 {
                     jsonData.Remove(j);
                     json = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
@@ -645,7 +308,7 @@ namespace PokeViewer.NET.CommandsUtil
                 await ReplyAsync("No data found in the list.").ConfigureAwait(false);
                 return;
             }
-            List<string> list = new();
+            List<string> list = [];
             foreach (var j in jsonData)
             {
                 string res = string.Join($",", j.Click.ToList());
@@ -689,7 +352,7 @@ namespace PokeViewer.NET.CommandsUtil
 
         private static List<SwitchButton> ReturnCommands(string[] cmds)
         {
-            List<SwitchButton> values = new();
+            List<SwitchButton> values = [];
             for (int i = 0; i < cmds.Length; i++)
             {
                 switch (cmds[i].ToUpper())
@@ -717,68 +380,11 @@ namespace PokeViewer.NET.CommandsUtil
             return values;
         }
 
-        #region viaReusableActions
-        private static async Task SendDumpedPKMAsync(IMessageChannel channel, PKM pkm)
-        {
-            string form = pkm.Form > 0 ? $"-{pkm.Form:00}" : string.Empty;
-            string ballFormatted = string.Empty;
-            string shinytype = string.Empty;
-            string marktype = string.Empty;
-            if (pkm.IsShiny)
-            {
-                if (pkm.Format >= 8 && (pkm.ShinyXor == 0 || pkm.FatefulEncounter || pkm.Version == GameVersion.GO))
-                    shinytype = " ■";
-                else
-                    shinytype = " ★";
-            }
-
-            string IVList = pkm.IV_HP + "." + pkm.IV_ATK + "." + pkm.IV_DEF + "." + pkm.IV_SPA + "." + pkm.IV_SPD + "." + pkm.IV_SPE;
-
-            string TIDFormatted = pkm.Generation >= 7 ? $"{pkm.TrainerTID7:000000}" : $"{pkm.TID16:00000}";
-
-            if (pkm.Ball != (int)Ball.None)
-                ballFormatted = " - " + GameInfo.Strings.balllist[pkm.Ball].Split(' ')[0];
-
-            string speciesName = SpeciesName.GetSpeciesNameGeneration(pkm.Species, (int)LanguageID.English, pkm.Format);
-            if (pkm is IGigantamax gmax && gmax.CanGigantamax)
-                speciesName += "-Gmax";
-
-            string OTInfo = string.IsNullOrEmpty(pkm.OriginalTrainerName) ? "" : $" - {pkm.OriginalTrainerName} - {TIDFormatted}{ballFormatted}";
-
-            if (pkm is PK9)
-            {
-                bool hasMark = HasMark((PK9)pkm, out RibbonIndex mark);
-                if (hasMark)
-                    marktype = hasMark ? $"{mark.ToString().Replace("Mark", "")}Mark - " : "";
-            }
-            if (pkm is PK8)
-            {
-                bool hasMark = HasMark((PK8)pkm, out RibbonIndex mark);
-                if (hasMark)
-                    marktype = hasMark ? $"{mark.ToString().Replace("Mark", "")}Mark - " : "";
-            }
-            string filename = $"{pkm.Species:000}{form}{shinytype} - {speciesName} - {marktype}{IVList}{OTInfo} - {pkm.EncryptionConstant:X8}";
-            string filetype = "";
-            if (pkm is PK8)
-                filetype = ".pkm8";
-            if (pkm is PB8)
-                filetype = ".pb8";
-            if (pkm is PA8)
-                filetype = ".pa8";
-            if (pkm is PK9)
-                filetype = ".pk9";
-            var tmp = Path.Combine(Path.GetTempPath(), filename + filetype);
-            File.WriteAllBytes(tmp, pkm.DecryptedPartyData);
-            await channel.SendFileAsync(tmp, "Here is your dumped file!").ConfigureAwait(false);
-            File.Delete(tmp);
-        }
-        #endregion
-
         public class CustomSequence
         {
             public string Name { get; set; } = string.Empty;
-            public SwitchButton[] Click { get; set; } = Array.Empty<SwitchButton>();
-            public int[] Delay { get; set; } = Array.Empty<int>();
+            public SwitchButton[] Click { get; set; } = [];
+            public int[] Delay { get; set; } = [];
         }
 
         public class HelpModule : ModuleBase<SocketCommandContext>
@@ -794,7 +400,7 @@ namespace PokeViewer.NET.CommandsUtil
             [Summary("Lists available commands.")]
             public async Task HelpAsync()
             {
-                List<Embed> embeds = new();
+                List<Embed> embeds = [];
                 var builder = new EmbedBuilder
                 {
                     Color = new Discord.Color(114, 137, 218),
@@ -804,7 +410,7 @@ namespace PokeViewer.NET.CommandsUtil
                 foreach (var module in Service.Modules)
                 {
                     string? description = null;
-                    HashSet<string> mentioned = new();
+                    HashSet<string> mentioned = [];
                     foreach (var cmd in module.Commands)
                     {
                         var name = cmd.Name;
@@ -842,7 +448,7 @@ namespace PokeViewer.NET.CommandsUtil
                 if (builder.Fields.Count > 0)
                     embeds.Add(builder.Build());
 
-                await ReplyAsync("Help has arrived!", false, null, null, null, null, null, null, embeds.ToArray()).ConfigureAwait(false);
+                await ReplyAsync("Help has arrived!", false, null, null, null, null, null, null, [.. embeds]).ConfigureAwait(false);
             }
 
             [Command("help")]

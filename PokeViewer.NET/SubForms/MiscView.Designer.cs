@@ -2,7 +2,7 @@
 
 namespace PokeViewer.NET.SubForms
 {
-    partial class MiscViewSV
+    partial class MiscView
     {
         /// <summary>
         /// Required designer variable.
@@ -98,6 +98,7 @@ namespace PokeViewer.NET.SubForms
             // SnackGroup
             // 
             SnackGroup.Controls.Add(SnackworthBtn);
+            SnackGroup.Enabled = false;
             SnackGroup.Location = new Point(227, 256);
             SnackGroup.Name = "SnackGroup";
             SnackGroup.Size = new Size(233, 74);
@@ -155,7 +156,7 @@ namespace PokeViewer.NET.SubForms
             CurrentTimeLabel.AutoSize = true;
             CurrentTimeLabel.Location = new Point(219, 19);
             CurrentTimeLabel.Name = "CurrentTimeLabel";
-            CurrentTimeLabel.Size = new Size(110, 15);
+            CurrentTimeLabel.Size = new Size(111, 15);
             CurrentTimeLabel.TabIndex = 76;
             CurrentTimeLabel.Text = "Current Local Time:";
             // 
@@ -201,6 +202,7 @@ namespace PokeViewer.NET.SubForms
             // OutbreakGroup
             // 
             OutbreakGroup.Controls.Add(OutbreakBtn);
+            OutbreakGroup.Enabled = false;
             OutbreakGroup.Location = new Point(8, 22);
             OutbreakGroup.Name = "OutbreakGroup";
             OutbreakGroup.Size = new Size(200, 85);
@@ -224,6 +226,7 @@ namespace PokeViewer.NET.SubForms
             WildSpawnGroup.Controls.Add(WildDisable);
             WildSpawnGroup.Controls.Add(WildSpawnBtn);
             WildSpawnGroup.Controls.Add(WildEnable);
+            WildSpawnGroup.Enabled = false;
             WildSpawnGroup.Location = new Point(8, 256);
             WildSpawnGroup.Name = "WildSpawnGroup";
             WildSpawnGroup.Size = new Size(200, 74);
@@ -274,6 +277,7 @@ namespace PokeViewer.NET.SubForms
             SeedToPokemonGroup.Controls.Add(GoButton);
             SeedToPokemonGroup.Controls.Add(SeedLabel);
             SeedToPokemonGroup.Controls.Add(RaidSensCheck);
+            SeedToPokemonGroup.Enabled = false;
             SeedToPokemonGroup.Location = new Point(227, 22);
             SeedToPokemonGroup.Name = "SeedToPokemonGroup";
             SeedToPokemonGroup.Size = new Size(233, 229);
@@ -464,7 +468,7 @@ namespace PokeViewer.NET.SubForms
             button1.Size = new Size(75, 23);
             button1.TabIndex = 0;
             // 
-            // MiscViewSV
+            // MiscView
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
@@ -472,7 +476,7 @@ namespace PokeViewer.NET.SubForms
             ClientSize = new Size(496, 451);
             Controls.Add(MiscGroup);
             FormBorderStyle = FormBorderStyle.None;
-            Name = "MiscViewSV";
+            Name = "MiscView";
             Text = "MiscView";
             MiscGroup.ResumeLayout(false);
             SnackGroup.ResumeLayout(false);

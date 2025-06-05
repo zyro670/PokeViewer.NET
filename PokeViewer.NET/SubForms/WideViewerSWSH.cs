@@ -8,10 +8,10 @@ namespace PokeViewer.NET.WideViewForms
 {
     public partial class WideViewerSWSH : Form
     {
-        private readonly ViewerExecutor Executor;
+        private readonly ViewerState Executor;
         public int GameType;
         protected ViewerOffsets Offsets { get; } = new();
-        public WideViewerSWSH(ViewerExecutor executor, (Color, Color) color)
+        public WideViewerSWSH(ViewerState executor, (Color, Color) color)
         {
             InitializeComponent();
             Executor = executor;

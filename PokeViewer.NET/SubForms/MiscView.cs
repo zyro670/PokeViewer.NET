@@ -1,31 +1,42 @@
-﻿using Newtonsoft.Json.Linq;
-using Octokit;
-using PKHeX.Core;
+﻿using PKHeX.Core;
 using PKHeX.Drawing.Misc;
 using RaidCrawler.Core.Structures;
 using SysBot.Base;
-using System;
 using System.Text;
 using static PokeViewer.NET.RoutineExecutor;
 using static SysBot.Base.SwitchButton;
 
 namespace PokeViewer.NET.SubForms
 {
-    public partial class MiscViewSV : Form
+    public partial class MiscView : Form
     {
-        private readonly ViewerExecutor Executor;
+        private readonly ViewerState Executor;
         private (Color, Color) FormColor;
         OutbreakViewSV? OutbreakForm;
         public static bool OutbreakFormOpen = false;
+        private GameSelected GameType;
 
         protected ViewerOffsets Offsets { get; } = new();
-        public MiscViewSV(ViewerExecutor executor, (Color, Color) color)
+        public MiscView(ViewerState executor, int gameType, (Color, Color) color)
         {
             InitializeComponent();
             Executor = executor;
+            GameType = (GameSelected)gameType;
+            EnableSVAssets(GameType);
             SetColors(color);
             FormColor = color;
             UptimeOnLoad();
+        }
+
+        private void EnableSVAssets(GameSelected game)
+        {
+            if (game is GameSelected.Scarlet or GameSelected.Violet)
+            {
+                SeedToPokemonGroup.Enabled = true;
+                WildSpawnGroup.Enabled = true;
+                SnackGroup.Enabled = true;
+                OutbreakGroup.Enabled = true;
+            }
         }
 
         private void SetColors((Color, Color) color)
@@ -100,7 +111,7 @@ namespace PokeViewer.NET.SubForms
 
         public new async Task Click(SwitchButton b, int delay, CancellationToken token)
         {
-            await Executor.Connection.SendAsync(SwitchCommand.Click(b, true), token).ConfigureAwait(false);
+            await Executor.SwitchConnection.SendAsync(SwitchCommand.Click(b, true), token).ConfigureAwait(false);
             await Task.Delay(delay, token).ConfigureAwait(false);
         }
 

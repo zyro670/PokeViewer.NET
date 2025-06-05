@@ -2,6 +2,7 @@
 using PKHeX.Drawing;
 using PKHeX.Drawing.Misc;
 using PKHeX.Drawing.PokeSprite;
+using PokeViewer.NET.Properties;
 using PokeViewer.NET.SubForms;
 using static PokeViewer.NET.RoutineExecutor;
 using static PokeViewer.NET.ViewerUtil;
@@ -22,8 +23,10 @@ namespace PokeViewer.NET
         private List<string> CurrentSlotScale = [];
         private List<string> CurrentSlotMark = [];
         private List<string> CurrentSlotBall = [];
+        private List<long> CurrentSlotPtr = [];
+        private List<uint> CurrentSlotOfs = [];
         private List<PKM> PKMs = [];
-        private readonly ViewerExecutor Executor;
+        private readonly ViewerState Executor;
         private ulong AbsoluteBoxOffset;
         private uint BoxOffset = 0;
         private int BoxSlotSize = 0;
@@ -31,24 +34,33 @@ namespace PokeViewer.NET
         private Image? EggDefault = null!;
         private Image? ShinySquare = null!;
         private Image? ShinyStar = null!;
-        private SimpleTrainerInfo TrainerInfo = new();
+        private readonly string Trainer_OT;
+        private readonly string Trainer_TID16;
+        private readonly string Trainer_SID16;
 
         private string DumpFolder { get; set; } = AppDomain.CurrentDomain.BaseDirectory;
-        public BoxViewerMode(int gametype, ViewerExecutor executor, (Color, Color) color, SimpleTrainerInfo trainer)
+        public BoxViewerMode(int gametype, ViewerState executor, (Color, Color) color, string[] trainer)
         {
             InitializeComponent();
             GameType = gametype;
             Executor = executor;
             ViewButton.Text = "View";
-            if (GameType == (int)GameSelected.HOME)
-                DumpCheck.Visible = false;
-            TrainerInfo = trainer;
-            SetColors(color);
+            Trainer_OT = trainer[0];
+            Trainer_TID16 = trainer[1];
+            Trainer_SID16 = trainer[2];
+            PrepareWindow(color);
             LoadComboBox();
             LoadResponses();
         }
 
-        private void SetColors((Color, Color) color)
+        public class TrainerInfo
+        {
+            public string? OT { get; set; }
+            public ushort? TID16 { get; set; }
+            public ushort? SID16 { get; set; }
+        }
+
+        private void PrepareWindow((Color, Color) color)
         {
             BackColor = color.Item1;
             ForeColor = color.Item2;
@@ -66,20 +78,40 @@ namespace PokeViewer.NET
             HidePIDECCheck.ForeColor = color.Item2;
             CSVCheck.BackColor = color.Item1;
             CSVCheck.ForeColor = color.Item2;
-            DumpCheck.BackColor = color.Item1;
-            DumpCheck.ForeColor = color.Item2;
-            ViewAllCheck.BackColor = color.Item1;
-            ViewAllCheck.ForeColor = color.Item2;
 
-            PictureBox[] boxes =
+            PictureBox[] boxes = [.. Enumerable.Range(1, 30)
+                    .Select(i => Controls.Find($"pictureBox{i}", true).FirstOrDefault() as PictureBox)
+                    .Where(pb => pb != null)!];
+
+            foreach (var pb in boxes)
             {
-                pictureBox1, pictureBox2, pictureBox3, pictureBox4, pictureBox5, pictureBox6, pictureBox7, pictureBox8, pictureBox9, pictureBox10,
-                pictureBox11, pictureBox12, pictureBox13, pictureBox14, pictureBox15, pictureBox16, pictureBox17, pictureBox18, pictureBox19, pictureBox20,
-                pictureBox21, pictureBox22, pictureBox23, pictureBox24, pictureBox25, pictureBox26, pictureBox27, pictureBox28, pictureBox29, pictureBox30
-            };
+                pb.BackColor = color.Item1;
+                if (GameType != (int)GameSelected.HOME)
+                {
+                    pb.ContextMenuStrip = CreateContextMenu(pb);
+                    pb.MouseDown += (sender, e) =>
+                    {
+                        if (e.Button == MouseButtons.Right)
+                            contextMenuStrip1.Show(pb, e.Location);
+                    };
+                }
+                pb.MouseEnter += (s, e) => pb.Cursor = Cursors.Hand;
+                pb.MouseLeave += (s, e) => pb.Cursor = Cursors.Default;
+            }
+        }
 
-            for (int i = 0; i < boxes.Length; i++)
-                boxes[i].BackColor = color.Item1;
+        private ContextMenuStrip CreateContextMenu(PictureBox pb)
+        {
+            var menu = new ContextMenuStrip();
+
+            menu.Items.Add("Dump", null, (s, e) => DumpPb(pb));
+            menu.Items.Add("Clear", null, (s, e) => ClearPb(pb));
+            menu.Items.Add("Inject", null, (s, e) => InjectPb(pb));
+            menu.Items.Add("Clear Box", null, (s, e) => ClearBoxPb());
+            menu.Items.Add("Dump Box", null, (s, e) => DumpBoxPb());
+
+            //menu.Opening += (s, e) => e.Cancel = pb.Image == null;
+            return menu;
         }
 
         private async void LoadResponses()
@@ -123,7 +155,6 @@ namespace PokeViewer.NET
             button2.Enabled = false;
             button3.Enabled = false;
             comboBox1.Enabled = false;
-            DumpCheck.Enabled = false;
             FlexButton.Enabled = false;
         }
 
@@ -133,18 +164,17 @@ namespace PokeViewer.NET
             button2.Enabled = true;
             button3.Enabled = true;
             comboBox1.Enabled = true;
-            DumpCheck.Enabled = true;
             FlexButton.Enabled = true;
         }
 
         public async Task ReadBoxes(int boxnumber, CancellationToken token)
         {
             PictureBox[] boxes =
-            {
+            [
                 pictureBox1, pictureBox2, pictureBox3, pictureBox4, pictureBox5, pictureBox6, pictureBox7, pictureBox8, pictureBox9, pictureBox10,
                 pictureBox11, pictureBox12, pictureBox13, pictureBox14, pictureBox15, pictureBox16, pictureBox17, pictureBox18, pictureBox19, pictureBox20,
                 pictureBox21, pictureBox22, pictureBox23, pictureBox24, pictureBox25, pictureBox26, pictureBox27, pictureBox28, pictureBox29, pictureBox30
-            };
+            ];
 
             var box = boxnumber;
             ViewButton.Text = "Reading...";
@@ -158,45 +188,19 @@ namespace PokeViewer.NET
             var subfolder = $"BoxViewer\\{(GameSelected)GameType}";
             if (!Directory.Exists(subfolder))
                 Directory.CreateDirectory(subfolder);
-            var trainersubfolder = $"BoxViewer\\{(GameSelected)GameType}\\{TrainerInfo.OT}-{TrainerInfo.TID16}";
+            var trainersubfolder = $"BoxViewer\\{(GameSelected)GameType}\\{Trainer_OT}-{Trainer_TID16}";
             if (!Directory.Exists(trainersubfolder))
                 Directory.CreateDirectory(trainersubfolder);
 
             try
             {
-                if (ViewAllCheck.Checked)
-                {
-                    CSVCheck.Checked = true;
-                    CSVCheck.Enabled = false;
-                    ViewAllCheck.Enabled = false;
-                    CurrentBox.Visible = true;
-                    if (GameType != (int)GameSelected.HOME)
-                        DumpCheck.Checked = true;
-                    bool allboxes = true;
-                    while (allboxes == true && box != TotalBoxes)
-                    {
-                        try
-                        {
-                            CurrentBox.Text = $"{box + 1}";
-                            await BoxRoutine(box, boxes, images, colors, pk, true, token).ConfigureAwait(false);
-                            box++;
-                        }
-                        catch (Exception ex) { MessageBox.Show($"{ex}"); }
-                    }
-                    if (allboxes == true)
-                        allboxes = false;
-                    CurrentBox.Visible = false;
-                    MessageBox.Show("All boxes have been dumped to PK & CSV files!");
-                }
-                else
-                    await BoxRoutine(box, boxes, images, colors, pk, false, token).ConfigureAwait(false);
+
+                await BoxRoutine(box, boxes, images, colors, pk, false, token).ConfigureAwait(false);
             }
             catch (Exception ex) { MessageBox.Show($"{ex}"); }
             PKMs = [];
             ViewButton.Text = "View";
             EnableAssets();
-            CSVCheck.Enabled = true;
-            ViewAllCheck.Enabled = true;
         }
 
         public async Task BoxRoutine(int box, PictureBox[] boxes, List<Image> images, List<Color> colors, PKM pk, bool dumpall, CancellationToken token)
@@ -209,14 +213,17 @@ namespace PokeViewer.NET
             CurrentSlotScale = [];
             CurrentSlotMark = [];
             CurrentSlotBall = [];
-            if (GameType is (int)GameSelected.Scarlet or (int)GameSelected.Violet && AbsoluteBoxOffset == 0)
+            CurrentSlotPtr = [];
+            CurrentSlotOfs = [];
+
+            if (GameType is (int)GameSelected.Scarlet && AbsoluteBoxOffset == 0 || GameType is (int)GameSelected.Violet && AbsoluteBoxOffset == 0)
             {
-                var SVptr = new long[] { 0x47350D8, 0xD8, 0x8, 0xB8, 0x30, 0x9D0, 0x0 };
+                IReadOnlyList<long> SVptr = [0x47350D8, 0xD8, 0x8, 0xB8, 0x30, 0x9D0, 0x0];
                 AbsoluteBoxOffset = await Executor.SwitchConnection.PointerAll(SVptr, CancellationToken.None).ConfigureAwait(false);
             }
             if (GameType is (int)GameSelected.LegendsArceus && AbsoluteBoxOffset == 0)
             {
-                var LAptr = new long[] { 0x42BA6B0, 0x1F0, 0x68 };
+                IReadOnlyList<long> LAptr = [0x42BA6B0, 0x1F0, 0x68];
                 AbsoluteBoxOffset = await Executor.SwitchConnection.PointerAll(LAptr, CancellationToken.None).ConfigureAwait(false);
             }
 
@@ -227,8 +234,10 @@ namespace PokeViewer.NET
                 {
                     case (int)GameSelected.HOME:
                         {
-                            pk = await ReadPKH((uint)(BoxOffset + (BoxSlotSize * i + (BoxSlotSize * 30 * box))), BoxSlotSize, token).ConfigureAwait(false);
+                            var ofs = (uint)(BoxOffset + (BoxSlotSize * i + (BoxSlotSize * 30 * box)));
+                            pk = await ReadPKH(ofs, BoxSlotSize, token).ConfigureAwait(false);
                             PKMs.Add(pk);
+                            CurrentSlotOfs.Add(ofs);
                             break;
                         }
                     case (int)GameSelected.Scarlet or (int)GameSelected.Violet:
@@ -238,6 +247,7 @@ namespace PokeViewer.NET
                             var slotstart = boxStart + (ulong)(i * BoxSlotSize);
                             pk = await ReadBoxPokemon(slotstart, BoxOffset, BoxSlotSize, token).ConfigureAwait(false);
                             PKMs.Add((PK9)pk);
+                            CurrentSlotPtr.Add((long)slotstart);
                             break;
                         }
                     case (int)GameSelected.LegendsArceus:
@@ -247,6 +257,7 @@ namespace PokeViewer.NET
                             var slotstart = boxStart + (ulong)(i * BoxSlotSize);
                             pk = await ReadBoxPokemon(slotstart, BoxOffset, BoxSlotSize, token).ConfigureAwait(false);
                             PKMs.Add((PA8)pk);
+                            CurrentSlotPtr.Add((long)slotstart);
                             break;
                         }
                     case (int)GameSelected.BrilliantDiamond:
@@ -257,6 +268,7 @@ namespace PokeViewer.NET
                             var boxStart = await Executor.SwitchConnection.PointerAll(b1s1b, token).ConfigureAwait(false);
                             pk = await ReadBoxPokemon(boxStart, BoxOffset, BoxSlotSize, token).ConfigureAwait(false);
                             PKMs.Add((PB8)pk);
+                            CurrentSlotPtr.Add((long)boxStart);
                             break;
                         }
                     case (int)GameSelected.ShiningPearl:
@@ -267,18 +279,21 @@ namespace PokeViewer.NET
                             var boxStart = await Executor.SwitchConnection.PointerAll(b1s1b, token).ConfigureAwait(false);
                             pk = await ReadBoxPokemon(boxStart, BoxOffset, BoxSlotSize, token).ConfigureAwait(false);
                             PKMs.Add((PB8)pk);
+                            CurrentSlotPtr.Add((long)boxStart);
                             break;
                         }
                     case (int)GameSelected.Sword or (int)GameSelected.Shield:
                         {
                             pk = await ReadBoxPokemon(AbsoluteBoxOffset, (uint)(BoxOffset + (BoxSlotSize * i + (BoxSlotSize * 30 * box))), BoxSlotSize, token).ConfigureAwait(false);
                             PKMs.Add((PK8)pk);
+                            CurrentSlotOfs.Add((uint)(BoxOffset + (BoxSlotSize * i + (BoxSlotSize * 30 * box))));
                             break;
                         }
                     case (int)GameSelected.LetsGoPikachu or (int)GameSelected.LetsGoEevee:
                         {
                             pk = await ReadBoxPokemon(AbsoluteBoxOffset, (uint)GetSlotOffset(box, i), LGPESlotSize + LGPEGapSize, token).ConfigureAwait(false);
                             PKMs.Add((PB7)pk);
+                            CurrentSlotOfs.Add((uint)(BoxOffset + (BoxSlotSize * i + (BoxSlotSize * 30 * box))));
                             break;
                         }
                 }
@@ -314,18 +329,9 @@ namespace PokeViewer.NET
                 }
             }
 
-            if (DumpCheck.Checked && GameType != (int)GameSelected.HOME)
-            {
-                foreach (var pkm in PKMs)
-                {
-                    if ((Species)pkm.Species is not Species.None)
-                        DumpPokemon(DumpFolder, $"BoxViewer\\{(GameSelected)GameType}\\{TrainerInfo.OT}-{TrainerInfo.TID16}\\Box{box + 1}", pkm);
-                }
-            }
-
             if (CSVCheck.Checked)
             {
-                var filePath = $"BoxViewer\\{(GameSelected)GameType}\\{TrainerInfo.OT}-{TrainerInfo.TID16}\\Box{box + 1}.csv";
+                var filePath = $"BoxViewer\\{(GameSelected)GameType}\\{Trainer_OT}-{Trainer_TID16}\\Box{box + 1}.csv";
                 string res = string.Empty;
                 res += "Species" + ",";
                 res += "Nature" + ",";
@@ -507,14 +513,14 @@ namespace PokeViewer.NET
         private ulong GetBoxOffset(int box) => (ulong)LGPEStart + (ulong)((LGPESlotSize + LGPEGapSize) * LGPESlotCount * box);
         private ulong GetSlotOffset(int box, int slot) => GetBoxOffset(box) + (ulong)((LGPESlotSize + LGPEGapSize) * slot);
 
-        private async Task<PKM> ReadPKH(uint offset, int size, CancellationToken token)
+        public async Task<PKM> ReadPKH(uint offset, int size, CancellationToken token)
         {
             var data = await Executor.SwitchConnection.ReadBytesAsync(offset, size, token).ConfigureAwait(false);
             PKM ph = new PKH(data);
             return ph;
         }
 
-        private async Task<PKM> ReadBoxPokemon(ulong absoluteoffset, uint offset, int size, CancellationToken token)
+        public async Task<PKM> ReadBoxPokemon(ulong absoluteoffset, uint offset, int size, CancellationToken token)
         {
             PKM pk = new PK9();
             byte[]? data;
@@ -542,6 +548,7 @@ namespace PokeViewer.NET
                         break;
                     }
             }
+            await Task.Delay(0_500, token).ConfigureAwait(false);
             return pk;
         }
 
@@ -764,26 +771,152 @@ namespace PokeViewer.NET
             }
         }
 
-        private void UpdateProgress(int currProgress, int maxProgress)
+        private void PictureBox_MouseDown(object sender, MouseEventArgs e)
         {
-            var value = (100 * currProgress) / maxProgress;
-            if (progressBar1.InvokeRequired)
-                progressBar1.Invoke(() => progressBar1.Value = value);
-            else
-                progressBar1.Value = value;
+            PictureBox? pbox = sender as PictureBox;
+            if (e.Button == MouseButtons.Right)
+            {
+                if (pbox is not null)
+                {
+                    if (pbox.Image is null)
+                    {
+                        MessageBox.Show("No data present, click view and try again.");
+                        return;
+                    }
+                    var currentslot = int.Parse(pbox.Name.Replace("pictureBox", "")) - 1;
+                    if (pbox.Image is not null)
+                    {
+                        using BoxViewerMini form = new(pbox, CurrentSlotStats[currentslot].ToString(), this.BackColor, this.ForeColor);
+                        form.ShowDialog();
+                    }
+                }
+            }
         }
 
-        private void FlexButton_Click(object sender, EventArgs e)
+        private static int GetSlotNumber(string pictureBoxName)
         {
-            FlexButton.Visible = false;
-            DumpCheck.Visible = false;
-            Rectangle bounds = Bounds;
-            Bitmap bmp = new(Width, Height - 60);
-            DrawToBitmap(bmp, bounds);
-            Clipboard.SetImage(bmp);
-            MessageBox.Show("Copied to clipboard!");
-            FlexButton.Visible = true;
-            DumpCheck.Visible = true;
+            return int.Parse(pictureBoxName.Replace("pictureBox", "")) - 1;
+        }
+
+        private static bool UsesOfs()
+        {
+            return Settings.Default.GameConnected is
+                (int)GameSelected.Sword or
+                (int)GameSelected.Shield or
+                (int)GameSelected.LetsGoPikachu or
+                (int)GameSelected.LetsGoEevee;
+        }
+
+        private async Task<PKM> ReadPokemon(int slot, CancellationToken token)
+        {
+            return UsesOfs()
+                ? await ReadBoxPokemon(0, CurrentSlotOfs[slot], BoxSlotSize, token)
+                : await ReadBoxPokemon((ulong)CurrentSlotPtr[slot], 0, BoxSlotSize, token);
+        }
+
+        private async Task WritePokemonData(int slot, PKM pk, CancellationToken token)
+        {
+            if (UsesOfs())
+                await Executor.SwitchConnection.WriteBytesAsync(pk.EncryptedPartyData, CurrentSlotOfs[slot], token);
+
+            else
+                await Executor.SwitchConnection.WriteBytesAbsoluteAsync(pk.EncryptedBoxData, (ulong)CurrentSlotPtr[slot], token);
+        }
+
+        private static PKM CreateBlank(byte[] data = null!)
+        {
+            return Settings.Default.GameConnected switch
+            {
+                (int)GameSelected.Scarlet or (int)GameSelected.Violet => data != null ? new PK9(data) : new PK9(),
+                (int)GameSelected.LegendsArceus => data != null ? new PA8(data) : new PA8(),
+                (int)GameSelected.BrilliantDiamond or (int)GameSelected.ShiningPearl => data != null ? new PB8(data) : new PB8(),
+                (int)GameSelected.Sword or (int)GameSelected.Shield => data != null ? new PK8(data) : new PK8(),
+                (int)GameSelected.LetsGoPikachu or (int)GameSelected.LetsGoEevee => data != null ? new PB7(data) : new PB7(),
+                _ => throw new ArgumentOutOfRangeException(nameof(Settings.Default.GameConnected))
+            };
+        }
+
+        private async void DumpPb(PictureBox pb)
+        {
+            if (pb!.Image == null)
+            {
+                MessageBox.Show("No data present, unable to dump a blank slot. Please click a slot with a Pokémon and try again.");
+                return;
+            }
+            try
+            {
+                var token = CancellationToken.None;
+                var currentslot = GetSlotNumber(pb.Name);
+                var pk = await ReadPokemon(currentslot, token);
+                DumpPokemon(DumpFolder, $"BoxViewer\\{(GameSelected)GameType}\\{Trainer_OT}-{Trainer_TID16}\\Box{comboBox1.SelectedIndex + 1}\\SlotDump", pk);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error dumping Pokémon: {ex.Message}");
+            }
+        }
+
+        private async void DumpBoxPb()
+        {
+            try
+            {
+                var token = CancellationToken.None;
+                for (int i = 0; i < 30; i++)
+                {
+                    var pk = await ReadPokemon(i, token);
+                    if (pk != null)
+                        DumpPokemon(DumpFolder, $"BoxViewer\\{(GameSelected)GameType}\\{Trainer_OT}-{Trainer_TID16}\\Box{comboBox1.SelectedIndex + 1}", pk);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error dumping Pokémon: {ex.Message}");
+            }
+        }
+
+        private async void ClearPb(PictureBox pb)
+        {
+            DialogResult dialogResult = MessageBox.Show("This will clear your box slot of the current Pokémon. Continue?", "Alert!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (dialogResult == DialogResult.No)
+                return;
+
+            if (pb!.Image == null)
+            {
+                MessageBox.Show("No data present, nothing to clear.");
+                return;
+            }
+            try
+            {
+                var token = CancellationToken.None;
+                var currentslot = GetSlotNumber(pb.Name);
+                var pk = CreateBlank();
+                await WritePokemonData(currentslot, pk, token);
+                MessageBox.Show("Slot cleared successfully.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error clearing slot: {ex.Message}");
+            }
+        }
+
+        private async void ClearBoxPb()
+        {
+            DialogResult dialogResult = MessageBox.Show("This will clear your boxes of all Pokémon. Continue?", "Alert!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (dialogResult == DialogResult.No)
+                return;
+
+            try
+            {
+                var token = CancellationToken.None;
+                var pk = CreateBlank();
+                for (int i = 0; i < 30; i++)
+                    await WritePokemonData(i, pk, token);
+                MessageBox.Show("Box cleared successfully.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error clearing slot: {ex.Message}");
+            }
         }
 
         public async Task<ulong> ReturnBoxSlot(int box, int slot)
@@ -804,113 +937,95 @@ namespace PokeViewer.NET
             var slotstart = boxStart + (ulong)(slot * BoxSlotSize);
             return slotstart;
         }
-
-        public async Task<(string, string, PKM)> SlotAssist(int box, int slot, CancellationToken token)
+        private static bool IsValidFileExtension(string fileExt, int gameType)
         {
-            PrepareSlots();
-            if (GameType is (int)GameSelected.Scarlet or (int)GameSelected.Violet && AbsoluteBoxOffset == 0)
+            return gameType switch
             {
-                var SVptr = new long[] { 0x47350D8, 0xD8, 0x8, 0xB8, 0x30, 0x9D0, 0x0 };
-                AbsoluteBoxOffset = await Executor.SwitchConnection.PointerAll(SVptr, CancellationToken.None).ConfigureAwait(false);
-            }
-            if (GameType is (int)GameSelected.LegendsArceus && AbsoluteBoxOffset == 0)
-            {
-                var LAptr = new long[] { 0x42BA6B0, 0x1F0, 0x68 };
-                AbsoluteBoxOffset = await Executor.SwitchConnection.PointerAll(LAptr, CancellationToken.None).ConfigureAwait(false);
-            }
-
-            PKM pk;
-            var boxsize = 30 * BoxSlotSize;
-            var boxStart = AbsoluteBoxOffset + (ulong)(box * boxsize);
-            var slotstart = boxStart + (ulong)(slot * BoxSlotSize);
-            pk = await ReadBoxPokemon(slotstart, BoxOffset, BoxSlotSize, token).ConfigureAwait(false);
-            string ball = $"https://raw.githubusercontent.com/zyro670/PokeTextures/main/Ball/{pk.Ball}.png";
-            bool isGmax = false;
-            if (pk is PK8 pk8 && pk8.CanGigantamax)
-                isGmax = true;
-            string sprite = PokeImg(pk, isGmax);
-            return (sprite, ball, pk);
+                (int)GameSelected.Scarlet or (int)GameSelected.Violet => fileExt == "pk9",
+                (int)GameSelected.LegendsArceus => fileExt == "pa8",
+                (int)GameSelected.BrilliantDiamond or (int)GameSelected.ShiningPearl => fileExt == "pb8",
+                (int)GameSelected.Sword or (int)GameSelected.Shield => fileExt == "pk8",
+                (int)GameSelected.LetsGoPikachu or (int)GameSelected.LetsGoEevee => fileExt == "pb7",
+                _ => false,
+            };
         }
 
-        public async Task<List<PKM>> BoxRoutineAssist(int box, CancellationToken token)
+        private async void InjectPb(PictureBox pb)
         {
-            PrepareSlots();
-            List<PKM> list = new();
-            if (GameType is (int)GameSelected.Scarlet or (int)GameSelected.Violet && AbsoluteBoxOffset == 0)
+            if (pb!.Image != null)
             {
-                var SVptr = new long[] { 0x47350D8, 0xD8, 0x8, 0xB8, 0x30, 0x9D0, 0x0 };
-                AbsoluteBoxOffset = await Executor.SwitchConnection.PointerAll(SVptr, CancellationToken.None).ConfigureAwait(false);
-            }
-            if (GameType is (int)GameSelected.LegendsArceus && AbsoluteBoxOffset == 0)
-            {
-                var LAptr = new long[] { 0x42BA6B0, 0x1F0, 0x68 };
-                AbsoluteBoxOffset = await Executor.SwitchConnection.PointerAll(LAptr, CancellationToken.None).ConfigureAwait(false);
+                DialogResult dialogResult = MessageBox.Show("Slot is not empty, inject over current Pokémon?", "Alert!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (dialogResult == DialogResult.No)
+                    return;
             }
 
-            for (int i = 0; i < 30; i++)
+            var gameTypeExtensions = new Dictionary<int, string>
             {
-                PKM pk;
-                switch (GameType)
+                {(int)GameSelected.Scarlet, "pk9"},
+                {(int)GameSelected.Violet, "pk9"},
+                {(int)GameSelected.LegendsArceus, "pa8"},
+                {(int)GameSelected.BrilliantDiamond, "pb8"},
+                {(int)GameSelected.ShiningPearl, "pb8"},
+                {(int)GameSelected.Sword, "pk8"},
+                {(int)GameSelected.Shield, "pk8"},
+                {(int)GameSelected.LetsGoPikachu, "pb7"},
+                {(int)GameSelected.LetsGoEevee, "pb7"}
+             };
+
+            using var openFileDialog = new OpenFileDialog
+            {
+                Title = "Select PK file to Inject",
+                Filter = "Supported Pokémon Files|*.pk9;*.pk8;*.pb8;*.pb7;*.pa8",
+                InitialDirectory = AppDomain.CurrentDomain.BaseDirectory
+            };
+
+            if (openFileDialog.ShowDialog() != DialogResult.OK)
+                return;
+
+            try
+            {
+                var filePath = openFileDialog.FileName;
+                var fileExt = Path.GetExtension(filePath).TrimStart('.').ToLower();
+                var expectedExt = gameTypeExtensions[Settings.Default.GameConnected];
+
+                if (!IsValidFileExtension(fileExt, Settings.Default.GameConnected))
                 {
-                    case (int)GameSelected.HOME:
-                        {
-                            pk = await ReadPKH((uint)(BoxOffset + (BoxSlotSize * i + (BoxSlotSize * 30 * box))), BoxSlotSize, token).ConfigureAwait(false);
-                            list.Add(pk);
-                            break;
-                        }
-                    case (int)GameSelected.Scarlet or (int)GameSelected.Violet:
-                        {
-                            var boxsize = 30 * BoxSlotSize;
-                            var boxStart = AbsoluteBoxOffset + (ulong)(box * boxsize);
-                            var slotstart = boxStart + (ulong)(i * BoxSlotSize);
-                            pk = await ReadBoxPokemon(slotstart, BoxOffset, BoxSlotSize, token).ConfigureAwait(false);
-                            list.Add((PK9)pk);
-                            break;
-                        }
-                    case (int)GameSelected.LegendsArceus:
-                        {
-                            var boxsize = 30 * BoxSlotSize;
-                            var boxStart = AbsoluteBoxOffset + (ulong)(box * boxsize);
-                            var slotstart = boxStart + (ulong)(i * BoxSlotSize);
-                            pk = await ReadBoxPokemon(slotstart, BoxOffset, BoxSlotSize, token).ConfigureAwait(false);
-                            list.Add((PA8)pk);
-                            break;
-                        }
-                    case (int)GameSelected.BrilliantDiamond:
-                        {
-                            var sizeup = GetBDSPSlotValue(i);
-                            var boxvalue = GetBDSPBoxValue(box);
-                            var b1s1b = new long[] { 0x4C64DC0, 0xB8, 0x10, 0xA0, boxvalue, sizeup, 0x20 };
-                            var boxStart = await Executor.SwitchConnection.PointerAll(b1s1b, token).ConfigureAwait(false);
-                            pk = await ReadBoxPokemon(boxStart, BoxOffset, BoxSlotSize, token).ConfigureAwait(false);
-                            list.Add((PB8)pk);
-                            break;
-                        }
-                    case (int)GameSelected.ShiningPearl:
-                        {
-                            var sizeup = GetBDSPSlotValue(i);
-                            var boxvalue = GetBDSPBoxValue(box);
-                            var b1s1b = new long[] { 0x4E7BE98, 0xB8, 0x10, 0xA0, boxvalue, sizeup, 0x20 };
-                            var boxStart = await Executor.SwitchConnection.PointerAll(b1s1b, token).ConfigureAwait(false);
-                            pk = await ReadBoxPokemon(boxStart, BoxOffset, BoxSlotSize, token).ConfigureAwait(false);
-                            list.Add((PB8)pk);
-                            break;
-                        }
-                    case (int)GameSelected.Sword or (int)GameSelected.Shield:
-                        {
-                            pk = await ReadBoxPokemon(AbsoluteBoxOffset, (uint)(BoxOffset + (BoxSlotSize * i + (BoxSlotSize * 30 * box))), BoxSlotSize, token).ConfigureAwait(false);
-                            list.Add((PK8)pk);
-                            break;
-                        }
-                    case (int)GameSelected.LetsGoPikachu or (int)GameSelected.LetsGoEevee:
-                        {
-                            pk = await ReadBoxPokemon(AbsoluteBoxOffset, (uint)GetSlotOffset(box, i), LGPESlotSize + LGPEGapSize, token).ConfigureAwait(false);
-                            list.Add((PB7)pk);
-                            break;
-                        }
+                    MessageBox.Show($"Invalid file type for this game.\nExpected: .{expectedExt}\nFound: .{fileExt}");
+                    return;
                 }
+
+                var fileData = await File.ReadAllBytesAsync(filePath);
+                var token = CancellationToken.None;
+                var currentslot = GetSlotNumber(pb.Name);
+                var pk = CreateBlank(fileData);
+
+                await WritePokemonData(currentslot, pk, token);
+                MessageBox.Show("Pokémon injected successfully!");
             }
-            return list;
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error injecting Pokémon: {ex.Message}");
+            }
+        }
+
+        private void UpdateProgress(int currProgress, int maxProgress)
+        {
+            var value = (100 * currProgress) / maxProgress;
+            if (progressBar1.InvokeRequired)
+                progressBar1.Invoke(() => progressBar1.Value = value);
+            else
+                progressBar1.Value = value;
+        }
+
+        private void FlexButton_Click(object sender, EventArgs e)
+        {
+            FlexButton.Visible = false;
+            Rectangle bounds = Bounds;
+            Bitmap bmp = new(Width, Height - 60);
+            DrawToBitmap(bmp, bounds);
+            Clipboard.SetImage(bmp);
+            MessageBox.Show("Copied to clipboard!");
+            FlexButton.Visible = true;
         }
     }
 }

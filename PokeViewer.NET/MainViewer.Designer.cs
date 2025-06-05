@@ -58,8 +58,8 @@
             EventRedeemButton = new Button();
             TrainerPassportGroup = new GroupBox();
             TrainerPhoto = new PictureBox();
-            TIDSID = new Label();
             TrainerLabel = new Label();
+            richTIDSID = new RichTextBox();
             ExtrasGroup = new GroupBox();
             DiscordUtilButton = new Button();
             WideButton = new Button();
@@ -80,7 +80,7 @@
             EggPage = new TabPage();
             NPCPage = new TabPage();
             InGameScreenshotPage = new TabPage();
-            OutbreakPage = new TabPage();
+            MiscPage = new TabPage();
             ((System.ComponentModel.ISupportInitialize)PokeSprite).BeginInit();
             ((System.ComponentModel.ISupportInitialize)Specialty).BeginInit();
             ((System.ComponentModel.ISupportInitialize)OriginIcon).BeginInit();
@@ -244,7 +244,7 @@
             TodaysDate.AutoSize = true;
             TodaysDate.Location = new Point(274, 407);
             TodaysDate.Name = "TodaysDate";
-            TodaysDate.Size = new Size(57, 15);
+            TodaysDate.Size = new Size(58, 15);
             TodaysDate.TabIndex = 19;
             TodaysDate.Text = "DateTime";
             // 
@@ -306,7 +306,7 @@
             ViewerControl.Controls.Add(EggPage);
             ViewerControl.Controls.Add(NPCPage);
             ViewerControl.Controls.Add(InGameScreenshotPage);
-            ViewerControl.Controls.Add(OutbreakPage);
+            ViewerControl.Controls.Add(MiscPage);
             ViewerControl.Location = new Point(-5, 2);
             ViewerControl.Name = "ViewerControl";
             ViewerControl.SelectedIndex = 0;
@@ -387,41 +387,43 @@
             // 
             TrainerPassportGroup.BackColor = Color.Transparent;
             TrainerPassportGroup.Controls.Add(TrainerPhoto);
-            TrainerPassportGroup.Controls.Add(TIDSID);
             TrainerPassportGroup.Controls.Add(TrainerLabel);
+            TrainerPassportGroup.Controls.Add(richTIDSID);
             TrainerPassportGroup.Location = new Point(108, 195);
             TrainerPassportGroup.Name = "TrainerPassportGroup";
-            TrainerPassportGroup.Size = new Size(264, 81);
+            TrainerPassportGroup.Size = new Size(264, 96);
             TrainerPassportGroup.TabIndex = 36;
             TrainerPassportGroup.TabStop = false;
             TrainerPassportGroup.Text = "Trainer Passport";
             // 
             // TrainerPhoto
             // 
-            TrainerPhoto.Location = new Point(190, 16);
+            TrainerPhoto.Location = new Point(189, 22);
             TrainerPhoto.Name = "TrainerPhoto";
             TrainerPhoto.Size = new Size(69, 57);
             TrainerPhoto.SizeMode = PictureBoxSizeMode.Zoom;
             TrainerPhoto.TabIndex = 39;
             TrainerPhoto.TabStop = false;
             // 
-            // TIDSID
-            // 
-            TIDSID.AutoSize = true;
-            TIDSID.Location = new Point(6, 49);
-            TIDSID.Name = "TIDSID";
-            TIDSID.Size = new Size(56, 15);
-            TIDSID.TabIndex = 38;
-            TIDSID.Text = "TID | SID: ";
-            // 
             // TrainerLabel
             // 
             TrainerLabel.AutoSize = true;
-            TrainerLabel.Location = new Point(6, 24);
+            TrainerLabel.Location = new Point(4, 19);
             TrainerLabel.Name = "TrainerLabel";
             TrainerLabel.Size = new Size(45, 15);
             TrainerLabel.TabIndex = 37;
             TrainerLabel.Text = "Name: ";
+            // 
+            // richTIDSID
+            // 
+            richTIDSID.BackColor = SystemColors.ControlLightLight;
+            richTIDSID.BorderStyle = BorderStyle.None;
+            richTIDSID.Location = new Point(6, 44);
+            richTIDSID.Name = "richTIDSID";
+            richTIDSID.ReadOnly = true;
+            richTIDSID.Size = new Size(158, 41);
+            richTIDSID.TabIndex = 40;
+            richTIDSID.Text = "";
             // 
             // ExtrasGroup
             // 
@@ -436,9 +438,9 @@
             ExtrasGroup.Controls.Add(SetMoodButton);
             ExtrasGroup.Controls.Add(DefaultMoodRadio);
             ExtrasGroup.Controls.Add(AltMoodRadio);
-            ExtrasGroup.Location = new Point(7, 283);
+            ExtrasGroup.Location = new Point(7, 297);
             ExtrasGroup.Name = "ExtrasGroup";
-            ExtrasGroup.Size = new Size(484, 157);
+            ExtrasGroup.Size = new Size(484, 143);
             ExtrasGroup.TabIndex = 35;
             ExtrasGroup.TabStop = false;
             ExtrasGroup.Text = "Extras";
@@ -653,14 +655,14 @@
             InGameScreenshotPage.Text = "Screenshot 📷";
             InGameScreenshotPage.UseVisualStyleBackColor = true;
             // 
-            // OutbreakPage
+            // MiscPage
             // 
-            OutbreakPage.Location = new Point(4, 24);
-            OutbreakPage.Name = "OutbreakPage";
-            OutbreakPage.Size = new Size(503, 482);
-            OutbreakPage.TabIndex = 9;
-            OutbreakPage.Text = "Misc 📓";
-            OutbreakPage.UseVisualStyleBackColor = true;
+            MiscPage.Location = new Point(4, 24);
+            MiscPage.Name = "MiscPage";
+            MiscPage.Size = new Size(503, 482);
+            MiscPage.TabIndex = 9;
+            MiscPage.Text = "Misc 📓";
+            MiscPage.UseVisualStyleBackColor = true;
             // 
             // MainViewer
             // 
@@ -732,7 +734,7 @@
         private Label VersionLabel;
         private TabPage InGameScreenshotPage;
         private TabPage PartyPage;
-        private TabPage OutbreakPage;
+        private TabPage MiscPage;
         private GroupBox ExtrasGroup;
         private Label TrainerLabel;
         private GroupBox TrainerPassportGroup;
@@ -753,5 +755,6 @@
         private Button ControllerButton;
         private Button WideButton;
         private Button DiscordUtilButton;
+        private RichTextBox richTIDSID;
     }
 }

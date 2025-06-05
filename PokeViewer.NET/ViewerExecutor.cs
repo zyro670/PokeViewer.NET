@@ -1,9 +1,29 @@
-﻿using SysBot.Base;
+﻿using PokeViewer.NET;
+using SysBot.Base;
 using static PokeViewer.NET.ViewerUtil;
 
 namespace PokeViewer.NET
 {
-    public class ViewerState : BotState<RoutineType, SwitchConnectionConfig>
+    /*public class ViewerState(SwitchConnectionConfig Config)
+    {
+        public readonly ISwitchConnectionAsync Connection = Config.Protocol switch
+        {
+            SwitchProtocol.USB => new SwitchUSBAsync(Config.Port),
+            _ => new SwitchSocketAsync(Config),
+        };
+
+        public void Connect()
+        {
+            Connection.Connect();
+        }
+
+        public void Disconnect()
+        {
+            Connection.Disconnect();
+        }
+    }*/
+
+    public class ViewerExecutorBase : BotState<RoutineType, SwitchConnectionConfig>
     {
         public override void IterateNextRoutine() => CurrentRoutineType = NextRoutineType;
         public override void Initialize() => Resume();
@@ -11,10 +31,11 @@ namespace PokeViewer.NET
         public override void Resume() => NextRoutineType = InitialRoutine;
     }
 
-    public class ViewerExecutor : SwitchRoutineExecutor<ViewerState>
+
+    public class ViewerState : SwitchRoutineExecutor<ViewerExecutorBase>
     {
         private bool Connected = false;
-        public ViewerExecutor(ViewerState cfg) : base(cfg) { }
+        public ViewerState(ViewerExecutorBase cfg) : base(cfg) { }
 
         public override string GetSummary()
         {

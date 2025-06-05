@@ -2,8 +2,8 @@
 {
     public partial class ScreenshotForm : Form
     {
-        private readonly ViewerExecutor Executor;
-        public ScreenshotForm(ViewerExecutor executor, (Color, Color) color)
+        private readonly ViewerState Executor;
+        public ScreenshotForm(ViewerState executor, (Color, Color) color)
         {
             InitializeComponent();
             Executor = executor;

@@ -4,8 +4,8 @@ namespace PokeViewer.NET.SubForms
 {
     public partial class ControllerView : Form
     {
-        private readonly ViewerExecutor Executor;
-        public ControllerView(ViewerExecutor executor, (Color, Color) color)
+        private readonly ViewerState Executor;
+        public ControllerView(ViewerState executor, (Color, Color) color)
         {
             InitializeComponent();
             Executor = executor;

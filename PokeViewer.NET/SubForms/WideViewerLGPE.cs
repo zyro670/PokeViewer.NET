@@ -6,9 +6,9 @@ namespace PokeViewer.NET.WideViewForms
 {
     public partial class WideViewerLGPE : Form
     {
-        private readonly ViewerExecutor Executor;
+        private readonly ViewerState Executor;
         protected ViewerOffsets Offsets { get; } = new();
-        public WideViewerLGPE(ViewerExecutor executor, (Color, Color) color)
+        public WideViewerLGPE(ViewerState executor, (Color, Color) color)
         {
             InitializeComponent();
             Executor = executor;

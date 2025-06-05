@@ -9,11 +9,11 @@ namespace PokeViewer.NET.SubForms
 {
     public partial class WideViewerSV : Form
     {
-        private readonly ViewerExecutor Executor;
+        private readonly ViewerState Executor;
         private static ulong BaseBlockKeyPointer = 0;
         protected ViewerOffsets Offsets { get; } = new();
 
-        public WideViewerSV(ViewerExecutor executor, (Color, Color) color)
+        public WideViewerSV(ViewerState executor, (Color, Color) color)
         {
             InitializeComponent();
             Executor = executor;

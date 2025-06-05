@@ -5,8 +5,8 @@ namespace PokeViewer.NET.WideViewForms
 {
     public partial class WideViewerBDSP : Form
     {
-        private readonly ViewerExecutor Executor;
-        public WideViewerBDSP(ViewerExecutor executor, (Color, Color) color)
+        private readonly ViewerState Executor;
+        public WideViewerBDSP(ViewerState executor, (Color, Color) color)
         {
             InitializeComponent();
             Executor = executor;

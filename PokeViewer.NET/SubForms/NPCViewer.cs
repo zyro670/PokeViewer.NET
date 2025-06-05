@@ -5,11 +5,11 @@ namespace PokeViewer.NET.WideViewForms
 {
     public partial class NPCViewer : Form
     {
-        private readonly ViewerExecutor Executor;
+        private readonly ViewerState Executor;
         public int GameType;
         public ToolTip tt = new();
         public List<string> CurrentSlotStats = new();
-        public NPCViewer(int gametype, ViewerExecutor executor, (Color, Color) color)
+        public NPCViewer(int gametype, ViewerState executor, (Color, Color) color)
         {
             InitializeComponent();
             Executor = executor;
